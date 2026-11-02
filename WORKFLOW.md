@@ -26,7 +26,7 @@ Käyttäjä haluaa yllättyä voittajasta ja käänteistä. Voittaja ja käänte
 - Hahmot, formaatti (Record of Ragnarok: kuuluttaja, säännöt, kortit, VS, BEGIN-gongi; taistelu kunnes toinen kuolee tai ei pysty jatkamaan), kesto (max 3 min, 170–180 s), ensimmäinen isku < 20 s.
 - Dramaturgia: nousu portaittain, käänteet, tunneiskut, hiljaisuuskuopat, hyvä loppu (ei anticlimaxia).
 - Impact-frameja: ≥ 40 sarjaa, ≥ 12 tiheää purskeet (5 eri framea ≤ 1 s).
-- Yleisö: Dazai (viisas) ja Shunsui (ennenaikaiset tuomiot) siluettien keskellä.
+- Yleisö: siluettien keskellä 1–3 nimettyä hahmoa, joista yksi viisas ja yksi heittää ennenaikaisia tuomioita (hahmot valitaan taistelijoiden mukaan; Dazai/Shunsui oli vain esimerkki).
 - Musiikki: valitse tunteen mukaan, 3–4 pitkää kappaletta, vaihdot käännekohdissa, taso −7…−8 dB SFX:n alla, ducking impactissa ~7,5 dB; ei pitkiä hiljaisia kohtia. SFX: kerroksia joka iskuun (whoosh + impact + sub + detaili), 400+ tapahtumaa.
 - Ulostulo: `pre/*.md`, `shots.json`, `audio/events.json`, `mix.py`, `READY.txt`.
 

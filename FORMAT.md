@@ -18,7 +18,7 @@ Valhalla-kolosseumi (`engine/sets_hvg.js` 'valhalla'), uudelleenpuettu jokaisell
 ## 4. Yleisö (katsomo)
 - Pohja: **siluettien meri** (12+ istuvaa/seisovaa siluettia), jonka keskellä on 1–3 nimettyä hahmoa. Nimetty hahmo ei koskaan istu yksin näkyvissä.
 - **Viisas** hahmo ymmärtää aina mihin suuntaan taistelu on menossa ja korjaa muiden virhetulkinnat rauhallisesti. **Kommentoija** heittää ennenaikaisia tuomioita ("Ha, he lost."), jonka viisas oikaisee.
-- Käyttäjän lempiparina Dazai (viisas) + Shunsui (ennenaikaiset tuomiot), mutta **yleisössä voi olla muitakin hahmoja** ja rooleja:
+- Esimerkki aiemmasta videosta: Dazai oli viisas ja Shunsui heitti ennenaikaisia tuomioita. Se oli vain ESIMERKKI, ei vakiopari: **yleisön hahmot valitaan joka videolle taistelijoiden ja tarinan mukaan**. Mahdollisia rooleja:
   - jonkun taistelijan kaveri/rivaali/mestari (esim. oppilas, joka huutaa kannustusta)
   - skeptikko, joka vähättelee ("Ei tuo tehoa")
   - innokas fani, joka hurraa joka iskulle
@@ -26,7 +26,7 @@ Valhalla-kolosseumi (`engine/sets_hvg.js` 'valhalla'), uudelleenpuettu jokaisell
   - jumala-/ylhäisö-tyyppi, joka arvioi tyylikkäästi
   - vihollisen/vastapuolen edustaja, joka vannoo kostoa
   - vähätelty sivuhahmo, joka paljastuu viisaaksi
-  Valitse hahmot taistelijoiden taustan ja sarjojen mukaan; kierrätä aiemmin tehdyt (Dazai, Shunsui, Urahara, Gojo, Harry, Kenpachi, Aizen, Shinji, Gowther) jos sopii, mutta lisää uusia aina kun tarina hyötyy.
+  Valitse hahmot taistelijoiden taustan ja sarjojen mukaan; kierrätä aiemmin tehtyjä hahmoja (esim. Dazai, Shunsui, Urahara, Gojo, Harry, Kenpachi, Aizen, Shinji, Gowther) vain jos ne sopivat, ja lisää uusia aina kun tarina hyötyy.
 - 6–10 lyhyttä reaktiokuvaa videossa (1–2 s), osa maskattuina (käänteiden reaktiot); tekstityksenä dialogi (esim. DAZAI #c8a878, SHUNSUI #f4a6c8).
 - Katsomon reaktiot: shock, narrow, knowing, smile, sigh, verdict, toast, smug, oops, laugh, hush, eyesWide, sweat. Isoissa hetkissä koko yleisö reagoi (`freeze`, pyörtyminen riveittäin, valon välähdykset kasvoilla).
 

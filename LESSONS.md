@@ -6,5 +6,5 @@ Pakolliset oletukset (Record of Ragnarok -formaatti):
 3. Impact framet: EI vain naamavälähdyksiä. Tarvitaan oikean animen impact-frame-kirjo: koko ruudun iskun hetki (negatiivi + mustavalkoinen speedline-tausta, hahmon siluetti, iskun muoto, shockwave, ruudun repeämä, kamera-isku, kynä/ink-piirretty "freeze" pose, väri-inversio koko kuvasta, halftone, sakugamainen vääristynyt pose, lyöntilinjat). Naamainsertit korkeintaan 1 kolmesta.
 4. Tempo: leikkaukset eivät saa olla liian nopeita. Seurattavuus ensin: kuvat pidempiä (keskim. 1,5–2,5 s), nopeita leikkauksia vain huippuhetkissä, hengitystilaa iskujen välillä.
 5. Hahmot puhuvat toisilleen enemmän (lyhyet repliikit taistelun aikana, provokaatio, tunne, oivallukset), tekstityksinä kuten yleisön puhe.
-6. Yleisön Shunsui + Dazai -dialogi toimi hyvin: käytä samaa dynamiikkaa jatkossa (Dazai viisas, Shunsui ennenaikaiset tuomiot).
+6. Yleisön dialogi (viisas hahmo korjaa ennenaikaisen tuomion heittäjän) toimi hyvin: käytä samaa dynamiikkaa jatkossa, mutta hahmot valitaan videokohtaisesti (Dazai/Shunsui oli vain esimerkki).
 7. Edelleen voimassa: kamera aina liikkeessä, isot luettavat iskunimet, paljon ääniefektejä, musiikki valittu tunteen mukaan (pitkiä kappaleita, vaihdot vain käännekohdissa), tiheät impact-purskeet, hyvä loppu (ei anticlimaxia), ei spoilereita käyttäjälle.
