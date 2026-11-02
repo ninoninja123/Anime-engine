@@ -1,0 +1,7 @@
+*.mp4
+node_modules/
+*.zip
+audio/out/
+audio/music/
+audio/sfx/
+pre/spoilers.md

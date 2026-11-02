@@ -1,0 +1,143 @@
+name	epidemic_id	title	new_for_this_project	uses_in_events
+air_blast	b743332b-2e84-4eeb-93d9-d72474947c79	Magic, Elemental, Wind Magic Spell, Fast, Air Blast	reused	2
+bass_dive13	c843b0a7-0e55-483d-86ac-fe6354306e60	Designed, Bass Dive, Boom, Cinematic Drop, Downer 13	reused	4
+bass_dive17	dfa5b653-af39-472f-a0e9-2a8c3b866dc7	Designed, Bass Dive, Boom, Cinematic Drop, Downer 17	reused	6
+bass_whoop	3d8ff84b-ee48-4176-8b5a-09ec7d84fe92	Bass Riser, Whoop 06	reused	1
+beam_anime01	f0d72558-6558-4614-8857-a3166e9fefee	Lasers, Beam, Designed, Anime, Laser, Beam 01	reused	3
+birds_flock	8e9b11ca-7980-4321-a5e9-b3314de5db80	Wings, Bird, Foley, Small Flock, Flying Together, Constant Flapping	reused	3
+blade_whoosh_impact	9da38075-eadf-4361-9740-51d861f1c08c	Swooshes, Swish, Rapier Sword Blade Whoosh, Impact 01	reused	7
+bodyfall_var	636021e4-9cff-44ea-b84d-49534e9ab0cf	Fight, Bodyfall, On Wood Flooring, Variations, Cloth Movement, Close, Fast 02	reused	4
+bone_crack	962723ee-006c-4c20-b93b-5d1259bd41c4	Gore, Bone, Bone Crack, Bone Cracking	reused	1
+bone_heavy	66b19e36-0d97-4520-b799-2653b2ece45b	Gore, Bone, Break, Heavy Breaks 01	reused	5
+bone_heavy_breaks	66b19e36-0d97-4520-b799-2653b2ece45b	Gore, Bone, Break, Heavy Breaks 01	reused	1
+boom_cine_deep	2f0a40ab-f23a-4927-a911-1d70459d52e7	Designed, Boom, Cinematic, Deep, Boom, Impact	reused	11
+boom_cine_heavyrumble	47d83a22-8d8e-46a3-ba58-57a672705070	Designed, Boom, Impact, Dark, Cinematic, Heavy Hit, Rumble	reused	1
+boom_cine_low	240e5b47-f13f-49e8-a66a-75720e0a2428	Designed, Boom, Cinematic Hit, Low Boom	reused	5
+boom_cine_lowhit	d106e784-e06e-4673-ae48-a36e145a715d	Designed, Boom, Impact, Dark, Cinematic, Low HIt	reused	35
+boom_dark_lowhit	d106e784-e06e-4673-ae48-a36e145a715d	Designed, Boom, Impact, Dark, Cinematic, Low Hit	reused	13
+boom_heavy_rumble	47d83a22-8d8e-46a3-ba58-57a672705070	Designed, Boom, Impact, Dark, Cinematic, Heavy Hit, Rumble	reused	1
+boom_long_reverb	737461f6-b3c9-43f1-9f91-38bf2f354fdb	Designed, Boom, Impact, Dark, Cinematic, Explosion, Long Reverb	reused	7
+boom_ultra_braam	a557c8fd-95e8-406f-88ca-66f4940cd932	Designed, Boom, Impact, Dark, Cinematic, Ultra Low, Long, Braam	reused	8
+boom_ultra_deep	2d937893-9a11-45e5-a8b4-6b969c07e421	Designed, Boom, Impact, Dark, Cinematic, Ultra Deep	reused	15
+boom_ultradeep_tone	9596063a-c7df-4ef2-8181-3666c825abb1	Designed, Boom, Impact, Dark, Cinematic, Ultra Deep, Reverberant Tone	reused	1
+braam_big	a618da25-9486-4243-a4ba-1a44a0b78796	Designed, Braam, Big Impact, Heavy, Cinematic, Epic, Braam	reused	1
+breath_inhale	44e32f15-25d0-47d7-8619-06a6d17df231	Human, Breath, Male, Inhale, Deep Breath	reused	8
+charge_shing	cda10e46-095a-4bb7-900b-d32ee5122162	Designed, Misc, Anime, Power Up, Charge, Shing 01	reused	2
+choir_braam	b5b9546e-bf2a-497d-b6b0-c191ee18d2f4	Designed, Stinger, Unnerving, Cinematic, Choir Rise, Big Hit, Braam Element, Reverb Tail	reused	1
+choir_rise_dark	420fb1ad-8064-4f84-83e9-a7cd3c655b53	Designed, Stinger, Cinematic, Dark, Choir Rise, Big Impact, Reverberant Tail	reused	5
+clock_bell_antique	07c8ad0c-8ef5-4437-9675-ab83914ef0a4	Clocks, Chime, Old, Antique Bell 02	yes	8
+clock_bell_tower	194799aa-368d-4225-be6d-fd53ca1f6933	Clocks, Chime, Tower Clock, 1700, Chime Ringing, Reverberant	yes	8
+clock_gears	99e2a90d-b61b-43d7-909e-63623df0120c	Clocks, Mechanics, Old Wooden Clock, Wall Hanging, Inside Mechanism, Gears, Chain 05	yes	9
+clock_tick_slow	2065a536-430b-49fe-907d-42b82b8fbb63	Clocks, Tick, Designed, Ticking Clock, Slow, Loop	yes	16
+clockwork_small	394fa979-5757-4f42-bd1c-9747469f75d2	Clocks, Mechanics, Clockwork, Small Mechanisms	reused	1
+clockwork_snap	89d213be-207c-4a29-a428-3c19c2bb394d	Clocks, Mechanics, Clockwork, Snapping Mechanism 01	reused	9
+cloth_flaps	3e089c17-1992-48c7-9ea4-967e71833b83	Cloth, Flap, Cloth Flaps, Wind	reused	17
+crow_caw_single	0dc861b8-d9c6-49a2-b1b0-b2fd59fb8af8	Birds, Crow, Call, Cawing, Single	yes	16
+crow_caw_spooky	302ffcb9-ec01-4821-8354-87bce2bcaa12	Birds, Crow, Single Crow Cawing, Spooky	yes	4
+crow_flock_angry	2a31b297-3fb3-40dc-9ec7-9d83058cb067	Birds, Crow, Flock Of Crows, Angry, Cawing	yes	5
+crow_land_wings	efa2df7e-994d-4dba-903d-8d364b74597a	Birds, Crow, Ravens, Call, While Landing On Post, Wings	yes	1
+crowd_battlecry	4a4c72bd-1308-464d-8b72-c62991a7251a	Crowds, Battle, Medium Group, Mixed Genders, Battle Cry, Screams, Charge, Static 02	reused	2
+crowd_gasp	2c6b5030-e950-47a8-a03b-aefbe7ebd05f	Crowds, Reaction, Medium, Gasps, Surprised	reused	4
+crowd_gasp2	45e22d9d-9906-4824-aaba-f0f05168b3cf	Crowds, Loop Group, Courtroom, Gasps	reused	1
+crowd_panic	621f9e46-3771-4ccf-942d-a2c8fea2b749	Crowds, Loop Group, Army Losing In Battle, Screams Of Panic 01	reused	3
+crowd_shocked	c82f9615-7bc4-422f-96a2-f48641e9d333	Crowds, Sport, Stadium Crowd, Shocked Reaction, Groans	reused	2
+crowd_stadium_cheer	cf1bf971-c6bf-42b5-a763-4d0df388b60d	Crowds, Sport, Stadium, Large, Football, Neutral Event, Cheering	reused	3
+crowd_swell_quiet	55851f15-1a22-4c32-9ed6-0ca0c0b938c4	Crowds, Cheering, Concert Crowd, Stadium, Large, Interior, Medium Swell, Quiets Down	reused	10
+dispel_shimmer	ec863bd3-4878-4ca6-9224-c8fd644a3a12	Magic, Shimmer, Spell, Cast, Dispel Magic, Cleanse, Twinkle, Glimmer, Short 05	reused	1
+dome_pulse	b2a7432f-4e64-4d3f-a163-656cd5cab609	Scifi, Energy, Dome, Force Field, Loop, Pulsing 01	reused	3
+dragon_firebreath	5cf3144e-594b-4b98-a44a-ae1e33d8fd60	Creatures, Dragon, Dragon, Vocalizations, Fire Breathing 06	reused	2
+drone_dark	4f591e26-7beb-4147-8490-4d9629c6da22	Designed, Drone, Dark, Rumble, Space, Sub, Loop	reused	5
+drone_dark_sub	4f591e26-7beb-4147-8490-4d9629c6da22	Designed, Drone, Dark, Rumble, Space, Sub, Loop	reused	4
+dust_settle	9b821f08-33f9-42ba-ab0f-e3147cc78371	Dirt & Sand, Dust, Settling, Falling, Light, Dust, Settlingy	reused	2
+earthquake_rumble	7963f0f3-77fc-4cea-b89b-5bbe8e0ccf33	Natural Disaster, Earthquake, Tremor, Rumble	reused	1
+evil_incant	9fa66f5c-310f-4e17-bd50-3b472539aa6a	Magic, Evil, Spell, Incantation, Ghostly, Demonic 01	yes	4
+explosion_huge_var	4072f02c-487c-49f0-8155-a78857173793	Designed, Impact, Huge Hit, Explosion, Distorted, Variations	reused	2
+fan_fold	7951b663-449b-4107-a532-ece65debb0db	Objects, Misc, Hand Fan, Fold 01	reused	2
+fire_burnup	9aa8cf60-ce28-40c6-a96f-f7d41190c7c1	Fire, Burst, Cinematic, Large Flames, Swooshes, Burn Up 02	reused	4
+fire_roar_burst	9d01fbc9-5075-4cdb-8e1f-aa121ad277f8	Fire, Burst, Cinematic, Large Roaring Flame, Swooshes, Fire Break	reused	8
+fire_whoosh_synth	4f457955-6deb-4133-a6a1-c23d31149fdf	Fire, Whoosh, Flame Burst, Synthetic	reused	2
+fireball_big	f14d0182-2782-43ca-aa59-ed63b943787c	Fire, Whoosh, Crispy Fire, Fireball, Big 01	reused	5
+flesh_tear	51d52af8-eb1b-4f02-b6f6-3fb226ed7bb1	Gore, Flesh, Flesh Tear Bloody	reused	1
+flesh_wet07	95053b64-041a-40cb-8b8d-d0bd5801b913	Impact, Flesh, Heavy, Loose, Wet 07	reused	1
+flesh_wet16	b60366a6-8b71-4fa2-8fd2-4c0c689d833e	Impact, Flesh, Heavy, Loose, Wet 16	reused	1
+footsteps	d88f5170-ff26-4397-a691-627e8fece9c7	Footsteps, Human, Slippers, Gravel, Walk, Distant	reused	3
+forcefield_elec	9d581001-2747-4e4f-b0f7-53dc097ffab1	Scifi, Energy, Electric, Force Field	reused	1
+forcefield_tonal	87d251cc-a90c-4bc7-86dc-77f4ae31e8e9	Scifi, Energy, UFO Force Field, Tonal	reused	3
+ghost_fire_long	ef45eda3-a403-4342-ac51-9eeeaca7f6a2	Magic, Elemental, Ghostly Fire Magic, Spell, Cast, Burn, Long 02	yes	3
+giant_step01	b860994f-e5e9-464d-b746-2f915e9b7635	Creatures, Humanoid, Giant, Footstep, Massive, Distant, Heavy 01	reused	1
+giant_step03	7f340d15-4917-4bac-86c7-a04e47842477	Creatures, Humanoid, Giant, Footstep, Massive, Distant, Heavy 03	reused	1
+glass_big_smash	7afba297-91e5-4fd1-8548-23aa4de20ddf	Glass, Break, Glassware Breaking, Big Smash	reused	1
+glass_hits	14ce79f9-12be-4240-b60f-99d610e8b611	Glass, Break, Glass Break Hit	reused	16
+glass_huge_smash	aca94c99-f585-4af5-b1a3-0bc5edd169ca	Glass, Break, Huge Smash, Multiple Items Drop	reused	4
+glass_resonance	129ad96c-c74b-4902-b670-edf57bbfbcfd	Glass, Tonal, Glass Hit, Debris, Resonance Ring	reused	3
+glitch_hit	14272147-92fa-4ef9-9def-0d2160830dd1	Designed, Distortion, Processed Impact, Hit, Electric Glitch, Short, Variations	reused	23
+gong	05c984d7-e82f-425a-a1c7-2b470c36e22f	Bells, Gong, Buddhist, Temple, Pai, Thailand 03	reused	2
+gong_deep	a52c888a-dcfc-452b-a108-7802437ce2e7	Bells, Gong, Big, Deep, Kung Fu, Hit	reused	2
+heartbeat	978058fa-9630-4b25-a2ec-871cfcb4902b	Human, Heartbeat, Cinematic, 45 BPM	reused	12
+heartbeat_100	3b450a60-4050-425a-b757-edb650ce881e	Human, Heartbeat, Cinematic, 100 BPM	reused	2
+ice_break_debris	2278c513-f28d-48fe-b6ba-456b7e08d118	Ice, Break, Break Ice, Debris	reused	1
+ice_crack_series	5037fa17-b46e-47fe-a74e-73e78cae223c	Ice, Break, Ice Cracking, Series	reused	1
+katana_draw	a0e2095c-884b-482d-b59e-627cce4beb46	Weapons, Sword, Katana, Draw, Stop, Sheathe	reused	1
+kick_body_var	1e815b5e-17ef-4d96-9d8b-a7eaadbf4b98	Fight, Impact, Kick Body, Hit, Fast & Hard, Variations	reused	2
+knife_impacts	0492740a-d3b0-42eb-ac10-74a09d63bbb5	Weapons, Knife, Impacts, Parry, Light, Small, Metal	reused	1
+knife_parry	e042cc4c-a3f9-4499-9383-078541fdd076	Weapons, Knife, Small, Hit, Parry, Metal Impact	reused	4
+metal_clash01	a74831ad-e19a-4538-84cf-861aee45b753	Metal, Impact, Metal Impact Clash 01	reused	1
+metal_clash02	8239bf37-1a28-4258-9d70-0c40e36e5d85	Metal, Impact, Metal Impact Clash 02	reused	1
+meteor_whoosh01	c73feec1-8a93-4349-91c2-761c4b9d0fec	Fire, Whoosh, Fireball, Big, Rope, Meteor 01	reused	1
+mirror_break	9015fb68-92e7-4c7f-8792-15051f981d3d	Glass, Impact, Car Mirror, Hit With Metal Stick, Break, Sanken	reused	2
+page_turn	a6780e74-6d41-443d-ba5d-36946e2967f5	Objects, Book, Page Turn	reused	3
+poof_smoke	a5a3d70f-6d32-47b5-9de2-1283c35d29c0	Magic, Poof, Puff Of Smoke, Vanish	reused	3
+pour	4b3c14dd-98f2-40c9-8eae-ae136e451e99	Water, Pour, Kettle Into Mug, Cup, Tea	reused	4
+power_down_shimmer	109e94c0-33f4-4b08-8183-989d528262b9	Magic, Shimmer, Spell, Cast, Debuff, Power Down, Twinkle, Glimmer, Negative 03	yes	3
+punch_body_var	93b51594-ced7-4749-a8d4-05da197bcc3e	Fight, Impact, Punch Body, Hit, Variations	reused	7
+punch_hard_var	267af969-94aa-467b-961f-365349fd890f	Fight, Impact, Punch, Hit, Hard, Variations	reused	7
+punch_heavy	8e49b75a-541b-42f7-9db8-091b757c0e46	Fight, Impact, Impact, Punch, Heavy, Swish Attack	reused	22
+rain_thunder_heavy	7315e18c-a152-4fb6-bcd0-9c529d02b683	Rain, General, Heavy, Distant Thunder	yes	80
+raven_flyoff	775caef6-2478-4590-91b7-206001619c39	Birds, Crow, Ravens, Raven Call, Fly Off, Wings, Some Movement	yes	1
+raven_wings_flyby	b9b2ee5e-4dc5-4939-abf7-6fdd80aa0431	Wings, Bird, Ravens, Flapping, Fly By 02	yes	10
+reverse_swell_hit	5d5ba624-03eb-43cb-9c99-31b11bf428c1	Designed, Stinger, Swell, Reverse, Synth, Hit 01	reused	4
+reverse_whoosh	2b961372-0229-4104-bd92-e29195670fe1	Swooshes, Whoosh, Transition, Washed Reversed, Eerie	reused	1
+riser_braam	fae91ea3-2993-4afd-ad84-de5773a0602a	Designed, Riser, Long Rise, Braam, Epic Build Up, Reversed	reused	3
+riser_rev_impact	7aa69876-60e5-4d60-a1c6-dd48ce5edcc7	Designed, Riser, Cinematic Reverse Impact, Crescendo, Tension Build 01	reused	3
+rocks_heavy_debris	9e940554-b1d7-45f3-8672-d82057784752	Rocks, Crash & Debris, Heavy, Stone, Gravel, Bricks Debris 01	reused	3
+sand_slide	ae2773c8-1b94-4ca9-b42e-59378f565028	Dirt & Sand, Movement, Sand, Slide, Fine Sand, Big, Debris 02	reused	3
+shimmer01	9d4fdc7c-3985-4c7e-bc53-09baf1f4ee3b	Magic, Shimmer, Spell, Cast, Transform, Shimmer, Sparkle, Twinkle 01	reused	3
+shimmer_attack	bc22ce0d-7151-4ac9-a00e-4009c1855fba	Magic, Shimmer, Spell, Chimes, Cast, Movement, Sparkles, Attack	reused	10
+shing_ring	02d58017-bb2b-43ea-8c82-cbe3329cf28a	Weapons, Knife, Shings, Parry, Long, Ring Out 01	reused	24
+shuriken_throw	d3593d0f-2899-40d7-8e8a-68c5b750e274	Swooshes, Swish, Throwing Knife, Shuriken, Flying Star, Throw, Kung Fu	yes	10
+sizzle_dark	c32442c3-5ab6-46af-a3db-352f8a758ad3	Fire, Sizzle, Long, Burning, Dark Sizzling	reused	4
+spell_light_cast	bce90f2c-0f3a-489d-a445-1b351594eae9	Magic, Elemental, Light Magic, Laser, Spell, Cast 01	reused	4
+splash_dive1	8c01c762-a6a7-4ddf-9cfa-3189c29a35f8	Water, Splash, Person Dive In Water From Boat 01	reused	1
+splash_dive3	89d7a08e-772e-48fc-98c7-82eb1f51bed9	Water, Splash, Person Dive In Water From Boat 03	reused	1
+stab_bloody	e44e75c7-6770-4421-97ff-5c21ca750f2d	Gore, Stab, Impact, Bones, Flesh, Hard, Splatters, Bloody 02	reused	4
+stab_squelch	ada8caa6-14a2-4dd7-ab24-707056705470	Gore, Stab, Knife, Impact, Stab Body, Squelch, Blood 02	reused	3
+stone_debris01	48e1a317-6fab-4098-a3d9-d3595555271c	Rocks, Crash & Debris, Heavy, Big Hit, Stone Debris 01	reused	1
+stone_debris02	c3f49cb9-98d9-4f6d-a62a-65671a0d2e31	Rocks, Crash & Debris, Heavy, Big Hit, Stone Debris 02	reused	10
+stone_debris04	ba2a4d90-1594-40d9-bae6-2cf63f92269d	Rocks, Crash & Debris, Heavy, Big Hit, Stone Debris 04	reused	1
+subdrop_40	437478a2-deca-4cef-a26e-9e74b8950887	Designed, Bass Dive, Bass Drop, Deep Sub, 40Hz	reused	3
+subdrop_50	91b28e95-2a6b-4233-86fa-f1715f23ab75	Designed, Bass Dive, Bass Drop, Deep Sub, 50Hz	reused	20
+suction_implosion	6cada1dc-68ef-436f-a5fe-9226233d482e	Air, Suction, Real Implosion Or Vaccuum Suction 02	reused	1
+swish_double_var	90096082-5b88-452f-b763-d6ef234ce47f	Swooshes, Swish, Fast, Double Swish, Variations	reused	2
+swish_var01	f905527b-3917-4b41-b19c-a0db085e5a23	Swooshes, Swish, Fast, Normal, Variations 01	reused	7
+sword_clashes	e0a39704-594d-401d-bdad-ad5e112a5014	Weapons, Sword, Long Sword, Single Metallic Clashes	reused	5
+sword_slice02	b1ab6677-3f57-4ef7-acec-c03298c62695	Weapons, Sword, Slash, Swing In Air, Sharp, Cut, Slice 02	reused	1
+tape_rewind	643b24da-bf99-430d-b769-f0c2632b577d	Communications, Audio Visual, Hifi, Tape, Cassette, Deck, Rewind	reused	6
+teleport_magic	e2159d99-e513-4e84-9c80-7f6294bcb178	Scifi, Retro, Short, Energy, Teleport, One Shot, Magical	reused	4
+thunder_clap	0063b70b-3cee-4c8b-8166-89ea6afc12f3	Weather, Thunder, Loud Clap Lightning Strike	reused	4
+time_cast_glassy	56005ff3-0b80-45c7-8cf6-f6e47fd0b4d8	Magic, Spell, Time Magic, Glassy, Incantation, Cast	yes	4
+time_freeze_crystal	1d971ae2-3be7-4620-a16a-abc3426dd36f	Magic, Elemental, Ice, Spell, Cast, Attack, Freeze, Video Game, JRPG 01	yes	7
+time_incant	0eca6b5d-df89-4964-bee6-f9e8c2a0dc01	Magic, Shimmer, Time Magic, Spell, Cast, Incantation	yes	4
+time_reverse	b5d18f6e-37ac-4daf-aa61-ebde33dfcade	Magic, Shimmer, Magical Reversed Glass, Reverse Time, Charge Spell 02	reused	6
+time_reverse_glass02	05a2889d-5253-4f25-9353-461ad5d1ddb6	Magic, Shimmer, Glass, Time Magic, Spell, Cast, Reverse, Eerie 02	yes	6
+tinnitus	9c28cc3b-422f-4a06-ba29-b5fec248a0c5	Designed, Tonal, Ear Ringing, High Tone 01	reused	2
+torch_ignite	f57da9d0-e625-4c9e-867b-9ba69d8dfeb2	Fire, Torch, Fuses, Ignite, Whoosh, D100 02	reused	1
+trailer_swell_reverse	e73cb6c2-65a6-45a5-a1c1-f0f71f147839	Designed, Riser, Trailer Swell, Reverse 01	reused	4
+unsheathe_ring	13844f82-4aad-44a0-bc06-c4974c66c184	Weapons, Sword, Blade, Unsheathe, With Ring	reused	1
+wall_collapse	6358c177-1c13-45d5-89fb-1c10baad8244	Destruction, Collapse, Stone Wall Collapsing, Rumble, Heavy Debris, Cracking, Stones Rolling 01	reused	1
+whoosh_big01	640306d3-33ba-4726-85fb-9524c43d30ff	Designed, Whoosh, Deep, Big, Airy, Pass By 01	reused	2
+whoosh_dark_fast	86461dae-60f1-4434-99dc-9cfae84221af	Swooshes, Whoosh, Classic, Dark, Fast 03	reused	1
+whoosh_energy_var	50eea5e3-d730-44a9-9d68-0b37bb26b68e	Swooshes, Whoosh, Energy, Choppy, Fast, Scifi, Variations	reused	2
+whoosh_heavy_impact	decbc8fc-40ab-4491-9559-53106b948f0f	Swooshes, Whoosh, Heavy, Hard, Fast, Impact	reused	11
+whoosh_sharp_impact	33ae4559-48cf-42f9-8f00-b516b107b675	Swooshes, Whoosh, Technical, Sharp, Fast, Impact	reused	15
+wind_desert	52fef748-0747-438e-81be-312b3bda1f71	Wind, General, Desert Wind, Gusts, Calm, Desolate 01	reused	1
+wings_flap	1243ca07-5033-411e-86af-ae676ce25380	Wings, Bird, Flap Wings	reused	13

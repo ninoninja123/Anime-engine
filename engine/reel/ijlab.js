@@ -1,0 +1,25 @@
+/* IJ LAB: one short shot per character form / effect / set (no story).  node render.js sheet reel/ijlab OUT.png 0 N N 0.3 6 */
+PROGRAM.reset(40, 'ijlab');
+const IX = -2.6, JX = 2.6;
+const atI = (p, o, x = IX, z = 0) => at([x, 0, z], HP, P(p, o)), atJ = (p, o, x = JX, z = 0) => at([x, 0, z], -HP, P(p, o));
+let T0 = 0; const lab = (name, dur, fn) => { shot(name, T0, T0 + dur, fn); T0 += dur; };
+const base = (f, pal = 'arena_ij', bg = {}) => { std(f, { pal }); f.light({ ambientK: .18, shadeK: .42, rimAmt: .8, rimCol: '#ffb070' }); f.bg(Object.assign({ set: 'ijarena', pal }, bg)); };
+const A1 = fig('itachi', 'base', t => breathe(atI('ita_cloakHand'), t)), B1 = fig('julius', 'base', t => breathe(atJ('jul_hips'), t));
+lab('L01_two', 1, (f, lt) => { base(f, 'arena_ij', { moon: 1 }); f.cam(camGroup([A1, B1], lt, { az: .3, fill: .75 })); f.fig(A1); f.fig(B1); });
+const A2 = fig('itachi', 'mangekyo', t => atI('ita_stand', { face: expr('itaCold'), bleed: .6 }));
+lab('L02_itaface', 1, (f, lt) => { base(f, 'arena_ij_dark'); f.style('hand2d'); f.cam(closeCam(A2, lt, { part: 'face', az: .35 })); f.fig(A2); });
+const B3 = fig('julius', 'chrono', t => atJ('jul_raise', {}, 0));
+lab('L03_julraise', 1, (f, lt) => { base(f, 'arena_ij_gold', { clockScar: 1 }); f.cam(camGroup([B3], lt, { az: -.4, fill: .7, el: -.05 })); f.fig(B3); f.fx(g => fxClockCircle(g, [0, 4.6, 0], [0, 1, .25], lt + 1, { r: 2.2 }), { layer: 'glow' }); });
+const A4 = fig('itachi', 'mangekyo', t => atI('ita_susanoo', {}, 0, 2));
+lab('L04_susanoo', 1, (f, lt) => { base(f, 'arena_ij_red', { scorch: [[-4, 3, 1.5]], blackFire: 1 }); f.cam({ pos: [3, 2.2, 16], target: [0, 4.5, 0], fov: 44 }); f.fig(A4); f.fx(g => fxSusanoo(g, lt + 1, { at: [0, 0, 1.6], stage: 4, scale: 10, sword: 1, shield: 1, arm: .55 }), { layer: 'over' }); });
+lab('L05_crowd', 1, (f, lt) => { IJ.crowdShot(f, lt, { focus: 'both', rD: 'dazai_sitSmile', rS: 'kyo_kneeSlap', flash: 'red', flashT: .2 }); });
+lab('L06_dazai', 1, (f, lt) => { IJ.crowdShot(f, lt, { focus: 'dazai', rD: 'dazai_chinPoint', rS: 'kyo_cupWave', part: 'bust', react: 'freeze' }); });
+lab('L07_tsuku', 1, (f, lt) => { std(f, { pal: 'tsukuyomi' }); f.bg({ set: 'tsukuyomi', pal: 'tsukuyomi', crosses: 1 }); const F = A2; f.cam({ pos: [-1, 1.6, 5], target: [-2.6, 1.3, 0], fov: 38 }); f.fig(F); ijTsukuyomiScreen(f, lt, { k: 1, moon: false }); });
+lab('L08_crows', 1, (f, lt) => { base(f); f.cam(camGroup([A1], lt, { az: .5, fill: .5 })); f.fig(A1, { alpha: IJ.cloneAlpha(lt, .4) }); f.fx(g => fxCrowClone(g, A1, lt, lt), { layer: 'over' }); });
+lab('L09_card', 1, (f, lt) => { f.cam({ pos: [0, 1.5, 5], target: [0, 1.2, 0], fov: 35 }); f.bg({ set: 'ijcard', who: 'julius' }); });
+lab('L10_timestop', 1, (f, lt) => { base(f, 'arena_ij_gold'); f.cam(camGroup([A1, B1], lt, { az: -.3, fill: .7 })); f.fig(A1); f.fig(B1); ijTimeStopScreen(f, lt + .3, { at: [JX, 1.5, 0] }); f.fx(g => fxChronoStasis(g, [IX, 1.0, 0], lt + 1, { r: 1.4 }), { layer: 'over' }); });
+const J2 = fig('julius', 'magic', t => atJ('jul_cast', {}, 1.5));
+lab('L11_rain', 1, (f, lt) => { base(f, 'arena_ij_dark'); f.cam(camGroup([A1, J2], lt, { az: .2, fill: .75 })); f.fig(A1); f.fig(J2, { afterimages: fxGoldTrail(J2, lt), afterCol: '#f6d36a', afterA: .45 }); f.fx(g => fxRain(g, lt, { clock: lt }), { layer: 'over' }); f.fx(g => fxShurikens(g, [IX, 1.3, 0], [1.5, 1.3, 0], lt * .6 + .1), { layer: 'over' }); });
+lab('L12_frozen', 1, (f, lt) => { base(f, 'arena_ij_dark'); f.cam(camGroup([A1, J2], lt, { az: -.2, fill: .75 })); f.fig(A1); f.fig(J2); f.fx(g => fxRain(g, lt, { clock: .37, mode: 'frozen' }), { layer: 'over' }); f.fx(g => fxClockShield(g, [0.4, 1.3, 0], [-1, 0, 0], lt + .3, { hit: lt - .2 }), { layer: 'over' }); f.fx(g => fxFireballAge(g, [-.8, 1.6, 0], lt, { age: .55, r: 1.2 }), { layer: 'over' }); });
+lab('L13_zone', 1, (f, lt) => { base(f, 'arena_ij_gold', { clockScar: 1, clockR: 14 }); f.cam({ pos: [6, 7, 16], target: [0, 2, 0], fov: 44 }); f.fig(A1); f.fig(J2); f.fx(g => fxGears(g, [0, 0, 0], lt), { layer: 'glow' }); f.fx(g => fxManaSense(g, [JX, 0, 1.5], lt), { layer: 'glow' }); f.fx(g => fxMagatama(g, [IX, 2, 0], [JX, 1.5, 1.5], lt * .5 + .2), { layer: 'over' }); });
+lab('L14_genjutsu', 1, (f, lt) => { base(f); f.cam(camGroup([A1, J2], lt, { az: .3, fill: .75 })); f.fig(A1); f.fig(J2); ijGenjutsuScreen(f, lt + .5, { at: [IX, 1.6, 0], bind: [JX, 1.2, 1.5] }); });
