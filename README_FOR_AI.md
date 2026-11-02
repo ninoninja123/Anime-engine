@@ -7,7 +7,7 @@ Node 22, `npm i -g playwright && npx playwright install chromium` (tai käytä v
 Tarkista: `cd engine && node render.js stills reel/example /tmp/ex 0.5,1.0 0.5`.
 
 ## 1. Lue ensin (tässä järjestyksessä)
-1. `LESSONS.md`: käyttäjän laatuvaatimukset (pakollinen).
+1. `LESSONS.md` (käyttäjän laatuvaatimukset, pakollinen) ja `WORKFLOW.md` (roolit, vaiheet, briefimallit).
 2. `engine/README.md` ja `API.md` (luvut 0–17: hahmot, kamera, efektit, impact-framet, tekstit, areenat).
 3. `showdown/README.md` + `showdown/common.js` (shotin kirjoitus, `shotT`, `CH`, `BGX`, kamerat).
 4. `pre/`: esituotannon formaatti (`storyboard.md`, `shots.json`, `quality_gate.md`, `make_preprod.py`).

@@ -5,7 +5,7 @@ Kaikki kuva on koodia: ei tekoälykuvia, ei 3D-renderöintiä. Hahmot ovat param
 
 - **Tekoälylle:** aloita tiedostosta [`README_FOR_AI.md`](README_FOR_AI.md).
 - **API:** [`API.md`](API.md) (luvut 0–17), moottorin yleiskuva [`engine/README.md`](engine/README.md).
-- **Oppeja tekijöiltä:** [`LESSONS.md`](LESSONS.md).
+- **Työnkulku ja roolit:** [`WORKFLOW.md`](WORKFLOW.md). **Oppeja:** [`LESSONS.md`](LESSONS.md).
 - **Esimerkkiprojekti:** `showdown/` + `pre/` (Itachi vs Julius, Record of Ragnarok -tyyli).
 
 Vaatimukset: Node 22, `playwright` (Chromium), ffmpeg, python3.
