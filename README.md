@@ -4,6 +4,7 @@ Koodilla piirretty 2D-animemoottori, jolla on tehty täyspitkiä anime-taisteluk
 Kaikki kuva on koodia: ei tekoälykuvia, ei 3D-renderöintiä. Hahmot ovat parametrisia pseudo-3D-pintoja, jotka piirretään cel-tyylillä Canvas 2D:llä Chromiumissa ja koodataan ffmpegillä.
 
 - **Tekoälylle:** aloita tiedostosta [`README_FOR_AI.md`](README_FOR_AI.md).
+- **Videoformaatti (Record of Ragnarok):** [`FORMAT.md`](FORMAT.md).
 - **Hahmot:** [`CHARACTERS.md`](CHARACTERS.md) (kaikki valmiit hahmot, muodot ja mallilehdet).
 - **API:** [`API.md`](API.md) (luvut 0–17), moottorin yleiskuva [`engine/README.md`](engine/README.md).
 - **Työnkulku ja roolit:** [`WORKFLOW.md`](WORKFLOW.md). **Oppeja:** [`LESSONS.md`](LESSONS.md).
