@@ -6,5 +6,11 @@ Pakolliset oletukset (Record of Ragnarok -formaatti):
 3. Impact framet: EI vain naamavälähdyksiä. Tarvitaan oikean animen impact-frame-kirjo: koko ruudun iskun hetki (negatiivi + mustavalkoinen speedline-tausta, hahmon siluetti, iskun muoto, shockwave, ruudun repeämä, kamera-isku, kynä/ink-piirretty "freeze" pose, väri-inversio koko kuvasta, halftone, sakugamainen vääristynyt pose, lyöntilinjat). Naamainsertit korkeintaan 1 kolmesta.
 4. Tempo: leikkaukset eivät saa olla liian nopeita. Seurattavuus ensin: kuvat pidempiä (keskim. 1,5–2,5 s), nopeita leikkauksia vain huippuhetkissä, hengitystilaa iskujen välillä.
 5. Hahmot puhuvat toisilleen enemmän (lyhyet repliikit taistelun aikana, provokaatio, tunne, oivallukset), tekstityksinä kuten yleisön puhe.
-6. Yleisön dialogi (viisas hahmo korjaa ennenaikaisen tuomion heittäjän) toimi hyvin: käytä samaa dynamiikkaa jatkossa, mutta hahmot valitaan videokohtaisesti (Dazai/Shunsui oli vain esimerkki).
+6. Yleisön Shunsui + Dazai -dialogi toimi hyvin: käytä samaa dynamiikkaa jatkossa (Dazai viisas, Shunsui ennenaikaiset tuomiot).
 7. Edelleen voimassa: kamera aina liikkeessä, isot luettavat iskunimet, paljon ääniefektejä, musiikki valittu tunteen mukaan (pitkiä kappaleita, vaihdot vain käännekohdissa), tiheät impact-purskeet, hyvä loppu (ei anticlimaxia), ei spoilereita käyttäjälle.
+
+## Genius Battle -palaute (Urahara vs Dazai, 4:30)
+- Musiikki petti: kappaleet eivät tuntuneet sopivan tunnelmaan eikä kantaneet taistelua (Radetzky-marssi, Mountain King, Ingrid's Lament, Solveig's Song). Valitse musiikki dramaturgian mukaan (jännite, paljastus, huipennus) ja kuuntele/analysoi aidosti; älä valitse vain tutuimpia nimiä. Kysy käyttäjältä toiveita ennen valintaa, jos epävarma.
+- Yleisössä liikaa puhetta: yleisön repliikkejä enintään ~6 koko videossa, lyhyitä; ei dialogia jokaiseen iskuun.
+- Animaation laatu oli liian heikko ("paskaa"): hahmot liikkuvat jäykästi/3D-celmäisesti. Tarvitaan oikeaa sakugaa (enemmän avainposeja, smear, holdit, painon tuntu, limittäinen liike) ja kuvakulmien vaihtelua; testaa liike katsomalla oikeaa videota/frame-sarjoja, ei vain stilleja.
+- Useita pieniä virheitä ("meni oho moni juttu"): ajoitus (BEGIN ennen gongia), tekstit, asemointi. Tee kunnollinen QA-läpikäynti koko videosta ennen toimitusta (frame-sarja 4 fps, kaikki tekstit ja ajoitukset).
