@@ -1,3 +1,5 @@
+> Aloita tiedostosta QUICKSTART.md (tiivis), tämä on pidempi versio.
+
 # README FOR AI: miten tätä moottoria käytetään
 
 Olet tekemässä koodilla piirrettyä anime-taisteluvideota (1v1 tai useampi), 720p 24 fps MP4, jonka koko on enintään 28 MB. Älä käytä kuvageneraattoreita tai 3D:tä: kaikki visuaali on tämän moottorin koodia.

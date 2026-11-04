@@ -3,6 +3,7 @@
 Koodilla piirretty 2D-animemoottori, jolla on tehty täyspitkiä anime-taistelukohtauksia (720p, 24 fps).
 Kaikki kuva on koodia: ei tekoälykuvia, ei 3D-renderöintiä. Hahmot ovat parametrisia pseudo-3D-pintoja, jotka piirretään cel-tyylillä Canvas 2D:llä Chromiumissa ja koodataan ffmpegillä.
 
+- **Pikaopas (lue ensin):** [`QUICKSTART.md`](QUICKSTART.md).
 - **Tekoälylle:** aloita tiedostosta [`README_FOR_AI.md`](README_FOR_AI.md).
 - **Videoformaatti (Record of Ragnarok):** [`FORMAT.md`](FORMAT.md).
 - **Hahmot:** [`CHARACTERS.md`](CHARACTERS.md) (kaikki valmiit hahmot, muodot ja mallilehdet).
