@@ -42,3 +42,6 @@ Musiikki ja SFX vain Epidemic Soundista (tallennetaan scratchpadiin, ei repoon; 
 
 ## 6. Säästä tokeneita
 Älä lue koko API.md:tä; lue vain tämä + common.js:n yläkommentti + lähin esimerkkiprojekti. Käytä samaa agenttia saman videon sisällä (SendMessage), uusi agentti uudelle videolle. Mekaaniset työt (render, enkoodaus) kevyellä mallilla. Vähemmän kontaktiarkkeja: tarkista vain kriittiset kuvat.
+
+## 8. Wikit (kanoniset tiedot)
+WebFetch antaa fandom-wikeille 402. Hae ne curlilla MediaWiki-APIsta: `curl -s 'https://<wiki>.fandom.com/api.php?action=parse&page=<Sivu_Nimi>&prop=wikitext&format=json&redirects=1'` (esim. bleach.fandom.com, bungostraydogs.fandom.com, naruto.fandom.com, onepiece.fandom.com); siivoa wikitext python-skriptillä (poista {{}}, [[]], <ref>). Python urllib antaa 403: käytä curlia.
