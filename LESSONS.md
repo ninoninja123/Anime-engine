@@ -14,3 +14,10 @@ Pakolliset oletukset (Record of Ragnarok -formaatti):
 - Yleisössä liikaa puhetta: yleisön repliikkejä enintään ~6 koko videossa, lyhyitä; ei dialogia jokaiseen iskuun.
 - Animaation laatu oli liian heikko ("paskaa"): hahmot liikkuvat jäykästi/3D-celmäisesti. Tarvitaan oikeaa sakugaa (enemmän avainposeja, smear, holdit, painon tuntu, limittäinen liike) ja kuvakulmien vaihtelua; testaa liike katsomalla oikeaa videota/frame-sarjoja, ei vain stilleja.
 - Useita pieniä virheitä ("meni oho moni juttu"): ajoitus (BEGIN ennen gongia), tekstit, asemointi. Tee kunnollinen QA-läpikäynti koko videosta ennen toimitusta (frame-sarja 4 fps, kaikki tekstit ja ajoitukset).
+
+## Akatsuki vs Espada -palaute (9 min, 3 osaa)
+- Ihan jees. Parhaat: Itachin Tsukuyomi ja Chibaku Tensei (kolmivaiheiset, isot, selkeät tekniikat toimivat). Tee kaikista tekniikoista samaa tasoa.
+- PITKÄ YKSITTÄINEN ÄÄNI (esim. kohdassa 8:15) ärsytti: vältä pitkiä jatkuvia drone-/pitkäkestoisia SFX:iä ja yli ~2 s yksittäisiä korostusääniä; pidä äänet lyhyinä, rytmisinä, kerroksellisina; tarkista miksistä kaikki yli 2 s kestävät yksittäiset äänitapahtumat ja katkaise/fade:aa.
+- Amaterasu ei saanut kunnollista ääniefektiä: jokaiselle tunnetulle tekniikalle oma ääni (Amaterasu: musta tuli = matala humina + sihahdus + räiske + sytytys-impact + sub), jokainen tekniikka kolmikerroksinen (valmistelu-ääni, nimihuuto/aktivointi, purkaus) omilla äänillä; älä käytä geneeristä SFX:ää.
+- Maailma tuntui liian harmaalta: lisää väriä: kyllästyneempi paletti, värilliset varjot, tekniikoiden omat värit (Amaterasu musta + punainen reunavalo, Tsukuyomi punainen/musta, Chibaku Tensei kivinen ruskea/oranssi), maalatut taustat täynnä väriä (ei valkoista/harmaata hallia pitkään), valon värivaihtelut luvuittain.
+- Animaatio pitää olla selvästi parempaa (sakuga): enemmän avainposeja, smear, anticipation, follow-through, holdit, 'on ones' isoissa iskuissa; tämä on pysyvä pääkehityskohde.
