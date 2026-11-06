@@ -5,3 +5,6 @@ audio/out/
 audio/music/
 audio/sfx/
 pre/spoilers.md
+
+# projektikopioiden fontit ovat jo engine/fonts/-kansiossa
+gojo-dazai-*/engine/fonts/

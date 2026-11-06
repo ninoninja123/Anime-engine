@@ -1,0 +1,1 @@
+MODULES READY 2026-10-31T13:02:09Z: engine/ lataa automaattisesti poses_*.js chars_*.js fx_*.js sets_*.js impact_*.js (ks. engine/README.md 'Moduulit').

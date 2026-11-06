@@ -1,0 +1,8192 @@
+{
+ "meta": {
+  "title": "ITACHI UCHIHA vs JULIUS NOVACHRONO",
+  "fps": 24,
+  "width": 1920,
+  "height": 1080,
+  "output_size": "1280x720",
+  "duration": 178.0,
+  "shots": 104,
+  "impact_series": 73,
+  "bursts": 13,
+  "burst_ids": [
+   "C01",
+   "C11",
+   "D01",
+   "D05",
+   "D10",
+   "D14",
+   "D23",
+   "T05",
+   "T14",
+   "T18",
+   "T25",
+   "J04",
+   "J17"
+  ],
+  "impact_series_non_burst": 60,
+  "impact_per_signature_visible": {
+   "ARENA": 4,
+   "URA": 2,
+   "ITA": 18,
+   "JUL": 21
+  },
+  "masked_impacts": 32,
+  "impact_gap_max": 8.12,
+  "impact_gap_mean": 2.42,
+  "first_hit": 17.0,
+  "stands_shots_visible": [
+   "C03",
+   "C14",
+   "D03",
+   "D12"
+  ],
+  "characters": {
+   "ITA": "Itachi Uchiha (Naruto Shippuden)",
+   "JUL": "Julius Novachrono, 28. velhokuningas (Black Clover)",
+   "URA": "Urahara Kisuke (kuuluttaja)",
+   "DAZ": "Dazai Osamu (VIISAS katsoja: tietää aina mihin taistelu menee, korjaa rauhallisesti)",
+   "KYO": "Kyoraku Shunsui (katsoja: ennenaikaiset tuomiot, \"Ha, he lost\")",
+   "SUS": "Itachin Susanoo (punaoranssi henkijättiläinen: Totsuka-miekka, Yata-peili)",
+   "CRW": "Itachin varikset (karasu bunshin / genjutsu)",
+   "CROWD": "areenan yleisö (siluetit)"
+  },
+  "engine_names": {
+   "ITA": "itachi",
+   "JUL": "julius",
+   "URA": "urahara",
+   "DAZ": "dazai",
+   "KYO": "kyoraku",
+   "SUS": "susanoo",
+   "CRW": "crows",
+   "CROWD": "crowd"
+  },
+  "impact_styles": {
+   "FAN_SNAP": "Urahara: viuhka mustana siluettina lyhtyvaloa vasten (olemassa, harry-vs-gojo)",
+   "GONG_WAVE": "kultaiset samankeskiset renkaat, hahmot mustina siluetteina (olemassa)",
+   "SPEEDLINE_BURST": "radiaaliset focus lines mustavalkoisena (olemassa)",
+   "MANGA_PANELS": "manga-paneelit, iskut paneeleittain (olemassa)",
+   "MANGA_HALFTONE": "mustavalkoinen rasteri (olemassa)",
+   "MANGA_RED": "punamusta manga (olemassa)",
+   "IMPACT_CRATER": "kraatteri valkoisena lineartina mustalla (olemassa)",
+   "SHOCKWAVE_RING": "pallomainen paineaalto (olemassa)",
+   "WORLD_BREAKER": "ylivalotus, railot hehkuvat, hahmot siluetteina (olemassa; tässä punainen | kulta)",
+   "DUAL_TONE": "kaksisävy: vasen punamusta (Itachi), oikea kulta-sininen (Julius) (olemassa, uudelleenväritys)",
+   "RED_BLACK_SPLIT": "punamusta jako (olemassa)",
+   "SUMI_INK": "sumi-e musteveto (olemassa)",
+   "GLASS_SHATTER": "ruutu särkyy siruiksi (olemassa)",
+   "GOLD_BURN": "kultainen ylivalotus (olemassa)",
+   "LIGHTNING_NEG": "UUSI: salaman välähdys: valkoinen ruutu -> sininegatiivi, sadeviivat valkoisina",
+   "RULE_STAMP": "UUSI: musta ruutu, kaatuneen hahmon valkoinen ääriviiva iskeytyy, sammuva soihtu",
+   "CROW_SWIRL": "UUSI: varisparvi mustina siluetteina punaista vastaan, pyörre tiivistyy hahmoksi",
+   "EYE_RED": "UUSI: Sharingan täyttää ruudun: punainen iiris, 3 tomoeta, 1 ruutu negatiivina",
+   "POWER_CARD_I": "UUSI: Itachin kortin isku: punainen negatiivi, punainen pilvi + kanji うちはイタチ",
+   "POWER_CARD_J": "UUSI: Juliuksen kortin isku: kultainen negatiivi, kellotaulu + apila; lopussa VS",
+   "TIME_FREEZE": "UUSI: aika pysähtyy: kultainen kellotaulu-rengas, maailma harmaa negatiivi, sadepisarat valkoisina pisteinä",
+   "CROW_BURST": "UUSI: klooni räjähtää variksiksi: valkoinen ruutu, sadat mustat varis-siluetit, punainen ydin",
+   "GOLD_SPEED": "UUSI: kultaiset jälkikuvat + speed lines, kellonviisarit",
+   "FIRE_BLOOM": "UUSI: tulipallo täyttää ruudun oranssina, mustat lineart-liekit",
+   "EMBER_AGE": "UUSI: tuli vanhenee: oranssi -> harmaa tuhka, kellotaulun viisari pyörähtää",
+   "SHADOW_SHURIKEN": "UUSI: kaksi päällekkäistä shurikenia siluettina, punainen viiltoviiva",
+   "MANGEKYO_EYE": "UUSI: Mangekyō (kolmisakarainen) täyttää ruudun, verikyynel, musta-punainen",
+   "DESAT_FLAME": "UUSI: harmaa jäädytetty kuva, mustat liekit liikkuvat silti (ainoa väri musta/violetti hehku)",
+   "GIANT_SIL": "UUSI: Susanoo siluettina punaista salamataivasta vasten, Itachi pienenä",
+   "MANA_SONAR": "UUSI: musta ruutu, kultaiset samankeskiset mana-renkaat (luotain), varikset valkoisena lineartina",
+   "GOLD_EYES": "UUSI: Juliuksen kultainen silmä, iiriksessä kellotaulu",
+   "FIRST_CLASH": "BURST 12f: valkoinen -> negatiivi -> mustavalko-rasteri -> speed lines -> kasvo-invert (Itachi) -> kultainen väläys -> manga-muste",
+   "GENJUTSU_BURST": "BURST 12f: punainen -> negatiivi -> rasteri -> silmä-closeup invert -> muste -> valkoinen -> punamusta",
+   "AMATERASU_BURST": "BURST 12f: musta -> negatiivi -> punamusta -> rasteri -> kasvo-invert (Julius) -> muste -> valkoinen",
+   "REWIND_BURST": "BURST 12f: kulta -> negatiivi -> valkoinen -> rasteri -> speed lines (TAAKSEPÄIN) -> chroma -> kulta",
+   "SUSANOO_BURST": "BURST 12f: punainen -> negatiivi -> rasteri -> speed lines -> kasvo-invert (Itachi) -> muste -> valkoinen",
+   "MANAZONE_BURST": "BURST 12f: kulta -> negatiivi -> valkoinen -> rasteri -> speed lines -> chroma -> kulta-kellotaulu",
+   "CLASH_BURST": "BURST 12f: valkoinen -> negatiivi -> punamusta -> kulta -> rasteri -> speed lines -> kasvo-invert",
+   "X-*": "maskatut tyylit ja BURSTit: katso spoilers.md"
+  },
+  "pattern_key": "Kuviokoodit: W=valkoinen ruutu, N=negatiivi, H=mustavalkoinen halftone-rasteri, S=speed lines, F=kasvo-invert closeup, K=manga-muste (sumi/ink), C=chroma/värivälähdys, R=punainen (Itachi), RB=punamusta, G=kulta (Julius), BLK=musta, D=kaksisävy/desat, L=lineart, O=oranssi tuli, P=paneelit. Numero = ruutujen määrä. BURST = vähintään 5 eri tyyliä <= 24 ruudussa, tyyli vaihtuu 1-2 ruudun välein.",
+  "backgrounds": {
+   "ARENA": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "SKY": "taivas areenan yllä: sadepilvet, salamat, punainen kuu",
+   "BOOTH": "Uraharan kuulutuskoroke (sets_hvg BOOTH) sateessa, lyhty",
+   "STANDS": "katsomo lähikuvassa: DAZAI ja SHUNSUI vierekkäin kivipenkillä, YMPÄRILLÄ siluetteja (edessä, takana, sivuilla; ei koskaan kaksin tyhjässä kuvassa)",
+   "GATE_I": "länsiportti (Itachi): pimeys, punaiset lyhdyt, varisparvi",
+   "GATE_J": "itäportti (Julius): kultainen kellotaulu-taikapiiri, pysähtynyt sade",
+   "CARD": "hahmokortin graafinen tausta (text_style.md)",
+   "GENJ": "genjutsu-maailma: punainen taivas, musta kuu, negatiivinen maailma, varikset",
+   "SEE": "katso spoilers.md"
+  },
+  "text_styles": {
+   "CROW": "Itachi: synkkä mustapunainen pensseli (text_style.md 1)",
+   "WIZARD": "Julius: majesteettinen kulta/sininen WIZARD (text_style.md 2)",
+   "ARENA": "kuuluttaja / BEGIN / WINNER (text_style.md 3)",
+   "CARD_I": "Itachin hahmokortti",
+   "CARD_J": "Juliuksen hahmokortti + VS"
+  },
+  "subtitle_colors": {
+   "ITA": "#e8364a",
+   "JUL": "#f2c76b",
+   "URA": "#9fe0a5",
+   "DAZ": "#d9b77e",
+   "KYO": "#f4a6c8"
+  },
+  "subtitle_names": {
+   "ITA": "ITACHI",
+   "JUL": "JULIUS",
+   "URA": "URAHARA",
+   "DAZ": "DAZAI",
+   "KYO": "SHUNSUI"
+  },
+  "music": "audio/beats.json: Grieg Death of Åse 0-10.60 | Grieg Stormy Evening 10.60-92.60 | katso spoilers.md (vain klassista, Epidemic Sound)",
+  "text_style": "pre/text_style.md: CROW (Itachi) / WIZARD (Julius) / ARENA (Urahara, BEGIN, WINNER) / CARD_I / CARD_J; tekstitys 52 px Inter 700 + 8 px musta reuna",
+  "subtitle_style": "englanti, fansub-tyyli; 52 px 1920-koossa, musta reunus 8 px; puhujan nimi värillä: ITACHI #e8364a, JULIUS #f2c76b, URAHARA #9fe0a5, DAZAI #d9b77e, SHUNSUI #f4a6c8",
+  "note": "Masked shots (CLUE C17, TWIST T01-T25, FINALE J01-J22): content and dialogue only in pre/spoilers.md. impact.burst / impact.tags=[\"BURST\"] = >= 5 different impact styles within <= 1 s (style changes every 1-2 frames). Times = video seconds on the 24 fps grid; music = audio/beats.json."
+ },
+ "subtitles": [
+  {
+   "t0": 2.0833,
+   "who": "URA",
+   "line": "Welcome to Valhalla~! One rule tonight:",
+   "shot": "A02",
+   "t1": 3.7917
+  },
+  {
+   "t0": 3.875,
+   "who": "URA",
+   "line": "It ends when one dies... or never rises.",
+   "shot": "A03",
+   "t1": 6.0
+  },
+  {
+   "t0": 19.6667,
+   "who": "KYO",
+   "line": "Ha! The crow's frozen. He lost.",
+   "shot": "C03",
+   "t1": 20.5417
+  },
+  {
+   "t0": 20.625,
+   "who": "DAZ",
+   "line": "Look again. That's feathers.",
+   "shot": "C03",
+   "t1": 21.7917
+  },
+  {
+   "t0": 23.5833,
+   "who": "ITA",
+   "line": "Your magic needs a target.",
+   "shot": "C05",
+   "t1": 25.5833
+  },
+  {
+   "t0": 28.375,
+   "who": "JUL",
+   "line": "Fire burns out. Given time.",
+   "shot": "C08",
+   "t1": 30.2083
+  },
+  {
+   "t0": 31.5833,
+   "who": "JUL",
+   "line": "Marvelous! What magic is that?!",
+   "shot": "C10",
+   "t1": 33.2083
+  },
+  {
+   "t0": 33.2917,
+   "who": "ITA",
+   "line": "Look at me.",
+   "shot": "C11",
+   "t1": 34.4167
+  },
+  {
+   "t0": 36.5,
+   "who": "JUL",
+   "line": "Eyes are your trap. I won't use mine.",
+   "shot": "C13",
+   "t1": 38.2083
+  },
+  {
+   "t0": 38.2917,
+   "who": "KYO",
+   "line": "Fighting blind? He's finished.",
+   "shot": "C14",
+   "t1": 39.2083
+  },
+  {
+   "t0": 39.2917,
+   "who": "DAZ",
+   "line": "No. He just learned the rule.",
+   "shot": "C14",
+   "t1": 40.5
+  },
+  {
+   "t0": 46.2917,
+   "who": "ITA",
+   "line": "Then I'll make you open them.",
+   "shot": "C19",
+   "t1": 48.0833
+  },
+  {
+   "t0": 49.5,
+   "who": "JUL",
+   "line": "Ha! Splendid!",
+   "shot": "C21",
+   "t1": 50.7917
+  },
+  {
+   "t0": 54.2917,
+   "who": "JUL",
+   "line": "...Oh?",
+   "shot": "C24",
+   "t1": 55.375
+  },
+  {
+   "t0": 55.5,
+   "who": "ITA",
+   "line": "Amaterasu.",
+   "shot": "C25",
+   "t1": 56.5833
+  },
+  {
+   "t0": 59.6667,
+   "who": "KYO",
+   "line": "Black fire! That's game!",
+   "shot": "D03",
+   "t1": 60.5
+  },
+  {
+   "t0": 60.5833,
+   "who": "DAZ",
+   "line": "Not against a clock.",
+   "shot": "D03",
+   "t1": 61.4167
+  },
+  {
+   "t0": 61.5,
+   "who": "JUL",
+   "line": "Flames that never die...",
+   "shot": "D04",
+   "t1": 62.3333
+  },
+  {
+   "t0": 62.4167,
+   "who": "JUL",
+   "line": "...unless they never started.",
+   "shot": "D05",
+   "t1": 64.5417
+  },
+  {
+   "t0": 65.625,
+   "who": "JUL",
+   "line": "My turn.",
+   "shot": "D07",
+   "t1": 66.7083
+  },
+  {
+   "t0": 73.3333,
+   "who": "KYO",
+   "line": "A giant? Easy win for the crow.",
+   "shot": "D12",
+   "t1": 74.2083
+  },
+  {
+   "t0": 74.2917,
+   "who": "DAZ",
+   "line": "Watch the old man smile.",
+   "shot": "D12",
+   "t1": 75.1667
+  },
+  {
+   "t0": 75.25,
+   "who": "JUL",
+   "line": "Then I'll stop holding back.",
+   "shot": "D13",
+   "t1": 77.0417
+  }
+ ],
+ "shots": [
+  {
+   "id": "A01",
+   "phase": 1,
+   "t0": 0.0,
+   "t1": 2.0,
+   "dur": 2.0,
+   "frame0": 0,
+   "frame1": 48,
+   "render": "action3d",
+   "camera": "superlaaja, syöksy sadepilvien läpi",
+   "move": "nopea dolly alas pilvistä + kaarto areenan yli; varis lentää linssin ohi 1.2",
+   "inserts": "1 sisäleikkaus: varis linssissä 1.2",
+   "action": "ÅSEN KUOLEMA alkaa (matalat jouset). Yö, sade, punainen kuu pilvien raossa. Kamera syöksyy pilvistä Valhallan märälle areenalle; salama valaisee katsomon siluetit. Yksi varis viuhahtaa linssin ohi.",
+   "chars": [
+    "CROWD:hush",
+    "CRW"
+   ],
+   "engine_chars": [
+    "crowd:hush",
+    "crows"
+   ],
+   "background": "SKY",
+   "background_desc": "taivas areenan yllä: sadepilvet, salamat, punainen kuu",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": "musiikki: Grieg: Peer Gynt Suite No. 1, Op. 46: No. 2, Death of Åse (0.00)",
+   "masked": null,
+   "impact": {
+    "style": "LIGHTNING_NEG",
+    "pattern": "W1-N2",
+    "frames": 3,
+    "trigger": "salama halkaisee pilvet",
+    "signature": [
+     "ARENA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Death of Åse (vapaa kohta 0.96, kappaleen 0.96 s)",
+    "render": "hand2d",
+    "t": 0.9583,
+    "frame": 23,
+    "tags": [],
+    "t_end": 1.0833
+   },
+   "sfx": [
+    {
+     "t": 0.0,
+     "s": "meteor_whoosh01"
+    },
+    {
+     "t": 0.9583,
+     "s": "thunder_clap"
+    },
+    {
+     "t": 0.9583,
+     "s": "boom_cine_deep"
+    },
+    {
+     "t": 1.1667,
+     "s": "raven_wings_flyby"
+    },
+    {
+     "t": 1.2083,
+     "s": "wings_flap"
+    },
+    {
+     "t": 1.2917,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 1.2917,
+     "s": "crowd_swell_quiet"
+    },
+    {
+     "t": 0.0,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "A02",
+   "phase": 1,
+   "t0": 2.0,
+   "t1": 3.7917,
+   "dur": 1.7917,
+   "frame0": 48,
+   "frame1": 91,
+   "render": "hand2d",
+   "camera": "crane ylös kuulutuskorokkeelle -> lähikuva, hand2d",
+   "move": "nopea crane + push-in, lyhty heiluu sateessa",
+   "inserts": null,
+   "action": "Urahara kuulutuskorokkeella sateessa mikrofoni kädessä. Viuhka napsahtaa auki, ja hän kumartuu kaiteen yli virnistäen.",
+   "chars": [
+    "URA"
+   ],
+   "engine_chars": [
+    "urahara"
+   ],
+   "background": "BOOTH",
+   "background_desc": "Uraharan kuulutuskoroke (sets_hvg BOOTH) sateessa, lyhty",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "URA",
+     "line": "Welcome to Valhalla~! One rule tonight:"
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "FAN_SNAP",
+    "pattern": "W1-K2",
+    "frames": 3,
+    "trigger": "viuhka napsahtaa",
+    "signature": [
+     "URA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Death of Åse (vapaa kohta 2.33, kappaleen 2.33 s)",
+    "render": "hand2d",
+    "t": 2.3333,
+    "frame": 56,
+    "tags": [],
+    "t_end": 2.4583
+   },
+   "sfx": [
+    {
+     "t": 2.3333,
+     "s": "fan_fold"
+    },
+    {
+     "t": 2.375,
+     "s": "shing_ring"
+    },
+    {
+     "t": 2.3333,
+     "s": "boom_cine_low"
+    },
+    {
+     "t": 2.5833,
+     "s": "crowd_stadium_cheer"
+    },
+    {
+     "t": 2.0,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "A03",
+   "phase": 1,
+   "t0": 3.7917,
+   "t1": 5.7083,
+   "dur": 1.9166,
+   "frame0": 91,
+   "frame1": 137,
+   "render": "action3d",
+   "camera": "laaja kehän reunalta, matala",
+   "move": "hidas sivuttaisdrift kehän reunaa pitkin + tilt alas",
+   "inserts": null,
+   "action": "SÄÄNTÖ KUVANA: kehän kivireuna sateessa, märkä hiekka. Kehän keskelle piirtyy valkoinen kaatuneen hahmon ääriviiva (kuin rikospaikalla) ja sammuva soihtu. Urahara jatkaa (tekstitys).",
+   "chars": [
+    "CROWD:hush"
+   ],
+   "engine_chars": [
+    "crowd:hush"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "URA",
+     "line": "It ends when one dies... or never rises."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "RULE_STAMP",
+    "pattern": "BLK1-W1-BLK1",
+    "frames": 3,
+    "trigger": "kaatuneen ääriviiva iskeytyy hiekkaan",
+    "signature": [
+     "ARENA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Death of Åse (vapaa kohta 4.50, kappaleen 4.50 s)",
+    "render": "hand2d",
+    "t": 4.5,
+    "frame": 108,
+    "tags": [],
+    "t_end": 4.625
+   },
+   "sfx": [
+    {
+     "t": 3.875,
+     "s": "sand_slide"
+    },
+    {
+     "t": 4.5,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 4.5,
+     "s": "bodyfall_var"
+    },
+    {
+     "t": 5.0,
+     "s": "torch_ignite"
+    },
+    {
+     "t": 4.5833,
+     "s": "crowd_swell_quiet"
+    },
+    {
+     "t": 3.7917,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "A04",
+   "phase": 1,
+   "t0": 5.7083,
+   "t1": 7.5,
+   "dur": 1.7917,
+   "frame0": 137,
+   "frame1": 180,
+   "render": "action3d",
+   "camera": "matala, länsiportin alta ylös (nousu)",
+   "move": "matala crane nousee + hidas kaarros 40°, vastavalo punaisista lyhdyistä",
+   "inserts": null,
+   "action": "Länsiportin pimeydessä varisparvi kieppuu pyörteenä ja tiivistyy siluetiksi: Akatsukin viitta (punaiset pilvet), poninhäntä, sade valuu. Hidas hero-esittely.",
+   "chars": [
+    "ITA",
+    "CRW"
+   ],
+   "engine_chars": [
+    "itachi",
+    "crows"
+   ],
+   "background": "GATE_I",
+   "background_desc": "länsiportti (Itachi): pimeys, punaiset lyhdyt, varisparvi",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "CROW_SWIRL",
+    "pattern": "BLK1-R1-BLK1",
+    "frames": 3,
+    "trigger": "varikset tiivistyvät Itachiksi",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Death of Åse (vapaa kohta 6.92, kappaleen 6.92 s)",
+    "render": "hand2d",
+    "t": 6.9167,
+    "frame": 166,
+    "tags": [],
+    "t_end": 7.0417
+   },
+   "sfx": [
+    {
+     "t": 5.7083,
+     "s": "raven_wings_flyby"
+    },
+    {
+     "t": 5.75,
+     "s": "wings_flap"
+    },
+    {
+     "t": 5.875,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 6.0833,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 5.9167,
+     "s": "crow_flock_angry"
+    },
+    {
+     "t": 6.9167,
+     "s": "boom_cine_deep"
+    },
+    {
+     "t": 6.9583,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 7.0,
+     "s": "crowd_gasp"
+    },
+    {
+     "t": 5.7083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "A05",
+   "phase": 1,
+   "t0": 7.5,
+   "t1": 8.5,
+   "dur": 1.0,
+   "frame0": 180,
+   "frame1": 204,
+   "render": "hand2d",
+   "camera": "ECU silmä, hand2d",
+   "move": "snap zoom silmään, sadepisara putoaa ripsestä",
+   "inserts": null,
+   "action": "Itachin silmä aukeaa: Sharingan, kolme tomoeta pyörähtää.",
+   "chars": [
+    "ITA"
+   ],
+   "engine_chars": [
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "EYE_RED",
+    "pattern": "R1-W1-R1",
+    "frames": 3,
+    "trigger": "Sharingan aukeaa",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Death of Åse (vapaa kohta 7.54, kappaleen 7.54 s)",
+    "render": "hand2d",
+    "t": 7.5417,
+    "frame": 181,
+    "tags": [],
+    "t_end": 7.6667
+   },
+   "sfx": [
+    {
+     "t": 7.5417,
+     "s": "shimmer_attack"
+    },
+    {
+     "t": 7.5417,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 7.5833,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 7.5417,
+     "s": "shing_ring"
+    },
+    {
+     "t": 8.0,
+     "s": "crow_caw_spooky"
+    },
+    {
+     "t": 7.5,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "A06",
+   "phase": 1,
+   "t0": 8.5,
+   "t1": 10.5833,
+   "dur": 2.0833,
+   "frame0": 204,
+   "frame1": 254,
+   "render": "hand2d",
+   "camera": "hahmokortti, koko ruutu",
+   "move": "paneeli liukuu diagonaalisesti, muotokuva iskeytyy, variksen sulkia putoaa",
+   "inserts": null,
+   "action": "HAHMOKORTTI: musta-punainen paneeli, punainen pilvi vesileimana, Uchiha-viuhka, hand2d-muotokuva (Sharingan, kyynelurat, viilletty Lehden otsasuojus). Pensselikanji うちはイタチ.",
+   "chars": [
+    "ITA"
+   ],
+   "engine_chars": [
+    "itachi"
+   ],
+   "background": "CARD",
+   "background_desc": "hahmokortin graafinen tausta (text_style.md)",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": "ITACHI UCHIHA / THE CROW OF THE LEAF / UCHIHA CLAN · MANGEKYŌ SHARINGAN",
+   "text_style": "CARD_I",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "POWER_CARD_I",
+    "pattern": "R1-N1-W1",
+    "frames": 3,
+    "trigger": "Itachin kortti iskeytyy",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Death of Åse (vapaa kohta 8.50, kappaleen 8.50 s)",
+    "render": "hand2d",
+    "t": 8.5,
+    "frame": 204,
+    "tags": [],
+    "t_end": 8.625
+   },
+   "sfx": [
+    {
+     "t": 8.5,
+     "s": "boom_cine_low"
+    },
+    {
+     "t": 8.5,
+     "s": "shing_ring"
+    },
+    {
+     "t": 8.5,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 9.0833,
+     "s": "raven_wings_flyby"
+    },
+    {
+     "t": 9.1667,
+     "s": "wings_flap"
+    },
+    {
+     "t": 9.25,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 8.9167,
+     "s": "crowd_stadium_cheer"
+    }
+   ]
+  },
+  {
+   "id": "B01",
+   "phase": 1,
+   "t0": 10.5833,
+   "t1": 12.9167,
+   "dur": 2.3334,
+   "frame0": 254,
+   "frame1": 310,
+   "render": "action3d",
+   "camera": "matala itäportista, kaarros",
+   "move": "MYRSKYISÄ ILTA alkaa: matala orbit 90° + hidas push-in, kamera nousee",
+   "inserts": "2 sisäleikkausta: kellon viisari ECU 1.67, kenkä astuu pisaran ohi",
+   "action": "Itäportin yllä aukeaa jättimäinen kultainen kellotaulu-taikapiiri, ja sade PYSÄHTYY ilmaan (pisarat kimaltavat kuin lasihelmet). Julius kävelee pysähtyneen sateen läpi, viitta liikkumatta, hymy kasvoilla. Toisella vaskiaksentilla (12.27) kellon viisarit napsahtavat.",
+   "chars": [
+    "JUL"
+   ],
+   "engine_chars": [
+    "julius"
+   ],
+   "background": "GATE_J",
+   "background_desc": "itäportti (Julius): kultainen kellotaulu-taikapiiri, pysähtynyt sade",
+   "dmg": 0,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": "musiikki: Grieg: Peer Gynt Suite No. 2, Op. 55: No. 3, Peer Gynt's Homecoming (Stormy Evening on the Sea) (10.58)",
+   "masked": null,
+   "impact": {
+    "style": "TIME_FREEZE",
+    "pattern": "G1-W1-G1",
+    "frames": 3,
+    "trigger": "sade pysähtyy (vaskiaksentti)",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (aksentti 11.12, kappaleen 0.53 s)",
+    "render": "hand2d",
+    "t": 11.125,
+    "frame": 267,
+    "tags": [],
+    "t_end": 11.25
+   },
+   "sfx": [
+    {
+     "t": 11.125,
+     "s": "trailer_swell_reverse"
+    },
+    {
+     "t": 11.125,
+     "s": "time_freeze_crystal"
+    },
+    {
+     "t": 11.125,
+     "s": "time_cast_glassy"
+    },
+    {
+     "t": 11.125,
+     "s": "clock_bell_antique"
+    },
+    {
+     "t": 11.125,
+     "s": "boom_cine_deep"
+    },
+    {
+     "t": 11.1667,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 11.25,
+     "s": "clock_gears"
+    },
+    {
+     "t": 12.25,
+     "s": "clockwork_snap"
+    },
+    {
+     "t": 12.25,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 11.375,
+     "s": "crowd_gasp"
+    }
+   ]
+  },
+  {
+   "id": "B02",
+   "phase": 1,
+   "t0": 12.9167,
+   "t1": 15.2917,
+   "dur": 2.375,
+   "frame0": 310,
+   "frame1": 367,
+   "render": "hand2d",
+   "camera": "hahmokortti, koko ruutu + VS",
+   "move": "paneeli iskeytyy, lopussa jaettu ruutu",
+   "inserts": null,
+   "action": "HAHMOKORTTI: valkoinen-kulta paneeli, kellotaulu vesileimana, apila-grimoire, hand2d-muotokuva (vaalea aaltoileva tukka, iloinen hymy, velhokuninkaan viitta). Lopussa 0,8 s jaettu ruutu: Itachi punamusta vasemmalla, Julius kulta-sininen oikealla, keskellä VS.",
+   "chars": [
+    "JUL",
+    "ITA"
+   ],
+   "engine_chars": [
+    "julius",
+    "itachi"
+   ],
+   "background": "CARD",
+   "background_desc": "hahmokortin graafinen tausta (text_style.md)",
+   "dmg": 0,
+   "rain": false,
+   "light": null,
+   "text": "JULIUS NOVACHRONO / THE 28TH WIZARD KING / CLOVER KINGDOM · TIME MAGIC  →  VS",
+   "text_style": "CARD_J",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "POWER_CARD_J",
+    "pattern": "G1-N1-W1",
+    "frames": 3,
+    "trigger": "Juliuksen kortti iskeytyy",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 12.92, kappaleen 2.32 s)",
+    "render": "hand2d",
+    "t": 12.9167,
+    "frame": 310,
+    "tags": [],
+    "t_end": 13.0417
+   },
+   "sfx": [
+    {
+     "t": 12.9167,
+     "s": "boom_cine_low"
+    },
+    {
+     "t": 12.9167,
+     "s": "clock_bell_antique"
+    },
+    {
+     "t": 12.9167,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 14.5,
+     "s": "boom_cine_deep"
+    },
+    {
+     "t": 14.5,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 13.2083,
+     "s": "crowd_battlecry"
+    }
+   ]
+  },
+  {
+   "id": "B03",
+   "phase": 1,
+   "t0": 15.2917,
+   "t1": 16.7083,
+   "dur": 1.4166,
+   "frame0": 367,
+   "frame1": 401,
+   "render": "action3d",
+   "camera": "superlaaja yläkuva, gongi korokkeelta",
+   "move": "kamera tärähtää, shokkiaalto, sade jatkuu",
+   "inserts": null,
+   "action": "GONG: Urahara lyö pronssigongia. Shokkiaalto vyöryy areenan yli, pysähtynyt sade romahtaa maahan kerralla.",
+   "chars": [
+    "URA",
+    "ITA",
+    "JUL"
+   ],
+   "engine_chars": [
+    "urahara",
+    "itachi",
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": "BEGIN!",
+   "text_style": "ARENA",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "GONG_WAVE",
+    "pattern": "R2-W1",
+    "frames": 3,
+    "trigger": "gongi lyödään",
+    "signature": [
+     "URA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 15.29, kappaleen 4.69 s)",
+    "render": "hand2d",
+    "t": 15.2917,
+    "frame": 367,
+    "tags": [],
+    "t_end": 15.4167
+   },
+   "sfx": [
+    {
+     "t": 15.2917,
+     "s": "gong"
+    },
+    {
+     "t": 15.2917,
+     "s": "gong_deep"
+    },
+    {
+     "t": 15.2917,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 15.4583,
+     "s": "rain_thunder_heavy"
+    },
+    {
+     "t": 15.2917,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 15.5,
+     "s": "crowd_battlecry"
+    },
+    {
+     "t": 15.2917,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C01",
+   "phase": 2,
+   "t0": 16.7083,
+   "t1": 18.2083,
+   "dur": 1.5,
+   "frame0": 401,
+   "frame1": 437,
+   "render": "action3d",
+   "camera": "keskikuva, Juliuksen olan yli -> kaarto",
+   "move": "kamera kiertää 120° iskun mukana, whip pan",
+   "inserts": "2 sisäleikkausta: varikset hajoavat, kilven ECU",
+   "action": "ENSIMMÄINEN ISKU (vaskiaksentti 16.99): Itachi hajoaa variksiksi ja ilmestyy Juliuksen selän taakse kiertopotkussa. Julius torjuu kyynärvarrella: kultainen kellotaulukilpi värähtää, sade räjähtää renkaana.",
+   "chars": [
+    "ITA",
+    "JUL",
+    "CRW"
+   ],
+   "engine_chars": [
+    "itachi",
+    "julius",
+    "crows"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "FIRST_CLASH",
+    "pattern": "W1-N2-H2-S2-F2-G1-K2",
+    "frames": 12,
+    "trigger": "potku vs kellokilpi (BURST)",
+    "signature": [
+     "ITA",
+     "JUL"
+    ],
+    "burst": true,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (aksentti 17.00, kappaleen 6.40 s)",
+    "render": "hand2d",
+    "t": 17.0,
+    "frame": 408,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 17.5
+   },
+   "sfx": [
+    {
+     "t": 16.7083,
+     "s": "raven_wings_flyby"
+    },
+    {
+     "t": 16.75,
+     "s": "wings_flap"
+    },
+    {
+     "t": 16.875,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 16.9167,
+     "s": "swish_double_var"
+    },
+    {
+     "t": 17.0,
+     "s": "kick_body_var"
+    },
+    {
+     "t": 17.0,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 17.0417,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 17.0,
+     "s": "forcefield_tonal"
+    },
+    {
+     "t": 17.0,
+     "s": "clockwork_snap"
+    },
+    {
+     "t": 17.0,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 17.0833,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 17.1667,
+     "s": "shing_ring"
+    },
+    {
+     "t": 17.25,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 17.375,
+     "s": "glass_hits"
+    },
+    {
+     "t": 17.4583,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 17.0,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 17.125,
+     "s": "crowd_shocked"
+    },
+    {
+     "t": 17.0,
+     "s": "bass_dive13"
+    },
+    {
+     "t": 16.7083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C02",
+   "phase": 2,
+   "t0": 18.2083,
+   "t1": 19.5833,
+   "dur": 1.375,
+   "frame0": 437,
+   "frame1": 470,
+   "render": "action3d",
+   "camera": "puolikuva Julius -> laaja",
+   "move": "kamera vetäytyy, maailma harmaantuu",
+   "inserts": null,
+   "action": "Julius naputtaa ilmaa: Itachi jäätyy keskelle hyppyä, harmaaksi, kellorenkaan sisään; sadepisarat pysähtyvät hänen ympärilleen.",
+   "chars": [
+    "JUL",
+    "ITA"
+   ],
+   "engine_chars": [
+    "julius",
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0,
+   "rain": false,
+   "light": null,
+   "text": "TIME MAGIC: CHRONO STASIS",
+   "text_style": "WIZARD",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "TIME_FREEZE",
+    "pattern": "G1-W1-G1",
+    "frames": 3,
+    "trigger": "Itachi jäätyy aikaan",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (aksentti 18.46, kappaleen 7.86 s)",
+    "render": "hand2d",
+    "t": 18.4583,
+    "frame": 443,
+    "tags": [],
+    "t_end": 18.5833
+   },
+   "sfx": [
+    {
+     "t": 18.5,
+     "s": "trailer_swell_reverse"
+    },
+    {
+     "t": 18.4583,
+     "s": "time_freeze_crystal"
+    },
+    {
+     "t": 18.4583,
+     "s": "time_cast_glassy"
+    },
+    {
+     "t": 18.4583,
+     "s": "clock_bell_antique"
+    },
+    {
+     "t": 18.4583,
+     "s": "boom_cine_deep"
+    },
+    {
+     "t": 18.5,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 18.625,
+     "s": "clock_gears"
+    },
+    {
+     "t": 18.2083,
+     "s": "spell_light_cast"
+    }
+   ]
+  },
+  {
+   "id": "C03",
+   "phase": 2,
+   "t0": 19.5833,
+   "t1": 21.5,
+   "dur": 1.9167,
+   "frame0": 470,
+   "frame1": 516,
+   "render": "hand2d",
+   "camera": "katsomo, siluettien keskellä, hand2d",
+   "move": "hidas push-in siluettien välistä (etualalla sumeat päät)",
+   "inserts": null,
+   "action": "KATSOMO: Shunsui (kukkahaori, olkihattu, sakekuppi) ja hänen vieressään Dazai (trenssi, siteet) istuvat siluettien keskellä. Shunsui läimäyttää polveaan, Dazai hymyilee silmät puoliksi kiinni.",
+   "chars": [
+    "KYO",
+    "DAZ",
+    "CROWD:hush"
+   ],
+   "engine_chars": [
+    "kyoraku",
+    "dazai",
+    "crowd:hush"
+   ],
+   "background": "STANDS",
+   "background_desc": "katsomo lähikuvassa: DAZAI ja SHUNSUI vierekkäin kivipenkillä, YMPÄRILLÄ siluetteja (edessä, takana, sivuilla; ei koskaan kaksin tyhjässä kuvassa)",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "KYO",
+     "line": "Ha! The crow's frozen. He lost."
+    },
+    {
+     "who": "DAZ",
+     "line": "Look again. That's feathers."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 19.5833,
+     "s": "crowd_swell_quiet"
+    },
+    {
+     "t": 19.7917,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 20.0833,
+     "s": "pour"
+    },
+    {
+     "t": 19.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C04",
+   "phase": 2,
+   "t0": 21.5,
+   "t1": 23.5,
+   "dur": 2.0,
+   "frame0": 516,
+   "frame1": 564,
+   "render": "action3d",
+   "camera": "laaja, Julius etualalla",
+   "move": "kamera nykäisee, sitten hidastus",
+   "inserts": null,
+   "action": "Jäätynyt Itachi RÄJÄHTÄÄ variksiksi (vaskiaksentti 22.87): se oli klooni. Juliuksen silmät laajenevat ilosta.",
+   "chars": [
+    "JUL",
+    "CRW"
+   ],
+   "engine_chars": [
+    "julius",
+    "crows"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "CROW_BURST",
+    "pattern": "BLK1-R1-W1",
+    "frames": 3,
+    "trigger": "klooni räjähtää variksiksi",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (aksentti 22.88, kappaleen 12.28 s)",
+    "render": "hand2d",
+    "t": 22.875,
+    "frame": 549,
+    "tags": [],
+    "t_end": 23.0
+   },
+   "sfx": [
+    {
+     "t": 22.875,
+     "s": "crow_flock_angry"
+    },
+    {
+     "t": 22.875,
+     "s": "birds_flock"
+    },
+    {
+     "t": 22.875,
+     "s": "poof_smoke"
+    },
+    {
+     "t": 22.875,
+     "s": "wings_flap"
+    },
+    {
+     "t": 22.875,
+     "s": "glass_hits"
+    },
+    {
+     "t": 22.875,
+     "s": "boom_cine_lowhit"
+    }
+   ]
+  },
+  {
+   "id": "C05",
+   "phase": 2,
+   "t0": 23.5,
+   "t1": 25.2917,
+   "dur": 1.7917,
+   "frame0": 564,
+   "frame1": 607,
+   "render": "action3d",
+   "camera": "matala, rikkoutunut pylväs, Itachi ylhäällä",
+   "move": "hidas crane ylös pylvästä pitkin",
+   "inserts": null,
+   "action": "Oikea Itachi seisoo rikkoutuneen pylvään päällä sateessa, Sharingan valvoo. Hän on oppinut kloonin avulla taian säännön.",
+   "chars": [
+    "ITA"
+   ],
+   "engine_chars": [
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "ITA",
+     "line": "Your magic needs a target."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 23.5,
+     "s": "rain_thunder_heavy"
+    },
+    {
+     "t": 23.7917,
+     "s": "crow_land_wings"
+    },
+    {
+     "t": 24.7083,
+     "s": "shimmer01"
+    },
+    {
+     "t": 23.5,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C06",
+   "phase": 2,
+   "t0": 25.2917,
+   "t1": 26.7083,
+   "dur": 1.4166,
+   "frame0": 607,
+   "frame1": 641,
+   "render": "action3d",
+   "camera": "keskikuva, kultainen jälkikuvasarja",
+   "move": "kamera ajaa syöksyn mukana, isku 25.79",
+   "inserts": null,
+   "action": "Julius kiihdyttää omaa aikaansa: kultaiset jälkikuvat, hän on pylvään juurella silmänräpäyksessä ja nyrkki murskaa pylvään (vaskiaksentti 25.79). Itachi hyppää.",
+   "chars": [
+    "JUL",
+    "ITA"
+   ],
+   "engine_chars": [
+    "julius",
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0,
+   "rain": true,
+   "light": null,
+   "text": "TIME MAGIC: ACCELERATION",
+   "text_style": "WIZARD",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "GOLD_SPEED",
+    "pattern": "S1-G1-W1",
+    "frames": 3,
+    "trigger": "pylväs murskautuu",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (aksentti 25.79, kappaleen 15.19 s)",
+    "render": "hand2d",
+    "t": 25.7917,
+    "frame": 619,
+    "tags": [],
+    "t_end": 25.9167
+   },
+   "sfx": [
+    {
+     "t": 25.2917,
+     "s": "whoosh_energy_var"
+    },
+    {
+     "t": 25.375,
+     "s": "clockwork_small"
+    },
+    {
+     "t": 25.6667,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 25.7917,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 25.7917,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 25.7917,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 25.8333,
+     "s": "stone_debris02"
+    },
+    {
+     "t": 25.7917,
+     "s": "stone_debris02"
+    },
+    {
+     "t": 25.7917,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 25.8333,
+     "s": "rocks_heavy_debris"
+    },
+    {
+     "t": 25.2917,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C07",
+   "phase": 2,
+   "t0": 26.7083,
+   "t1": 28.2917,
+   "dur": 1.5834,
+   "frame0": 641,
+   "frame1": 679,
+   "render": "action3d",
+   "camera": "puolikuva Itachi ilmassa -> laaja",
+   "move": "kamera kiertää, sitten tulipallo täyttää kuvan",
+   "inserts": null,
+   "action": "Ilmassa Itachi tekee tiikerin käsimerkin ja puhaltaa jättimäisen tulipallon kohti Juliusta.",
+   "chars": [
+    "ITA"
+   ],
+   "engine_chars": [
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": "KATON: GŌKAKYŪ NO JUTSU",
+   "text_style": "CROW",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "FIRE_BLOOM",
+    "pattern": "O1-W1-O1",
+    "frames": 3,
+    "trigger": "tulipallo laajenee",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 27.42, kappaleen 16.82 s)",
+    "render": "hand2d",
+    "t": 27.4167,
+    "frame": 658,
+    "tags": [],
+    "t_end": 27.5417
+   },
+   "sfx": [
+    {
+     "t": 26.7917,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 27.0,
+     "s": "breath_inhale"
+    },
+    {
+     "t": 27.2917,
+     "s": "dragon_firebreath"
+    },
+    {
+     "t": 27.2917,
+     "s": "fire_roar_burst"
+    },
+    {
+     "t": 27.375,
+     "s": "fire_whoosh_synth"
+    },
+    {
+     "t": 27.4167,
+     "s": "fireball_big"
+    },
+    {
+     "t": 27.4167,
+     "s": "boom_cine_low"
+    },
+    {
+     "t": 26.7083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C08",
+   "phase": 2,
+   "t0": 28.2917,
+   "t1": 29.9167,
+   "dur": 1.625,
+   "frame0": 679,
+   "frame1": 718,
+   "render": "action3d",
+   "camera": "Juliuksen olan yli, tulipallo pysähtyy",
+   "move": "hidas push-in, tulipallo kuihtuu",
+   "inserts": null,
+   "action": "Julius pysäyttää tulipallon ilmaan ja kelaa sen ajan eteenpäin: se palaa loppuun sekunnissa hiillokseksi ja tuhkaksi.",
+   "chars": [
+    "JUL"
+   ],
+   "engine_chars": [
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "JUL",
+     "line": "Fire burns out. Given time."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "EMBER_AGE",
+    "pattern": "G1-O1",
+    "frames": 2,
+    "trigger": "tulipallo vanhenee tuhkaksi",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 29.08, kappaleen 18.48 s)",
+    "render": "hand2d",
+    "t": 29.0833,
+    "frame": 698,
+    "tags": [],
+    "t_end": 29.1667
+   },
+   "sfx": [
+    {
+     "t": 28.2917,
+     "s": "fire_burnup"
+    },
+    {
+     "t": 28.5,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 29.0833,
+     "s": "dispel_shimmer"
+    },
+    {
+     "t": 29.125,
+     "s": "dust_settle"
+    },
+    {
+     "t": 28.2917,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C09",
+   "phase": 2,
+   "t0": 29.9167,
+   "t1": 31.5,
+   "dur": 1.5833,
+   "frame0": 718,
+   "frame1": 756,
+   "render": "action3d",
+   "camera": "laaja, shurikenit kaartuvat",
+   "move": "kamera seuraa shurikenien rataa, snap zoom poskeen",
+   "inserts": null,
+   "action": "Shuriken-ryöppy kaartuu kahdeksasta suunnasta. Julius jäädyttää ne ilmaan, mutta jokaisen varjossa oli toinen shuriken: yksi viiltää hänen poskeensa (30.28).",
+   "chars": [
+    "ITA",
+    "JUL"
+   ],
+   "engine_chars": [
+    "itachi",
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "SHADOW_SHURIKEN",
+    "pattern": "S1-W1-R1",
+    "frames": 3,
+    "trigger": "varjo-shuriken osuu poskeen",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 30.29, kappaleen 19.69 s)",
+    "render": "hand2d",
+    "t": 30.2917,
+    "frame": 727,
+    "tags": [],
+    "t_end": 30.4167
+   },
+   "sfx": [
+    {
+     "t": 29.9167,
+     "s": "shuriken_throw"
+    },
+    {
+     "t": 29.9583,
+     "s": "shuriken_throw"
+    },
+    {
+     "t": 30.0417,
+     "s": "shuriken_throw"
+    },
+    {
+     "t": 30.0833,
+     "s": "shuriken_throw"
+    },
+    {
+     "t": 30.1667,
+     "s": "shuriken_throw"
+    },
+    {
+     "t": 30.2083,
+     "s": "shuriken_throw"
+    },
+    {
+     "t": 30.1667,
+     "s": "time_freeze_crystal"
+    },
+    {
+     "t": 30.2917,
+     "s": "knife_impacts"
+    },
+    {
+     "t": 30.2917,
+     "s": "flesh_tear"
+    },
+    {
+     "t": 30.2917,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 29.9167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C10",
+   "phase": 2,
+   "t0": 31.5,
+   "t1": 33.2083,
+   "dur": 1.7083,
+   "frame0": 756,
+   "frame1": 797,
+   "render": "hand2d",
+   "camera": "ECU Juliuksen kasvot, hand2d",
+   "move": "mikro push-in",
+   "inserts": null,
+   "action": "Julius koskettaa verta poskellaan ja säteilee kuin lapsi: uusi taika!",
+   "chars": [
+    "JUL"
+   ],
+   "engine_chars": [
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "JUL",
+     "line": "Marvelous! What magic is that?!"
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 31.5833,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 32.0833,
+     "s": "shimmer01"
+    },
+    {
+     "t": 31.5,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C11",
+   "phase": 2,
+   "t0": 33.2083,
+   "t1": 34.5833,
+   "dur": 1.375,
+   "frame0": 797,
+   "frame1": 830,
+   "render": "hand2d",
+   "camera": "ECU silmät vastakkain, jaettu ruutu",
+   "move": "snap zoom Sharinganiin (aksentti 33.39), maailma kääntyy negatiiviksi",
+   "inserts": null,
+   "action": "Itachi: katseet lukittuvat. Sharingan pyörii, ja maailma vuotaa punaiseksi: genjutsu.",
+   "chars": [
+    "ITA",
+    "JUL"
+   ],
+   "engine_chars": [
+    "itachi",
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": "GENJUTSU: SHARINGAN",
+   "text_style": "CROW",
+   "dialogue": [
+    {
+     "who": "ITA",
+     "line": "Look at me."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "GENJUTSU_BURST",
+    "pattern": "R1-N2-H2-F2-K2-W1-R2",
+    "frames": 12,
+    "trigger": "genjutsu laukeaa (BURST)",
+    "signature": [
+     "ITA"
+    ],
+    "burst": true,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 33.42, kappaleen 22.82 s)",
+    "render": "hand2d",
+    "t": 33.4167,
+    "frame": 802,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 33.9167
+   },
+   "sfx": [
+    {
+     "t": 33.4167,
+     "s": "shimmer_attack"
+    },
+    {
+     "t": 33.4167,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 33.4167,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 33.4167,
+     "s": "shing_ring"
+    },
+    {
+     "t": 33.4167,
+     "s": "evil_incant"
+    },
+    {
+     "t": 33.4167,
+     "s": "reverse_swell_hit"
+    },
+    {
+     "t": 33.5,
+     "s": "drone_dark"
+    },
+    {
+     "t": 33.4167,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 33.5,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 33.5833,
+     "s": "shing_ring"
+    },
+    {
+     "t": 33.6667,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 33.75,
+     "s": "glass_hits"
+    },
+    {
+     "t": 33.8333,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 33.4167,
+     "s": "subdrop_40"
+    },
+    {
+     "t": 33.2083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C12",
+   "phase": 2,
+   "t0": 34.5833,
+   "t1": 36.4167,
+   "dur": 1.8334,
+   "frame0": 830,
+   "frame1": 874,
+   "render": "hand2d",
+   "camera": "genjutsu-maailma, hand2d",
+   "move": "hidas orbit, sitten ruutu särkyy",
+   "inserts": null,
+   "action": "GENJUTSU: punainen taivas, musta kuu, varikset sitovat Juliuksen. Julius sulkee rauhallisesti silmänsä, häiritsee omaa manaansa, ja genjutsu SÄRKYY kuin lasi.",
+   "chars": [
+    "JUL",
+    "ITA",
+    "CRW"
+   ],
+   "engine_chars": [
+    "julius",
+    "itachi",
+    "crows"
+   ],
+   "background": "GENJ",
+   "background_desc": "genjutsu-maailma: punainen taivas, musta kuu, negatiivinen maailma, varikset",
+   "dmg": 0.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "GLASS_SHATTER",
+    "pattern": "W1-L1-W1",
+    "frames": 3,
+    "trigger": "genjutsu särkyy",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 35.88, kappaleen 25.27 s)",
+    "render": "hand2d",
+    "t": 35.875,
+    "frame": 861,
+    "tags": [],
+    "t_end": 36.0
+   },
+   "sfx": [
+    {
+     "t": 34.6667,
+     "s": "raven_wings_flyby"
+    },
+    {
+     "t": 34.75,
+     "s": "wings_flap"
+    },
+    {
+     "t": 34.8333,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 35.0833,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 34.5833,
+     "s": "drone_dark_sub"
+    },
+    {
+     "t": 35.5,
+     "s": "heartbeat"
+    },
+    {
+     "t": 35.875,
+     "s": "glass_huge_smash"
+    },
+    {
+     "t": 35.875,
+     "s": "boom_cine_deep"
+    }
+   ]
+  },
+  {
+   "id": "C13",
+   "phase": 2,
+   "t0": 36.4167,
+   "t1": 38.2083,
+   "dur": 1.7916,
+   "frame0": 874,
+   "frame1": 917,
+   "render": "hand2d",
+   "camera": "lähikuva Julius, hand2d",
+   "move": "mikro push-in, sade palaa",
+   "inserts": null,
+   "action": "Takaisin areenalla: Julius seisoo silmät suljettuina, hymyilee. JULIUKSEN OIVALLUS: katse on ansa, hän taistelee aistimalla manaa.",
+   "chars": [
+    "JUL"
+   ],
+   "engine_chars": [
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "JUL",
+     "line": "Eyes are your trap. I won't use mine."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 36.4167,
+     "s": "rain_thunder_heavy"
+    },
+    {
+     "t": 36.8333,
+     "s": "dome_pulse"
+    },
+    {
+     "t": 36.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C14",
+   "phase": 2,
+   "t0": 38.2083,
+   "t1": 40.2083,
+   "dur": 2.0,
+   "frame0": 917,
+   "frame1": 965,
+   "render": "hand2d",
+   "camera": "katsomo, siluettien keskellä, hand2d",
+   "move": "hidas sivuttaisdrift siluettien takaa",
+   "inserts": null,
+   "action": "Shunsui nauraa ääneen; Dazai ei käännä katsettaan kentältä.",
+   "chars": [
+    "KYO",
+    "DAZ",
+    "CROWD:hush"
+   ],
+   "engine_chars": [
+    "kyoraku",
+    "dazai",
+    "crowd:hush"
+   ],
+   "background": "STANDS",
+   "background_desc": "katsomo lähikuvassa: DAZAI ja SHUNSUI vierekkäin kivipenkillä, YMPÄRILLÄ siluetteja (edessä, takana, sivuilla; ei koskaan kaksin tyhjässä kuvassa)",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "KYO",
+     "line": "Fighting blind? He's finished."
+    },
+    {
+     "who": "DAZ",
+     "line": "No. He just learned the rule."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 38.2083,
+     "s": "crowd_swell_quiet"
+    },
+    {
+     "t": 38.4167,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 38.2083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C15",
+   "phase": 2,
+   "t0": 40.2083,
+   "t1": 41.7917,
+   "dur": 1.5834,
+   "frame0": 965,
+   "frame1": 1003,
+   "render": "action3d",
+   "camera": "laaja yläkuva, variksia sateessa",
+   "move": "hidas crane alas, mana-renkaat leviävät",
+   "inserts": null,
+   "action": "Itachi lähettää varisparven sateen läpi. Julius seisoo silmät kiinni: kultaiset mana-aistirenkaat sykkivät hänestä kuin luotain.",
+   "chars": [
+    "JUL",
+    "CRW",
+    "ITA"
+   ],
+   "engine_chars": [
+    "julius",
+    "crows",
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "MANA_SONAR",
+    "pattern": "G1-L1",
+    "frames": 2,
+    "trigger": "mana-rengas paljastaa variksen",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 41.00, kappaleen 30.40 s)",
+    "render": "hand2d",
+    "t": 41.0,
+    "frame": 984,
+    "tags": [],
+    "t_end": 41.0833
+   },
+   "sfx": [
+    {
+     "t": 40.2083,
+     "s": "raven_wings_flyby"
+    },
+    {
+     "t": 40.25,
+     "s": "wings_flap"
+    },
+    {
+     "t": 40.375,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 40.5833,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 40.8333,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 40.4167,
+     "s": "dome_pulse"
+    },
+    {
+     "t": 41.0,
+     "s": "dome_pulse"
+    },
+    {
+     "t": 40.2917,
+     "s": "crow_flock_angry"
+    },
+    {
+     "t": 40.2083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C16",
+   "phase": 2,
+   "t0": 41.7917,
+   "t1": 43.4167,
+   "dur": 1.625,
+   "frame0": 1003,
+   "frame1": 1042,
+   "render": "action3d",
+   "camera": "sakuga, käsivara",
+   "move": "nopea seuranta, 3 leikkausta",
+   "inserts": "3 leikkausta",
+   "action": "SAKUGA: kunait kolmesta suunnasta; Julius torjuu jokaisen sormenpään kellosymboleilla silmät kiinni.",
+   "chars": [
+    "JUL",
+    "ITA"
+   ],
+   "engine_chars": [
+    "julius",
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "SPEEDLINE_BURST",
+    "pattern": "S2-W1",
+    "frames": 3,
+    "trigger": "kolmas kunai torjutaan",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 42.33, kappaleen 31.73 s)",
+    "render": "hand2d",
+    "t": 42.3333,
+    "frame": 1016,
+    "tags": [],
+    "t_end": 42.4583
+   },
+   "sfx": [
+    {
+     "t": 41.8333,
+     "s": "knife_parry"
+    },
+    {
+     "t": 42.0417,
+     "s": "knife_parry"
+    },
+    {
+     "t": 42.2083,
+     "s": "knife_parry"
+    },
+    {
+     "t": 42.375,
+     "s": "knife_parry"
+    },
+    {
+     "t": 42.3333,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 42.3333,
+     "s": "clockwork_snap"
+    },
+    {
+     "t": 41.7917,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C17",
+   "phase": 2,
+   "t0": 43.4167,
+   "t1": 44.7917,
+   "dur": 1.375,
+   "frame0": 1042,
+   "frame1": 1075,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "-",
+   "inserts": null,
+   "action": "vihje (katso spoilers.md#C17)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "CLUE",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 43.7083,
+     "s": "breath_inhale"
+    },
+    {
+     "t": 44.0,
+     "s": "heartbeat"
+    },
+    {
+     "t": 43.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C18",
+   "phase": 2,
+   "t0": 44.7917,
+   "t1": 46.2083,
+   "dur": 1.4166,
+   "frame0": 1075,
+   "frame1": 1109,
+   "render": "action3d",
+   "camera": "keskikuva, märkä hiekka",
+   "move": "kamera nykäisee iskun mukana, seuraa liukua",
+   "inserts": null,
+   "action": "Julius vastaa: kämmenisku kiihdytetyllä ajalla, ja Itachi liukuu kymmenen metriä märässä hiekassa.",
+   "chars": [
+    "JUL",
+    "ITA"
+   ],
+   "engine_chars": [
+    "julius",
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 0.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "MANGA_HALFTONE",
+    "pattern": "H1-W1",
+    "frames": 2,
+    "trigger": "kämmenisku osuu",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 45.04, kappaleen 34.44 s)",
+    "render": "hand2d",
+    "t": 45.0417,
+    "frame": 1081,
+    "tags": [],
+    "t_end": 45.125
+   },
+   "sfx": [
+    {
+     "t": 45.0,
+     "s": "swish_var01"
+    },
+    {
+     "t": 45.0417,
+     "s": "punch_hard_var"
+    },
+    {
+     "t": 45.0417,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 45.0417,
+     "s": "punch_body_var"
+    },
+    {
+     "t": 45.125,
+     "s": "sand_slide"
+    },
+    {
+     "t": 45.2083,
+     "s": "splash_dive1"
+    },
+    {
+     "t": 44.7917,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C19",
+   "phase": 2,
+   "t0": 46.2083,
+   "t1": 47.7917,
+   "dur": 1.5834,
+   "frame0": 1109,
+   "frame1": 1147,
+   "render": "hand2d",
+   "camera": "puolikuva Itachi, hand2d",
+   "move": "hidas push-in",
+   "inserts": null,
+   "action": "Itachi nousee, pyyhkii suupieltään, Sharingan kirkastuu.",
+   "chars": [
+    "ITA"
+   ],
+   "engine_chars": [
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "ITA",
+     "line": "Then I'll make you open them."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 46.2083,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 47.125,
+     "s": "shimmer_attack"
+    },
+    {
+     "t": 46.2083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C20",
+   "phase": 2,
+   "t0": 47.7917,
+   "t1": 49.4167,
+   "dur": 1.625,
+   "frame0": 1147,
+   "frame1": 1186,
+   "render": "hand2d",
+   "camera": "laaja -> lähikuva, tulikukat",
+   "move": "kamera kiertää tulikukkien keskellä, whip pan",
+   "inserts": null,
+   "action": "Tulikukkia (Hōsenka) kehänä ja variksia kaikkialla: Julius aistii manattomat varikset harhautukseksi, mutta yhdestä variksesta purkautuu oikea Itachi ja potku osuu Juliuksen leukaan.",
+   "chars": [
+    "ITA",
+    "JUL",
+    "CRW"
+   ],
+   "engine_chars": [
+    "itachi",
+    "julius",
+    "crows"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": "KATON: HŌSENKA NO JUTSU",
+   "text_style": "CROW",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "MANGA_RED",
+    "pattern": "R1-W1-R1",
+    "frames": 3,
+    "trigger": "potku osuu Juliukseen",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 48.54, kappaleen 37.94 s)",
+    "render": "hand2d",
+    "t": 48.5417,
+    "frame": 1165,
+    "tags": [],
+    "t_end": 48.6667
+   },
+   "sfx": [
+    {
+     "t": 47.8333,
+     "s": "fireball_big"
+    },
+    {
+     "t": 47.9583,
+     "s": "fireball_big"
+    },
+    {
+     "t": 48.0417,
+     "s": "fireball_big"
+    },
+    {
+     "t": 48.125,
+     "s": "fireball_big"
+    },
+    {
+     "t": 48.2083,
+     "s": "raven_wings_flyby"
+    },
+    {
+     "t": 48.25,
+     "s": "wings_flap"
+    },
+    {
+     "t": 48.3333,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 48.4583,
+     "s": "swish_double_var"
+    },
+    {
+     "t": 48.5417,
+     "s": "kick_body_var"
+    },
+    {
+     "t": 48.5417,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 48.5833,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 47.7917,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C21",
+   "phase": 2,
+   "t0": 49.4167,
+   "t1": 50.7917,
+   "dur": 1.375,
+   "frame0": 1186,
+   "frame1": 1219,
+   "render": "action3d",
+   "camera": "puolikuva Julius liukuu",
+   "move": "kamera seuraa, sitten pysähtyy",
+   "inserts": null,
+   "action": "Julius liukuu taaksepäin, avaa yhden silmän raolleen ja nauraa vilpittömästi.",
+   "chars": [
+    "JUL"
+   ],
+   "engine_chars": [
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "JUL",
+     "line": "Ha! Splendid!"
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 49.4167,
+     "s": "sand_slide"
+    },
+    {
+     "t": 50.0,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 49.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C22",
+   "phase": 2,
+   "t0": 50.7917,
+   "t1": 52.4167,
+   "dur": 1.625,
+   "frame0": 1219,
+   "frame1": 1258,
+   "render": "action3d",
+   "camera": "superlaaja, kehä sateessa",
+   "move": "hidas orbit 70°, salama",
+   "inserts": null,
+   "action": "Hengähdys: he kiertävät toisiaan sateessa. Varikset istuvat kehän reunalla, salama valaisee katsomon siluetit.",
+   "chars": [
+    "ITA",
+    "JUL",
+    "CROWD:hush"
+   ],
+   "engine_chars": [
+    "itachi",
+    "julius",
+    "crowd:hush"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "LIGHTNING_NEG",
+    "pattern": "W1-N1",
+    "frames": 2,
+    "trigger": "salama",
+    "signature": [
+     "ARENA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 51.71, kappaleen 41.11 s)",
+    "render": "hand2d",
+    "t": 51.7083,
+    "frame": 1241,
+    "tags": [],
+    "t_end": 51.7917
+   },
+   "sfx": [
+    {
+     "t": 51.7083,
+     "s": "thunder_clap"
+    },
+    {
+     "t": 50.7917,
+     "s": "footsteps"
+    },
+    {
+     "t": 51.0,
+     "s": "crowd_swell_quiet"
+    },
+    {
+     "t": 50.7917,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C23",
+   "phase": 2,
+   "t0": 52.4167,
+   "t1": 54.2083,
+   "dur": 1.7916,
+   "frame0": 1258,
+   "frame1": 1301,
+   "render": "hand2d",
+   "camera": "ECU silmä, hand2d",
+   "move": "hidas push-in, verikyynel",
+   "inserts": null,
+   "action": "Itachi sulkee silmänsä. Kun ne aukeavat, tomoet sulautuvat kolmisakaraiseksi Mangekyō-kuvioksi, ja verikyynel valuu poskelle.",
+   "chars": [
+    "ITA"
+   ],
+   "engine_chars": [
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": "MANGEKYŌ SHARINGAN",
+   "text_style": "CROW",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "MANGEKYO_EYE",
+    "pattern": "R1-BLK1-R1",
+    "frames": 3,
+    "trigger": "Mangekyō aukeaa",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 53.17, kappaleen 42.57 s)",
+    "render": "hand2d",
+    "t": 53.1667,
+    "frame": 1276,
+    "tags": [],
+    "t_end": 53.2917
+   },
+   "sfx": [
+    {
+     "t": 52.4167,
+     "s": "heartbeat"
+    },
+    {
+     "t": 53.1667,
+     "s": "shimmer_attack"
+    },
+    {
+     "t": 53.1667,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 53.1667,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 53.1667,
+     "s": "shing_ring"
+    },
+    {
+     "t": 53.1667,
+     "s": "braam_big"
+    },
+    {
+     "t": 52.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C24",
+   "phase": 2,
+   "t0": 54.2083,
+   "t1": 55.4167,
+   "dur": 1.2084,
+   "frame0": 1301,
+   "frame1": 1330,
+   "render": "action3d",
+   "camera": "puolikuva Julius",
+   "move": "mikro push-in, tukka nousee",
+   "inserts": null,
+   "action": "Julius aistii muutoksen: hänen tukkansa nousee, ja hymy hyytyy hetkeksi. Katsomon siluetit kumartuvat eteenpäin.",
+   "chars": [
+    "JUL",
+    "CROWD:hush"
+   ],
+   "engine_chars": [
+    "julius",
+    "crowd:hush"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "JUL",
+     "line": "...Oh?"
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 54.2083,
+     "s": "drone_dark"
+    },
+    {
+     "t": 54.4167,
+     "s": "wind_desert"
+    },
+    {
+     "t": 54.2083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "C25",
+   "phase": 2,
+   "t0": 55.4167,
+   "t1": 56.5833,
+   "dur": 1.1666,
+   "frame0": 1330,
+   "frame1": 1358,
+   "render": "hand2d",
+   "camera": "ECU Itachin huulet",
+   "move": "mikro push-in",
+   "inserts": null,
+   "action": "Itachi kuiskaa. Sade sihisee hänen ympärillään.",
+   "chars": [
+    "ITA"
+   ],
+   "engine_chars": [
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "ITA",
+     "line": "Amaterasu."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 56.625,
+     "s": "riser_rev_impact"
+    },
+    {
+     "t": 55.625,
+     "s": "sizzle_dark"
+    },
+    {
+     "t": 55.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D01",
+   "phase": 3,
+   "t0": 56.5833,
+   "t1": 58.2083,
+   "dur": 1.625,
+   "frame0": 1358,
+   "frame1": 1397,
+   "render": "action3d",
+   "camera": "laaja -> puolikuva, mustat liekit",
+   "move": "kamera tärähtää, orkesterinousu",
+   "inserts": null,
+   "action": "AMATERASU (orkesterinousu 56.6): mustat liekit leimahtavat Juliuksen vasempaan käsivarteen ja viittaan.",
+   "chars": [
+    "ITA",
+    "JUL"
+   ],
+   "engine_chars": [
+    "itachi",
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": "AMATERASU",
+   "text_style": "CROW",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "AMATERASU_BURST",
+    "pattern": "BLK1-N2-R2-H2-F2-K2-W1",
+    "frames": 12,
+    "trigger": "mustat liekit syttyvät (BURST)",
+    "signature": [
+     "ITA"
+    ],
+    "burst": true,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 56.58, kappaleen 45.98 s)",
+    "render": "hand2d",
+    "t": 56.5833,
+    "frame": 1358,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 57.0833
+   },
+   "sfx": [
+    {
+     "t": 56.5833,
+     "s": "ghost_fire_long"
+    },
+    {
+     "t": 56.5833,
+     "s": "sizzle_dark"
+    },
+    {
+     "t": 56.5833,
+     "s": "fire_burnup"
+    },
+    {
+     "t": 56.5833,
+     "s": "boom_ultra_braam"
+    },
+    {
+     "t": 56.5833,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 56.7083,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 56.7917,
+     "s": "shing_ring"
+    },
+    {
+     "t": 56.875,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 56.9583,
+     "s": "glass_hits"
+    },
+    {
+     "t": 57.0417,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 56.5833,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 56.875,
+     "s": "crowd_shocked"
+    },
+    {
+     "t": 56.5833,
+     "s": "bass_dive17"
+    },
+    {
+     "t": 56.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D02",
+   "phase": 3,
+   "t0": 58.2083,
+   "t1": 59.5833,
+   "dur": 1.375,
+   "frame0": 1397,
+   "frame1": 1430,
+   "render": "hand2d",
+   "camera": "lähikuva käsivarsi",
+   "move": "hidas push-in",
+   "inserts": null,
+   "action": "Julius jäädyttää liekit: ne harmaantuvat, mutta ryömivät silti eteenpäin. Amaterasu ei tottele aikaa.",
+   "chars": [
+    "JUL"
+   ],
+   "engine_chars": [
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "DESAT_FLAME",
+    "pattern": "D1-BLK1",
+    "frames": 2,
+    "trigger": "jäädytetyt liekit ryömivät",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 58.71, kappaleen 48.11 s)",
+    "render": "hand2d",
+    "t": 58.7083,
+    "frame": 1409,
+    "tags": [],
+    "t_end": 58.7917
+   },
+   "sfx": [
+    {
+     "t": 58.7083,
+     "s": "trailer_swell_reverse"
+    },
+    {
+     "t": 58.7083,
+     "s": "time_freeze_crystal"
+    },
+    {
+     "t": 58.7083,
+     "s": "time_cast_glassy"
+    },
+    {
+     "t": 58.7083,
+     "s": "clock_bell_antique"
+    },
+    {
+     "t": 58.7083,
+     "s": "boom_cine_deep"
+    },
+    {
+     "t": 58.7917,
+     "s": "ghost_fire_long"
+    },
+    {
+     "t": 58.7917,
+     "s": "sizzle_dark"
+    },
+    {
+     "t": 58.7917,
+     "s": "fire_burnup"
+    },
+    {
+     "t": 58.2083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D03",
+   "phase": 3,
+   "t0": 59.5833,
+   "t1": 61.4167,
+   "dur": 1.8334,
+   "frame0": 1430,
+   "frame1": 1474,
+   "render": "hand2d",
+   "camera": "katsomo, siluettien keskellä, hand2d",
+   "move": "hidas push-in, liekkien heijastus kasvoilla",
+   "inserts": null,
+   "action": "Shunsui nostaa sakekuppinsa riemuissaan. Dazai kallistaa päätään.",
+   "chars": [
+    "KYO",
+    "DAZ",
+    "CROWD:gasp"
+   ],
+   "engine_chars": [
+    "kyoraku",
+    "dazai",
+    "crowd:gasp"
+   ],
+   "background": "STANDS",
+   "background_desc": "katsomo lähikuvassa: DAZAI ja SHUNSUI vierekkäin kivipenkillä, YMPÄRILLÄ siluetteja (edessä, takana, sivuilla; ei koskaan kaksin tyhjässä kuvassa)",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "KYO",
+     "line": "Black fire! That's game!"
+    },
+    {
+     "who": "DAZ",
+     "line": "Not against a clock."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 59.5833,
+     "s": "crowd_swell_quiet"
+    },
+    {
+     "t": 59.7917,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 60.0833,
+     "s": "pour"
+    },
+    {
+     "t": 59.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D04",
+   "phase": 3,
+   "t0": 61.4167,
+   "t1": 62.3333,
+   "dur": 0.9166,
+   "frame0": 1474,
+   "frame1": 1496,
+   "render": "hand2d",
+   "camera": "ECU Juliuksen kasvot, liekit kaulalla",
+   "move": "mikro push-in",
+   "inserts": null,
+   "action": "Liekit nuolevat Juliuksen kaulaa. Hän hymyilee.",
+   "chars": [
+    "JUL"
+   ],
+   "engine_chars": [
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "JUL",
+     "line": "Flames that never die..."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 61.4167,
+     "s": "ghost_fire_long"
+    },
+    {
+     "t": 61.4167,
+     "s": "sizzle_dark"
+    },
+    {
+     "t": 61.4167,
+     "s": "fire_burnup"
+    },
+    {
+     "t": 61.9167,
+     "s": "time_incant"
+    },
+    {
+     "t": 61.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D05",
+   "phase": 3,
+   "t0": 62.3333,
+   "t1": 64.25,
+   "dur": 1.9167,
+   "frame0": 1496,
+   "frame1": 1542,
+   "render": "action3d",
+   "camera": "laaja, mustat liekit lentävät taaksepäin",
+   "move": "kamera vetäytyy liekkivanan mukana (aksentti 62.35)",
+   "inserts": null,
+   "action": "CHRONO ANASTASIS: Julius kelaa käsivartensa ajan taaksepäin. Mustat liekit virtaavat ilmassa TAKAISIN Itachin silmään, joka vuotaa verta.",
+   "chars": [
+    "JUL",
+    "ITA"
+   ],
+   "engine_chars": [
+    "julius",
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": "CHRONO ANASTASIS",
+   "text_style": "WIZARD",
+   "dialogue": [
+    {
+     "who": "JUL",
+     "line": "...unless they never started."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "REWIND_BURST",
+    "pattern": "G1-N2-W1-H2-S2-C2-G2",
+    "frames": 12,
+    "trigger": "liekit kelautuvat takaisin (BURST)",
+    "signature": [
+     "JUL"
+    ],
+    "burst": true,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (aksentti 62.33, kappaleen 51.73 s)",
+    "render": "hand2d",
+    "t": 62.3333,
+    "frame": 1496,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 62.8333
+   },
+   "sfx": [
+    {
+     "t": 62.3333,
+     "s": "time_reverse_glass02"
+    },
+    {
+     "t": 62.3333,
+     "s": "tape_rewind"
+    },
+    {
+     "t": 62.4167,
+     "s": "time_reverse"
+    },
+    {
+     "t": 62.3333,
+     "s": "clockwork_snap"
+    },
+    {
+     "t": 62.3333,
+     "s": "clock_bell_tower"
+    },
+    {
+     "t": 62.3333,
+     "s": "boom_long_reverb"
+    },
+    {
+     "t": 62.3333,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 62.4583,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 62.5417,
+     "s": "shing_ring"
+    },
+    {
+     "t": 62.625,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 62.7083,
+     "s": "glass_hits"
+    },
+    {
+     "t": 62.7917,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 62.3333,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 62.9167,
+     "s": "crowd_gasp2"
+    },
+    {
+     "t": 62.3333,
+     "s": "bass_dive13"
+    },
+    {
+     "t": 62.3333,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D06",
+   "phase": 3,
+   "t0": 64.25,
+   "t1": 65.5417,
+   "dur": 1.2917,
+   "frame0": 1542,
+   "frame1": 1573,
+   "render": "hand2d",
+   "camera": "puolikuva Itachi, hand2d",
+   "move": "kamera horjahtaa",
+   "inserts": null,
+   "action": "Itachi horjahtaa, käsi verta vuotavalla silmällä; varikset pyrähtävät.",
+   "chars": [
+    "ITA",
+    "CRW"
+   ],
+   "engine_chars": [
+    "itachi",
+    "crows"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "RED_BLACK_SPLIT",
+    "pattern": "RB1-W1",
+    "frames": 2,
+    "trigger": "silmä vuotaa",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 64.46, kappaleen 53.86 s)",
+    "render": "hand2d",
+    "t": 64.4583,
+    "frame": 1547,
+    "tags": [],
+    "t_end": 64.5417
+   },
+   "sfx": [
+    {
+     "t": 64.3333,
+     "s": "raven_wings_flyby"
+    },
+    {
+     "t": 64.4167,
+     "s": "wings_flap"
+    },
+    {
+     "t": 64.5,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 64.4583,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 64.5417,
+     "s": "flesh_wet07"
+    },
+    {
+     "t": 64.25,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D07",
+   "phase": 3,
+   "t0": 65.5417,
+   "t1": 66.8333,
+   "dur": 1.2916,
+   "frame0": 1573,
+   "frame1": 1604,
+   "render": "hand2d",
+   "camera": "lähikuva grimoire",
+   "move": "kamera kiertää, sivut lepattavat",
+   "inserts": null,
+   "action": "Julius avaa grimoirensa: sivut lepattavat, kultaiset kellonviisarit pyörivät sen yllä.",
+   "chars": [
+    "JUL"
+   ],
+   "engine_chars": [
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "JUL",
+     "line": "My turn."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 65.5417,
+     "s": "page_turn"
+    },
+    {
+     "t": 65.5833,
+     "s": "time_incant"
+    },
+    {
+     "t": 65.625,
+     "s": "spell_light_cast"
+    },
+    {
+     "t": 65.8333,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 65.875,
+     "s": "clock_gears"
+    },
+    {
+     "t": 65.5417,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D08",
+   "phase": 3,
+   "t0": 66.8333,
+   "t1": 68.3333,
+   "dur": 1.5,
+   "frame0": 1604,
+   "frame1": 1640,
+   "render": "action3d",
+   "camera": "sakuga, Itachi lentää",
+   "move": "kamera ajaa iskusarjan läpi, 3 leikkausta",
+   "inserts": "3 leikkausta",
+   "action": "Seitsemän kiihdytettyä iskua yhden ruudun aikana; Itachi lentää pylvään läpi.",
+   "chars": [
+    "JUL",
+    "ITA"
+   ],
+   "engine_chars": [
+    "julius",
+    "itachi"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1,
+   "rain": true,
+   "light": null,
+   "text": "TIME MAGIC: ACCELERATION",
+   "text_style": "WIZARD",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "MANGA_PANELS",
+    "pattern": "P3-W1",
+    "frames": 3,
+    "trigger": "seitsemäs isku",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 67.38, kappaleen 56.77 s)",
+    "render": "hand2d",
+    "t": 67.375,
+    "frame": 1617,
+    "tags": [],
+    "t_end": 67.5
+   },
+   "sfx": [
+    {
+     "t": 66.8333,
+     "s": "swish_var01"
+    },
+    {
+     "t": 66.875,
+     "s": "punch_hard_var"
+    },
+    {
+     "t": 66.875,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 66.9167,
+     "s": "punch_body_var"
+    },
+    {
+     "t": 66.9167,
+     "s": "swish_var01"
+    },
+    {
+     "t": 67.0,
+     "s": "punch_hard_var"
+    },
+    {
+     "t": 67.0,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 67.0,
+     "s": "punch_body_var"
+    },
+    {
+     "t": 67.0417,
+     "s": "swish_var01"
+    },
+    {
+     "t": 67.0833,
+     "s": "punch_hard_var"
+    },
+    {
+     "t": 67.0833,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 67.0833,
+     "s": "punch_body_var"
+    },
+    {
+     "t": 67.125,
+     "s": "swish_var01"
+    },
+    {
+     "t": 67.1667,
+     "s": "punch_hard_var"
+    },
+    {
+     "t": 67.1667,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 67.2083,
+     "s": "punch_body_var"
+    },
+    {
+     "t": 67.2083,
+     "s": "swish_var01"
+    },
+    {
+     "t": 67.2917,
+     "s": "punch_hard_var"
+    },
+    {
+     "t": 67.2917,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 67.2917,
+     "s": "punch_body_var"
+    },
+    {
+     "t": 67.25,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 67.375,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 67.375,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 67.375,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 67.4167,
+     "s": "stone_debris02"
+    },
+    {
+     "t": 67.4167,
+     "s": "stone_debris02"
+    },
+    {
+     "t": 67.4167,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 67.5,
+     "s": "rocks_heavy_debris"
+    },
+    {
+     "t": 66.8333,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D09",
+   "phase": 3,
+   "t0": 68.3333,
+   "t1": 69.75,
+   "dur": 1.4167,
+   "frame0": 1640,
+   "frame1": 1674,
+   "render": "action3d",
+   "camera": "laaja, areenan muuri",
+   "move": "kamera tärähtää, Julius ilmestyy",
+   "inserts": null,
+   "action": "Itachi iskeytyy muuriin, kivi halkeilee. Julius ilmestyy eteen viimeistelyiskuun, nyrkki hehkuu pysähtynyttä aikaa.",
+   "chars": [
+    "ITA",
+    "JUL",
+    "CROWD:gasp"
+   ],
+   "engine_chars": [
+    "itachi",
+    "julius",
+    "crowd:gasp"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "IMPACT_CRATER",
+    "pattern": "N1-W1",
+    "frames": 2,
+    "trigger": "muuri halkeaa",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 68.42, kappaleen 57.82 s)",
+    "render": "hand2d",
+    "t": 68.4167,
+    "frame": 1642,
+    "tags": [],
+    "t_end": 68.5
+   },
+   "sfx": [
+    {
+     "t": 68.4167,
+     "s": "wall_collapse"
+    },
+    {
+     "t": 68.4167,
+     "s": "stone_debris01"
+    },
+    {
+     "t": 68.4167,
+     "s": "boom_cine_heavyrumble"
+    },
+    {
+     "t": 68.4583,
+     "s": "bodyfall_var"
+    },
+    {
+     "t": 69.25,
+     "s": "teleport_magic"
+    },
+    {
+     "t": 68.5417,
+     "s": "crowd_gasp"
+    },
+    {
+     "t": 68.3333,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D10",
+   "phase": 3,
+   "t0": 69.75,
+   "t1": 71.25,
+   "dur": 1.5,
+   "frame0": 1674,
+   "frame1": 1710,
+   "render": "action3d",
+   "camera": "puolikuva, punaiset luut",
+   "move": "kamera nykäisee, sitten hidastus",
+   "inserts": null,
+   "action": "SUSANOO-kylkiluut materialisoituvat Itachin ympärille (punaoranssi henkiluu) ja pysäyttävät nyrkin.",
+   "chars": [
+    "ITA",
+    "SUS",
+    "JUL"
+   ],
+   "engine_chars": [
+    "itachi",
+    "susanoo",
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "SUSANOO_BURST",
+    "pattern": "R1-N2-H2-S2-F2-K2-W1",
+    "frames": 12,
+    "trigger": "Susanoo pysäyttää iskun (BURST)",
+    "signature": [
+     "ITA"
+    ],
+    "burst": true,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 70.00, kappaleen 59.40 s)",
+    "render": "hand2d",
+    "t": 70.0,
+    "frame": 1680,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 70.5
+   },
+   "sfx": [
+    {
+     "t": 69.75,
+     "s": "choir_rise_dark"
+    },
+    {
+     "t": 69.9583,
+     "s": "bone_heavy"
+    },
+    {
+     "t": 70.0417,
+     "s": "fire_roar_burst"
+    },
+    {
+     "t": 70.1667,
+     "s": "boom_ultra_braam"
+    },
+    {
+     "t": 69.875,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 70.0,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 70.0,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 70.0,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 70.0417,
+     "s": "stone_debris02"
+    },
+    {
+     "t": 70.0,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 70.0833,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 70.1667,
+     "s": "shing_ring"
+    },
+    {
+     "t": 70.25,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 70.375,
+     "s": "glass_hits"
+    },
+    {
+     "t": 70.4583,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 70.0,
+     "s": "bone_heavy_breaks"
+    },
+    {
+     "t": 69.75,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D11",
+   "phase": 3,
+   "t0": 71.25,
+   "t1": 73.25,
+   "dur": 2.0,
+   "frame0": 1710,
+   "frame1": 1758,
+   "render": "action3d",
+   "camera": "matala, nousu Susanoon mittakaavaan",
+   "move": "crane ylös luurangosta panssariin, salama",
+   "inserts": null,
+   "action": "Susanoo kasvaa: kylkiluut -> luuranko -> panssaroitu jättiläinen, Yata-peili ja Totsuka-pullo, sateessa areenan ylle.",
+   "chars": [
+    "SUS",
+    "ITA",
+    "CROWD:panic"
+   ],
+   "engine_chars": [
+    "susanoo",
+    "itachi",
+    "crowd:panic"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1.5,
+   "rain": true,
+   "light": null,
+   "text": "SUSANOO",
+   "text_style": "CROW",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "GIANT_SIL",
+    "pattern": "R1-W1-R1",
+    "frames": 3,
+    "trigger": "Susanoo valmis",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 72.33, kappaleen 61.73 s)",
+    "render": "hand2d",
+    "t": 72.3333,
+    "frame": 1736,
+    "tags": [],
+    "t_end": 72.4583
+   },
+   "sfx": [
+    {
+     "t": 71.25,
+     "s": "choir_rise_dark"
+    },
+    {
+     "t": 71.4583,
+     "s": "bone_heavy"
+    },
+    {
+     "t": 71.5417,
+     "s": "fire_roar_burst"
+    },
+    {
+     "t": 71.6667,
+     "s": "boom_ultra_braam"
+    },
+    {
+     "t": 72.3333,
+     "s": "thunder_clap"
+    },
+    {
+     "t": 72.3333,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 71.75,
+     "s": "giant_step01"
+    },
+    {
+     "t": 71.8333,
+     "s": "crowd_panic"
+    },
+    {
+     "t": 71.25,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D12",
+   "phase": 3,
+   "t0": 73.25,
+   "t1": 75.1667,
+   "dur": 1.9167,
+   "frame0": 1758,
+   "frame1": 1804,
+   "render": "hand2d",
+   "camera": "katsomo, siluettien keskellä, hand2d",
+   "move": "kamera vetäytyy, Susanoon hehku katsomossa",
+   "inserts": null,
+   "action": "Shunsui heiluttaa kuppiaan voitonvarmana. Dazai osoittaa leuallaan Juliusta.",
+   "chars": [
+    "KYO",
+    "DAZ",
+    "CROWD:panic"
+   ],
+   "engine_chars": [
+    "kyoraku",
+    "dazai",
+    "crowd:panic"
+   ],
+   "background": "STANDS",
+   "background_desc": "katsomo lähikuvassa: DAZAI ja SHUNSUI vierekkäin kivipenkillä, YMPÄRILLÄ siluetteja (edessä, takana, sivuilla; ei koskaan kaksin tyhjässä kuvassa)",
+   "dmg": 1.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "KYO",
+     "line": "A giant? Easy win for the crow."
+    },
+    {
+     "who": "DAZ",
+     "line": "Watch the old man smile."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 73.25,
+     "s": "crowd_swell_quiet"
+    },
+    {
+     "t": 73.4583,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 73.25,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D13",
+   "phase": 3,
+   "t0": 75.1667,
+   "t1": 76.75,
+   "dur": 1.5833,
+   "frame0": 1804,
+   "frame1": 1842,
+   "render": "action3d",
+   "camera": "matala, Julius katsoo ylös",
+   "move": "hidas push-in kasvoihin",
+   "inserts": null,
+   "action": "Julius katsoo Susanoota ylös, nauraa ilosta ja avaa molemmat silmänsä (kulta).",
+   "chars": [
+    "JUL"
+   ],
+   "engine_chars": [
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [
+    {
+     "who": "JUL",
+     "line": "Then I'll stop holding back."
+    }
+   ],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "GOLD_EYES",
+    "pattern": "G1-W1",
+    "frames": 2,
+    "trigger": "silmät aukeavat",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 76.38, kappaleen 65.78 s)",
+    "render": "hand2d",
+    "t": 76.375,
+    "frame": 1833,
+    "tags": [],
+    "t_end": 76.4583
+   },
+   "sfx": [
+    {
+     "t": 75.375,
+     "s": "breath_inhale"
+    },
+    {
+     "t": 76.375,
+     "s": "shimmer_attack"
+    },
+    {
+     "t": 76.375,
+     "s": "bass_whoop"
+    },
+    {
+     "t": 75.1667,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D14",
+   "phase": 3,
+   "t0": 76.75,
+   "t1": 78.4583,
+   "dur": 1.7083,
+   "frame0": 1842,
+   "frame1": 1883,
+   "render": "action3d",
+   "camera": "superlaaja yläkuva",
+   "move": "kamera nousee ja kiertää, kultaiset rattaat nousevat",
+   "inserts": null,
+   "action": "MANA ZONE: kultainen kellotaulu leviää koko areenan lattialle, rattaat nousevat ilmaan ja jokainen sadepisara hidastuu.",
+   "chars": [
+    "JUL",
+    "SUS",
+    "CROWD:gasp"
+   ],
+   "engine_chars": [
+    "julius",
+    "susanoo",
+    "crowd:gasp"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1.5,
+   "rain": false,
+   "light": null,
+   "text": "MANA ZONE",
+   "text_style": "WIZARD",
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "MANAZONE_BURST",
+    "pattern": "G1-N2-W1-H2-S2-C2-G2",
+    "frames": 12,
+    "trigger": "Mana Zone leviää (BURST)",
+    "signature": [
+     "JUL"
+    ],
+    "burst": true,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 76.79, kappaleen 66.19 s)",
+    "render": "hand2d",
+    "t": 76.7917,
+    "frame": 1843,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 77.2917
+   },
+   "sfx": [
+    {
+     "t": 76.7917,
+     "s": "clock_bell_tower"
+    },
+    {
+     "t": 76.7917,
+     "s": "boom_long_reverb"
+    },
+    {
+     "t": 76.8333,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 76.9167,
+     "s": "clock_gears"
+    },
+    {
+     "t": 76.7917,
+     "s": "forcefield_tonal"
+    },
+    {
+     "t": 76.7917,
+     "s": "boom_ultra_braam"
+    },
+    {
+     "t": 76.7917,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 76.875,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 77.0,
+     "s": "shing_ring"
+    },
+    {
+     "t": 77.0833,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 77.1667,
+     "s": "glass_hits"
+    },
+    {
+     "t": 77.25,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 76.7917,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 77.1667,
+     "s": "crowd_gasp"
+    },
+    {
+     "t": 76.7917,
+     "s": "bass_dive17"
+    }
+   ]
+  },
+  {
+   "id": "D15",
+   "phase": 3,
+   "t0": 78.4583,
+   "t1": 80.25,
+   "dur": 1.7917,
+   "frame0": 1883,
+   "frame1": 1926,
+   "render": "action3d",
+   "camera": "laaja, magatamat pysähtyvät",
+   "move": "kamera kiertää pysähtyneiden ammusten läpi",
+   "inserts": null,
+   "action": "Susanoo ampuu Yasaka-magatamoja; Julius pysäyttää ne ilmaan ja kääntää niiden ajan: ne lentävät takaisin ja iskevät Susanoon panssariin.",
+   "chars": [
+    "SUS",
+    "JUL"
+   ],
+   "engine_chars": [
+    "susanoo",
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "SHOCKWAVE_RING",
+    "pattern": "R1-W1-R1",
+    "frames": 3,
+    "trigger": "magatamat iskeytyvät takaisin",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 79.42, kappaleen 68.82 s)",
+    "render": "hand2d",
+    "t": 79.4167,
+    "frame": 1906,
+    "tags": [],
+    "t_end": 79.5417
+   },
+   "sfx": [
+    {
+     "t": 78.5,
+     "s": "beam_anime01"
+    },
+    {
+     "t": 78.5833,
+     "s": "beam_anime01"
+    },
+    {
+     "t": 78.6667,
+     "s": "beam_anime01"
+    },
+    {
+     "t": 78.875,
+     "s": "time_freeze_crystal"
+    },
+    {
+     "t": 79.0417,
+     "s": "time_reverse_glass02"
+    },
+    {
+     "t": 79.0417,
+     "s": "tape_rewind"
+    },
+    {
+     "t": 79.125,
+     "s": "time_reverse"
+    },
+    {
+     "t": 79.0417,
+     "s": "clockwork_snap"
+    },
+    {
+     "t": 79.2917,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 79.4167,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 79.4167,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 79.4167,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 79.4583,
+     "s": "stone_debris02"
+    },
+    {
+     "t": 79.4167,
+     "s": "metal_clash01"
+    }
+   ]
+  },
+  {
+   "id": "D16",
+   "phase": 3,
+   "t0": 80.25,
+   "t1": 81.5417,
+   "dur": 1.2917,
+   "frame0": 1926,
+   "frame1": 1957,
+   "render": "hand2d",
+   "camera": "Susanoon sisältä, hand2d",
+   "move": "kamera tärisee",
+   "inserts": null,
+   "action": "Susanoo horjahtaa, Yata-peili ylhäällä; sisällä Itachi huohottaa, verta suupielessä.",
+   "chars": [
+    "ITA",
+    "SUS"
+   ],
+   "engine_chars": [
+    "itachi",
+    "susanoo"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 80.25,
+     "s": "boom_heavy_rumble"
+    },
+    {
+     "t": 80.5417,
+     "s": "breath_inhale"
+    },
+    {
+     "t": 80.6667,
+     "s": "heartbeat"
+    }
+   ]
+  },
+  {
+   "id": "D17",
+   "phase": 3,
+   "t0": 81.5417,
+   "t1": 83.25,
+   "dur": 1.7083,
+   "frame0": 1957,
+   "frame1": 1998,
+   "render": "action3d",
+   "camera": "sakuga, Totsuka vs kellosymbolit",
+   "move": "whip pan -> snap zoom -> orbit, 3 leikkausta",
+   "inserts": "3 leikkausta",
+   "action": "SAKUGA: Totsuka-miekka viiltää, Julius hyppii pysäytettyjen hetkien välillä (jälkikuvat), kellosymbolit sirpaloituvat.",
+   "chars": [
+    "SUS",
+    "JUL"
+   ],
+   "engine_chars": [
+    "susanoo",
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "SUMI_INK",
+    "pattern": "K1-W1-K1",
+    "frames": 3,
+    "trigger": "miekka sirpaloi kellokilven",
+    "signature": [
+     "ITA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 82.12, kappaleen 71.53 s)",
+    "render": "hand2d",
+    "t": 82.125,
+    "frame": 1971,
+    "tags": [],
+    "t_end": 82.25
+   },
+   "sfx": [
+    {
+     "t": 81.5833,
+     "s": "blade_whoosh_impact"
+    },
+    {
+     "t": 81.7083,
+     "s": "sword_clashes"
+    },
+    {
+     "t": 81.7083,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 82.0417,
+     "s": "blade_whoosh_impact"
+    },
+    {
+     "t": 82.125,
+     "s": "sword_clashes"
+    },
+    {
+     "t": 82.125,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 82.125,
+     "s": "glass_hits"
+    },
+    {
+     "t": 82.625,
+     "s": "teleport_magic"
+    }
+   ]
+  },
+  {
+   "id": "D18",
+   "phase": 3,
+   "t0": 83.25,
+   "t1": 84.8333,
+   "dur": 1.5833,
+   "frame0": 1998,
+   "frame1": 2036,
+   "render": "action3d",
+   "camera": "laaja, Julius juoksee Susanoon käsivartta pitkin",
+   "move": "kamera seuraa sivulta hidastettuna",
+   "inserts": null,
+   "action": "Julius juoksee ylös Susanoon käsivartta hidastetussa ajassa, pysähtyneet sadepisarat ympärillään kuin tähtiä.",
+   "chars": [
+    "JUL",
+    "SUS"
+   ],
+   "engine_chars": [
+    "julius",
+    "susanoo"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "GOLD_BURN",
+    "pattern": "G1-W1-G1",
+    "frames": 3,
+    "trigger": "Julius loikkaa",
+    "signature": [
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 84.33, kappaleen 73.73 s)",
+    "render": "hand2d",
+    "t": 84.3333,
+    "frame": 2024,
+    "tags": [],
+    "t_end": 84.4583
+   },
+   "sfx": [
+    {
+     "t": 83.25,
+     "s": "footsteps"
+    },
+    {
+     "t": 83.4583,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 84.3333,
+     "s": "whoosh_big01"
+    }
+   ]
+  },
+  {
+   "id": "D19",
+   "phase": 3,
+   "t0": 84.8333,
+   "t1": 86.4583,
+   "dur": 1.625,
+   "frame0": 2036,
+   "frame1": 2075,
+   "render": "action3d",
+   "camera": "superlaaja, kehä halkeaa",
+   "move": "kamera tärähtää, lentää taaksepäin",
+   "inserts": null,
+   "action": "Susanoo lyö, Julius torjuu kellokilvellä; molemmat liukuvat erilleen ja areenan lattia halkeaa kahtia.",
+   "chars": [
+    "SUS",
+    "JUL",
+    "CROWD:panic"
+   ],
+   "engine_chars": [
+    "susanoo",
+    "julius",
+    "crowd:panic"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 1.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "WORLD_BREAKER",
+    "pattern": "N1-W1",
+    "frames": 2,
+    "trigger": "lattia halkeaa",
+    "signature": [
+     "ITA",
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 85.25, kappaleen 74.65 s)",
+    "render": "hand2d",
+    "t": 85.25,
+    "frame": 2046,
+    "tags": [],
+    "t_end": 85.3333
+   },
+   "sfx": [
+    {
+     "t": 85.125,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 85.25,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 85.25,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 85.25,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 85.2917,
+     "s": "stone_debris02"
+    },
+    {
+     "t": 85.25,
+     "s": "stone_debris04"
+    },
+    {
+     "t": 85.25,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 85.2917,
+     "s": "rocks_heavy_debris"
+    },
+    {
+     "t": 85.25,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 85.3333,
+     "s": "earthquake_rumble"
+    },
+    {
+     "t": 85.3333,
+     "s": "crowd_panic"
+    },
+    {
+     "t": 84.8333,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D20",
+   "phase": 3,
+   "t0": 86.4583,
+   "t1": 88.0417,
+   "dur": 1.5834,
+   "frame0": 2075,
+   "frame1": 2113,
+   "render": "action3d",
+   "camera": "laaja kahden kuva, myrsky",
+   "move": "hidas push-in, salamat (myrskyn nousu)",
+   "inserts": null,
+   "action": "MYRSKY NOUSEE: Susanoo nostaa Totsuka-miekan, Julius kerää kultaista manaa nyrkkiinsä. Salamat, sade palaa raskaana.",
+   "chars": [
+    "SUS",
+    "JUL"
+   ],
+   "engine_chars": [
+    "susanoo",
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 2,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "LIGHTNING_NEG",
+    "pattern": "W1-N1",
+    "frames": 2,
+    "trigger": "salama",
+    "signature": [
+     "ARENA"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 87.04, kappaleen 76.44 s)",
+    "render": "hand2d",
+    "t": 87.0417,
+    "frame": 2089,
+    "tags": [],
+    "t_end": 87.125
+   },
+   "sfx": [
+    {
+     "t": 87.0417,
+     "s": "thunder_clap"
+    },
+    {
+     "t": 86.4583,
+     "s": "rain_thunder_heavy"
+    },
+    {
+     "t": 86.75,
+     "s": "charge_shing"
+    },
+    {
+     "t": 86.4583,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D21",
+   "phase": 3,
+   "t0": 88.0417,
+   "t1": 89.5417,
+   "dur": 1.5,
+   "frame0": 2113,
+   "frame1": 2149,
+   "render": "action3d",
+   "camera": "matala, molemmat ryntäävät",
+   "move": "kamera vetäytyy juoksun edellä",
+   "inserts": null,
+   "action": "Molemmat ryntäävät: punainen ja kultainen vana repivät sateen.",
+   "chars": [
+    "SUS",
+    "JUL"
+   ],
+   "engine_chars": [
+    "susanoo",
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 2,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": null,
+   "sfx": [
+    {
+     "t": 90.7917,
+     "s": "riser_braam"
+    },
+    {
+     "t": 88.125,
+     "s": "whoosh_energy_var"
+    },
+    {
+     "t": 88.2083,
+     "s": "giant_step03"
+    },
+    {
+     "t": 88.5417,
+     "s": "whoosh_dark_fast"
+    },
+    {
+     "t": 88.0417,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D22",
+   "phase": 3,
+   "t0": 89.5417,
+   "t1": 90.75,
+   "dur": 1.2083,
+   "frame0": 2149,
+   "frame1": 2178,
+   "render": "hand2d",
+   "camera": "ECU jaettu ruutu, hand2d",
+   "move": "täysi pysähdys, mikro push-in",
+   "inserts": null,
+   "action": "Jaettu ruutu: Mangekyō punaisena | Juliuksen kultainen silmä, jonka iiriksessä kellotaulu.",
+   "chars": [
+    "ITA",
+    "JUL"
+   ],
+   "engine_chars": [
+    "itachi",
+    "julius"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 2,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "DUAL_TONE",
+    "pattern": "D1-W1",
+    "frames": 2,
+    "trigger": "katseet lukittuvat",
+    "signature": [
+     "ITA",
+     "JUL"
+    ],
+    "burst": false,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (vapaa kohta 89.58, kappaleen 78.98 s)",
+    "render": "hand2d",
+    "t": 89.5833,
+    "frame": 2150,
+    "tags": [],
+    "t_end": 89.6667
+   },
+   "sfx": [
+    {
+     "t": 89.5833,
+     "s": "shing_ring"
+    },
+    {
+     "t": 89.5417,
+     "s": "heartbeat"
+    },
+    {
+     "t": 89.5417,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "D23",
+   "phase": 3,
+   "t0": 90.75,
+   "t1": 92.5833,
+   "dur": 1.8333,
+   "frame0": 2178,
+   "frame1": 2222,
+   "render": "action3d",
+   "camera": "superlaaja, törmäyspiste",
+   "move": "kamera tärähtää, valkoinen välähdys, shokkiaalto",
+   "inserts": null,
+   "action": "TÖRMÄYS (myrskyn aksentti 90.78): Susanoon nyrkki ja Juliuksen kellotaulukämmen kohtaavat. Paineaalto lakaisee sateen, siluetit kaatuvat taaksepäin.",
+   "chars": [
+    "SUS",
+    "JUL",
+    "CROWD:panic"
+   ],
+   "engine_chars": [
+    "susanoo",
+    "julius",
+    "crowd:panic"
+   ],
+   "background": "ARENA",
+   "background_desc": "Valhalla-kolosseumi YÖLLÄ (harry-vs-gojon valhalla, uusi puku): märkä hiekka, sade, punainen kuu pilvien raossa, soihdut sateessa, portit (länsi = Itachi: punaiset lyhdyt, varikset; itä = Julius: kultainen kellotaulu). Katsomoissa siluetteja. Vaurio `dmg` 0-3 kasvaa.",
+   "dmg": 2,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": null,
+   "impact": {
+    "style": "CLASH_BURST",
+    "pattern": "W1-N2-R2-G2-H2-S2-F1",
+    "frames": 12,
+    "trigger": "Susanoo vs Mana Zone (BURST)",
+    "signature": [
+     "ITA",
+     "JUL"
+    ],
+    "burst": true,
+    "music_sync": "Grieg Peer Gynt's Homecoming (Stormy Evening o (aksentti 90.79, kappaleen 80.19 s)",
+    "render": "hand2d",
+    "t": 90.7917,
+    "frame": 2179,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 91.2917
+   },
+   "sfx": [
+    {
+     "t": 90.6667,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 90.7917,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 90.7917,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 90.7917,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 90.8333,
+     "s": "stone_debris02"
+    },
+    {
+     "t": 90.7917,
+     "s": "clock_bell_tower"
+    },
+    {
+     "t": 90.7917,
+     "s": "boom_long_reverb"
+    },
+    {
+     "t": 90.75,
+     "s": "choir_rise_dark"
+    },
+    {
+     "t": 90.9583,
+     "s": "bone_heavy"
+    },
+    {
+     "t": 91.0417,
+     "s": "fire_roar_burst"
+    },
+    {
+     "t": 91.1667,
+     "s": "boom_ultra_braam"
+    },
+    {
+     "t": 90.7917,
+     "s": "explosion_huge_var"
+    },
+    {
+     "t": 90.7917,
+     "s": "air_blast"
+    },
+    {
+     "t": 90.7917,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 90.875,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 90.9583,
+     "s": "shing_ring"
+    },
+    {
+     "t": 91.0417,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 91.125,
+     "s": "glass_hits"
+    },
+    {
+     "t": 91.25,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 91.3333,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 90.7917,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 91.0417,
+     "s": "crowd_panic"
+    },
+    {
+     "t": 90.7917,
+     "s": "bass_dive17"
+    },
+    {
+     "t": 90.75,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T01",
+   "phase": 4,
+   "t0": 92.5833,
+   "t1": 94.5833,
+   "dur": 2.0,
+   "frame0": 2222,
+   "frame1": 2270,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T01)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": "musiikki: katso spoilers.md (92.58)",
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 93.1667,
+    "frame": 2236,
+    "tags": [],
+    "t_end": 93.25
+   },
+   "sfx": [
+    {
+     "t": 92.5833,
+     "s": "dust_settle"
+    },
+    {
+     "t": 93.1667,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 93.25,
+     "s": "clock_gears"
+    },
+    {
+     "t": 93.7917,
+     "s": "clock_bell_antique"
+    },
+    {
+     "t": 92.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T02",
+   "phase": 4,
+   "t0": 94.5833,
+   "t1": 96.4167,
+   "dur": 1.8334,
+   "frame0": 2270,
+   "frame1": 2314,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T02)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 94.7917,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 94.5833,
+     "s": "heartbeat"
+    },
+    {
+     "t": 94.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T03",
+   "phase": 4,
+   "t0": 96.4167,
+   "t1": 98.4167,
+   "dur": 2.0,
+   "frame0": 2314,
+   "frame1": 2362,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T03)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 96.5,
+     "s": "breath_inhale"
+    },
+    {
+     "t": 97.3333,
+     "s": "bone_crack"
+    },
+    {
+     "t": 96.4167,
+     "s": "heartbeat"
+    },
+    {
+     "t": 96.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T04",
+   "phase": 4,
+   "t0": 98.4167,
+   "t1": 100.4167,
+   "dur": 2.0,
+   "frame0": 2362,
+   "frame1": 2410,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T04)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 98.4167,
+     "s": "crowd_swell_quiet"
+    },
+    {
+     "t": 98.625,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 98.9167,
+     "s": "pour"
+    },
+    {
+     "t": 98.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T05",
+   "phase": 4,
+   "t0": 100.4167,
+   "t1": 102.0,
+   "dur": 1.5833,
+   "frame0": 2410,
+   "frame1": 2448,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T05)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 12,
+    "trigger": "katso spoilers.md (BURST)",
+    "signature": [
+     "X"
+    ],
+    "burst": true,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 100.5,
+    "frame": 2412,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 101.0
+   },
+   "sfx": [
+    {
+     "t": 100.5,
+     "s": "shimmer_attack"
+    },
+    {
+     "t": 100.5,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 100.5417,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 100.5,
+     "s": "shing_ring"
+    },
+    {
+     "t": 100.5,
+     "s": "evil_incant"
+    },
+    {
+     "t": 100.5,
+     "s": "reverse_swell_hit"
+    },
+    {
+     "t": 100.625,
+     "s": "drone_dark"
+    },
+    {
+     "t": 100.5,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 100.625,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 100.7083,
+     "s": "shing_ring"
+    },
+    {
+     "t": 100.7917,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 100.875,
+     "s": "glass_hits"
+    },
+    {
+     "t": 100.9583,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 100.5,
+     "s": "subdrop_50"
+    }
+   ]
+  },
+  {
+   "id": "T06",
+   "phase": 4,
+   "t0": 102.0,
+   "t1": 104.0,
+   "dur": 2.0,
+   "frame0": 2448,
+   "frame1": 2496,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T06)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 102.0,
+     "s": "evil_incant"
+    },
+    {
+     "t": 102.0,
+     "s": "reverse_swell_hit"
+    },
+    {
+     "t": 102.0833,
+     "s": "drone_dark"
+    },
+    {
+     "t": 102.5,
+     "s": "raven_wings_flyby"
+    },
+    {
+     "t": 102.5417,
+     "s": "wings_flap"
+    },
+    {
+     "t": 102.6667,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 102.875,
+     "s": "crow_caw_single"
+    }
+   ]
+  },
+  {
+   "id": "T07",
+   "phase": 4,
+   "t0": 104.0,
+   "t1": 106.0,
+   "dur": 2.0,
+   "frame0": 2496,
+   "frame1": 2544,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T07)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 105.2083,
+    "frame": 2525,
+    "tags": [],
+    "t_end": 105.3333
+   },
+   "sfx": [
+    {
+     "t": 104.0,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 104.0417,
+     "s": "clock_gears"
+    },
+    {
+     "t": 104.5,
+     "s": "clock_bell_tower"
+    },
+    {
+     "t": 105.2083,
+     "s": "boom_cine_deep"
+    }
+   ]
+  },
+  {
+   "id": "T08",
+   "phase": 4,
+   "t0": 106.0,
+   "t1": 107.7917,
+   "dur": 1.7917,
+   "frame0": 2544,
+   "frame1": 2587,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T08)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 106.7917,
+    "frame": 2563,
+    "tags": [],
+    "t_end": 106.9167
+   },
+   "sfx": [
+    {
+     "t": 106.7917,
+     "s": "glass_huge_smash"
+    },
+    {
+     "t": 106.7917,
+     "s": "mirror_break"
+    },
+    {
+     "t": 106.7917,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 106.7917,
+     "s": "subdrop_40"
+    }
+   ]
+  },
+  {
+   "id": "T09",
+   "phase": 4,
+   "t0": 107.7917,
+   "t1": 109.4167,
+   "dur": 1.625,
+   "frame0": 2587,
+   "frame1": 2626,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T09)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 108.0833,
+    "frame": 2594,
+    "tags": [],
+    "t_end": 108.1667
+   },
+   "sfx": [
+    {
+     "t": 107.7917,
+     "s": "rain_thunder_heavy"
+    },
+    {
+     "t": 108.0833,
+     "s": "bodyfall_var"
+    },
+    {
+     "t": 108.2917,
+     "s": "flesh_wet16"
+    },
+    {
+     "t": 108.5833,
+     "s": "power_down_shimmer"
+    },
+    {
+     "t": 107.7917,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T10",
+   "phase": 4,
+   "t0": 109.4167,
+   "t1": 111.2083,
+   "dur": 1.7916,
+   "frame0": 2626,
+   "frame1": 2669,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T10)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 109.6667,
+    "frame": 2632,
+    "tags": [],
+    "t_end": 109.7917
+   },
+   "sfx": [
+    {
+     "t": 109.4167,
+     "s": "choir_rise_dark"
+    },
+    {
+     "t": 109.625,
+     "s": "bone_heavy"
+    },
+    {
+     "t": 109.7083,
+     "s": "fire_roar_burst"
+    },
+    {
+     "t": 109.6667,
+     "s": "boom_ultra_braam"
+    },
+    {
+     "t": 109.6667,
+     "s": "katana_draw"
+    },
+    {
+     "t": 109.6667,
+     "s": "unsheathe_ring"
+    },
+    {
+     "t": 109.7083,
+     "s": "fire_roar_burst"
+    },
+    {
+     "t": 109.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T11",
+   "phase": 4,
+   "t0": 111.2083,
+   "t1": 113.0,
+   "dur": 1.7917,
+   "frame0": 2669,
+   "frame1": 2712,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T11)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 111.625,
+    "frame": 2679,
+    "tags": [],
+    "t_end": 111.75
+   },
+   "sfx": [
+    {
+     "t": 111.2083,
+     "s": "blade_whoosh_impact"
+    },
+    {
+     "t": 111.2917,
+     "s": "sword_clashes"
+    },
+    {
+     "t": 111.2917,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 111.625,
+     "s": "teleport_magic"
+    },
+    {
+     "t": 111.625,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 112.2083,
+     "s": "metal_clash02"
+    },
+    {
+     "t": 112.2083,
+     "s": "forcefield_elec"
+    },
+    {
+     "t": 111.2083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T12",
+   "phase": 4,
+   "t0": 113.0,
+   "t1": 114.5833,
+   "dur": 1.5833,
+   "frame0": 2712,
+   "frame1": 2750,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T12)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 113.7083,
+    "frame": 2729,
+    "tags": [],
+    "t_end": 113.7917
+   },
+   "sfx": [
+    {
+     "t": 113.2917,
+     "s": "crow_flock_angry"
+    },
+    {
+     "t": 113.2917,
+     "s": "birds_flock"
+    },
+    {
+     "t": 113.2917,
+     "s": "poof_smoke"
+    },
+    {
+     "t": 113.3333,
+     "s": "wings_flap"
+    },
+    {
+     "t": 113.7083,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 113.7083,
+     "s": "shimmer_attack"
+    },
+    {
+     "t": 113.0,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T13",
+   "phase": 4,
+   "t0": 114.5833,
+   "t1": 116.2083,
+   "dur": 1.625,
+   "frame0": 2750,
+   "frame1": 2789,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T13)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 114.5833,
+     "s": "heartbeat_100"
+    },
+    {
+     "t": 114.5833,
+     "s": "drone_dark_sub"
+    },
+    {
+     "t": 116.1667,
+     "s": "riser_rev_impact"
+    },
+    {
+     "t": 114.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T14",
+   "phase": 4,
+   "t0": 116.2083,
+   "t1": 118.7917,
+   "dur": 2.5834,
+   "frame0": 2789,
+   "frame1": 2851,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T14)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 12,
+    "trigger": "katso spoilers.md (BURST)",
+    "signature": [
+     "X"
+    ],
+    "burst": true,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 117.9583,
+    "frame": 2831,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 118.4583
+   },
+   "sfx": [
+    {
+     "t": 117.7917,
+     "s": "blade_whoosh_impact"
+    },
+    {
+     "t": 117.9583,
+     "s": "stab_bloody"
+    },
+    {
+     "t": 117.9583,
+     "s": "sword_slice02"
+    },
+    {
+     "t": 117.8333,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 117.9583,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 117.9583,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 117.9583,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 118.0,
+     "s": "stone_debris02"
+    },
+    {
+     "t": 117.9583,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 118.0417,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 118.125,
+     "s": "shing_ring"
+    },
+    {
+     "t": 118.2083,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 118.3333,
+     "s": "glass_hits"
+    },
+    {
+     "t": 118.4167,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 118.125,
+     "s": "evil_incant"
+    },
+    {
+     "t": 118.125,
+     "s": "suction_implosion"
+    },
+    {
+     "t": 117.9583,
+     "s": "bass_dive13"
+    },
+    {
+     "t": 116.2083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T15",
+   "phase": 4,
+   "t0": 118.7917,
+   "t1": 120.4167,
+   "dur": 1.625,
+   "frame0": 2851,
+   "frame1": 2890,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T15)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 118.8333,
+    "frame": 2852,
+    "tags": [],
+    "t_end": 118.9583
+   },
+   "sfx": [
+    {
+     "t": 118.8333,
+     "s": "time_reverse_glass02"
+    },
+    {
+     "t": 118.8333,
+     "s": "tape_rewind"
+    },
+    {
+     "t": 118.875,
+     "s": "time_reverse"
+    },
+    {
+     "t": 118.8333,
+     "s": "clockwork_snap"
+    },
+    {
+     "t": 118.8333,
+     "s": "clock_bell_tower"
+    },
+    {
+     "t": 118.8333,
+     "s": "boom_long_reverb"
+    },
+    {
+     "t": 118.8333,
+     "s": "reverse_whoosh"
+    },
+    {
+     "t": 119.2917,
+     "s": "crow_caw_spooky"
+    }
+   ]
+  },
+  {
+   "id": "T16",
+   "phase": 4,
+   "t0": 120.4167,
+   "t1": 121.5833,
+   "dur": 1.1666,
+   "frame0": 2890,
+   "frame1": 2918,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T16)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 120.9583,
+    "frame": 2903,
+    "tags": [],
+    "t_end": 121.0417
+   },
+   "sfx": [
+    {
+     "t": 120.7083,
+     "s": "blade_whoosh_impact"
+    },
+    {
+     "t": 120.9583,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 121.2083,
+     "s": "shimmer_attack"
+    },
+    {
+     "t": 121.2083,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 121.25,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 121.2083,
+     "s": "shing_ring"
+    },
+    {
+     "t": 120.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T17",
+   "phase": 4,
+   "t0": 121.5833,
+   "t1": 123.0,
+   "dur": 1.4167,
+   "frame0": 2918,
+   "frame1": 2952,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T17)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 121.5833,
+     "s": "drone_dark"
+    },
+    {
+     "t": 122.1667,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 121.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T18",
+   "phase": 4,
+   "t0": 123.0,
+   "t1": 124.7917,
+   "dur": 1.7917,
+   "frame0": 2952,
+   "frame1": 2995,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T18)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 12,
+    "trigger": "katso spoilers.md (BURST)",
+    "signature": [
+     "X"
+    ],
+    "burst": true,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 123.7917,
+    "frame": 2971,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 124.2917
+   },
+   "sfx": [
+    {
+     "t": 123.2917,
+     "s": "breath_inhale"
+    },
+    {
+     "t": 123.7917,
+     "s": "shimmer_attack"
+    },
+    {
+     "t": 123.7917,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 123.7917,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 123.7917,
+     "s": "shing_ring"
+    },
+    {
+     "t": 123.7917,
+     "s": "power_down_shimmer"
+    },
+    {
+     "t": 123.7917,
+     "s": "choir_braam"
+    },
+    {
+     "t": 123.7917,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 123.875,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 123.9583,
+     "s": "shing_ring"
+    },
+    {
+     "t": 124.0417,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 124.125,
+     "s": "glass_hits"
+    },
+    {
+     "t": 124.25,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 123.7917,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 123.0,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T19",
+   "phase": 4,
+   "t0": 124.7917,
+   "t1": 126.4167,
+   "dur": 1.625,
+   "frame0": 2995,
+   "frame1": 3034,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T19)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 125.2917,
+    "frame": 3007,
+    "tags": [],
+    "t_end": 125.4167
+   },
+   "sfx": [
+    {
+     "t": 125.2917,
+     "s": "stab_squelch"
+    },
+    {
+     "t": 125.2917,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 125.5833,
+     "s": "time_reverse_glass02"
+    },
+    {
+     "t": 125.5833,
+     "s": "tape_rewind"
+    },
+    {
+     "t": 125.625,
+     "s": "time_reverse"
+    },
+    {
+     "t": 125.5833,
+     "s": "clockwork_snap"
+    }
+   ]
+  },
+  {
+   "id": "T20",
+   "phase": 4,
+   "t0": 126.4167,
+   "t1": 128.0,
+   "dur": 1.5833,
+   "frame0": 3034,
+   "frame1": 3072,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T20)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 126.6667,
+    "frame": 3040,
+    "tags": [],
+    "t_end": 126.7917
+   },
+   "sfx": [
+    {
+     "t": 126.6667,
+     "s": "stab_bloody"
+    },
+    {
+     "t": 126.6667,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 127.0,
+     "s": "time_reverse_glass02"
+    },
+    {
+     "t": 127.0,
+     "s": "tape_rewind"
+    },
+    {
+     "t": 127.0833,
+     "s": "time_reverse"
+    },
+    {
+     "t": 127.0,
+     "s": "clockwork_snap"
+    },
+    {
+     "t": 127.5,
+     "s": "clock_bell_antique"
+    }
+   ]
+  },
+  {
+   "id": "T21",
+   "phase": 4,
+   "t0": 128.0,
+   "t1": 129.5833,
+   "dur": 1.5833,
+   "frame0": 3072,
+   "frame1": 3110,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T21)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 128.875,
+    "frame": 3093,
+    "tags": [],
+    "t_end": 129.0
+   },
+   "sfx": [
+    {
+     "t": 128.2083,
+     "s": "stab_squelch"
+    },
+    {
+     "t": 128.5417,
+     "s": "stab_squelch"
+    },
+    {
+     "t": 128.875,
+     "s": "stab_bloody"
+    },
+    {
+     "t": 129.0,
+     "s": "time_reverse_glass02"
+    },
+    {
+     "t": 129.0,
+     "s": "tape_rewind"
+    },
+    {
+     "t": 129.0417,
+     "s": "time_reverse"
+    },
+    {
+     "t": 129.0,
+     "s": "clockwork_snap"
+    },
+    {
+     "t": 128.875,
+     "s": "glitch_hit"
+    }
+   ]
+  },
+  {
+   "id": "T22",
+   "phase": 4,
+   "t0": 129.5833,
+   "t1": 131.4167,
+   "dur": 1.8334,
+   "frame0": 3110,
+   "frame1": 3154,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T22)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 129.5833,
+     "s": "crowd_swell_quiet"
+    },
+    {
+     "t": 129.7917,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 129.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "T23",
+   "phase": 4,
+   "t0": 131.4167,
+   "t1": 133.4167,
+   "dur": 2.0,
+   "frame0": 3154,
+   "frame1": 3202,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T23)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 132.0833,
+    "frame": 3170,
+    "tags": [],
+    "t_end": 132.1667
+   },
+   "sfx": [
+    {
+     "t": 131.5,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 131.7083,
+     "s": "heartbeat_100"
+    },
+    {
+     "t": 132.0833,
+     "s": "glass_resonance"
+    }
+   ]
+  },
+  {
+   "id": "T24",
+   "phase": 4,
+   "t0": 133.4167,
+   "t1": 135.9167,
+   "dur": 2.5,
+   "frame0": 3202,
+   "frame1": 3262,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T24)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 133.4167,
+     "s": "drone_dark_sub"
+    },
+    {
+     "t": 133.8333,
+     "s": "heartbeat"
+    },
+    {
+     "t": 135.9583,
+     "s": "riser_rev_impact"
+    }
+   ]
+  },
+  {
+   "id": "T25",
+   "phase": 4,
+   "t0": 135.9167,
+   "t1": 137.0,
+   "dur": 1.0833,
+   "frame0": 3262,
+   "frame1": 3288,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "käänne (katso spoilers.md#T25)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 2.5,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "TWIST",
+   "impact": {
+    "style": "X-TWIST",
+    "pattern": "X",
+    "frames": 12,
+    "trigger": "katso spoilers.md (BURST)",
+    "signature": [
+     "X"
+    ],
+    "burst": true,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 135.9167,
+    "frame": 3262,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 136.4167
+   },
+   "sfx": [
+    {
+     "t": 135.9167,
+     "s": "mirror_break"
+    },
+    {
+     "t": 135.9167,
+     "s": "glass_big_smash"
+    },
+    {
+     "t": 135.9167,
+     "s": "stab_bloody"
+    },
+    {
+     "t": 135.9167,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 136.0417,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 136.125,
+     "s": "shing_ring"
+    },
+    {
+     "t": 136.2083,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 136.2917,
+     "s": "glass_hits"
+    },
+    {
+     "t": 136.375,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 135.9167,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 136.2083,
+     "s": "tinnitus"
+    },
+    {
+     "t": 135.9167,
+     "s": "bass_dive17"
+    }
+   ]
+  },
+  {
+   "id": "J01",
+   "phase": 5,
+   "t0": 137.0,
+   "t1": 138.9167,
+   "dur": 1.9167,
+   "frame0": 3288,
+   "frame1": 3334,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J01)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": "musiikki: katso spoilers.md (137.00)",
+   "masked": "FINALE",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 137.0,
+     "s": "rain_thunder_heavy"
+    },
+    {
+     "t": 137.2917,
+     "s": "breath_inhale"
+    },
+    {
+     "t": 137.5833,
+     "s": "boom_cine_low"
+    },
+    {
+     "t": 137.0,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "J02",
+   "phase": 5,
+   "t0": 138.9167,
+   "t1": 140.4167,
+   "dur": 1.5,
+   "frame0": 3334,
+   "frame1": 3370,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J02)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 139.0,
+    "frame": 3336,
+    "tags": [],
+    "t_end": 139.125
+   },
+   "sfx": [
+    {
+     "t": 138.9167,
+     "s": "choir_rise_dark"
+    },
+    {
+     "t": 139.125,
+     "s": "bone_heavy"
+    },
+    {
+     "t": 139.2083,
+     "s": "fire_roar_burst"
+    },
+    {
+     "t": 139.3333,
+     "s": "boom_ultra_braam"
+    },
+    {
+     "t": 139.0,
+     "s": "boom_cine_deep"
+    },
+    {
+     "t": 139.5,
+     "s": "glass_resonance"
+    },
+    {
+     "t": 138.9167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "J03",
+   "phase": 5,
+   "t0": 140.4167,
+   "t1": 142.0,
+   "dur": 1.5833,
+   "frame0": 3370,
+   "frame1": 3408,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J03)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 140.4167,
+     "s": "page_turn"
+    },
+    {
+     "t": 140.4583,
+     "s": "time_incant"
+    },
+    {
+     "t": 140.5,
+     "s": "spell_light_cast"
+    },
+    {
+     "t": 140.7083,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 140.75,
+     "s": "clock_gears"
+    },
+    {
+     "t": 141.2083,
+     "s": "whoosh_big01"
+    },
+    {
+     "t": 140.4167,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "J04",
+   "phase": 5,
+   "t0": 142.0,
+   "t1": 144.0,
+   "dur": 2.0,
+   "frame0": 3408,
+   "frame1": 3456,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J04)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 12,
+    "trigger": "katso spoilers.md (BURST)",
+    "signature": [
+     "X"
+    ],
+    "burst": true,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 143.3333,
+    "frame": 3440,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 143.8333
+   },
+   "sfx": [
+    {
+     "t": 143.3333,
+     "s": "riser_braam"
+    },
+    {
+     "t": 143.3333,
+     "s": "trailer_swell_reverse"
+    },
+    {
+     "t": 143.3333,
+     "s": "time_freeze_crystal"
+    },
+    {
+     "t": 143.3333,
+     "s": "time_cast_glassy"
+    },
+    {
+     "t": 143.3333,
+     "s": "clock_bell_antique"
+    },
+    {
+     "t": 143.3333,
+     "s": "boom_cine_deep"
+    },
+    {
+     "t": 143.3333,
+     "s": "clock_bell_tower"
+    },
+    {
+     "t": 143.3333,
+     "s": "boom_long_reverb"
+    },
+    {
+     "t": 143.3333,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 143.4167,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 143.5,
+     "s": "shing_ring"
+    },
+    {
+     "t": 143.625,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 143.7083,
+     "s": "glass_hits"
+    },
+    {
+     "t": 143.7917,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 143.3333,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 143.3333,
+     "s": "bass_dive17"
+    },
+    {
+     "t": 142.0,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "J05",
+   "phase": 5,
+   "t0": 144.0,
+   "t1": 145.5833,
+   "dur": 1.5833,
+   "frame0": 3456,
+   "frame1": 3494,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J05)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 144.8333,
+    "frame": 3476,
+    "tags": [],
+    "t_end": 144.9583
+   },
+   "sfx": [
+    {
+     "t": 144.0833,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 144.8333,
+     "s": "glass_resonance"
+    },
+    {
+     "t": 144.8333,
+     "s": "ice_crack_series"
+    },
+    {
+     "t": 144.8333,
+     "s": "boom_dark_lowhit"
+    }
+   ]
+  },
+  {
+   "id": "J06",
+   "phase": 5,
+   "t0": 145.5833,
+   "t1": 147.2083,
+   "dur": 1.625,
+   "frame0": 3494,
+   "frame1": 3533,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J06)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 145.5833,
+     "s": "drone_dark_sub"
+    }
+   ]
+  },
+  {
+   "id": "J07",
+   "phase": 5,
+   "t0": 147.2083,
+   "t1": 149.2083,
+   "dur": 2.0,
+   "frame0": 3533,
+   "frame1": 3581,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J07)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 148.9167,
+    "frame": 3574,
+    "tags": [],
+    "t_end": 149.0417
+   },
+   "sfx": [
+    {
+     "t": 147.625,
+     "s": "glass_huge_smash"
+    },
+    {
+     "t": 147.6667,
+     "s": "ice_break_debris"
+    },
+    {
+     "t": 148.7917,
+     "s": "blade_whoosh_impact"
+    },
+    {
+     "t": 148.9167,
+     "s": "sword_clashes"
+    },
+    {
+     "t": 148.9167,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 148.9167,
+     "s": "forcefield_tonal"
+    },
+    {
+     "t": 148.9167,
+     "s": "subdrop_40"
+    }
+   ]
+  },
+  {
+   "id": "J08",
+   "phase": 5,
+   "t0": 149.2083,
+   "t1": 151.2083,
+   "dur": 2.0,
+   "frame0": 3581,
+   "frame1": 3629,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J08)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 150.2917,
+    "frame": 3607,
+    "tags": [],
+    "t_end": 150.375
+   },
+   "sfx": [
+    {
+     "t": 149.2917,
+     "s": "blade_whoosh_impact"
+    },
+    {
+     "t": 149.4167,
+     "s": "sword_clashes"
+    },
+    {
+     "t": 149.4167,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 149.75,
+     "s": "swish_var01"
+    },
+    {
+     "t": 149.7917,
+     "s": "punch_hard_var"
+    },
+    {
+     "t": 149.7917,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 149.8333,
+     "s": "punch_body_var"
+    },
+    {
+     "t": 150.2917,
+     "s": "breath_inhale"
+    },
+    {
+     "t": 150.2917,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 150.625,
+     "s": "crow_flock_angry"
+    },
+    {
+     "t": 150.625,
+     "s": "birds_flock"
+    },
+    {
+     "t": 150.625,
+     "s": "poof_smoke"
+    },
+    {
+     "t": 150.625,
+     "s": "wings_flap"
+    }
+   ]
+  },
+  {
+   "id": "J09",
+   "phase": 5,
+   "t0": 151.2083,
+   "t1": 152.7917,
+   "dur": 1.5834,
+   "frame0": 3629,
+   "frame1": 3667,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J09)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 151.2083,
+     "s": "heartbeat"
+    },
+    {
+     "t": 151.5,
+     "s": "cloth_flaps"
+    }
+   ]
+  },
+  {
+   "id": "J10",
+   "phase": 5,
+   "t0": 152.7917,
+   "t1": 154.2917,
+   "dur": 1.5,
+   "frame0": 3667,
+   "frame1": 3703,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J10)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 153.25,
+    "frame": 3678,
+    "tags": [],
+    "t_end": 153.375
+   },
+   "sfx": [
+    {
+     "t": 152.875,
+     "s": "dragon_firebreath"
+    },
+    {
+     "t": 152.875,
+     "s": "fire_roar_burst"
+    },
+    {
+     "t": 152.9583,
+     "s": "fire_whoosh_synth"
+    },
+    {
+     "t": 153.0,
+     "s": "raven_wings_flyby"
+    },
+    {
+     "t": 153.0417,
+     "s": "wings_flap"
+    },
+    {
+     "t": 153.125,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 153.375,
+     "s": "crow_caw_single"
+    },
+    {
+     "t": 153.0833,
+     "s": "shuriken_throw"
+    },
+    {
+     "t": 153.1667,
+     "s": "shuriken_throw"
+    },
+    {
+     "t": 153.25,
+     "s": "shuriken_throw"
+    },
+    {
+     "t": 153.2917,
+     "s": "shuriken_throw"
+    }
+   ]
+  },
+  {
+   "id": "J11",
+   "phase": 5,
+   "t0": 154.2917,
+   "t1": 155.9167,
+   "dur": 1.625,
+   "frame0": 3703,
+   "frame1": 3742,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J11)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 154.375,
+    "frame": 3705,
+    "tags": [],
+    "t_end": 154.4583
+   },
+   "sfx": [
+    {
+     "t": 154.375,
+     "s": "time_freeze_crystal"
+    },
+    {
+     "t": 154.375,
+     "s": "boom_cine_deep"
+    },
+    {
+     "t": 154.5,
+     "s": "footsteps"
+    },
+    {
+     "t": 154.5,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 154.5417,
+     "s": "clock_gears"
+    }
+   ]
+  },
+  {
+   "id": "J12",
+   "phase": 5,
+   "t0": 155.9167,
+   "t1": 157.2917,
+   "dur": 1.375,
+   "frame0": 3742,
+   "frame1": 3775,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J12)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 156.2083,
+    "frame": 3749,
+    "tags": [],
+    "t_end": 156.2917
+   },
+   "sfx": [
+    {
+     "t": 156.2083,
+     "s": "teleport_magic"
+    },
+    {
+     "t": 156.2083,
+     "s": "shimmer_attack"
+    },
+    {
+     "t": 156.3333,
+     "s": "heartbeat"
+    }
+   ]
+  },
+  {
+   "id": "J13",
+   "phase": 5,
+   "t0": 157.2917,
+   "t1": 158.9167,
+   "dur": 1.625,
+   "frame0": 3775,
+   "frame1": 3814,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J13)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 157.75,
+    "frame": 3786,
+    "tags": [],
+    "t_end": 157.875
+   },
+   "sfx": [
+    {
+     "t": 157.2917,
+     "s": "page_turn"
+    },
+    {
+     "t": 157.3333,
+     "s": "time_incant"
+    },
+    {
+     "t": 157.375,
+     "s": "spell_light_cast"
+    },
+    {
+     "t": 157.75,
+     "s": "clock_bell_tower"
+    },
+    {
+     "t": 157.75,
+     "s": "boom_long_reverb"
+    },
+    {
+     "t": 157.7917,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 157.8333,
+     "s": "clock_gears"
+    },
+    {
+     "t": 157.75,
+     "s": "charge_shing"
+    },
+    {
+     "t": 157.75,
+     "s": "boom_ultra_braam"
+    }
+   ]
+  },
+  {
+   "id": "J14",
+   "phase": 5,
+   "t0": 158.9167,
+   "t1": 160.5,
+   "dur": 1.5833,
+   "frame0": 3814,
+   "frame1": 3852,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J14)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 158.9167,
+    "frame": 3814,
+    "tags": [],
+    "t_end": 159.0
+   },
+   "sfx": [
+    {
+     "t": 158.9167,
+     "s": "shimmer01"
+    },
+    {
+     "t": 159.2083,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 159.125,
+     "s": "heartbeat"
+    }
+   ]
+  },
+  {
+   "id": "J15",
+   "phase": 5,
+   "t0": 160.5,
+   "t1": 161.7917,
+   "dur": 1.2917,
+   "frame0": 3852,
+   "frame1": 3883,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J15)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 161.1667,
+    "frame": 3868,
+    "tags": [],
+    "t_end": 161.25
+   },
+   "sfx": [
+    {
+     "t": 163.0,
+     "s": "riser_braam"
+    },
+    {
+     "t": 161.1667,
+     "s": "clock_bell_antique"
+    },
+    {
+     "t": 161.1667,
+     "s": "boom_cine_lowhit"
+    }
+   ]
+  },
+  {
+   "id": "J16",
+   "phase": 5,
+   "t0": 161.7917,
+   "t1": 163.0,
+   "dur": 1.2083,
+   "frame0": 3883,
+   "frame1": 3912,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J16)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": false,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 162.2917,
+    "frame": 3895,
+    "tags": [],
+    "t_end": 162.375
+   },
+   "sfx": [
+    {
+     "t": 161.875,
+     "s": "clock_tick_slow"
+    },
+    {
+     "t": 162.2917,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 162.7083,
+     "s": "reverse_swell_hit"
+    }
+   ]
+  },
+  {
+   "id": "J17",
+   "phase": 5,
+   "t0": 163.0,
+   "t1": 165.5833,
+   "dur": 2.5833,
+   "frame0": 3912,
+   "frame1": 3974,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J17)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 48,
+    "trigger": "katso spoilers.md (PITKÄ BURST 2 s)",
+    "signature": [
+     "X"
+    ],
+    "burst": true,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 163.0,
+    "frame": 3912,
+    "tags": [
+     "BURST"
+    ],
+    "t_end": 165.0
+   },
+   "sfx": [
+    {
+     "t": 162.875,
+     "s": "whoosh_heavy_impact"
+    },
+    {
+     "t": 163.0,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 163.0,
+     "s": "boom_ultra_deep"
+    },
+    {
+     "t": 163.0,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 163.0417,
+     "s": "stone_debris02"
+    },
+    {
+     "t": 163.0,
+     "s": "clock_bell_tower"
+    },
+    {
+     "t": 163.0,
+     "s": "boom_long_reverb"
+    },
+    {
+     "t": 163.0,
+     "s": "explosion_huge_var"
+    },
+    {
+     "t": 163.0,
+     "s": "boom_ultradeep_tone"
+    },
+    {
+     "t": 163.0,
+     "s": "air_blast"
+    },
+    {
+     "t": 163.0417,
+     "s": "rain_thunder_heavy"
+    },
+    {
+     "t": 163.0,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 163.125,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 163.2917,
+     "s": "shing_ring"
+    },
+    {
+     "t": 163.4167,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 163.5417,
+     "s": "glass_hits"
+    },
+    {
+     "t": 163.7083,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 163.8333,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 164.0,
+     "s": "glitch_hit"
+    },
+    {
+     "t": 164.125,
+     "s": "punch_heavy"
+    },
+    {
+     "t": 164.25,
+     "s": "shing_ring"
+    },
+    {
+     "t": 164.4167,
+     "s": "boom_cine_lowhit"
+    },
+    {
+     "t": 164.5417,
+     "s": "glass_hits"
+    },
+    {
+     "t": 164.6667,
+     "s": "whoosh_sharp_impact"
+    },
+    {
+     "t": 164.8333,
+     "s": "boom_dark_lowhit"
+    },
+    {
+     "t": 163.0,
+     "s": "subdrop_50"
+    },
+    {
+     "t": 163.75,
+     "s": "glass_huge_smash"
+    },
+    {
+     "t": 163.0,
+     "s": "bass_dive13"
+    },
+    {
+     "t": 163.0,
+     "s": "bass_dive17"
+    },
+    {
+     "t": 163.0,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "J18",
+   "phase": 5,
+   "t0": 165.5833,
+   "t1": 167.5833,
+   "dur": 2.0,
+   "frame0": 3974,
+   "frame1": 4022,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J18)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 165.7917,
+     "s": "rain_thunder_heavy"
+    },
+    {
+     "t": 167.0833,
+     "s": "bodyfall_var"
+    },
+    {
+     "t": 167.125,
+     "s": "splash_dive3"
+    },
+    {
+     "t": 165.6667,
+     "s": "tinnitus"
+    },
+    {
+     "t": 165.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "J19",
+   "phase": 5,
+   "t0": 167.5833,
+   "t1": 170.2083,
+   "dur": 2.625,
+   "frame0": 4022,
+   "frame1": 4085,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J19)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": "musiikki: katso spoilers.md (167.58)",
+   "masked": "FINALE",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 167.5833,
+     "s": "rain_thunder_heavy"
+    },
+    {
+     "t": 168.1667,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 168.0,
+     "s": "heartbeat"
+    },
+    {
+     "t": 167.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "J20",
+   "phase": 5,
+   "t0": 170.2083,
+   "t1": 172.5833,
+   "dur": 2.375,
+   "frame0": 4085,
+   "frame1": 4142,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J20)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 2,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 171.125,
+    "frame": 4107,
+    "tags": [],
+    "t_end": 171.2083
+   },
+   "sfx": [
+    {
+     "t": 170.625,
+     "s": "power_down_shimmer"
+    },
+    {
+     "t": 171.125,
+     "s": "raven_flyoff"
+    },
+    {
+     "t": 171.2083,
+     "s": "crow_caw_spooky"
+    },
+    {
+     "t": 170.2083,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "J21",
+   "phase": 5,
+   "t0": 172.5833,
+   "t1": 174.5833,
+   "dur": 2.0,
+   "frame0": 4142,
+   "frame1": 4190,
+   "render": "hand2d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J21)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": null,
+   "sfx": [
+    {
+     "t": 172.5833,
+     "s": "crowd_swell_quiet"
+    },
+    {
+     "t": 172.7917,
+     "s": "cloth_flaps"
+    },
+    {
+     "t": 173.0833,
+     "s": "pour"
+    },
+    {
+     "t": 172.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  },
+  {
+   "id": "J22",
+   "phase": 5,
+   "t0": 174.5833,
+   "t1": 178.0,
+   "dur": 3.4167,
+   "frame0": 4190,
+   "frame1": 4272,
+   "render": "action3d",
+   "camera": "katso spoilers.md",
+   "move": "katso spoilers.md",
+   "inserts": null,
+   "action": "finaali (katso spoilers.md#J22)",
+   "chars": [
+    "SEE_SPOILERS"
+   ],
+   "engine_chars": [
+    "SEE_SPOILERS"
+   ],
+   "background": "SEE",
+   "background_desc": "katso spoilers.md",
+   "dmg": 3,
+   "rain": true,
+   "light": null,
+   "text": null,
+   "text_style": null,
+   "dialogue": [],
+   "music": null,
+   "masked": "FINALE",
+   "impact": {
+    "style": "X-FIN",
+    "pattern": "X",
+    "frames": 3,
+    "trigger": "katso spoilers.md",
+    "signature": [
+     "X"
+    ],
+    "burst": false,
+    "music_sync": "katso spoilers.md",
+    "render": "hand2d",
+    "t": 175.0,
+    "frame": 4200,
+    "tags": [],
+    "t_end": 175.125
+   },
+   "sfx": [
+    {
+     "t": 174.5833,
+     "s": "rain_thunder_heavy"
+    },
+    {
+     "t": 175.0,
+     "s": "gong"
+    },
+    {
+     "t": 175.0,
+     "s": "gong_deep"
+    },
+    {
+     "t": 174.7917,
+     "s": "fan_fold"
+    },
+    {
+     "t": 174.7917,
+     "s": "shing_ring"
+    },
+    {
+     "t": 175.1667,
+     "s": "crowd_stadium_cheer"
+    },
+    {
+     "t": 176.1667,
+     "s": "crow_caw_spooky"
+    },
+    {
+     "t": 174.5833,
+     "s": "rain_thunder_heavy"
+    }
+   ]
+  }
+ ]
+}

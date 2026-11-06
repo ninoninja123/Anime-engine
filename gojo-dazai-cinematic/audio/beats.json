@@ -1,0 +1,826 @@
+{
+ "fps": 24,
+ "duration": 178.0,
+ "note": "All times are VIDEO seconds. frame = round(t*24). Rubato orchestral recordings: accents only, no beat grid.",
+ "edit": [
+  {
+   "track": "ase",
+   "file": "ase",
+   "title": "Grieg: Peer Gynt Suite No. 1, Op. 46: No. 2, Death of Åse",
+   "artist": "Odyssey Orchestra & Eric Jacobsen (Epidemic Sound)",
+   "id": "9ebb6c45-bc12-4f0c-a614-aa7defe92a7e",
+   "kind": "epidemic classical (romantic, strings)",
+   "key": "B minor",
+   "bpm": 0,
+   "v0": 0.0,
+   "v1": 10.6,
+   "off": 0.0,
+   "fi": 0.3,
+   "fo": 0.25,
+   "act": 1,
+   "why": "KYLMÄ AVAUS + ITACHI: Åsen kuolema alusta (matalat jouset, surumielinen ja synkkä): sadepilvet, Urahara + säännöt, varikset, Sharingan, Itachin kortti.",
+   "trim_db": 0.0,
+   "track_in": 0.0,
+   "track_out": 10.6
+  },
+  {
+   "track": "stormy",
+   "file": "stormy",
+   "title": "Grieg: Peer Gynt Suite No. 2, Op. 55: No. 3, Peer Gynt's Homecoming (Stormy Evening on the Sea)",
+   "artist": "Odyssey Orchestra & Eric Jacobsen (Epidemic Sound)",
+   "id": "c300be1a-0b8f-4b3a-8859-9334be9cd337",
+   "kind": "epidemic classical (romantic, full orchestra)",
+   "key": "F# minor",
+   "bpm": 0,
+   "v0": 10.6,
+   "v1": 92.6,
+   "off": 10.6,
+   "fi": 0.02,
+   "fo": 0.35,
+   "act": 1,
+   "why": "JULIUKSEN SISÄÄNTULO + TAISTELU: Myrskyisän illan vaskiaksentit = kello-taikapiiri 11.16, ensimmäinen isku 16.99, varisisku 22.87, pylväs 25.79, varjo-shuriken 30.28, genjutsu 33.39; hiljaisempi jakso 34.6-55.6 = sokea taistelu (taktinen sota); nousu 56.6 = AMATERASU, aksentti 62.35 = CHRONO ANASTASIS; myrsky 86.6-91.6, aksentti 90.78 = Susanoo vs Mana Zone. Leikkaus kappaleen omaan notkoon (kpl 82.0).",
+   "trim_db": 0.0,
+   "track_in": 0.0,
+   "track_out": 82.0
+  },
+  {
+   "track": "ase",
+   "file": "ase",
+   "title": "Grieg: Peer Gynt Suite No. 1, Op. 46: No. 2, Death of Åse",
+   "artist": "Odyssey Orchestra & Eric Jacobsen (Epidemic Sound)",
+   "id": "9ebb6c45-bc12-4f0c-a614-aa7defe92a7e",
+   "kind": "epidemic classical (romantic, strings)",
+   "key": "B minor",
+   "bpm": 0,
+   "v0": 92.6,
+   "v1": 135.93,
+   "off": 0.93,
+   "fi": 0.25,
+   "fo": 0.02,
+   "act": 4,
+   "why": "katso spoilers.md",
+   "trim_db": -4.0,
+   "track_in": 91.67,
+   "track_out": 135.0
+  },
+  {
+   "track": "summer3",
+   "file": "summer3",
+   "title": "Vivaldi: The Four Seasons, Summer RV 315: III. Presto",
+   "artist": "Michelle Ross, Eric Jacobsen & Odyssey Orchestra (Epidemic Sound)",
+   "id": "3dd2a7c0-7363-428b-918f-bb729286fba8",
+   "kind": "epidemic classical (baroque, strings)",
+   "key": "G minor",
+   "bpm": 0,
+   "v0": 137.0,
+   "v1": 165.6,
+   "off": 15.29,
+   "fi": 0.01,
+   "fo": 0.5,
+   "act": 5,
+   "why": "katso spoilers.md",
+   "trim_db": 0.0,
+   "track_in": 121.71,
+   "track_out": 150.31
+  },
+  {
+   "track": "ase",
+   "file": "ase",
+   "title": "Grieg: Peer Gynt Suite No. 1, Op. 46: No. 2, Death of Åse",
+   "artist": "Odyssey Orchestra & Eric Jacobsen (Epidemic Sound)",
+   "id": "9ebb6c45-bc12-4f0c-a614-aa7defe92a7e",
+   "kind": "epidemic classical (romantic, strings)",
+   "key": "B minor",
+   "bpm": 0,
+   "v0": 167.6,
+   "v1": 178.0,
+   "off": 167.6,
+   "fi": 1.2,
+   "fo": 1.6,
+   "act": 5,
+   "why": "katso spoilers.md",
+   "trim_db": 0.0,
+   "track_in": 0.0,
+   "track_out": 10.4
+  }
+ ],
+ "acts": [
+  {
+   "act": 1,
+   "t0": 0,
+   "t1": 16.7,
+   "music": "Åsen kuolema (Itachi, säännöt) -> Myrskyisä ilta 10.60 (Julius, kortit, BEGIN)"
+  },
+  {
+   "act": 2,
+   "t0": 16.7,
+   "t1": 56.6,
+   "music": "Myrskyisä ilta (ensimmäinen isku, taktinen sota, sokea taistelu)"
+  },
+  {
+   "act": 3,
+   "t0": 56.6,
+   "t1": 92.6,
+   "music": "Myrskyisä ilta (Mangekyō, Amaterasu, Susanoo vs Mana Zone)"
+  },
+  {
+   "act": 4,
+   "t0": 92.6,
+   "t1": 137.0,
+   "music": "katso spoilers.md"
+  },
+  {
+   "act": 5,
+   "t0": 137.0,
+   "t1": 178.0,
+   "music": "katso spoilers.md"
+  }
+ ],
+ "accents": [
+  {
+   "t": 11.157,
+   "strength": 0.79,
+   "track": "stormy"
+  },
+  {
+   "t": 12.597,
+   "strength": 0.91,
+   "track": "stormy"
+  },
+  {
+   "t": 16.985,
+   "strength": 1.45,
+   "track": "stormy"
+  },
+  {
+   "t": 18.46,
+   "strength": 0.92,
+   "track": "stormy"
+  },
+  {
+   "t": 22.872,
+   "strength": 1.01,
+   "track": "stormy"
+  },
+  {
+   "t": 25.786,
+   "strength": 1.18,
+   "track": "stormy"
+  },
+  {
+   "t": 30.558,
+   "strength": 0.87,
+   "track": "stormy"
+  },
+  {
+   "t": 62.346,
+   "strength": 0.81,
+   "track": "stormy"
+  },
+  {
+   "t": 90.779,
+   "strength": 1.19,
+   "track": "stormy"
+  },
+  {
+   "t": 91.115,
+   "strength": 0.9,
+   "track": "stormy"
+  },
+  {
+   "t": 93.67,
+   "strength": 0.91,
+   "track": "ase"
+  },
+  {
+   "t": 96.004,
+   "strength": 0.91,
+   "track": "ase"
+  },
+  {
+   "t": 96.538,
+   "strength": 0.9,
+   "track": "ase"
+  },
+  {
+   "t": 96.886,
+   "strength": 0.8,
+   "track": "ase"
+  },
+  {
+   "t": 101.101,
+   "strength": 0.76,
+   "track": "ase"
+  },
+  {
+   "t": 101.449,
+   "strength": 0.83,
+   "track": "ase"
+  },
+  {
+   "t": 103.26,
+   "strength": 0.84,
+   "track": "ase"
+  },
+  {
+   "t": 103.771,
+   "strength": 0.86,
+   "track": "ase"
+  },
+  {
+   "t": 104.398,
+   "strength": 0.77,
+   "track": "ase"
+  },
+  {
+   "t": 104.746,
+   "strength": 0.82,
+   "track": "ase"
+  },
+  {
+   "t": 106.256,
+   "strength": 0.89,
+   "track": "ase"
+  },
+  {
+   "t": 106.801,
+   "strength": 0.88,
+   "track": "ase"
+  },
+  {
+   "t": 107.092,
+   "strength": 0.92,
+   "track": "ase"
+  },
+  {
+   "t": 107.382,
+   "strength": 0.81,
+   "track": "ase"
+  },
+  {
+   "t": 107.8,
+   "strength": 0.9,
+   "track": "ase"
+  },
+  {
+   "t": 108.171,
+   "strength": 0.76,
+   "track": "ase"
+  },
+  {
+   "t": 109.344,
+   "strength": 0.77,
+   "track": "ase"
+  },
+  {
+   "t": 109.657,
+   "strength": 0.93,
+   "track": "ase"
+  },
+  {
+   "t": 110.25,
+   "strength": 0.93,
+   "track": "ase"
+  },
+  {
+   "t": 110.563,
+   "strength": 0.78,
+   "track": "ase"
+  },
+  {
+   "t": 111.039,
+   "strength": 0.85,
+   "track": "ase"
+  },
+  {
+   "t": 111.434,
+   "strength": 0.8,
+   "track": "ase"
+  },
+  {
+   "t": 112.003,
+   "strength": 0.9,
+   "track": "ase"
+  },
+  {
+   "t": 113.082,
+   "strength": 0.81,
+   "track": "ase"
+  },
+  {
+   "t": 114.162,
+   "strength": 0.82,
+   "track": "ase"
+  },
+  {
+   "t": 114.743,
+   "strength": 0.89,
+   "track": "ase"
+  },
+  {
+   "t": 115.044,
+   "strength": 0.81,
+   "track": "ase"
+  },
+  {
+   "t": 116.438,
+   "strength": 0.89,
+   "track": "ase"
+  },
+  {
+   "t": 116.763,
+   "strength": 1.0,
+   "track": "ase"
+  },
+  {
+   "t": 117.123,
+   "strength": 0.84,
+   "track": "ase"
+  },
+  {
+   "t": 117.599,
+   "strength": 1.08,
+   "track": "ase"
+  },
+  {
+   "t": 117.947,
+   "strength": 1.22,
+   "track": "ase"
+  },
+  {
+   "t": 118.435,
+   "strength": 1.05,
+   "track": "ase"
+  },
+  {
+   "t": 118.841,
+   "strength": 1.12,
+   "track": "ase"
+  },
+  {
+   "t": 119.375,
+   "strength": 1.04,
+   "track": "ase"
+  },
+  {
+   "t": 119.665,
+   "strength": 0.92,
+   "track": "ase"
+  },
+  {
+   "t": 120.025,
+   "strength": 0.83,
+   "track": "ase"
+  },
+  {
+   "t": 121.07,
+   "strength": 0.8,
+   "track": "ase"
+  },
+  {
+   "t": 121.662,
+   "strength": 0.97,
+   "track": "ase"
+  },
+  {
+   "t": 121.952,
+   "strength": 1.03,
+   "track": "ase"
+  },
+  {
+   "t": 122.405,
+   "strength": 0.86,
+   "track": "ase"
+  },
+  {
+   "t": 122.742,
+   "strength": 1.07,
+   "track": "ase"
+  },
+  {
+   "t": 123.09,
+   "strength": 0.97,
+   "track": "ase"
+  },
+  {
+   "t": 123.38,
+   "strength": 0.85,
+   "track": "ase"
+  },
+  {
+   "t": 123.775,
+   "strength": 1.08,
+   "track": "ase"
+  },
+  {
+   "t": 124.089,
+   "strength": 0.94,
+   "track": "ase"
+  },
+  {
+   "t": 124.483,
+   "strength": 0.85,
+   "track": "ase"
+  },
+  {
+   "t": 124.797,
+   "strength": 0.88,
+   "track": "ase"
+  },
+  {
+   "t": 125.284,
+   "strength": 0.84,
+   "track": "ase"
+  },
+  {
+   "t": 125.726,
+   "strength": 0.82,
+   "track": "ase"
+  },
+  {
+   "t": 126.144,
+   "strength": 0.84,
+   "track": "ase"
+  },
+  {
+   "t": 126.654,
+   "strength": 1.11,
+   "track": "ase"
+  },
+  {
+   "t": 127.142,
+   "strength": 1.08,
+   "track": "ase"
+  },
+  {
+   "t": 127.688,
+   "strength": 1.08,
+   "track": "ase"
+  },
+  {
+   "t": 128.094,
+   "strength": 1.21,
+   "track": "ase"
+  },
+  {
+   "t": 128.396,
+   "strength": 1.27,
+   "track": "ase"
+  },
+  {
+   "t": 128.895,
+   "strength": 1.33,
+   "track": "ase"
+  },
+  {
+   "t": 129.232,
+   "strength": 1.12,
+   "track": "ase"
+  },
+  {
+   "t": 129.603,
+   "strength": 0.99,
+   "track": "ase"
+  },
+  {
+   "t": 129.917,
+   "strength": 0.76,
+   "track": "ase"
+  },
+  {
+   "t": 130.323,
+   "strength": 1.22,
+   "track": "ase"
+  },
+  {
+   "t": 130.869,
+   "strength": 1.2,
+   "track": "ase"
+  },
+  {
+   "t": 131.159,
+   "strength": 0.93,
+   "track": "ase"
+  },
+  {
+   "t": 131.507,
+   "strength": 1.14,
+   "track": "ase"
+  },
+  {
+   "t": 132.076,
+   "strength": 1.11,
+   "track": "ase"
+  },
+  {
+   "t": 132.39,
+   "strength": 0.96,
+   "track": "ase"
+  },
+  {
+   "t": 132.773,
+   "strength": 1.07,
+   "track": "ase"
+  },
+  {
+   "t": 134.456,
+   "strength": 0.79,
+   "track": "ase"
+  },
+  {
+   "t": 134.747,
+   "strength": 0.77,
+   "track": "ase"
+  },
+  {
+   "t": 135.037,
+   "strength": 1.01,
+   "track": "ase"
+  },
+  {
+   "t": 135.432,
+   "strength": 1.12,
+   "track": "ase"
+  },
+  {
+   "t": 135.757,
+   "strength": 0.8,
+   "track": "ase"
+  },
+  {
+   "t": 137.59,
+   "strength": 0.91,
+   "track": "summer3"
+  },
+  {
+   "t": 138.983,
+   "strength": 0.75,
+   "track": "summer3"
+  },
+  {
+   "t": 139.911,
+   "strength": 0.83,
+   "track": "summer3"
+  },
+  {
+   "t": 141.084,
+   "strength": 1.06,
+   "track": "summer3"
+  },
+  {
+   "t": 141.862,
+   "strength": 0.79,
+   "track": "summer3"
+  },
+  {
+   "t": 142.21,
+   "strength": 1.02,
+   "track": "summer3"
+  },
+  {
+   "t": 142.605,
+   "strength": 1.02,
+   "track": "summer3"
+  },
+  {
+   "t": 142.953,
+   "strength": 1.26,
+   "track": "summer3"
+  },
+  {
+   "t": 143.336,
+   "strength": 1.58,
+   "track": "summer3"
+  },
+  {
+   "t": 143.882,
+   "strength": 1.5,
+   "track": "summer3"
+  },
+  {
+   "t": 144.219,
+   "strength": 1.38,
+   "track": "summer3"
+  },
+  {
+   "t": 144.579,
+   "strength": 1.11,
+   "track": "summer3"
+  },
+  {
+   "t": 145.171,
+   "strength": 1.04,
+   "track": "summer3"
+  },
+  {
+   "t": 145.519,
+   "strength": 1.16,
+   "track": "summer3"
+  },
+  {
+   "t": 146.46,
+   "strength": 0.76,
+   "track": "summer3"
+  },
+  {
+   "t": 148.12,
+   "strength": 0.77,
+   "track": "summer3"
+  },
+  {
+   "t": 148.886,
+   "strength": 0.76,
+   "track": "summer3"
+  },
+  {
+   "t": 152.601,
+   "strength": 0.8,
+   "track": "summer3"
+  },
+  {
+   "t": 153.251,
+   "strength": 1.04,
+   "track": "summer3"
+  },
+  {
+   "t": 153.983,
+   "strength": 0.75,
+   "track": "summer3"
+  },
+  {
+   "t": 154.378,
+   "strength": 1.11,
+   "track": "summer3"
+  },
+  {
+   "t": 154.749,
+   "strength": 0.89,
+   "track": "summer3"
+  },
+  {
+   "t": 155.109,
+   "strength": 0.83,
+   "track": "summer3"
+  },
+  {
+   "t": 155.504,
+   "strength": 0.87,
+   "track": "summer3"
+  },
+  {
+   "t": 156.607,
+   "strength": 0.81,
+   "track": "summer3"
+  },
+  {
+   "t": 157.756,
+   "strength": 0.92,
+   "track": "summer3"
+  },
+  {
+   "t": 158.162,
+   "strength": 1.04,
+   "track": "summer3"
+  },
+  {
+   "t": 158.546,
+   "strength": 0.81,
+   "track": "summer3"
+  },
+  {
+   "t": 158.905,
+   "strength": 1.2,
+   "track": "summer3"
+  },
+  {
+   "t": 159.277,
+   "strength": 0.78,
+   "track": "summer3"
+  },
+  {
+   "t": 160.032,
+   "strength": 1.04,
+   "track": "summer3"
+  },
+  {
+   "t": 161.169,
+   "strength": 0.99,
+   "track": "summer3"
+  },
+  {
+   "t": 161.576,
+   "strength": 0.75,
+   "track": "summer3"
+  },
+  {
+   "t": 162.307,
+   "strength": 1.03,
+   "track": "summer3"
+  },
+  {
+   "t": 162.644,
+   "strength": 1.06,
+   "track": "summer3"
+  },
+  {
+   "t": 163.004,
+   "strength": 1.24,
+   "track": "summer3"
+  },
+  {
+   "t": 163.375,
+   "strength": 1.04,
+   "track": "summer3"
+  },
+  {
+   "t": 163.747,
+   "strength": 1.05,
+   "track": "summer3"
+  },
+  {
+   "t": 164.269,
+   "strength": 1.05,
+   "track": "summer3"
+  },
+  {
+   "t": 164.629,
+   "strength": 0.91,
+   "track": "summer3"
+  }
+ ],
+ "downbeats": [],
+ "phrases": [],
+ "beats": [],
+ "drops": [
+  {
+   "t": 10.6,
+   "what": "Myrskyisä ilta alkaa: Julius"
+  },
+  {
+   "t": 11.16,
+   "what": "vaskiaksentti: kello-taikapiiri"
+  },
+  {
+   "t": 15.3,
+   "what": "gongi"
+  },
+  {
+   "t": 16.99,
+   "what": "vaskiaksentti: ensimmäinen isku"
+  },
+  {
+   "t": 56.6,
+   "what": "orkesterinousu: AMATERASU"
+  },
+  {
+   "t": 62.35,
+   "what": "aksentti: CHRONO ANASTASIS"
+  },
+  {
+   "t": 90.78,
+   "what": "myrskyn aksentti: Susanoo vs Mana Zone"
+  },
+  {
+   "t": 92.6,
+   "what": "katso spoilers.md"
+  },
+  {
+   "t": 135.93,
+   "what": "katso spoilers.md"
+  },
+  {
+   "t": 137.0,
+   "what": "katso spoilers.md"
+  },
+  {
+   "t": 163.0,
+   "what": "katso spoilers.md"
+  },
+  {
+   "t": 167.6,
+   "what": "katso spoilers.md"
+  }
+ ],
+ "pits": [
+  {
+   "t0": 34.6,
+   "t1": 55.6,
+   "depth": "Myrskyisän illan hiljaisempi jakso (-13...-18 dB): sokea taistelu, music_boost +3 dB"
+  },
+  {
+   "t0": 35.3,
+   "t1": 36.4,
+   "depth": "lowpass: genjutsu hajoaa"
+  },
+  {
+   "t0": 135.93,
+   "t1": 137.0,
+   "depth": "katso spoilers.md"
+  },
+  {
+   "t0": 165.6,
+   "t1": 167.6,
+   "depth": "katso spoilers.md"
+  }
+ ]
+}

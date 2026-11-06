@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bleach Showdown Engine</title>
+<style>
+  html,body{margin:0;background:#0d0d0f;color:#ddd;font:14px/1.4 system-ui,sans-serif}
+  #wrap{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px}
+  canvas{display:block;max-width:96vw;height:auto;background:#000}
+  #ui{display:flex;gap:10px;align-items:center}
+  body.render #ui{display:none} body.render #wrap{padding:0} body.render canvas{max-width:none}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="out" width="1920" height="1080"></canvas>
+  <div id="ui"><button id="play">Play / Pause</button><input id="seek" type="range" min="0" max="180" step="0.001" value="0" style="width:700px"><span id="tc">0.00</span> <span id="sn"></span></div>
+</div>
+<!-- usage: index.html?prog=reel/testreel[,more]&scale=0.5  (prog = program files relative to engine/, without .js) -->
+<script src="scripts.js"></script>
+<script>
+(function () {
+  const c = document.getElementById('out');
+  c.width = Math.round(1920 * SCALE); c.height = Math.round(1080 * SCALE);
+  OUT.canvas = c; OUT.scale = SCALE;
+  if (QS.get('render')) document.body.classList.add('render');
+  window.renderTime = renderTime; window.frameKey = frameKey;
+  window.getEvents = () => PROGRAM.events; window.getDur = () => PROGRAM.dur;
+  window.getShots = () => PROGRAM.shots.map(s => ({ name: s.name, t0: s.t0, t1: s.t1 }));
+  const seek = document.getElementById('seek'), tc = document.getElementById('tc'), sn = document.getElementById('sn');
+  seek.max = PROGRAM.dur;
+  let playing = false, t = parseFloat(QS.get('t') || '0'), last = 0;
+  const show = () => { renderTime(t); tc.textContent = t.toFixed(2); const s = shotAt(t); sn.textContent = s ? s.name : ''; seek.value = t; };
+  document.getElementById('play').onclick = () => { playing = !playing; last = performance.now(); if (playing) requestAnimationFrame(loop); };
+  seek.oninput = () => { t = parseFloat(seek.value); show(); };
+  function loop(now) { if (!playing) return; t += (now - last) / 1000; last = now; if (t > PROGRAM.dur) t = 0; show(); requestAnimationFrame(loop); }
+  if (!QS.get('render')) show();
+  window.READY = true;
+})();
+</script>
+</body>
+</html>

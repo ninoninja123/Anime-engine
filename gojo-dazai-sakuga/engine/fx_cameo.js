@@ -1,0 +1,58 @@
+/* engine/fx_cameo.js (E1) - props + cameo layers from pre/cast_extra.md used across the film.
+   drawCard3D(g, c, o)        playing card in 3D: o = { yaw, pitch, roll, size (height m), face: 'back'|'joker'|fn(cc) (card-local coords
+                              x -1..1 / y -1.4..1.4, y up), lit (burning edge 0..1) }.   Faces for the reveal cards: cardFace.hats,
+                              cardFace.bowler, cardFace.lion, cardFace.flame, cardFace.ofa (icons, flat 2D)
+   fxCardFlip(g, t, o)        macro card flip filling the frame (screen space): o = { face, dur, x, y, size }
+   drawCat(g, p, o)           CAM_CAT: slim black cat silhouette with gold eyes: o = { pose:'sit'|'walk'|'nuzzle', t, size, yaw }
+   drawTalisman(g, p, o)      PROP_TALISMAN: small paper talisman with red 紅; o = { size, glow 0..1, yaw, pitch }
+   fxVestige(g, F, ft, o)     translucent glowing white silhouette of a figure (vestiges / ash memories): o = { col, alpha, glow }  */
+'use strict';
+function cardCorners(c, o) { const M = mYPR(o.yaw || 0, o.pitch || 0, o.roll || 0), h = (o.size || .3) / 2, w = h / 1.4; return { M, w, h, P: (x, y) => vAdd(c, mApply(M, [x * w, y * h / 1.4, 0])) }; }
+function drawCard3D(g, c, o = {}) {
+  const { M, P } = cardCorners(c, o), n = mApply(M, [0, 0, 1]), cam = CAM.cur, front = vDot(n, vSub(cam.pos, c)) > 0;
+  const corner = []; for (const [x, y] of [[-1, -1.4], [1, -1.4], [1, 1.4], [-1, 1.4]]) for (let k = 0; k < 3; k++) { const a = (k / 2) * HP + Math.atan2(y, x) - HP * .5 * 0; corner.push(P(x * .92 + Math.sign(x) * .08 * Math.cos(a), y * .95 + Math.sign(y) * .07 * Math.sin(a))); }
+  const sp = projPoly(corner); if (sp.length < 3) return; polyPath(g, sp); g.fillStyle = '#f6f2ea'; g.fill(); g.lineWidth = 1.5; g.strokeStyle = '#1a1418'; g.stroke();
+  const face = front ? (o.face || 'back') : 'back';
+  const a = proj2(P(0, 0)), b = proj2(P(1, 0)), cc0 = proj2(P(0, 1.4 / 1.4));
+  g.save(); polyPath(g, sp); g.clip(); g.transform(b[0] - a[0], b[1] - a[1], cc0[0] - a[0], cc0[1] - a[1], a[0], a[1]); // card-local: x -1..1, y -1.4..1.4 (y up after flip)
+  if (face === 'back') { g.fillStyle = '#7a1424'; g.fillRect(-.86, -1.3, 1.72, 2.6); g.strokeStyle = '#f6f2ea'; g.lineWidth = .04; for (let i = -6; i <= 6; i++) { g.beginPath(); g.moveTo(i * .3 - 1.4, -1.4); g.lineTo(i * .3 + 1.4, 1.4); g.moveTo(i * .3 + 1.4, -1.4); g.lineTo(i * .3 - 1.4, 1.4); g.stroke(); } g.strokeRect(-.78, -1.22, 1.56, 2.44); }
+  else if (face === 'joker') { g.fillStyle = '#0c0a10'; g.fillRect(-.9, -1.34, 1.8, 2.68); cardFace.joker(g); }
+  else if (typeof face === 'function') face(g); else if (cardFace[face]) cardFace[face](g);
+  g.restore();
+  if (o.lit) { g.save(); polyPath(g, sp); g.lineWidth = 3 + 4 * o.lit; g.strokeStyle = rgba('#ff8a3a', .8 * o.lit); g.stroke(); g.restore(); }
+}
+const cardFace = {
+  joker: g => { g.fillStyle = '#9a4ad8'; g.beginPath(); g.moveTo(-.55, .55); g.lineTo(-.2, .95); g.lineTo(0, .6); g.lineTo(.2, .95); g.lineTo(.55, .55); g.lineTo(.4, .3); g.lineTo(-.4, .3); g.closePath(); g.fill(); g.beginPath(); g.arc(0, 0, .38, 0, TAU); g.fill(); g.fillStyle = '#0c0a10'; g.beginPath(); g.arc(-.14, .06, .06, 0, TAU); g.arc(.14, .06, .06, 0, TAU); g.fill(); g.lineWidth = .05; g.strokeStyle = '#0c0a10'; g.beginPath(); g.arc(0, -.05, .2, Math.PI * 1.1, Math.PI * 1.9, true); g.stroke(); g.fillStyle = '#9a4ad8'; g.font = '900 .3px serif'; g.textAlign = 'center'; g.save(); g.scale(1, -1); g.fillText('J', -.72, -1.0); g.restore(); },
+  hats: g => { g.fillStyle = '#2f5d3a'; g.fillRect(-.6, .15, .7, .4); g.fillStyle = '#e8efe6'; for (let i = 0; i < 4; i++) g.fillRect(-.55 + i * .17, .15, .06, .4); g.fillStyle = '#2f5d3a'; g.fillRect(-.75, .1, 1, .08); g.fillStyle = '#d9b56e'; g.beginPath(); g.moveTo(-.4, -.55); g.lineTo(.75, -.55); g.lineTo(.18, -.1); g.closePath(); g.fill(); g.strokeStyle = '#7a5a2a'; g.lineWidth = .03; g.stroke(); },
+  bowler: g => { g.fillStyle = '#111'; g.beginPath(); g.ellipse(-.1, .5, .45, .1, 0, 0, TAU); g.fill(); g.beginPath(); g.arc(-.1, .5, .3, 0, Math.PI); g.fill(); g.strokeStyle = '#3a2a1a'; g.lineWidth = .07; g.beginPath(); g.moveTo(.35, -1.1); g.lineTo(.35, .2); g.stroke(); g.fillStyle = '#d8d0c0'; g.fillRect(.18, -.2, .34, .35); g.fillStyle = '#c8241e'; g.fillRect(.18, -.35, .34, .12); },
+  lion: g => { g.fillStyle = '#e8402a'; g.beginPath(); g.arc(0, .2, .55, 0, TAU); g.fill(); g.fillStyle = '#ffd27a'; g.beginPath(); g.arc(0, .2, .32, 0, TAU); g.fill(); g.fillStyle = '#c8ccd6'; g.beginPath(); g.moveTo(-.7, -.6); g.lineTo(0, -.3); g.lineTo(.7, -.6); g.lineTo(0, -.9); g.closePath(); g.fill(); },
+  flame: g => { g.fillStyle = '#f6b82a'; g.beginPath(); g.moveTo(-.4, -.8); g.quadraticCurveTo(-.6, .2, 0, .9); g.quadraticCurveTo(.6, .2, .4, -.8); g.closePath(); g.fill(); g.fillStyle = '#4ab8ff'; for (let k = 0; k < 6; k++) { const a = k / 6 * TAU; g.fillRect(Math.cos(a) * .5 - .03, Math.sin(a) * .5 - .03, .06, .06); } },
+  ofa: g => { g.strokeStyle = '#4dff7c'; g.lineWidth = .08; g.beginPath(); g.moveTo(-.5, .8); g.lineTo(.1, .1); g.lineTo(-.2, 0); g.lineTo(.5, -.8); g.stroke(); g.fillStyle = '#5a5a62'; for (let k = 0; k < 5; k++) g.fillRect(-.6 + k * .26, -1.0, .12, .3); },
+};
+function fxCardFlip(g, t, o = {}) {
+  const dur = o.dur || .5, u = clamp(t / dur, 0, 1); if (t < 0) return; const x = o.x || W / 2, y = o.y || H / 2, S = o.size || 520, ang = easeInOut(u) * Math.PI, sx = Math.cos(ang);
+  g.save(); g.translate(x + Math.sin(ang) * 60, y); g.rotate(-.08 + u * .1); g.scale(Math.abs(sx) * S / 2.8, S / 2.8); const face = sx < 0 ? o.face : 'back';
+  g.beginPath(); g.rect(-1, -1.4, 2, 2.8); g.fillStyle = '#f6f2ea'; g.fill(); g.lineWidth = .03; g.strokeStyle = '#1a1418'; g.stroke(); g.save(); g.scale(sx < 0 ? -1 : 1, -1);
+  if (face === 'back') { g.fillStyle = '#7a1424'; g.fillRect(-.88, -1.28, 1.76, 2.56); g.strokeStyle = '#f6f2ea'; g.lineWidth = .03; for (let i = -6; i <= 6; i++) { g.beginPath(); g.moveTo(i * .3 - 1.4, -1.4); g.lineTo(i * .3 + 1.4, 1.4); g.moveTo(i * .3 + 1.4, -1.4); g.lineTo(i * .3 - 1.4, 1.4); g.stroke(); } }
+  else if (face === 'joker') { g.fillStyle = '#0c0a10'; g.fillRect(-.92, -1.32, 1.84, 2.64); cardFace.joker(g); } else if (cardFace[face]) cardFace[face](g); else if (typeof face === 'function') face(g);
+  g.restore(); g.restore();
+}
+function drawCat(g, p, o = {}) {
+  const q = project(p); if (!q) return; const s = (o.size || .35) * q.s, t = o.t || 0, pose = o.pose || 'sit', dir = o.flip ? -1 : 1;
+  g.save(); g.translate(q.x, q.y); g.scale(dir * s, s); g.fillStyle = '#0c0a0e'; g.strokeStyle = '#0c0a0e';
+  if (pose === 'sit') { g.beginPath(); g.ellipse(0, -.45, .28, .45, 0, 0, TAU); g.fill(); g.beginPath(); g.arc(.05, -1.0, .2, 0, TAU); g.fill(); for (const sx of [-1, 1]) { g.beginPath(); g.moveTo(.05 + sx * .17, -1.1); g.lineTo(.05 + sx * .14, -1.32); g.lineTo(.05 + sx * .03, -1.16); g.fill(); }
+    g.lineWidth = .08; g.lineCap = 'round'; g.beginPath(); g.moveTo(-.2, -.05); g.quadraticCurveTo(-.6, 0 + Math.sin(t * 2) * .05, -.55, -.4); g.stroke(); g.fillStyle = '#ffcf3a'; for (const sx of [-.07, .12]) { g.beginPath(); g.ellipse(sx, -1.02, .045, .03, 0, 0, TAU); g.fill(); } }
+  else { const ph = Math.floor(t * 8) % 4, lift = [0, .06, 0, .06]; g.beginPath(); g.ellipse(0, -.45, .55, .2, 0, 0, TAU); g.fill(); g.beginPath(); g.arc(.6, -.6, .18, 0, TAU); g.fill(); for (const sx of [-1, 1]) { g.beginPath(); g.moveTo(.6 + sx * .12, -.7); g.lineTo(.6 + sx * .1, -.9); g.lineTo(.6 + sx * .02, -.74); g.fill(); }
+    g.lineWidth = .08; g.lineCap = 'round'; for (const [x, k] of [[-.4, 0], [-.25, 1], [.3, 2], [.45, 3]]) { g.beginPath(); g.moveTo(x, -.4); g.lineTo(x + (k % 2 ? .08 : -.08) * (ph % 2 ? 1 : -1), -lift[(ph + k) % 4]); g.stroke(); } g.beginPath(); g.moveTo(-.5, -.5); g.quadraticCurveTo(-.9, -.9, -.8, -1.0); g.stroke(); g.fillStyle = '#ffcf3a'; g.beginPath(); g.ellipse(.68, -.62, .04, .03, 0, 0, TAU); g.fill(); }
+  g.restore();
+}
+function drawTalisman(g, p, o = {}) {
+  const M = mYPR(o.yaw || 0, o.pitch == null ? -1.2 : o.pitch, 0), s = (o.size || .12) / 2, P = (x, y) => vAdd(p, mApply(M, [x * s * .45, y * s, 0])); const sp = projPoly([P(-1, -1), P(1, -1), P(1, 1), P(-1, 1)]); if (sp.length < 3) return;
+  if (o.glow) { const q = project(p); if (q) { g.save(); g.globalCompositeOperation = 'lighter'; glow(g, q.x, q.y, (o.size || .12) * q.s * 3, '#ff3a4a', .7 * o.glow); g.restore(); } }
+  polyPath(g, sp); g.fillStyle = '#efe6cc'; g.fill(); g.lineWidth = 1; g.strokeStyle = '#3a2a1a'; g.stroke();
+  const a = proj2(P(0, 0)), b = proj2(P(1, 0)), c = proj2(P(0, 1)); g.save(); g.transform(b[0] - a[0], b[1] - a[1], c[0] - a[0], c[1] - a[1], a[0], a[1]); g.scale(1, -1); g.fillStyle = o.glow ? '#ff2a3a' : '#c81a2a'; g.font = '900 1.1px "IPAGothic", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('紅', 0, 0); g.restore();
+}
+function fxVestige(g, F, ft, o = {}) { // translucent glowing silhouette
+  const lay = getLayer('vestige', g.canvas.width, g.canvas.height), c2 = lay.getContext('2d'); c2.setTransform(g.getTransform()); c2.clearRect(-1e4, -1e4, 3e4, 3e4); drawFig(c2, F, ft, { mode: 'flat', col: o.col || '#ffffff' });
+  g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = o.alpha == null ? .4 : o.alpha; g.globalCompositeOperation = 'lighter'; g.filter = `blur(${(o.glow || 6) * (g.canvas.width / 1920)}px)`; g.drawImage(lay, 0, 0); g.filter = 'none'; g.globalCompositeOperation = 'source-over'; g.drawImage(lay, 0, 0); g.restore();
+}

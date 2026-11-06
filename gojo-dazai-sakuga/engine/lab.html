@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><title>lab</title><style>body{margin:0;background:#222}</style></head><body>
+<canvas id="out" width="1920" height="1080"></canvas>
+<script src="scripts.js"></script>
+<script>
+const c=document.getElementById('out'),ctx=c.getContext('2d');
+window.lab=(code,w,h)=>{c.width=w||1920;c.height=h||1080;ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#8a8fa0';ctx.fillRect(0,0,c.width,c.height);eval(code);return c.toDataURL('image/png');};
+</script></body></html>
+<script>
+// grid helper: views = [[az,el,dist,fov],...]; draws fn(i) into tile i with camera looking at target
+function tiles(n, cols, fn){const w=c.width/cols, h=c.height/Math.ceil(n/cols); for(let i=0;i<n;i++){const x=(i%cols)*w,y=Math.floor(i/cols)*h; ctx.save(); ctx.beginPath(); ctx.rect(x,y,w,h); ctx.clip(); ctx.translate(x+w/2-c.width/2,y+h/2-c.height/2); fn(i,w,h); ctx.restore(); ctx.strokeStyle='#555'; ctx.strokeRect(x,y,w,h);} }
+</script>
+<script>
+// scaled tiles: each tile shows the full 1920x1080 frame shrunk
+function tilesS(n, cols, fn){const rows=Math.ceil(n/cols), w=c.width/cols, h=w*9/16; c.height=Math.max(c.height, Math.ceil(h*rows)); for(let i=0;i<n;i++){const x=(i%cols)*w,y=Math.floor(i/cols)*h; ctx.save(); ctx.beginPath(); ctx.rect(x,y,w,h); ctx.clip(); ctx.translate(x,y); ctx.scale(w/1920,h/1080); fn(i); ctx.restore(); ctx.strokeStyle='#222'; ctx.lineWidth=2; ctx.strokeRect(x,y,w,h);} }
+</script>
+<script src="sheets.js"></script>

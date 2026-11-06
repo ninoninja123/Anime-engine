@@ -1,0 +1,4 @@
+*.mp4
+audio/out/
+audio/voice/
+pre/story_secret.md

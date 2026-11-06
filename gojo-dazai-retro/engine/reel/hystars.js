@@ -1,0 +1,4 @@
+/* star crowd lab: each crowd.md reaction as a close-up.  node render.js sheet reel/hystars OUT list:... */
+PROGRAM.reset(28, 'hystars');
+const ST = [['shunsui', 'hatDown'], ['shunsui', 'laugh'], ['shunsui', 'toast'], ['dazai', 'smile'], ['dazai', 'grin'], ['urahara', 'fanMouth'], ['gojo', 'grin'], ['gojo', 'raiseHand'], ['harry', 'worried'], ['harry', 'standShock'], ['kenpachi', 'excited'], ['aizen', 'calmSmile'], ['shinji', 'grimace'], ['gowther', 'gasp']];
+ST.forEach(([k, r], i) => shot('S' + i, i * 2, i * 2 + 2, (f, lt) => { starShot(f, k, r, lt, { dmg: 1, cam: { part: 'bust', dist: 1.3, az: .3 } }); f.text(g => (g.save(), g.font = '800 50px Inter', g.fillStyle = '#fff', g.strokeStyle = '#000', g.lineWidth = 6, g.strokeText(k + ':' + r, 40, 70), g.fillText(k + ':' + r, 40, 70), g.restore())); }));

@@ -1,0 +1,6 @@
+PROGRAM.reset(20, 'nltitles');
+const TT = [['ninja', { text: 'KAGE BUNSHIN NO JUTSU!', sub: '影分身の術' }], ['pirate', { text: 'PISTOL!', pre: 'GOMU GOMU NO', jp: 'ゴムゴムの' }], ['cartoon', { text: 'GEAR FIFTH', jp: 'ギア5' }], ['ninja', { text: 'RASENGAN', kind: 'rasengan', sub: '螺旋丸' }], ['ninja', { text: 'RASENSHURIKEN', kind: 'sage', pre: 'SAGE ART', sub: '仙法・螺旋手裏剣' }], ['ninja', { text: 'BARYON MODE', kind: 'baryon', sub: '重粒子モード' }],
+  ['pirate', { text: 'PISTOL', pre: 'GOMU GOMU NO', kind: 'gomu' }], ['pirate', { text: 'KING KONG GUN', pre: 'GOMU GOMU NO', kind: 'gear4' }], ['pirate', { text: "CONQUEROR'S HAKI", kind: 'haki' }], ['cartoon', { text: 'BAJRANG GUN', pre: 'GOMU GOMU NO' }], ['cartoon', { text: 'GEAR 5' }]];
+TT.forEach(([st, o], i) => shot('T' + i, i * 1.5, i * 1.5 + 1.5, (f, lt) => { std(f, { pal: 'arena_nl' }); f.bg({ set: 'nlarena', pal: i > 5 ? 'arena_nl_toon' : 'arena_nl' }); f.cam({ pos: [0, 3, 22], target: [0, 3, 0], fov: 45 });
+  f.text(g => attackTitle(g, lt, Object.assign({ style: st, t0: 0, dur: 1.0 }, o))); }));
+shot('TC', 16.5, 19.5, (f, lt) => { std(f, { pal: 'arena_nl' }); f.bg({ set: 'nlcard', who: 'naruto' }); f.cam({ pos: [0, 3, 22], target: [0, 3, 0], fov: 45 }); f.text(g => fighterCard(g, lt, { who: 'naruto', t0: 0, dur: 2.6 })); });

@@ -1,0 +1,12 @@
+{
+  "meta": { "title": "GOJO vs DAZAI (sakuga)", "duration": 10.0, "characters": { "GOJ": "Satoru Gojo", "DAZ": "Osamu Dazai" } },
+  "shots": [
+    { "id": "A", "t0": 0.0, "t1": 1.1 }, { "id": "B", "t0": 1.1, "t1": 1.85 }, { "id": "C", "t0": 1.85, "t1": 3.35 },
+    { "id": "D", "t0": 3.35, "t1": 4.45 }, { "id": "E", "t0": 4.45, "t1": 5.75 }, { "id": "F", "t0": 5.75, "t1": 6.85 },
+    { "id": "G1", "t0": 6.85, "t1": 7.45 }, { "id": "G2", "t0": 7.45, "t1": 8.55 }, { "id": "H1", "t0": 8.55, "t1": 9.3 }, { "id": "H2", "t0": 9.3, "t1": 10.0 }
+  ],
+  "subtitles": [
+    { "who": "DAZ", "t0": 4.9, "t1": 5.85, "line": "Your Infinity ends where I touch." },
+    { "who": "GOJ", "t0": 6.0, "t1": 6.9, "line": "Then I'll just punch you." }
+  ]
+}
