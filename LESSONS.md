@@ -35,3 +35,6 @@ Pakolliset oletukset (Record of Ragnarok -formaatti):
 ## Captains clash (Toshiro vs Shunsui vs Byakuya, 3:30) — palaute: 'iha paska; ainoa hyvä kohta oli Shunsuin Bankain alku Karamatsu Shinjuun asti'
 - Ainoa kohta joka toimi: Kyorakun Bankai -aktivointi, joka tehtiin käyttäjän REFERENSSIVIDEON mukaan frame frameltä (musta 'Bankai.' → valkoinen kenttä + mustat siluettivarjot → kultainen savu) ja jonka omalla äänellä. OPPI: kun käyttäjä antaa referenssivideon/ääniä, kopioi se uskollisesti frame-tasolla (4 fps -frame-sarja referenssistä + vertailu); rakenna avainhetket referensseistä, älä omista tulkinnoista.
 - Muu (kolmen kapteenin taistelu, tarina, lähikuvat, liike) ei toiminut: 3-way-taistelu on vaikea tehdä selkeäksi; pidä ottelut 1v1 tai korkeintaan kahden hahmon fokuksessa kerrallaan; jokaiselle hahmolle oma selkeä visuaalinen aihe; ei tuhottuja liian monimutkaisia rakenteita.
+
+## PÄÄTÖS (käyttäjä): EI REPLIIKKEJÄ EIKÄ PUHEÄÄNIÄ videoihin
+- Videoissa ei ole puhuttua dialogia eikä ääninäyttelyä (ei TTS:ää, ei ElevenLabsia, ei Orpheusta) ELLEI käyttäjä erikseen pyydä. Tarina kerrotaan kuvalla, tekniikannimiteksteillä ja musiikilla/ääniefekteillä; tekstityksiä/repliikkejä vain jos käyttäjä pyytää. Huudot/taisteluhuudot ja äännähdykset voi käyttää Epidemic-ääniefekteinä.

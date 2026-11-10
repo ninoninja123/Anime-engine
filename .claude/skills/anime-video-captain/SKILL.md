@@ -19,7 +19,7 @@ Julkinen repo; ei kirjautumista. Lue tässä järjestyksessä (älä lue API.md:
 - Lopputulos: 720p, 24 fps MP4. Lähetä chat-versio ≤ 28 MB SendUserFile:lla (pidemmät videot osissa). Muistuta lataamaan video (ympäristö on väliaikainen).
 - Laatu: hahmot uhkaavia/vakavia, värikäs maailma (ei harmaa), kasvot selkeinä, kamera aina liikkeessä, anime-impact-framet + tiheät purskeet, kolmivaiheiset tekniikat isoilla nimiteksteillä, paljon kerroksellisia ääniefektejä, musiikki kuuluu puheen alla, ANIME-tyylipassi (API.md luku 23) kaikkialla.
 - Tarina: 3–4 twistiä / 3–4 min, jokainen kuvalla + yhdellä selkeällä repliikillä; ymmärrettävyys ensin.
-- Puheet: Orpheus TTS (paikallinen) on käyttäjän valinta oletukseksi, koska tunnetagit (`<chuckle>`, `<laugh>`, `<sigh>`) tuovat näyttelyn. Skripti `audio/orpheus_tts.py` (jobs.json → wav), äänet dan/leo/zac/tara/leah/jess/mia/zoe, malli `unsloth/orpheus-3b-0.1-ft`; ~2–3 min/repliikki CPU:lla, ~4,5 Gt levyä: aja repliikit pienissä erissä (≤3 kerrallaan; 10 min komento-aikaraja), tasaa ja trimmaa. ElevenLabs (eleven_v4) vain jos käyttäjä pyytää ja krediittejä on. Ei Kokoroa, Piperia eikä muuta ilmaista TTS:ää (hylätty). Musiikki: Epidemic Sound.
+- Puheet: EI PUHETTA EIKÄ REPLIIKKEJÄ videoihin (käyttäjän päätös), ellei käyttäjä erikseen pyydä; silloin ElevenLabs (jos krediittejä) tai Orpheus TTS. Tarina kerrotaan kuvalla, tekniikannimiteksteillä, musiikilla ja ääniefekteillä. Musiikki: Epidemic Sound.
 - Kysy käyttäjältä vain tarvittava: kuka vastaan ketä, pituus, erityistoiveet. Muu päätetään itse.
 
 ## 3. Agenttijako (säästää kiintiötä)
