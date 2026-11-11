@@ -38,3 +38,7 @@ Pakolliset oletukset (Record of Ragnarok -formaatti):
 
 ## PÄÄTÖS (käyttäjä): EI REPLIIKKEJÄ EIKÄ PUHEÄÄNIÄ videoihin
 - Videoissa ei ole puhuttua dialogia eikä ääninäyttelyä (ei TTS:ää, ei ElevenLabsia, ei Orpheusta) ELLEI käyttäjä erikseen pyydä. Tarina kerrotaan kuvalla, tekniikannimiteksteillä ja musiikilla/ääniefekteillä; tekstityksiä/repliikkejä vain jos käyttäjä pyytää. Huudot/taisteluhuudot ja äännähdykset voi käyttää Epidemic-ääniefekteinä.
+
+## Mind game -palaute (Seven Chairs)
+Käyttäjä: hyvä, mutta twistit olivat liian maltillisia. Halusi RAJUJA, ällikällä lyöviä käänteitä: esim. "koko peli oli Gowtherin luoma harha / Aizenin illuusio (Kyoka Suigetsu)" tai "Uraharan bankai kirjoitti koko tapahtuman uusiksi". Älä tee kykyjen omistajista tyhmiä: Gowtherin, Aizenin ja Uraharan pitää toimia hahmonsa älyn tasolla (ei saa jäädä kiinni halvalla).
+Sääntö jatkossa (mind game / genius battle): rakenna vähintään yksi ISO retroaktiivinen käänne, joka kirjoittaa aiemmin nähdyn uusiksi (harha/illuusio/ennakkovalmistelu/bankai), istuta vihjeet näkyviin aikaisin, ja anna kykyjä käyttävien hahmojen olla aidosti fiksuja. Pienet käänteet eivät riitä.
