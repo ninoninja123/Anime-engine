@@ -46,3 +46,13 @@ TÄSMENNYS (käyttäjä): "koko peli oli harha" oli vain esimerkki – EI saa ol
 
 ## Gojo vs Toji -palaute (2D-anime-leikkaus + dialogi)
 Käyttäjä: "aivan paska", Yami vs Shanks oli PALJON eeppisempi; Gojo vs Tojissa paras osa oli piirretty Blue ja Red. Opit: eeppisyys syntyy efekteistä, kamerasta, isoista impact-BURSTeista, musiikin nousukäyrästä ja tiheästä SFX:stä (Yami vs Shanks -resepti: action3d + ANIME-pass, ei puhetta, vähän kasvoja) – EI dialogista, lähikuvista tai tiheästä leikkauksesta sinänsä. Kun käyttäjä pyytää "eeppistä", käytä Yami vs Shanks -reseptiä (efektit + siluetit + kamera) ja tee kunnolla piirretyt, isot, oikeasti animoidut tekniikat (Blue/Red/Purple-tyyliset). Älä korvaa sitä dialogi-/lähikuvaleikkauksella.
+
+## Seuraavan videon tekniikkaideat (aito anime-fiilis)
+1) Taustamoottori: maalatut taustalevyt (iso kuva kerroksina: taivas/kaukomaisema/keskitaso/etuala), siveltinkohina, vesivärireunat, ilmaperspektiivi, reunavalo, valokiilat; liike multiplane-parallaksina.
+2) Guilty Gear Xrd -tyylinen 3D→2D: käsin asetetut normaalit (puhtaat varjot), epäsäännöllinen framerate (twos/threes) hahmoille, vaihtuva viivanpaksuus kuvakulman mukaan.
+3) Avainposet käsin (anticipation 2 fr, impact-pito 3–4 fr, smear) tasaisen interpoloinnin sijaan.
+4) Efektit 2D-spriteinä käsin animoiduilla pidoilla (tuli, savu, salamat, renkaat) eikä 3D-hiukkasina.
+5) Kasvot kulmakirjastosta (front/¾/profiili) vaihtaen leikkauksessa, ei pään pyörittämistä; iso silmä-/suu-/kulmakirjasto, kiilto ja ripsiviivat.
+6) Kamera: syväterävyys, linssiheijastukset, chromatic aberration iskuissa, värikäsittely kohtauksittain.
+7) Referenssikuvat (käyttäjän antamat animeotokset): poimi värit ja kuvakulmat.
+Ehdotettu seuraava askel: ensin taustamoottori + Xrd-hahmoshader, testi stilleillä ennen videota.
