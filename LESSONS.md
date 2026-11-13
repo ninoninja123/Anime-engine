@@ -94,3 +94,7 @@ Resepti jota käytetään jatkossa oletuksena: VRM (VRoid) + MToon + Xrd-sääd�
 - Puhe mitattava ennen shottilistaa: 29 riviä = 80 s, leikattiin 22 riviin (55 s, 31 %). Kolmas puhuja omalla 2 puhujan Gemini-pyynnöllä.
 - Ilman Epidemic-yhteyttä: vanhat WAV-kirjastot + numpyllä syntetisoidut kumi-, pyörre-, humina- ja putousäänet; 3900+ tapahtumaa shottidatasta.
 - flame-shader ei käy roiskeeksi/sumuksi; aura-liekki hahmon taakse. Taivasnauhan yläpuoli tarvitsee zeniitin värin.
+
+## Sasuke vs Zoro – käyttäjäpalaute (3,9/5)
+- Parasta: Sharingan-kohdat (selkeä, erottuva efektisuunnittelu). Hahmot tunnistettavia. Heikkoa: MUSIIKKI (valittu mittauksilla/tageilla, ei kuultu), SFX, TAUSTAT, "viimeinen juttu" (huippukohdan wow) puuttui.
+- Opit: (1) jokaiselle tekniikalle oma ikoninen efektisuunnittelu kuten Sharinganille; (2) musiikki: käytä käyttäjän kehumia raitoja tai anna 3–5 ehdokasta kuunneltavaksi ennen renderiä; (3) SFX: vähemmän mutta parempia, impact-pinot; (4) taustat: aidosti maalatut/generoidut platet, parempi valo; (5) yksi muistettava signature-shotti huipennukseen.
