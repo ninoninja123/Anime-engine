@@ -83,3 +83,14 @@ Ehdotettu seuraava askel: ensin taustamoottori + Xrd-hahmoshader, testi stilleil
 
 ## PARAS TÄHÄN ASTI: Gojo vs Itachi 2 min (VRM + MToon -putki) – käyttäjä: "100x parempi kuin kaikki aiemmat"
 Resepti jota käytetään jatkossa oletuksena: VRM (VRoid) + MToon + Xrd-säädöt (three.js + @pixiv/three-vrm), avainposekirjasto stepped 2s/3s + IK, maalatut taustalevyt multiplane-parallaksilla, 2D-lähikuvapäät (Julius vs Licht -haaran head/face2d) joissa suu seuraa puhetta, isot kerroksiset 2D-sprite/shader-efektit, ≥15 impact-tyyliä + BURSTit, tiheä SFX (2000+ tapahtumaa, kirjoitetut hiljaisuudet ennen iskuja), Epidemic-musiikki nousukäyrällä, japaninkielinen Gemini TTS (monipuhujapyynnöt, whisper-tarkistus) + englanninkieliset tekstitykset, storyboard ensin, ei VS-/esittelykortteja. Käyttäjä erikseen kehui: ääniefektit, twistit, piirrot. Haara: gojo-vs-itachi-2min-animation (privaatti), opit anime-enginen LESSONS.md:ssä. Effort: Fable low riitti.
+
+## Luffy vs Naruto (~176 s, VRM + MToon -putki, haara luffy-vs-naruto-animation) — tekijän opit ennen palautetta
+- Uudet hahmot samalle VRoid-pohjalle: valmiit vaatteet väritetään ja leikataan alfalla (avoin paita, shortsit), vartalo on kokonainen vaatteiden alla; UV selviää yhdellä numeroidulla ruudukkotestillä. Tunnistettavuus = siluetti + kolme merkkiä per hahmo (hattu/arpi/punainen paita; piikkitukka/otsasuoja/viikset) + käyttäjän referenssikuvan värit. Kasvot hoidetaan 2D-lähikuvapäillä (uusi hahmo = väritaulu + tupsutaulu + 3-4 lisäpiirrosta).
+- Kumiraajat: kyynärvarren luun skaalaus kohteeseen + käden käänteinen skaala (nyrkin koko erikseen) -> Pistol, Gatling, Gear 3 ja taivaalta tuleva jättinyrkki samalla mekanismilla. Hihat pitää leikata kyynärpään yläpuolelle.
+- IK-kohteista pitää vähentää juuren korkeus, kun hahmo on ilmassa (vanha bugi, löytyi vasta venytetystä kädestä).
+- Varjokloonit: sama malli piirretään kerran per klooni samaan syvyyspuskuriin, efektit viimeisenä; kaukana sprite-armeija ja pop-aalto.
+- Kolme maailmaa samasta maalausgeneraattorista (parametrisoitu taivas) + yksi iso levy (vesiputous + patsaat). Järvi yhtenä shaderina, jolla on tilat vesi / kumi / avattu reikä: sama pinta kantoi kolme käännettä (vaara -> trampoliini -> ansa).
+- Käänteet rakennettiin sääntöjen leikkauskohdista (kloonien muisti x Haki, paholaishedelmä x vesi, tuuli x kumi), jokaisella vihje ensimmäisen minuutin aikana ja yksi lause.
+- Puhe mitattava ennen shottilistaa: 29 riviä = 80 s, leikattiin 22 riviin (55 s, 31 %). Kolmas puhuja omalla 2 puhujan Gemini-pyynnöllä.
+- Ilman Epidemic-yhteyttä: vanhat WAV-kirjastot + numpyllä syntetisoidut kumi-, pyörre-, humina- ja putousäänet; 3900+ tapahtumaa shottidatasta.
+- flame-shader ei käy roiskeeksi/sumuksi; aura-liekki hahmon taakse. Taivasnauhan yläpuoli tarvitsee zeniitin värin.
