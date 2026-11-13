@@ -80,3 +80,6 @@ Ehdotettu seuraava askel: ensin taustamoottori + Xrd-hahmoshader, testi stilleil
 - Tyhjyys (Unlimited Void) ja Tsukuyomi: ympäristö piiloon + kameraan kiinnitetty shader-taustalevy (`cosmos`), hahmot omalla valolla. Halpa ja lukee heti eri maailmaksi.
 - Savu `flame`-shaderilla näyttää kivipiikeiltä: ei käytetä savuna.
 - Renderi: 3077 framea, 4 workeria. Miksauksen ajo samaan aikaan renderin kanssa hidastuu moninkertaiseksi; aja peräkkäin.
+
+## PARAS TÄHÄN ASTI: Gojo vs Itachi 2 min (VRM + MToon -putki) – käyttäjä: "100x parempi kuin kaikki aiemmat"
+Resepti jota käytetään jatkossa oletuksena: VRM (VRoid) + MToon + Xrd-säädöt (three.js + @pixiv/three-vrm), avainposekirjasto stepped 2s/3s + IK, maalatut taustalevyt multiplane-parallaksilla, 2D-lähikuvapäät (Julius vs Licht -haaran head/face2d) joissa suu seuraa puhetta, isot kerroksiset 2D-sprite/shader-efektit, ≥15 impact-tyyliä + BURSTit, tiheä SFX (2000+ tapahtumaa, kirjoitetut hiljaisuudet ennen iskuja), Epidemic-musiikki nousukäyrällä, japaninkielinen Gemini TTS (monipuhujapyynnöt, whisper-tarkistus) + englanninkieliset tekstitykset, storyboard ensin, ei VS-/esittelykortteja. Käyttäjä erikseen kehui: ääniefektit, twistit, piirrot. Haara: gojo-vs-itachi-2min-animation (privaatti), opit anime-enginen LESSONS.md:ssä. Effort: Fable low riitti.
