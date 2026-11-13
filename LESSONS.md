@@ -56,3 +56,11 @@ Käyttäjä: "aivan paska", Yami vs Shanks oli PALJON eeppisempi; Gojo vs Tojiss
 6) Kamera: syväterävyys, linssiheijastukset, chromatic aberration iskuissa, värikäsittely kohtauksittain.
 7) Referenssikuvat (käyttäjän antamat animeotokset): poimi värit ja kuvakulmat.
 Ehdotettu seuraava askel: ensin taustamoottori + Xrd-hahmoshader, testi stilleillä ennen videota.
+
+## Itachi vs Gojo (30 s, ensimmäinen VRM + MToon -video) — tekijän opit ennen palautetta
+- Putki: yksi three.js-kohtaus (maalattu taivaspanoraama + kaukokerros + maa + rauniokortit + VRM-hahmot + cel-shader-efektitasot) ja 2D-canvas-post impact-frameille. 0,55 s/frame, 720 framea n. 6 min.
+- Hahmot rakennetaan koodilla samalle VRoid-pohjalle (hiukset kapenevina lukkoina, silmäside/otsapanta säteenseurannalla pään pintaan, iiristekstuurit koodilla). Tunnistettavuus tulee hiuksista, asusta ja silmistä; kasvot jäävät VRoid-peruskasvoiksi.
+- Efektien pitää olla maailmaan ankkuroituja cel-tasoja (askellettu aika, kynnystetty kohina, kovat sävyt), ei pehmeää hehkua. Muodon kavennus tehdään shaderin muotofunktiossa.
+- Tsukuyomi/negatiivimaailma: maailma ja hahmot käsitellään erikseen maskilla; koko kuvan invertointi ei toimi vaihtelevalla taivaalla.
+- Tarkista auringon suunta ja jokainen lähikuvan sommittelu kontaktiarkista ennen renderiä; korkea kaulus + matala kulma piilottaa kasvot.
+- Ääni: 563 kerrostettua tapahtumaa / 30 s, 21 kirjoitettua 2–3 framen hiljaisuutta ennen iskuja, musiikin tahtirajat lukittu shottirajoihin (drop frame 91, kovin osa 411, katko 594, loppuisku 660).
