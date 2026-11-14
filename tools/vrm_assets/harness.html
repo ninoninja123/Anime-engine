@@ -1,0 +1,47 @@
+<!doctype html><html><body style="margin:0;background:#000"><script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/","@pixiv/three-vrm":"./node_modules/@pixiv/three-vrm/lib/three-vrm.module.js","@pixiv/three-vrm-animation":"./node_modules/@pixiv/three-vrm-animation/lib/three-vrm-animation.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { VRMLoaderPlugin, VRMUtils, MToonMaterial } from '@pixiv/three-vrm';
+import { VRMAnimationLoaderPlugin, createVRMAnimationClip } from '@pixiv/three-vrm-animation';
+const W=360,H=640; const r=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true}); r.setSize(W,H); r.outputColorSpace=THREE.SRGBColorSpace; document.body.appendChild(r.domElement);
+window.go=async(url,opt={})=>{
+  const scene=new THREE.Scene(); scene.background=new THREE.Color(opt.bg??0xd8e4ee);
+  const sun=new THREE.DirectionalLight(0xffffff,Math.PI*0.9); sun.position.set(1.2,2,2.5); scene.add(sun); scene.add(new THREE.AmbientLight(0xffffff,0.35*Math.PI));
+  const L=new GLTFLoader(); L.register(p=>new VRMLoaderPlugin(p)); L.register(p=>new VRMAnimationLoaderPlugin(p));
+  const g=await L.loadAsync(url); const vrm=g.userData.vrm; VRMUtils.rotateVRM0(vrm); scene.add(vrm.scene);
+  const info={ver:vrm.meta?.metaVersion, mtoon:0, other:0};
+  vrm.scene.traverse(o=>{ if(o.isMesh){ o.frustumCulled=false; for(const m of [].concat(o.material)){ if(m.isMToonMaterial) info.mtoon++; else info.other++; }}});
+  // force consistent toon look: convert non-MToon (PBR) mats to MToon
+  if(opt.forceToon) vrm.scene.traverse(o=>{ if(o.isMesh){ const ms=[].concat(o.material).map(m=>{ if(m.isMToonMaterial) return m; const t=new MToonMaterial({color:m.color??new THREE.Color(1,1,1),map:m.map??null,shadeMultiplyTexture:m.map??null,shadeColorFactor:new THREE.Color(0.62,0.58,0.7),shadingToonyFactor:0.95,shadingShiftFactor:-0.05,transparent:m.transparent,alphaTest:m.alphaTest}); t.outlineWidthMode='screenCoordinates'; t.outlineWidthFactor=0.003; t.outlineColorFactor=new THREE.Color(0.05,0.04,0.06); return t;}); o.material=Array.isArray(o.material)?ms:ms[0]; }}); 
+  if(opt.plate){ const t=await new THREE.TextureLoader().loadAsync(opt.plate); t.colorSpace=THREE.SRGBColorSpace; scene.background=t; }
+  const grad=new THREE.DataTexture(new Uint8Array([90,90,90,255,200,200,200,255,255,255,255,255]),3,1); grad.needsUpdate=true;
+  const toonify=(root)=>{ const L2=[]; root.traverse(o=>{ if(o.isMesh) L2.push(o); }); L2.forEach(o=>{ const ms=[].concat(o.material).map(m=>new THREE.MeshToonMaterial({color:m.color,map:m.map,vertexColors:!!o.geometry.attributes.color,gradientMap:grad})); o.material=Array.isArray(o.material)?ms:ms[0]; const ol=new THREE.Mesh(o.geometry,new THREE.MeshBasicMaterial({color:0x140f1a,side:THREE.BackSide})); ol.scale.setScalar(1.02); o.add(ol); }); };
+  if(opt.props){ const GL=new GLTFLoader(); for(const pr of opt.props){ const g3=await GL.loadAsync(pr.url); const r=g3.scene; r.position.set(...pr.p); r.scale.setScalar(pr.s??1); r.rotation.y=pr.ry??0; toonify(r); scene.add(r); }
+    const gnd=new THREE.Mesh(new THREE.PlaneGeometry(40,40),new MToonMaterial({color:new THREE.Color(opt.ground??0x7d9a52),shadeColorFactor:new THREE.Color(0x4a5a3a)})); gnd.rotation.x=-Math.PI/2; scene.add(gnd); }
+  const hum=vrm.humanoid;
+  if(opt.hairFrom){ // transplant the hair mesh of another VRoid model onto this base (baked rest pose, static, parented to head)
+    const isHair=o=>[].concat(o.material).some(m=>/HAIR/i.test(m.name||''));
+    vrm.scene.updateMatrixWorld(true); vrm.scene.traverse(o=>{ if(o.isMesh&&isHair(o)) o.visible=false; });
+    const g2=await L.loadAsync(opt.hairFrom); const dv=g2.userData.vrm; VRMUtils.rotateVRM0(dv); dv.scene.updateMatrixWorld(true);
+    const dh=new THREE.Vector3(), ch=new THREE.Vector3(); dv.humanoid.getRawBoneNode('head').getWorldPosition(dh); const headC=hum.getRawBoneNode('head'); headC.getWorldPosition(ch);
+    const sc=opt.hairScale??1; let nv=0;
+    dv.scene.traverse(o=>{ if(!(o.isMesh&&isHair(o))) return; const geo=o.geometry.clone(); const pos=geo.attributes.position, v=new THREE.Vector3();
+      for(let i=0;i<pos.count;i++){ o.getVertexPosition(i,v); v.applyMatrix4(o.matrixWorld); v.sub(dh).multiplyScalar(sc).add(ch); headC.worldToLocal(v); pos.setXYZ(i,v.x,v.y,v.z); }
+      geo.deleteAttribute('skinIndex'); geo.deleteAttribute('skinWeight'); geo.morphAttributes={}; geo.computeVertexNormals(); nv+=pos.count;
+      const mats=[].concat(o.material).map(m=>{ const c=m.clone(); if(opt.hairTint&&!c.isOutline){ c.color=new THREE.Color(opt.hairTint); c.shadeColorFactor=new THREE.Color(opt.hairShade??opt.hairTint).multiplyScalar(0.7);} return c; });
+      const m=new THREE.Mesh(geo,Array.isArray(o.material)?mats:mats[0]); m.frustumCulled=false; headC.add(m); });
+    info.hairVerts=nv; }
+  if(opt.anim){ const a=await L.loadAsync(opt.anim); const clip=createVRMAnimationClip(a.userData.vrmAnimations[0],vrm); const mix=new THREE.AnimationMixer(vrm.scene); const act=mix.clipAction(clip); act.play(); mix.setTime(opt.t??0.5); info.clipDur=clip.duration; }
+  else { const k=vrm.meta?.metaVersion==='0'?-1:1; const s=v=>hum.getNormalizedBoneNode(v); s('leftUpperArm').rotation.z=-1.2*k; s('rightUpperArm').rotation.z=1.2*k; s('leftLowerArm').rotation.z=-0.15*k; s('rightLowerArm').rotation.z=0.15*k; }
+  vrm.update(0); vrm.scene.updateMatrixWorld(true);
+  const hp=new THREE.Vector3(); hum.getRawBoneNode('head').getWorldPosition(hp); const box=new THREE.Box3().setFromObject(vrm.scene); info.height=+box.max.y.toFixed(3); info.headY=+hp.y.toFixed(3);
+  const hip=new THREE.Vector3(); hum.getRawBoneNode('hips').getWorldPosition(hip); info.hipY=+hip.y.toFixed(3);
+  const ls=new THREE.Vector3(),rs=new THREE.Vector3(); hum.getRawBoneNode('leftUpperArm').getWorldPosition(ls); hum.getRawBoneNode('rightUpperArm').getWorldPosition(rs); info.shoulderW=+ls.distanceTo(rs).toFixed(3);
+  const cam=new THREE.PerspectiveCamera(opt.fov??22,W/H,0.05,200); const h=opt.normH?1.9:box.max.y; const cy=opt.face?hp.y+0.05:h*0.52; const d=opt.face?(opt.fd??0.75):(h*0.62)/Math.tan(cam.fov*Math.PI/360);
+  const tx=opt.anim?hip.x:0,tz=opt.anim?hip.z:0; const cy2=opt.anim&&!opt.face?0.85:cy; const d2=opt.anim&&!opt.face?(1.9*0.62)/Math.tan(cam.fov*Math.PI/360):d; cam.position.set(tx+(opt.side?d2*0.7:d2*0.25),cy2,tz+(opt.side?d2*0.7:d2)); cam.lookAt(tx,cy2,tz);
+  if(opt.expr) for(const [k,v] of Object.entries(opt.expr)) vrm.expressionManager?.setValue(k,v); vrm.update(0);
+  r.render(scene,cam); const out=r.domElement.toDataURL('image/jpeg',0.9); VRMUtils.deepDispose(vrm.scene); return {info,out};
+};
+window.READY=true;
+</script></body></html>

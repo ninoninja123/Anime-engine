@@ -1,0 +1,46 @@
+<!doctype html><html><body style="margin:0;background:#000"><script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/","@pixiv/three-vrm":"./node_modules/@pixiv/three-vrm/lib/three-vrm.module.js","@pixiv/three-vrm-animation":"./node_modules/@pixiv/three-vrm-animation/lib/three-vrm-animation.module.js"}}</script>
+<script type="module">
+// Bake a .vrma clip into poses.json-style key poses (ypr for torso/head/hands/feet, dir+twist for limbs), the format core.js resolvePose() reads.
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
+import { VRMAnimationLoaderPlugin, createVRMAnimationClip } from '@pixiv/three-vrm-animation';
+const DEG=Math.PI/180, V3=(x,y,z)=>new THREE.Vector3(x,y,z), X=V3(1,0,0),Y=V3(0,1,0),Z=V3(0,0,1);
+const PARENT={spine:'hips',chest:'spine',upperChest:'chest',neck:'upperChest',head:'neck',leftShoulder:'upperChest',leftUpperArm:'leftShoulder',leftLowerArm:'leftUpperArm',leftHand:'leftLowerArm',rightShoulder:'upperChest',rightUpperArm:'rightShoulder',rightLowerArm:'rightUpperArm',rightHand:'rightLowerArm',leftUpperLeg:'hips',leftLowerLeg:'leftUpperLeg',leftFoot:'leftLowerLeg',rightUpperLeg:'hips',rightLowerLeg:'rightUpperLeg',rightFoot:'rightLowerLeg'};
+const ORDER=['hips',...Object.keys(PARENT)];
+const REST=n=>/^left(Shoulder|UpperArm|LowerArm|Hand)/.test(n)?X:/^right(Shoulder|UpperArm|LowerArm|Hand)/.test(n)?V3(-1,0,0):/Leg/.test(n)?V3(0,-1,0):null;
+const DIRB=/(UpperArm|LowerArm|UpperLeg|LowerLeg)$/;
+const qYPR=(y,p,r)=>new THREE.Quaternion().setFromAxisAngle(Y,y*DEG).multiply(new THREE.Quaternion().setFromAxisAngle(X,p*DEG)).multiply(new THREE.Quaternion().setFromAxisAngle(Z,r*DEG));
+const r2=x=>Math.round(x*100)/100, r0=x=>Math.round(x);
+let vrm,mix,S,Si,scene,cam,R;
+window.init=async(model)=>{ R=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true}); R.setSize(360,640); R.outputColorSpace=THREE.SRGBColorSpace; document.body.appendChild(R.domElement);
+  scene=new THREE.Scene(); scene.background=new THREE.Color(0xd8e4ee); const s=new THREE.DirectionalLight(0xffffff,2.8); s.position.set(1,2,2.5); scene.add(s, new THREE.AmbientLight(0xffffff,1.1));
+  const L=new GLTFLoader(); L.register(p=>new VRMLoaderPlugin(p)); const g=await L.loadAsync(model); vrm=g.userData.vrm; VRMUtils.rotateVRM0(vrm); scene.add(vrm.scene);
+  S=vrm.scene.quaternion.clone(); Si=S.clone().invert(); cam=new THREE.PerspectiveCamera(22,360/640,0.05,50); return true; };
+window.bake=async(url,times)=>{ const L=new GLTFLoader(); L.register(p=>new VRMAnimationLoaderPlugin(p)); const a=await L.loadAsync(url);
+  const clip=createVRMAnimationClip(a.userData.vrmAnimations[0],vrm); mix=new THREE.AnimationMixer(vrm.scene); mix.clipAction(clip).play();
+  const hum=vrm.humanoid, out=[];
+  for(const t of times){ mix.setTime(t); vrm.update(0);
+    const Qw={}; const P={};
+    for(const n of ORDER){ const node=hum.getNormalizedBoneNode(n); if(!node) continue; let pn=PARENT[n]; while(pn&&!hum.getNormalizedBoneNode(pn)) pn=PARENT[pn];
+      const l=S.clone().multiply(node.quaternion).multiply(Si); // engine-frame local (inverse of node.q = Si*l*S)
+      Qw[n]=(pn?Qw[pn]:new THREE.Quaternion()).clone().multiply(l);
+      if(n==='hips'){ const e=new THREE.Euler().setFromQuaternion(Qw[n],'YXZ'); var Ryi=new THREE.Quaternion().setFromAxisAngle(Y,-e.y); var yaw0=e.y/DEG; }
+      const q=Ryi.clone().multiply(Qw[n]); // facing normalised: the engine's path yaw turns the body
+      if(DIRB.test(n)){ const d=REST(n).clone().applyQuaternion(q); const sw=new THREE.Quaternion().setFromUnitVectors(REST(n),d); const T=q.clone().multiply(sw.clone().invert()); const ax=V3(T.x,T.y,T.z); let ang=2*Math.atan2(ax.length(),T.w)/DEG; if(ax.dot(d)<0) ang=-ang; if(ang>180) ang-=360; if(ang<-180) ang+=360;
+        P[n]={dir:[r2(d.x),r2(d.y),r2(d.z)]}; if(Math.abs(ang)>3) P[n].twist=r0(ang); }
+      else { const e=new THREE.Euler().setFromQuaternion(q,'YXZ'); P[n]={ypr:[r0(e.y/DEG),r0(e.x/DEG),r0(e.z/DEG)]}; } }
+    const hips=hum.getNormalizedBoneNode('hips'); P._hips=[r2(hips.position.x),r2(hips.position.y),r2(hips.position.z)]; P._src=url.split('/').pop()+'@'+t+'s yaw'+r0(yaw0);
+    out.push({t,pose:P}); }
+  return {dur:clip.duration,out}; };
+// apply a baked pose exactly like core.js resolvePose/setPose (no IK, no foot planting) and render
+window.snap=()=>{ const o={}; vrm.scene.updateMatrixWorld(true); for(const n of ORDER){const nd=vrm.humanoid.getNormalizedBoneNode(n); if(nd){const q=new THREE.Quaternion(); nd.getWorldQuaternion(q); o[n]=q.toArray().map(x=>+x.toFixed(2));}} return o; };
+window.apply=(P)=>{ const hum=vrm.humanoid, Qw={}; mix?.stopAllAction(); 
+  for(const n of ORDER){ const node=hum.getNormalizedBoneNode(n); if(!node) continue; let pn=PARENT[n]; while(pn&&!hum.getNormalizedBoneNode(pn)) pn=PARENT[pn]; const Qp=pn?Qw[pn]:new THREE.Quaternion(); const sp=P[n]; let l;
+    if(!sp) l=new THREE.Quaternion(); else if(sp.ypr) l=Qp.clone().invert().multiply(qYPR(...sp.ypr)); else { const d=V3(...sp.dir).normalize(); const q=new THREE.Quaternion().setFromUnitVectors(REST(n),d); if(sp.twist) q.premultiply(new THREE.Quaternion().setFromAxisAngle(d,sp.twist*DEG)); l=Qp.clone().invert().multiply(q); }
+    Qw[n]=Qp.clone().multiply(l); node.quaternion.copy(Si).multiply(l).multiply(S); }
+  vrm.update(0); };
+window.shot=(side,hipXZ)=>{ vrm.scene.updateMatrixWorld(true); const h=new THREE.Vector3(); vrm.humanoid.getRawBoneNode('hips').getWorldPosition(h); const d=(1.9*0.62)/Math.tan(11*DEG); const tx=h.x,tz=h.z;
+  cam.position.set(tx+(side?d*0.7:d*0.25),0.85,tz+(side?d*0.7:d)); cam.lookAt(tx,0.85,tz); R.render(scene,cam); return R.domElement.toDataURL('image/jpeg',0.9); };
+window.READY=true;
+</script></body></html>

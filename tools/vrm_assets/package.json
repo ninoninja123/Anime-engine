@@ -1,0 +1,7 @@
+{
+  "name": "vrm-assets-tools",
+  "private": true,
+  "description": "Test harness for third-party VRM bases, VRMA clips, hair transplant and painted plates (see ../../ASSETS.md)",
+  "license": "MIT",
+  "dependencies": { "three": "0.170.0", "@pixiv/three-vrm": "3.5.5", "@pixiv/three-vrm-animation": "3.5.5" }
+}
