@@ -98,3 +98,15 @@ Resepti jota käytetään jatkossa oletuksena: VRM (VRoid) + MToon + Xrd-sääd�
 ## Sasuke vs Zoro – käyttäjäpalaute (3,9/5)
 - Parasta: Sharingan-kohdat (selkeä, erottuva efektisuunnittelu). Hahmot tunnistettavia. Heikkoa: MUSIIKKI (valittu mittauksilla/tageilla, ei kuultu), SFX, TAUSTAT, "viimeinen juttu" (huippukohdan wow) puuttui.
 - Opit: (1) jokaiselle tekniikalle oma ikoninen efektisuunnittelu kuten Sharinganille; (2) musiikki: käytä käyttäjän kehumia raitoja tai anna 3–5 ehdokasta kuunneltavaksi ennen renderiä; (3) SFX: vähemmän mutta parempia, impact-pinot; (4) taustat: aidosti maalatut/generoidut platet, parempi valo; (5) yksi muistettava signature-shotti huipennukseen.
+
+## 4v4 (Aizen/Julius/Gowther/Zaraki vs Urahara/Dazai/Orochimaru/Yami) — failed video, user rating "worst so far"
+- Checklist-driven production (32 sakuga sequences, 673 panels, 5000+ SFX events, 9 worlds) optimised metrics, not clarity. A viewer could not follow the fight; no twist was understandable; attack names were never spoken; sakuga was 0.1 s camera cuts where the strike was not visible.
+- Sakuga = the camera follows the attacker and the whole strike is visible for 1.5-3 s with anticipation, smear, hold, follow-through. Not rapid cuts, colour flashes or panel counts.
+- Script FIRST, approved by the user as text (setup -> payoff for every twist, who-knows-what table, ability rules table). No animation before the script is accepted.
+- Do not stack feedback on a running agent as patches; fix the plan, not the surface. Long single-agent runs (4 h) lose the story thread after context compaction: build act by act and review each act's stills/clip personally before the next.
+- Captain must WATCH the video before delivering (not just relay agent metrics).
+- SFX: every sword clang must be audible individually; fewer, curated layers beat hundreds of stacked ones.
+- Voice acting: direct emotion per line ([shouts], [cold whisper]), 3+ takes, pick the best; flat v3 reads are not acceptable.
+- 3D and 2D versions must read from ONE appearance table (hair/skin/eye/outfit colours). Urahara had brown 3D hair and white 2D hair because they were typed separately; add an automated 3D-vs-2D colour check and a side-by-side contact sheet reviewed by the captain.
+- 2.5D cut-out puppets (likeness-lab) match references pixel-for-pixel but billboard badly in fights; the user rejected them ("I knew it would not work"). Keep the VRM 3D pipeline as the main route.
+- Free resources found earlier (VRoid samples, open-vrma, Kenney particles, Epidemic music/SFX) are documented in ASSETS.md; deleting old videos/frames is fine for disk space but keep tools/, docs and LESSONS.
