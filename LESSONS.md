@@ -137,3 +137,8 @@ Why: the model API is stateless. Each tool call is a new request that carries th
 5. Split long jobs into phases of <= ~100 tool calls; a fresh agent per phase starts with a tiny context.
 6. Research once: one or two targeted searches per topic, copy the facts into a file, then work from the file.
 7. Captain (main session) too: avoid long reports, avoid re-reading sheets, delegate and wait.
+
+### Clarification: twists — what is banned and what is wanted
+- WANTED: a retrospective reveal that shows where the audience was fooled (a short replay/rewind of the earlier clue, "look again" beat, a line that explains the trick). That is part of a great twist, as long as the clue was visible earlier.
+- BANNED: unfair twists with no earlier clue ("it was all a dream/illusion", a brand-new power from nowhere, a hidden plan that only exists in the explanation).
+Rule of thumb: the audience must be able to go back and find the hint; the replay beat proves it.
