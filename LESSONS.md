@@ -142,3 +142,4 @@ Why: the model API is stateless. Each tool call is a new request that carries th
 - WANTED: a retrospective reveal that shows where the audience was fooled (a short replay/rewind of the earlier clue, "look again" beat, a line that explains the trick). That is part of a great twist, as long as the clue was visible earlier.
 - BANNED: unfair twists with no earlier clue ("it was all a dream/illusion", a brand-new power from nowhere, a hidden plan that only exists in the explanation).
 Rule of thumb: the audience must be able to go back and find the hint; the replay beat proves it.
+- Do NOT use the same reveal device for every twist. Vary it per twist: a rewind/replay for one, a single spoken line for another, a silent reaction shot, a prop or sound echo for another, and let some land with no explanation at all. Repeating a device makes the video predictable and samey; each twist should feel unique.
