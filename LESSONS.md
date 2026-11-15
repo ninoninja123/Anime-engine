@@ -118,3 +118,12 @@ Resepti jota käytetään jatkossa oletuksena: VRM (VRoid) + MToon + Xrd-sääd�
 - KUVA: hahmot KAKKOSILLA (LVN 96 % frameista; 3v3 100 % ykkösillä = pelimäinen), maalatut yksisävyiset levyt + litteät 2D-cel-efektit musteviivalla. EI heijastavia 3D-lattioita, PMREM-3D-olentoja (kotka -> 2D-kortti), HUD-palkkeja eikä klassista/kuoro-requiemia taistelun pääraitana.
 - TARINA: arvosanat seuraavat hahmomäärää (2 = hyvä, 4 = ok, 6 = huono, 8 = hirveä). Pidä 1v1 (max 3 hahmoa), 150-180 s, säännöt ensimmäisellä minuutilla, 2-3 käännettä.
 - TYÖTAPA: LVN = 1 agentti, 1 h 40 min, GvI2-moottorin kopio, yksi renderi. 3v3 = käsikirjoitus + likeness-lab + 6 vaihetta, 1,07 MB koodia (käyttämätön head2d 112 KB), näytösten uusintarenderit, ~3,6 M tokenia. Jatkossa: kapteeni + 2 agenttia, 1 sivun brief, LVN-moottori pohjaksi, esikatseluarkit 320 px, yksi lopullinen renderi, budjetti 0,8-1,2 M tokenia.
+
+## Benimaru vs Yami (1 min + 2 min tests) — feedback, and how to use lessons without making every video the same
+IMPORTANT FRAMING: the engine (tools, VRM pipeline, mixer, build scripts) is shared; the VIDEO is not. Every video needs its own identity chosen from its story: its own palette, camera language, rhythm, music character, structure and signature moments. Lessons below are MISTAKES TO AVOID, not a template to copy. Numbers from earlier videos (shots/min, smear/min, impacts/min) are reference points for "what can work", never targets to hit; pacing must follow the story (calm beats are allowed and were the best part of the 2 min test).
+- Effects must belong to what is happening: no generic effect (e.g. the glass-shatter/crack) attached automatically to every contact; an effect that is not tied to a named technique on screen reads as noise.
+- More is not better: 95 shots, 140 shakes and 140 impact bursts per minute felt choppy; the only good part (last 15 s) was calm with longer shots and few effects. Density needs variety and rests.
+- Never alter a character's signature feature when fixing proportions (Benimaru lost the X scar eye and ring iris when eyes were made heavy-lidded). After any character change, render the face close-ups and check every signature feature before moving on.
+- Captain reviews close-ups of every signature feature, not only a wide contact sheet, before reporting.
+- Do not start fix passes when the user only gives feedback; log it and ask what to do.
+- Research abilities properly first (names, readings, limits, how they look); correct names (e.g. 闇纏・次元斬り, Benimaru has no sword) change the whole feel.
