@@ -127,3 +127,13 @@ IMPORTANT FRAMING: the engine (tools, VRM pipeline, mixer, build scripts) is sha
 - Captain reviews close-ups of every signature feature, not only a wide contact sheet, before reporting.
 - Do not start fix passes when the user only gives feedback; log it and ask what to do.
 - Research abilities properly first (names, readings, limits, how they look); correct names (e.g. 闇纏・次元斬り, Benimaru has no sword) change the whole feel.
+
+## Token hygiene (agents): the context is re-sent on EVERY tool call
+Why: the model API is stateless. Each tool call is a new request that carries the whole conversation so far (briefs, every file read, every image, every tool output). Prompt caching makes the repeated part cheaper, but the reported token totals count it, so cost grows roughly with (number of tool calls) x (size of context). It cannot be switched off; it can only be kept small. RULES for every brief and agent:
+1. Fewer, bigger tool calls: batch shell steps into one script; do not poll or re-check in tiny steps.
+2. Keep outputs small: never cat/Read whole big files; Grep or Read with offset/limit; pipe command output through head/tail/wc; log to files and read only the summary.
+3. Images are expensive: max 3 contact sheets per task, downscaled; never re-open the same sheet.
+4. Do not re-read what is already known: write a short handoff file (status.md, <100 lines) and start the next phase as a NEW agent with only that file + the brief, instead of resuming a long-running agent (a resumed agent drags its whole old context along).
+5. Split long jobs into phases of <= ~100 tool calls; a fresh agent per phase starts with a tiny context.
+6. Research once: one or two targeted searches per topic, copy the facts into a file, then work from the file.
+7. Captain (main session) too: avoid long reports, avoid re-reading sheets, delegate and wait.
