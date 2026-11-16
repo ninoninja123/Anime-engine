@@ -5,5 +5,6 @@ READ ONLY: {{PROJECT}}/STATE.md; story_secret.md (shot outline + twist table); t
 CHARACTERS: COPY built ones ({{CHAR_SOURCES}}); build only missing ones (appearance table first, 3 signature features each).
 STEPS: 1) shots from the outline, shot length from measured line durations; 2) ONE preview sheet at 320 px of 3–5 key moments + ONE close-up sheet of every character's signature features (eyes!); fix; 3) ONE final render; 4) build: subs_from_timing.py (or engine build_subs.py) + mix + 2-pass x264; loudness.sh --aac.
 SELF-CHECK: shot_stats.py, twist_coverage.py (1 sheet), cjk_check.sh = 0 on-screen CJK, first 15 s hook visible on the sheet.
-MUST NOT: re-render whole film, > 3 sheets, reopen an image, effects on contacts without a named technique.
+MUST NOT: re-render whole film, > 3 sheets, reopen an image, a generic effect as the default on every contact (effects match the technique/event; signature effects only where they fit).
+MUST: mark every sound-relevant event (hits, techniques, clones, splashes, breaks, transformations) in this video's shot data so the mixer can cover it; all on-screen text visible on the sheet.
 (append _COMMON.md)

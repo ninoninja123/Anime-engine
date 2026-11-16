@@ -21,7 +21,7 @@ Vanhat skillit `anime-captain-lean` ja `anime-video-captain` ovat taustaa; täm�
 1. `new_project.sh taistelu3d <x-vs-y>`; hahmot CHARACTERS_BUILT (kopioi `make*`/`M3.*`/`M8.*` + head2d).
 2. Script-agentti (script.md, 150k): kyvyt, 2–3 käännettä sääntöjen leikkauksista, koukku 0–15 s, todennäköisin voittaja. Käyttäjä hyväksyy tekstinä.
 3. Putkiagentti (render.md + audio.md yhdessä, 550k): poset → shots.js → 1 esikatselu + 1 lähikuva-arkki → 1 render → miksaus → build.
-4. Musiikki: Kigan/Ferocious Fire/LvN-raidat katalogista; SFX LvN-kirjasto; puhe vain jos tarvitaan (JA v4 + EN-tekstit).
+4. Musiikki: Kigan/Ferocious Fire/LvN-raidat katalogista; SFX LvN-kirjasto, ääni valitaan tapahtuman mukaan (ei kiertäviä oletuskerroksia, ks. QUALITY_GATE Sound design); ennen toimitusta mikseri/tapahtuma-audit (kattavuus + SFX-käyttömäärät); puhe vain jos tarvitaan (JA v4 + EN-tekstit).
 5. Kapteeni: QUALITY_GATE-lista, 2 kuvaa, toimitus.
 **Taistelu 2D — katto 600k** (vain jos käyttäjä pyytää 2D): `new_project.sh taistelu2d <nimi>`; Yami vs Shanks -resepti (efektit + siluetit + kamera, ANIME-pass, vähän puhetta); muuten kuten 3D.
 **Mind game / genius battle (5–7 min, puhe) — katto 1,0 M**

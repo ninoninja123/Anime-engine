@@ -156,9 +156,9 @@ User: "no really special final twist. I expected something genius that makes me 
 - Clarification of the older ban: "it was all an illusion/dream" is banned ONLY when it has no earlier clue. A Kyōka-Suigetsu/gigai/decoy reveal that was foreshadowed AND calculated by a character is wanted.
 - Script check: finale twist table must contain a "what did the audience think was final → what actually happened" pair, and the winner's win must be the cleverest layer, not the plainest outcome.
 
-## LvN2 palaute (2026-11-16): sound design v2 oli yhä heikko
-- Tapahtumia jäi ilman ääntä (esim. klooni-puff, veteen osuma): käy kaikki kuvan tapahtumat läpi ääni-taulukkoa vasten ennen miksausta.
-- Sama geneerinen ääni (lasinsärkyminen) soi monessa sopimattomassa kohdassa: ääni pitää sopia siihen mitä ruudulla tapahtuu (lasi sopii kun jotain särkyy, esim. Kyōka Suigetsu).
-- SFX:t liian hiljaa: iskuille ja tekniikoille selvästi enemmän tilaa.
-- Osa teksteistä ei näkynyt: tarkista että kaikki repliikit ja iskunimet näkyvät.
-- Syy (osa): miksaus käytti vanhan LvN:n tapahtumadataa, eikä uusi shots.js merkinnyt kaikkia kohtia.
+## LvN2 palaute (2026-11-16): sound design v2 oli yhä heikko → yleiset opit
+- Kaikki näkyvät tapahtumat eivät saaneet ääntä (esim. klooni, veteen osuma): tee tapahtuma vs ääni -kattavuustarkistus ennen miksausta.
+- Sama signature-ääni (lasinsärö) soi ~15 kertaa iskuissa, joissa mikään ei särkynyt. Syy: kopioitu mikseri (`audio/mix.py`, alkuperä 5f57794 "Data-driven mix script", kopioitu projektista toiseen) arpoo impact-flashille särökerroksen listasta `('clang','ex1','glass','ex2')[kk()%4]` ja impact frame -tyyleille listasta `STUT` (sis. 'glass'), lisäksi tuulikupoliin glass-kerros. Opetus: ääni valitaan tapahtuman merkityksen mukaan (lasi kun jokin oikeasti särkyy, esim. Kyōka Suigetsu), ei kiertävästä oletuslistasta; tarkista SFX-käyttömäärät mix-raportista.
+- SFX:t liian hiljaa: iskuille ja tekniikoille enemmän tilaa, puhe silti selvänä.
+- Osa teksteistä ei näkynyt: tarkista kaikki ruudun tekstit arkilta.
+- Miksaus nojasi vanhan videon tapahtumadataan: merkitse uuden videon tapahtumat itse.

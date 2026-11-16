@@ -17,7 +17,7 @@ Täysi tausta: `LESSONS.md` (Grep otsikolla, älä lue kokonaan).
 
 ## Kuva
 - **Kamera aina liikkeessä**; rytmi tarinan mukaan (rauhalliset beatit sallittuja ja toimivat; LvN-luvut ovat referenssi, ei tavoite). Sakuga = hyökkääjää seurataan, koko isku näkyy 1,5–3 s (anticipation, smear, hold, follow-through), ei 0,1 s välähdyksiä.
-- **Efektit vain nimettyyn tekniikkaan** (ei geneeristä lasinsärkyä jokaiseen osumaan). Jokaiselle tekniikalle oma ikoninen efekti (kuten Sharingan).
+- **Efektit kuuluvat siihen mitä tapahtuu**: jokaisella tekniikalla oma ikoninen efekti (esim. Sharingan). Signature-efekti (esim. lasinsärö, salama, impact frame -tyyli) on oikein kun se vastaa tapahtumaa, mutta ei oletuskerros geneerisille kontakteille eikä toistu ilman syytä.
 - **Kuvassa ENGLANTIA**: ei japania/kiinaa ruudulla (`cjk_check.sh`). Puhe saa olla japania + EN-tekstitys. Tekstit näkyvät **vain puheen ajan**, kaksi riviä kokonaan (`subs_from_timing.py`). Iskunimet isoina englanniksi.
 - **Hahmot näyttävät referenssiltä**: tarkista lähikuvat (SILMÄT, arvet, hiusraja, rekvisiitta) ennen renderiä; älä koskaan riko tunnusmerkkiä korjatessa. Valmiit hahmot: `CHARACTERS_BUILT.md`.
 - **Ei 2D-nukkeja eikä 2.5D cut-outeja** (hylätty). **3D-lava (Eight Strings -tyyli) hylätty mind gamessa → Seven Chairs -tyylinen 2D on suosikki.** Taisteluun 3D VRM (LvN).
@@ -27,14 +27,21 @@ Täysi tausta: `LESSONS.md` (Grep otsikolla, älä lue kokonaan).
 - Puhe sallittu kun tarina tarvitsee (ElevenLabs v4, `VOICES.md`); **musiikki ja SFX Epidemicistä** (`AUDIO_CATALOG.md` ensin). Ei paikallista TTS:ää.
 - **Äänet sopivat hahmoille** (Gowther naisellinen; Satoru = isäntä/johtaja).
 - **Mind game: salaperäinen musiikki** (Moonlight/Mira Ma -tyyli), pitkät raidat, **vaihto vain twistissä**. Taistelu: nousukäyrä, Kigan/Kageyama-tyyli; ei kuoro-requiemia pääraidaksi; ei "hauskaa" (Danse macabre hylätty).
-- Musiikki kuuluu puheen alla (ducking 3–4 dB, puhetta ≤ ~50 %). SFX: tekniikkakohtaiset 3 kerrosta, ei > 2 s yksittäisiä ääniä.
+- Musiikki kuuluu puheen alla (ducking 3–4 dB, puhetta ≤ ~50 %). Ei > 2 s yksittäisiä ääniä.
 
-- **Sound design = iso osa animea (yleinen periaate):** jokaisella kuvassa näkyvällä tapahtumalla on sille sopiva ääni, tekniikka-/efektikohtaisesti (esim. klooni = puff, veteen osuma = roiske, iskut = kerrokset, tekniikat = oma lataus + laukaisu + häntä, ympäristö = rikkoutuvat/putoavat asiat). Ennen miksausta käy läpi kaikki shotit/tapahtumat ja varmista ettei yksikään jää ilman ääntä. Älä käytä yhtä ääntä väärässä kohdassa: ääni valitaan sen mukaan MITÄ ruudulla tapahtuu (lasinsärkyminen vain kun jotain oikeasti särkyy, kuten Kyōka Suigetsu). SFX:n pitää kuulua selvästi ja iskuissa tuntua (puhe ja musiikki väistävät, mutta puhe pysyy selvänä). Älä luota vanhan videon tapahtumadataan: merkitse uuden videon tapahtumat itse. Tarkista että kaikki tekstit (repliikit, iskunimet) näkyvät.
+### Sound design (yleiset periaatteet, kaikki animetyypit)
+- **Ääni on iso osa animea:** jokainen ruudulla näkyvä tapahtuma saa sille sopivan äänen, joka valitaan sen mukaan MITÄ tapahtuu (materiaali, koko, tekniikka). Ennen miksausta tehdään **tapahtuma vs ääni -kattavuustarkistus** (taulukko: tapahtuma, aika, ääni); yksikään tapahtuma ei jää ilman ääntä.
+- **Semanttinen resepti per tapahtuma, ei oletusääntä:** isku = whoosh ennen + transientti + matala tömähdys + materiaalin mukainen häntä (kivi/metalli/liha/vesi/energia; lasi vain jos lasi tai illuusio oikeasti särkyy). Tekniikka = oma lataus → laukaisu → häntä. Vaihtele kerroksia tekniikasta toiseen.
+- **Toisto:** mikään yksittäinen SFX tai efekti ei ole kaikkien iskujen oletuskerros. Signature-ääni on sallittu kun se on merkitykseltään oikea; sen käyttökerroille katto per video (ohjeena ≤ 3 erillistä kohtaa), ellei se ole videon tietoinen motiivi (kirjataan STATE.md:hen).
+- **Kuuluvuus:** SFX kuuluu selvästi ja iskut tuntuvat fyysisiltä (musiikki väistää iskuissa), mutta puhe pysyy aina selvänä.
+- **Uuden videon data:** tapahtumat merkitään uudelle videolle; vanhan videon tapahtumadataa tai miksauksen oletuslistoja (esim. kopioidun mix.py:n satunnaiset iskukerrokset) ei käytetä tarkistamatta.
+- **Tekstit:** kaikki ruudun tekstit (repliikit, iskunimet) näkyvät; tarkistetaan arkilta.
 
 ## Kapteenin tarkistuslista ennen toimitusta (max 2 kuvaa kapteenille)
 - [ ] `shot_stats.py` (rytmi järkevä, ei 0,1 s välähdyksiä) · `loudness.sh --aac` (−14 / < −1) · koko ≤ 28 MB · kesto suunnitelman mukaan.
 - [ ] 1 kontaktiarkki 320 px + 1 twist/hit-arkki (`twist_coverage.py`) + agentin lähikuva-arkki tunnusmerkeistä (silmät).
-- [ ] `cjk_check.sh` ruudulle piirtyvistä teksteistä = 0. Tekstitykset vain puheen aikana.
+- [ ] `cjk_check.sh` ruudulle piirtyvistä teksteistä = 0. Tekstitykset vain puheen aikana; kaikki repliikit ja iskunimet näkyvät arkilla.
+- [ ] **Mikseri/tapahtuma-audit:** tapahtuma vs ääni -taulukko kattaa kaikki tapahtumat + SFX-käyttömäärät (`python3 -c "import json,sys;u=json.load(open(sys.argv[1]))['use'];[print(v,k) for v,k in sorted(((v,k) for k,v in u.items()),reverse=True)[:25]]" audio/mix_report.json`); signature-ääni (esim. glass) vain oikeissa kohdissa, ei iskujen oletuskerroksena.
 - [ ] Yhden lauseen testi jokaiselle twistille kirjoitettuna STATE.md:hen; jokainen signature-kyky ajaa twistiä.
 - [ ] Finaalissa 2–3 peräkkäistä kumoavaa paljastusta; pari "mitä yleisö luuli viimeiseksi → mitä oikeasti tapahtui" kirjattu; voitto = älykkäin kerros.
 - [ ] Koukku 0–15 s katsottu arkilta (`contact_sheet.sh VIDEO 1.5 4 320` alusta).

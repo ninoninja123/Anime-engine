@@ -5,6 +5,8 @@ VOICES: ElevenLabs eleven_v4 {{LANG}} (default ja). Cast from VOICES.md table fi
 CUT: python3 /home/user/anime-engine/tools/lean/voice_cut.py --dir {{PROJECT}}/audio --lang ja → timing.json (durations, optional flags).
 MUSIC/SFX: Epidemic IDs from AUDIO_CATALOG.md (download by ID, no search). Search only for missing cues (1–2 searches per cue) and append them to AUDIO_CATALOG.md.
 MIX: copy engine mixer ({{ENGINE_MIX}}) or tools/lean/mix_from_timeline.py --timeline … --lines-dir … --music-plan … --sfx-map …; loudness.sh --aac must pass.
-MUST: music audible under speech (3–4 dB ducking); no single SFX > 2 s; technique sounds 3 layers.
+MUST: music audible under speech (3–4 dB ducking); no single SFX > 2 s; technique sounds 3 layers (charge → release → tail), varied per technique.
+SFX BY EVENT: mark events from THIS video's shots (not old-video data); pick each sound by what happens on screen: hit = whoosh + transient + low thump + material tail (rock/metal/flesh/water/energy; glass only if something breaks). No single SFX as the default layer for generic hits; signature SFX ≤ ~3 places unless it is the video's motif. If you copy an old mix.py, remove its random/rotating hit-layer lists (e.g. STUT, impact crack choice). SFX clearly audible, speech always clear.
+AUDIT (before final mix): event vs sound table covers every on-screen event + top SFX counts from the mix report (QUALITY_GATE checklist command); fix gaps/over-used sounds, write both to STATE.md.
 MUST NOT: local TTS, regenerate whole scenes for one bad line, more than 2 full mixes.
 (append _COMMON.md)
