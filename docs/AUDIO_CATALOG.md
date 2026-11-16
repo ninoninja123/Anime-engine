@@ -19,7 +19,7 @@ Lähteet: `audio/music_plan.json`, `audio/sfx_map.json`, `docs/credits.md`, `doc
 | Total Bliss (Yukemuri) – Isaku Kageyama | 2699a62f-8c55-4c3d-830f-58287bda74b9 | rauhallinen ambient | Sasuke vs Zoro (A) | – |
 | Dark Eternity – Siddharth Parashar | 05738d53-1d91-410f-9b05-ad0c7f80d821 | hybridiorkesteri + kuoro | Sasuke vs Zoro (D) | SvZ: musiikki heikkoa (valittu mittauksilla, ei kuultu) |
 | Adventures Ahead – Christoffer Moe Ditlevsen | 335baf98-f89c-4d63-aaaf-1e09eef07991 | 70 bpm seikkailu | LvN kohtaaminen + epilogi | **LvN = paras taistelu** |
-| March to Ruin – Helmut Schenker | (LvN march.wav) | marssi | LvN ensimmäinen vaihto | ↑ |
+| March to Ruin – Helmut Schenker | 44f4b5ea-78b6-48be-8736-ba7bdf82c398 | marssi | LvN ensimmäinen vaihto | ↑ |
 | To Valhalla! – John Abbot | 64a2e14b-dbfa-44ea-b837-41b875ec6bcb | 145 bpm eeppinen | LvN 66 s →, Gear 5 | ↑ |
 | EPIC FIGHT SONG NO. 1 – Def Lev | 8ba5839f-09f7-47bb-9e0f-1a360e53580e | 78 bpm eeppinen | LvN Baryon → Bajrang Gun | ↑ |
 | Terra Requiem II / Terra Requiem – Dian Shuai | 6902fc9d-b404-4bed-b428-cad872eb15a3 / e430cef0-e9f1-41b0-b68a-2d98b7d92c39 | requiem, kuoro | 4v4/3v3 | 3v3/4v4 heikkoja; klassinen/kuoro-requiem EI taistelun pääraidaksi |
