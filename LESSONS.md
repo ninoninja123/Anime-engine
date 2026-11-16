@@ -143,3 +143,9 @@ Why: the model API is stateless. Each tool call is a new request that carries th
 - BANNED: unfair twists with no earlier clue ("it was all a dream/illusion", a brand-new power from nowhere, a hidden plan that only exists in the explanation).
 Rule of thumb: the audience must be able to go back and find the hint; the replay beat proves it.
 - Do NOT use the same reveal device for every twist. Vary it per twist: a rewind/replay for one, a single spoken line for another, a silent reaction shot, a prop or sound echo for another, and let some land with no explanation at all. Repeating a device makes the video predictable and samey; each twist should feel unique.
+
+## The Last Hand (Joker-card mind game) — feedback
+User: "pretty good" (best since Seven Chairs: flat 2D engine, abilities on screen, short synced subtitles), BUT:
+- Urahara did not look prepared, Gowther did not fake anyone's memories, Senku did not show his math/science; only Dazai's No Longer Human at the end felt like a real twist.
+- Lesson: a coverage matrix that says "an effect appears" is NOT enough. Each character's SIGNATURE ABILITY must be the ENGINE of at least one twist, used the way fans expect it (Urahara = visible preparation/traps set earlier; Gowther = memory manipulation of the others; Senku = calculations/chemistry solving the game). A reveal that is visible but subtle is not understood: test every twist with "what would a first-time viewer say in one sentence?" and make the clue big enough to notice.
+- Review the script for "does each genius do the thing they are famous for?" before approving.
