@@ -28,3 +28,12 @@ Uusi projektikansio: kopioi moottori (engine/, showdown/, API.md, LESSONS.md, QU
 
 ## 4. Työkalut
 ElevenLabs- ja Epidemic Sound -työkalut ovat deferred: lataa ToolSearchilla. Wikit curlilla (QUICKSTART kohta 8). Levytilaa rajallisesti: siivoa väliaikaiset. Kontti voi käynnistyä uudelleen: tiedostot säilyvät, jatka agentteja SendMessagella.
+
+## 5. Kevyt työnkulku (TOKENIT) — pakollinen, ks. skill `anime-captain-lean`
+Käyttäjä: "käytät todella paljon enemmän tokeneita kuin ennen". Jokainen työkalukutsu lähettää koko kontekstin uudelleen. Siksi:
+- Uusi chatti per video; kapteeni lukee vain `anime-engine/START_HERE.md` + projektin `STATE.md` (pohja `docs/STATE_TEMPLATE.md`) + `docs/LEAN.md`. LESSONS.md: vain relevantti osio (Grep).
+- Max 3 vaihetta / agenttia (script → ääni ‖ kuva, tai yksi putki ≤ 3 min videoille). Ei näytös-kerrallaan-pilkkomista.
+- Kovat katot briefeihin: 1 min testi ≤ 350k · 2 min ≤ 550k · 3 min 1v1 ≤ 700k · 5–7 min mind game ≤ 1,0 M · korjaus ≤ 150k · thumbnail ≤ 60k.
+- Valmiit työkalut `anime-engine/tools/lean/` (contact_sheet, shot_stats, twist_coverage, mix_from_timeline, loudness, subs_from_timing, voice_cut, cjk_check, thumbnail_compose, disk_cleanup): agentit EIVÄT kirjoita niitä uudelleen.
+- Ei uudelleenrenderöintejä, ei isoja tiedostoja kokonaan, ei saman kuvan avaamista uudelleen (agentti ≤ 3 arkkia, kapteeni ≤ 2), ei vanhan pitkän agentin herättämistä (uusi agentti + status.md).
+- Briefi max 1 sivu (pohja anime-captain-lean §4); agentin raportti ≤ 12 riviä + tokenit; kapteeni kirjaa tokenit STATE.md:hen.

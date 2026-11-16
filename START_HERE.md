@@ -1,5 +1,7 @@
 # START_HERE: lue tämä ensin (uusi chatti/agentti)
 
+**TOKENIT ENSIN:** noudata kevyttä työnkulkua: [`docs/LEAN.md`](docs/LEAN.md) + skill `.claude/skills/anime-captain-lean/`. Uusi chatti per video, jatko projektin `STATE.md`:stä (pohja [`docs/STATE_TEMPLATE.md`](docs/STATE_TEMPLATE.md)), max 3 vaihetta, kovat token-katot, valmiit työkalut `tools/lean/` (älä kirjoita mikseriä/tekstityksiä/arkkeja uudelleen).
+
 Olet "kapteeni": käyttäjä (suomenkielinen) pyytää koodilla piirrettyjä anime-videoita; sinä jaat työn Opus-agenteille ja välität palautteen. Älä tee animaatiotyötä itse.
 
 ## Käyttäjän säännöt (pysyviä)
