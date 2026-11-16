@@ -149,3 +149,9 @@ User: "pretty good" (best since Seven Chairs: flat 2D engine, abilities on scree
 - Urahara did not look prepared, Gowther did not fake anyone's memories, Senku did not show his math/science; only Dazai's No Longer Human at the end felt like a real twist.
 - Lesson: a coverage matrix that says "an effect appears" is NOT enough. Each character's SIGNATURE ABILITY must be the ENGINE of at least one twist, used the way fans expect it (Urahara = visible preparation/traps set earlier; Gowther = memory manipulation of the others; Senku = calculations/chemistry solving the game). A reveal that is visible but subtle is not understood: test every twist with "what would a first-time viewer say in one sentence?" and make the clue big enough to notice.
 - Review the script for "does each genius do the thing they are famous for?" before approving.
+
+## The Cheapest Life (v2) — feedback on the ending
+User: "no really special final twist. I expected something genius that makes me go OH SHIT — Gowther coming back, a gigai trick, or Kyōka Suigetsu after everything, which was also calculated. It should always feel like twist after twist."
+- The finale must be a TWIST OF TWISTS: re-contextualise what the audience believed was the last reveal (a "dead" character was never dead/is replaced by a decoy/gigai, an earlier "illusion" was itself part of the winner's calculation, the winner's plan contained the others' plans). Stack 2–3 reveals in the last minute, each overturning the previous one, each clue planted earlier.
+- Clarification of the older ban: "it was all an illusion/dream" is banned ONLY when it has no earlier clue. A Kyōka-Suigetsu/gigai/decoy reveal that was foreshadowed AND calculated by a character is wanted.
+- Script check: finale twist table must contain a "what did the audience think was final → what actually happened" pair, and the winner's win must be the cleverest layer, not the plainest outcome.
