@@ -6,6 +6,7 @@ WRITE: {{PROJECT}}/script.md (public, spoiler-free summary) + {{PROJECT}}/story_
  - logline; length {{LENGTH}}; hook 0–15 s; rules in the first minute;
  - ability table (who | signature | how it shows on screen | which twist it drives) — EVERY signature drives a twist;
  - twist table setup → clue (time) → payoff → one-sentence test → reveal device (vary devices);
+ - FINALE = TWIST OF TWISTS: last minute stacks 2–3 reveals, each overturning the previous (the "dead" one was a gigai/decoy, the earlier "illusion" was the winner's calculation, the winner's plan contained the others' plans); every one has an earlier clue. Add the pair "what the audience thinks is final → what actually happened". The win must be the CLEVEREST layer. Illusion/dream reveals are allowed only when foreshadowed AND calculated by a character (Kyōka Suigetsu, gigai, decoy);
  - dialogue table id | who | ja | en | tags | key_line | optional (speech ≤ 50 % of runtime; mind game ≤ ~30 lines / 3 min);
  - shot outline (beat | t | camera move | music cue | sfx); music cues from docs/AUDIO_CATALOG.md (mind game: mysterious, change only on twists).
 MUST: winner = most likely by canon ({{WINNER_RULE}}); no Dazai win as a repeat; English on-screen text only.

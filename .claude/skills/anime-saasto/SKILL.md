@@ -26,7 +26,7 @@ Vanhat skillit `anime-captain-lean` ja `anime-video-captain` ovat taustaa; täm�
 **Taistelu 2D — katto 600k** (vain jos käyttäjä pyytää 2D): `new_project.sh taistelu2d <nimi>`; Yami vs Shanks -resepti (efektit + siluetit + kamera, ANIME-pass, vähän puhetta); muuten kuten 3D.
 **Mind game / genius battle (5–7 min, puhe) — katto 1,0 M**
 1. `new_project.sh mindgame <nimi>` (Cheapest Life -moottori; Seven Chairs -tyyli = suosikki). 2D-hahmot valmiina `cast*.js`:ssä.
-2. Script (200k): jokainen signature-kyky ajaa twistiä, yhden lauseen testi, ≤ 30 repliikkiä / 3 min, ei Dazai-voittoa toistona.
+2. Script (200k): jokainen signature-kyky ajaa twistiä, yhden lauseen testi, finaali = twistien twisti (2–3 kumoavaa paljastusta, voitto älykkäin kerros), ≤ 30 repliikkiä / 3 min, ei Dazai-voittoa toistona.
 3. Ääni (300k) ‖ kuva (450k) rinnakkain: v4-scene-takes (Satoru = isäntä), Moonlight/Satie/Mozart (Mira Ma), vaihto vain twistissä.
 4. Build `tools/build_final.sh` (subs vain puheen ajan, −14 LUFS, ≤ 27,2 MB). `tools/make_lines.py` ennen renderiä.
 5. Kapteeni: twist-arkki + yhden lauseen testit STATE.md:hen.
