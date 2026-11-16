@@ -29,6 +29,8 @@ Täysi tausta: `LESSONS.md` (Grep otsikolla, älä lue kokonaan).
 - **Mind game: salaperäinen musiikki** (Moonlight/Mira Ma -tyyli), pitkät raidat, **vaihto vain twistissä**. Taistelu: nousukäyrä, Kigan/Kageyama-tyyli; ei kuoro-requiemia pääraidaksi; ei "hauskaa" (Danse macabre hylätty).
 - Musiikki kuuluu puheen alla (ducking 3–4 dB, puhetta ≤ ~50 %). SFX: tekniikkakohtaiset 3 kerrosta, ei > 2 s yksittäisiä ääniä.
 
+- **Äänitapahtumat (LvN2-oppi):** jokaiselle kuvan tapahtumalle ääni: klooni = PUFF, veteen osuma = roiske, hypyt, askeleet, kivet, savu, tekniikat. Tarkista tapahtuma-lista äänitaulukkoa vasten ennen miksausta. Ei geneeristä lasinsärkyä iskuihin. SFX selvästi kovempaa (puhe/musiikki väistävät). Uusi shots.js: merkitse kaikki puff/splash/hit-kohdat, älä luota vanhan videon dataan. Varmista että kaikki tekstit (repliikit + iskunimet) näkyvät.
+
 ## Kapteenin tarkistuslista ennen toimitusta (max 2 kuvaa kapteenille)
 - [ ] `shot_stats.py` (rytmi järkevä, ei 0,1 s välähdyksiä) · `loudness.sh --aac` (−14 / < −1) · koko ≤ 28 MB · kesto suunnitelman mukaan.
 - [ ] 1 kontaktiarkki 320 px + 1 twist/hit-arkki (`twist_coverage.py`) + agentin lähikuva-arkki tunnusmerkeistä (silmät).
