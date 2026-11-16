@@ -1,3 +1,5 @@
+**Ensisijainen aloitus: `.claude/skills/anime-saasto/SKILL.md` (anime säästö: moottorit, new_project.sh, hahmot, audio, laatuportti, briefit).**
+
 # START_HERE: lue tämä ensin (uusi chatti/agentti)
 
 **TOKENIT ENSIN:** noudata kevyttä työnkulkua: [`docs/LEAN.md`](docs/LEAN.md) + skill `.claude/skills/anime-captain-lean/`. Uusi chatti per video, jatko projektin `STATE.md`:stä (pohja [`docs/STATE_TEMPLATE.md`](docs/STATE_TEMPLATE.md)), max 3 vaihetta, kovat token-katot, valmiit työkalut `tools/lean/` (älä kirjoita mikseriä/tekstityksiä/arkkeja uudelleen).

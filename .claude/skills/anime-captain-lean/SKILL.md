@@ -3,6 +3,8 @@ name: anime-captain-lean
 description: Kevyt (token-säästävä) kapteenin työnkulku koodilla piirrettyihin anime-videoihin. Käytä AINA kun käyttäjä pyytää animevideota, death battlea, mind gamea, genius battlea, taistelua "X vs Y", testivideota tai thumbnailia. Lean captain workflow for code-drawn anime videos (death battle, mind game, thumbnail): new chat per video, max 3 phases, hard token caps, ready-made tools in anime-engine/tools/lean instead of rewriting them.
 ---
 
+Ensisijainen: anime-saasto (`.claude/skills/anime-saasto/SKILL.md`) – aloita siitä; tämä skill on taustaa.
+
 # Anime-kapteeni: KEVYT työnkulku (token-katot)
 
 Miksi: jokainen työkalukutsu lähettää koko kontekstin uudelleen → kulu ≈ (kutsujen määrä) × (kontekstin koko).

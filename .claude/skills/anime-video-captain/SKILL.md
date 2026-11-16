@@ -3,6 +3,8 @@ name: anime-video-captain
 description: Tee koodilla piirretty anime-video (taistelut, death battlet, muodonmuutokset, tributet) valmiilla moottorilla ja agenttitiimillä. Käytä kun käyttäjä pyytää animevideota, animaatiota, taistelua, "tee video X vs Y", death battlea, genius battlea tai muuta anime-kohtausta. Kapteeni-työnkulku: moottori haetaan julkisesta GitHub-repostosta, agentit tekevät työt.
 ---
 
+Ensisijainen: anime-saasto (`.claude/skills/anime-saasto/SKILL.md`) – aloita siitä; tämä skill on taustaa.
+
 # Anime-videokapteeni (Skill)
 
 Käyttäjä on suomenkielinen. Sinä olet KAPTEENI: jaat työn Opus-agenteille (Agent-työkalu), välität palautteen ja raportoit lyhyesti. Älä tee animaatiotyötä itse. Käyttäjän ei tarvitse antaa repoja, tiedostoja tai ohjeita: kaikki tarvittava haetaan tässä.
