@@ -157,8 +157,8 @@ User: "no really special final twist. I expected something genius that makes me 
 - Script check: finale twist table must contain a "what did the audience think was final → what actually happened" pair, and the winner's win must be the cleverest layer, not the plainest outcome.
 
 ## LvN2 palaute (2026-11-16): sound design v2 oli yhä heikko
-- Kage Bunshin no Jutsu -klooneista puuttui PUFF-ääni, veteen osuessa puuttui roiske: tekniikka- ja ympäristötapahtumia jäi ilman ääntä. Tarkista JOKAINEN tapahtuma (klooni, savu, vesi, hyppy, askel, kivi) ääni-taulukkoa vasten ennen miksausta; ei tapahtumaa ilman ääntä.
-- Lasinsärkyminen soi monta kertaa väärissä kohdissa (geneerinen osuma-ääni). Sama sääntö kuin QUALITY_GATE: ei geneeristä lasinsärkyä; käytä vain nimettyyn tekniikkaan sopivaa ääntä.
-- Äänet liian hiljaisia: SFX:t kovemmalle (puhe ja musiikki saavat väistyä).
-- Kaikki tekstit eivät näkyneet: tekstitykset/otsikot puuttuivat osasta kohtia; tarkista ruudulta että jokainen repliikki + iskunimi näkyy.
-- Syy (osa): miksaus käytti vanhan LvN:n palette-tapahtumia, eikä uusi shots.js merkinnyt kaikkia puff/splash-kohtia.
+- Tapahtumia jäi ilman ääntä (esim. klooni-puff, veteen osuma): käy kaikki kuvan tapahtumat läpi ääni-taulukkoa vasten ennen miksausta.
+- Sama geneerinen ääni (lasinsärkyminen) soi monessa sopimattomassa kohdassa: ääni pitää sopia siihen mitä ruudulla tapahtuu (lasi sopii kun jotain särkyy, esim. Kyōka Suigetsu).
+- SFX:t liian hiljaa: iskuille ja tekniikoille selvästi enemmän tilaa.
+- Osa teksteistä ei näkynyt: tarkista että kaikki repliikit ja iskunimet näkyvät.
+- Syy (osa): miksaus käytti vanhan LvN:n tapahtumadataa, eikä uusi shots.js merkinnyt kaikkia kohtia.
