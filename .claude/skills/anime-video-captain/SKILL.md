@@ -19,7 +19,7 @@ Julkinen repo; ei kirjautumista. Lue tässä järjestyksessä (älä lue API.md:
 - Lopputulos: 720p, 24 fps MP4. Lähetä chat-versio ≤ 28 MB SendUserFile:lla (pidemmät videot osissa). Muistuta lataamaan video (ympäristö on väliaikainen).
 - Laatu: hahmot uhkaavia/vakavia, värikäs maailma (ei harmaa), kasvot selkeinä, kamera aina liikkeessä, anime-impact-framet + tiheät purskeet, kolmivaiheiset tekniikat isoilla nimiteksteillä, paljon kerroksellisia ääniefektejä, musiikki kuuluu puheen alla, ANIME-tyylipassi (API.md luku 23) kaikkialla.
 - Tarina: 3–4 twistiä / 3–4 min, jokainen kuvalla + yhdellä selkeällä repliikillä; ymmärrettävyys ensin.
-- Puheet: EI PUHETTA EIKÄ REPLIIKKEJÄ videoihin (käyttäjän päätös), ellei käyttäjä erikseen pyydä; silloin ElevenLabs (jos krediittejä) tai Orpheus TTS. Tarina kerrotaan kuvalla, tekniikannimiteksteillä, musiikilla ja ääniefekteillä. Musiikki: Epidemic Sound.
+- Puheet: SALLITTU, jos käyttäjä haluaa (usein haluaa): ElevenLabs eleven_v4 (japani tai englanti käyttäjän mukaan; avainrivit omina lyhyinä otoksina, tunnetagit; äänet sopivat hahmoille, ks. VOICES.md), englanninkieliset tekstitykset poltettuna (vain puheen ajan). Jos käyttäjä ei halua puhetta, tarina kerrotaan kuvalla, tekniikannimillä, musiikilla ja SFX:llä. Musiikki ja SFX: Epidemic Sound (MCP).
 - Kysy käyttäjältä vain tarvittava: kuka vastaan ketä, pituus, erityistoiveet. Muu päätetään itse.
 
 ## 3. Agenttijako (säästää kiintiötä)
