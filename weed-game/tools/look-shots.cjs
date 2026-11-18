@@ -12,7 +12,7 @@ const BASE = process.env.URL || 'http://localhost:5191/dev/chars.html?';
   page.on('pageerror', e => errors.push('PAGEERROR ' + e.message));
   page.on('response', r => { if (r.status() >= 400) errors.push(r.status() + ' ' + r.url()); });
   await page.goto(BASE + (q || ''));
-  await page.waitForFunction(() => window.done, null, { timeout: 180000 });
+  await page.waitForFunction(() => window.done, null, { timeout: 180000 }).catch(e => { console.log('TIMEOUT', errors.join('\n')); process.exit(1); });
   await page.waitForTimeout(2500);
   await page.screenshot({ path: out });
   if (errors.length) console.log('ERRORS:\n' + errors.join('\n'));
