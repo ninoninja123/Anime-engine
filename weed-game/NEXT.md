@@ -26,8 +26,8 @@
   11 tehostetta + lumimyrsky-ambienssi; syntetisoitu varajärjestelmä.
 - **Julkaisu**: Cloudflare Worker + Workers KV (`tools/deploy-cf.py`), Range-tuki.
 
-- **Kesä (canon)**: Kaibutsu-taistelu on kesällä → lumimyrsky-ambienssi vaihdettu kesäillan sirkka-/tuuliambienssiin;
-  ympäristön kesäversio on toisen agentin (Fable) työn alla. Repliikeissä ei ollut lumi-/talviviittauksia.
+- **Vuodenaika (canon)**: Kaibutsu-arc on myöhäissyksyllä, ei lunta (canon-corrections.md) → lumimyrsky-ambienssi
+  vaihdettu syysyön metsä-/korppiambienssiin; ympäristön versio on toisen agentin (Fable) työn alla.
 
 ## Puuttuu / tunnetut ongelmat
 - Canon-tutkimus (`docs/weed-game/canon-deep-dive.md`, `canon-corrections.md`) ei ollut vielä valmis tämän session aikana:
@@ -58,3 +58,17 @@ Moottori, koiratehdas, kohtausohjaus ja ääni-/puhejärjestelmä ovat nyt valmi
 
 *S ≈ 1 agenttisessio, M ≈ 2–3, L ≈ 4–5. Kokonaisuus ~12–20 sessiota + puheäänet (1 sessio, ElevenLabs) +
 1–2 sessiota mallien rigaukseen (suurin laadun parannus).
+
+## Canon-korjaukset (canon-corrections.md) – tila
+Tehty: japaninkieliset nimet (二子峠, ジェロム, ロッカ, ホイラー, 玄婆, 哲心, 闘兵衛); heikko kohta = vasen rinta; Jeromen
+saapumisrepliikki; North (5. sotilas, kaatuu Gajōssa – kerrotaan narraationa); P4 puhuu nousun jälkeen + Jeromen vastaus;
+Jerome puree ja pitää kiinni (ei Battōgaa); finaalissa tavallinen Battōga (Zetsu Tenrō vain galleriassa); loppu: nouseva
+tuuli, Ken kantaa Kagetoran, Weed pitää Jeromea joessa ("kuoleminen on epäreilua"), helikopteri (teksti + ääni), Jerome jää
+Ōuhun, haudat iltahämärässä (5 nimeä); valan siirto seuraavaan tasoon; ulkonäöt: Jerome (musta viitta, kermakasvot, raidat,
+vaaleat silmät), Ken (fawn + musta naamio, 2 arpea vasemmalla), GB (mustat täplät, pitkät mustat korvat), Robert/Heuler
+(ajokoirat, luppakorvat), Lector/Thunder (typistämättömät korvat), Kagetora (käyttäjän päätös: tumma raidallinen, 2 arpea),
+Gin (sinertävä akita); syksyn ambienssi.
+Jäi (iso työ / epävarma): Smithin kuolema Gajōn **sisällä yöllä ennen** päätaistelua (nyt kesken taistelun ulkona), rotkohyppy
+introssa, helikopterin malli, GB ja Mel loppukohtauksessa, Weed+Ken+Kagetora "lukitus"-mekaniikka Jeromen puremaan,
+ajopuupiikki (PEGI 12: vain viitteellisesti), Tokimune, vuorokaudenajat (aamu/kultainen taivas päätaistelussa) – ympäristö
+Fable-agentilla. Kenin tehdasmalli on parempi kuin ennen, mutta oma Tripo-malli olisi uskottavampi.
