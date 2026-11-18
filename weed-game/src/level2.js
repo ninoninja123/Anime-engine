@@ -164,7 +164,7 @@ async function kenKageStrike() {
   // both charge from different lanes, camera low behind them
   for (const d of [k, g]) { d.play('Gallop', { timeScale: 1.5 }); d.face(dir); }
   say('sync_call', { noWait: true });
-  E.camPos.set(B.x - dir * 7, 0.6, 3.2); E.camLook.set(B.x, 1.4, 0);
+  E.camPos.set(B.x - dir * 4.2, 0.6, 5.6); E.camLook.set(B.x - dir * 2.2, 1.2, 0);
   await Promise.all([
     tween(k.root.position, { x: B.x - dir * (bossHalf() + 1.6), z: 1.1 }, 0.42, { ease: 'in' }),
     tween(g.root.position, { x: B.x - dir * (bossHalf() + 1.2), z: -1.1 }, 0.38, { ease: 'in' }),

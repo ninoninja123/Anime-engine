@@ -94,14 +94,14 @@ export const smith = (ctx) => {
     { music: null, fade: 1.5 },
     { fn: () => {
       S.W.x = -2.5; B.x = 4.4;
-      for (const id of ['ken', 'kagetora']) cast[id].root.position.z = -2.6;
+      cast.ken.root.position.set(-8.4, 0, -3.4); cast.kagetora.root.position.set(-7.0, 0, -3.0);
     } },
     { place: 'weed', x: -2.5, z: 0, face: 1, anim: 'Idle' },
     { place: 'kaibutsu', x: 4.4, z: 0, face: -1, anim: 'Idle_2_HeadLow' },
-    { place: 'smith', x: -5.4, z: -1.0, face: 1, anim: 'Idle' },
-    { place: 'jerome', x: -4.6, z: -2.0, face: 1, anim: 'Idle' },
+    { place: 'smith', x: -5.6, z: -0.4, face: 1, anim: 'Idle' },
+    { place: 'jerome', x: -7.8, z: -2.6, face: 1, anim: 'Idle' },
     // Smith steps forward; quiet close-up
-    { cam: [-4.0, 0.75, 1.8], look: [-5.2, 0.7, -1.0] },
+    { cam: [-3.4, 0.8, 2.4], look: [-4.9, 0.7, -0.4] },
     { move: 'smith', x: -4.6, t: 1.2, anim: 'Walk', after: 'Idle' },
     { say: 'sac_cliff' },
     { dolly: 'weed', dist: 1.4, side: 0.7, t: 0.35 },
