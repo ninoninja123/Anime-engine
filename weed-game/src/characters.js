@@ -16,6 +16,7 @@ export const MODELS = {
   rocket:    { file: 'rocket.glb',    rotY: 0 },
   tobei:     { file: 'tobei.glb',     rotY: HALF_PI },
   dog_parts: { file: 'dog_parts.glb', rotY: 0 },
+  hogen:     { file: 'hogen.glb',     rotY: 0 },
 };
 
 // Liikkeen tyyli: gait = 'trot' | 'limp3' (kolmijalkainen) | 'heavy' | 'light'
@@ -185,20 +186,19 @@ export const CHARACTERS = {
     marks: ['tanPoints:#b97a45', 'brows:#c4844c'],
   },
   hogen: {
-    name: 'Hōgen', jp: '法玄', kind: 'factory', height: 1.85,
+    name: 'Hōgen', jp: '法玄', kind: 'rigid', model: 'hogen', height: 1.85,
     role: 'A starved Great Dane who came to hate humans. Gathers an army of 700 to rule Japan.',
     gait: 'heavy', speed: 0.9, wag: 0.05,
-    p: { leg: 1.32, legW: 1.2, body: 1.15, neck: 1.3, head: 1.15, ear: 0.75, earTilt: 0.8, tail: 'straight', tailLen: 1.2, muzzle: 1.4 },
-    c: { coat: '#3b3532', under: '#4a423e', head: '#3f3936', ear: '#2a2523', muzzle: '#1d1a19', eye: '#ffcf3a' },
-    marks: ['scar', 'brindle:#2a2522'],
+    rig: { belly: 0.44, neck: 0.26, tail: 0.22, legSwing: 0.45, headAmt: 0.9 },
+    eyes: { x: 0.64, y: 0.86, z: 0.055 }, eyeColor: '#ff3a24', eyeScale: 0.35,   // "god of death" -hehku
+    outline: 0.008,
   },
   genba: {
-    name: 'Genba', jp: '玄馬', kind: 'factory', height: 1.75,
+    name: 'Genba', jp: '玄馬', kind: 'rigid', model: 'hogen', height: 1.75, tint: '#b8977c',
     role: 'Hōgen\'s brother: raw strength and rage. Hōgen ends his suffering in tears.',
     gait: 'heavy', speed: 0.9, wag: 0.05,
-    p: { leg: 1.2, legW: 1.35, body: 1.2, neck: 1.15, head: 1.22, ear: 0.7, earTilt: 0.9, tail: 'straight', tailLen: 1.0, muzzle: 1.25 },
-    c: { coat: '#5a3d2a', under: '#6a4a34', head: '#5e402c', ear: '#3c2819', muzzle: '#2a1c13', eye: '#ffb03a' },
-    marks: ['belly', 'scar'],
+    rig: { belly: 0.44, neck: 0.26, tail: 0.22, legSwing: 0.42, headAmt: 0.9 },
+    outline: 0.009,
   },
 };
 

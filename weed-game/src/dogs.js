@@ -535,12 +535,13 @@ export class Dog {
   }
 
   _makeEyes(e) {
-    const eyeMat = new THREE.SpriteMaterial({ map: glowTexture(), color: 0xffb030, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
+    const eyeMat = new THREE.SpriteMaterial({ map: glowTexture(), color: new THREE.Color(this.def.eyeColor || '#ffb030'), transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
     const eyes = new THREE.Group();
     for (const zs of [-1, 1]) { const s = new THREE.Sprite(eyeMat); s.scale.setScalar(0.06); s.position.set(e.x, e.y, zs * e.z); eyes.add(s); }
     // silmät seuraavat pään nyökkäystä (sama kierto kuin shaderissa)
     const hp = this.headPivot; eyes.position.sub(hp.position); hp.add(eyes);
     this.eyes = { material: eyeMat, scale: { setScalar: v => eyes.children.forEach(s => s.scale.setScalar(v * 0.12)) } };
+    if (this.def.eyeScale) this.eyes.scale.setScalar(this.def.eyeScale);
   }
 
   get x() { return this.root.position.x; }
