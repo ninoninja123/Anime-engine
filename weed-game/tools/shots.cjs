@@ -51,7 +51,7 @@ fs.mkdirSync(OUT, { recursive: true });
     await waitSub('fallen to a monster'); await shot('06_intro_narration');
     await waitSub('all I can smell'); await shot('07_intro_ken_kagetora');
     await waitSub('my father'); await sleep(800); await shot('08_intro_vow');
-    await waitSub('Forgive our delay'); await shot('09_intro_jerome');
+    await waitSub('I am Jerome'); await shot('09_intro_jerome');
     await waitSub('deafening roar'); await sleep(600); await shot('10_intro_kaibutsu');
     await waitSub('Let\'s go'); await shot('11_intro_go');
   }
@@ -67,7 +67,7 @@ fs.mkdirSync(OUT, { recursive: true });
       await page.evaluate(() => window.__game.debug.readyCards()); await sleep(300);
       await page.tap('.card[data-id="jerome"]', { force: true });
       await sleep(250); await shot('15_special_jerome_cutin');
-      await waitSub('Left flank'); await shot('16_special_jerome_closeup');
+      await waitSub('Left chest'); await shot('16_special_jerome_closeup');
       await sleep(1600); await shot('17_special_jerome_reticle');
       await noSpecial();
       // special move: Ken & Kagetora Twin Fang
@@ -86,10 +86,12 @@ fs.mkdirSync(OUT, { recursive: true });
     if (want('story')) {
       await page.evaluate(() => window.__game.debug.smith()); await sleep(800); await shot('21_armor_smithcard');
       await page.tap('.card[data-id="smith"]', { force: true });
+      await waitSub('North fell'); await shot('22a_north_fell');
       await waitSub('Leave this to me'); await shot('22_smith_cliff');
       await waitSub('Live, Weed'); await shot('23_smith_leap');
       await waitSub('SMITH!!'); await sleep(300); await shot('24_smith_scream');
       await waitSub('Smith', 240000); await page.waitForFunction(() => document.getElementById('caption').textContent === 'Smith' && !document.getElementById('caption').classList.contains('hidden'), null, { timeout: 240000 }); await shot('25_smith_memory');
+      await waitSub('betrayed us first'); await shot('26a_p4_speaks');
       await waitSub('not given in vain'); await shot('26_smith_rises');
       await waitS(() => window.__game.debug.S.phase === 2 && !window.__game.debug.S.cutscene);
       await sleep(1500); await shot('27_phase2');
@@ -107,13 +109,14 @@ fs.mkdirSync(OUT, { recursive: true });
       await waitSub('BATTŌGA'); await sleep(1800); await shot('34_finale_battoga');
       await waitSub('Don\'t let go'); await shot('35_finale_falls');
       await waitSub('swallowed everything'); await shot('36_finale_mist');
-      await waitSub('You alive'); await shot('37_dawn');
-      await waitSub('never chose this'); await shot('38_dawn_kaibutsu');
-      await waitSub('And yet I live'); await shot('39_jerome_guilt');
-      await waitSub('carved into the wind'); await sleep(1500); await shot('40_memorial');
-      await waitSub('Father'); await shot('41_hope');
+      await waitSub('Hang on, Kagetora'); await shot('37_shore_ken_kagetora');
+      await waitSub('Let me go, Weed'); await shot('38_river_jerome');
+      await waitSub('never chose this'); await shot('39_kaibutsu');
+      await waitSub("no one's tool"); await shot('40_helicopter_jerome');
+      await waitSub('carved into the wind'); await sleep(1500); await shot('41_memorial_dusk');
+      await waitSub('Father'); await shot('42_hope');
       await waitS(() => !document.getElementById('result').classList.contains('hidden'));
-      await sleep(800); await shot('42_result');
+      await sleep(800); await shot('43_result');
     }
   }
   if (only === 'portrait') {
