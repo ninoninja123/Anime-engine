@@ -112,7 +112,7 @@ export const CHARACTERS = {
   // c = värit: coat, under, legs, head, ear, tail, muzzle, eye, nose
   // marks = maalatut kuviot (ks. dogs.js PAINT)
   gin: {
-    name: 'Gin', jp: '銀', kind: 'rigged', model: 'gin_auto', height: 1.25, tint: '#d3d7dc',
+    name: 'Gin', jp: '銀', kind: 'rigged', model: 'gin_auto', height: 1.25, tint: '#9fb6d2',
     role: 'A blue-grey Akita, Weed\'s father and Ōu\'s legendary leader. He calls those under him comrades, never servants.',
     gait: 'trot', speed: 1.05, wag: 0.4,
     outline: 0.008,
