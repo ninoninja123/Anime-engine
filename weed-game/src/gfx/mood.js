@@ -1,6 +1,9 @@
 // Tunnelmajärjestelmä: taivas, sumu, valot, värigradaatio ja sää yhtenä "moodina", jonka välillä häivytetään.
 //   setMood('dawn', 4)      – vaihda käsin (cutscenet); pysyy kunnes pelitilanne (vaihe/cutscene) muuttuu
 //   mood.cur                – nykyiset interpoloidut arvot (world.js ja post.js lukevat)
+//   setSeasonMoods('summer')– vuodenajan tunnelmataulu (world.js kutsuu): samat nimet, eri paletit
+// Avaimet snowCol/snowShade = maan vaalea/tumma sävy (lumi tai nurmi), topCol = kivien ja puiden yläpinnan peite
+// (lumi / sammal), partCol + fall = ilman hiukkaset (lumi / siitepöly), dustCol = tömähdysten pöly.
 // Ohjaaja (director) valitsee perusmoodin automaattisesti pelitilasta (window.__S), joten pelilogiikan
 // ei tarvitse tietää grafiikasta: vaihe 1 = kylmä sininen yö, panssari/vaihe 2 = punainen myrsky,
 // vaihe 3 = revontulet, finaalin jälkeen kultainen aamunkoitto.
@@ -20,6 +23,7 @@ const BASE = {
   bloom: 0.6, exposure: 1.0, sat: 0.94, contrast: 1.06, lift: '#eef0fb', gain: '#ffffff',
   vig: 0.6, vigColor: '#02030c', grain: 0.022, rays: 0.0, rayCol: '#bcd0ff',
   outline: '#090b18', water: '#bcd6ff',
+  sunX: 0.274, sunY: 0.137, sunZ: -0.952, topCol: '#bccbf0', partCol: '#f4f7ff', fall: 1.0, dustCol: '#c8d4f2', fireflies: 0, breath: 1,
 };
 
 const MOODS = {
@@ -83,10 +87,87 @@ const MOODS = {
   },
 };
 
+// ---------------------------------------------------------------- KESÄ (taso 2: Gajō, Kaibutsu)
+// Aikajana taistelun mukana: kirkas kesäpäivä -> veripunainen ilta (raivo) -> ukkosmyrsky -> hämärä ja
+// tulikärpäset (henget) -> tähtiyö (finaali) -> kultainen aamunkoitto.
+const SUMMER_BASE = {
+  ...BASE,
+  skyTop: '#1a4fbc', skyMid: '#3f86e0', skyHor: '#96c6f2', stars: 0, aurora: 0, clouds: 0.3, cloudCol: '#f6f8fc',
+  moon: 0, sun: 1, sunCol: '#fff0c8', sunX: -0.42, sunY: 0.62, sunZ: -0.66,
+  fog: '#9cc2e4', fogDensity: 0.0055, haze: '#8fb8e0', mist: 0.1, mistCol: '#e8f2f8',
+  hemiSky: '#c4dcff', hemiGround: '#566838', hemi: 0.85, key: '#fff0d0', keyI: 2.6, keyX: -5, keyY: 12, keyZ: 7,
+  back: '#ffe6b0', backI: 0.9, rim: '#fff4d0', rimAmt: 0.8,
+  layerTint: '#ffffff', snowCol: '#74a446', snowShade: '#467634', topCol: '#5f9038', sparkle: 1.0,
+  wind: 0.5, snowAmt: 0.35, stretch: 1.0, partCol: '#fff6c8', fall: 0.12, dustCol: '#b8a880', fireflies: 0, breath: 0,
+  bloom: 0.5, exposure: 0.95, sat: 1.1, contrast: 1.05, lift: '#f4f6ff', gain: '#fffaf0',
+  vig: 0.42, vigColor: '#0a1408', grain: 0.018, rays: 0.5, rayCol: '#fff0c8', outline: '#1a1410', water: '#dff2ff',
+};
+const SUMMER_MOODS = {
+  night: {},     // perustila = kesäpäivä (nimi säilyy, jotta ohjaajan logiikka on sama)
+  rage: {
+    skyTop: '#2a2038', skyMid: '#7a3a40', skyHor: '#ff8a50', clouds: 0.7, cloudCol: '#4a2a34', sun: 0.8, sunCol: '#ff9a5a',
+    sunX: 0.3, sunY: 0.12, sunZ: -0.95, fog: '#6a4048', haze: '#8a5048', mistCol: '#c08a70', mist: 0.4,
+    hemiSky: '#c0a0b0', hemiGround: '#4a3a2a', hemi: 0.75, key: '#ffd0a0', keyI: 1.8, back: '#ff5a2a', backI: 1.0, rim: '#ff6a34', rimAmt: 1.8,
+    layerTint: '#c89a90', snowCol: '#7a8a48', snowShade: '#3e4a2c', topCol: '#5a6a34', wind: 2.0, snowAmt: 0.7, stretch: 1.5,
+    partCol: '#ffb070', fall: 0.5, bloom: 0.7, exposure: 0.9, sat: 1.08, contrast: 1.12, lift: '#f4e0dc', gain: '#fff0e0',
+    vig: 0.8, vigColor: '#200604', rays: 0.6, rayCol: '#ff9a5a',
+  },
+  storm: {
+    skyTop: '#14101c', skyMid: '#3a2430', skyHor: '#b04a30', clouds: 0.85, cloudCol: '#2a1a22', sun: 0.5, sunCol: '#ff8a4a',
+    sunX: 0.3, sunY: 0.1, sunZ: -0.95, fog: '#3a2a34', fogDensity: 0.011, haze: '#4a3038', mist: 0.6, mistCol: '#8a6a66',
+    hemiSky: '#9a90b0', hemiGround: '#3a3024', hemi: 0.7, key: '#e8d0c8', keyI: 1.5, back: '#ff3a20', backI: 1.0, rim: '#ff4a28', rimAmt: 2.1,
+    layerTint: '#8a7078', snowCol: '#5e7040', snowShade: '#2c3a26', topCol: '#465a2e', wind: 3.4, snowAmt: 1.0, stretch: 2.2,
+    partCol: '#d8a070', fall: 0.8, bloom: 0.8, exposure: 0.9, contrast: 1.12, lift: '#eee0e4', gain: '#ffeee0',
+    vig: 0.9, vigColor: '#260404', rays: 0.3, rayCol: '#ff8a4a',
+  },
+  grief: {
+    skyTop: '#59657a', skyMid: '#8794a6', skyHor: '#c0c8d0', clouds: 0.8, cloudCol: '#9aa4b0', sun: 0.4, sunCol: '#ffffff',
+    sunX: -0.1, sunY: 0.5, sunZ: -0.86, fog: '#8a96a4', haze: '#9aa6b2', mist: 0.6, mistCol: '#d0d8e0',
+    hemiSky: '#c8d0dc', hemiGround: '#4a5244', hemi: 0.95, key: '#e8ecf4', keyI: 1.5, back: '#c8d4e8', backI: 0.7, rim: '#e0e8f8', rimAmt: 0.8,
+    layerTint: '#c8d0d8', snowCol: '#6a8a52', snowShade: '#42603a', topCol: '#5a7a48', wind: 0.3, snowAmt: 0.3,
+    bloom: 0.7, sat: 0.55, contrast: 1.0, vig: 0.75, rays: 0.5, rayCol: '#ffffff',
+  },
+  spirit: {
+    skyTop: '#141a44', skyMid: '#4a3a78', skyHor: '#f08a6a', stars: 0.7, clouds: 0.25, cloudCol: '#6a4a70', sun: 0.35, sunCol: '#ff9a6a',
+    sunX: 0.3, sunY: 0.05, sunZ: -0.95, moon: 0.6, fog: '#4a4470', fogDensity: 0.008, haze: '#5a4a78', mist: 0.5, mistCol: '#a898c8',
+    hemiSky: '#9aa0e0', hemiGround: '#3a3a44', hemi: 0.8, key: '#d8d0f0', keyI: 1.6, back: '#58e0c0', backI: 1.2, rim: '#9fe8e0', rimAmt: 1.2,
+    layerTint: '#9a90c0', snowCol: '#5a7a60', snowShade: '#2e4448', topCol: '#4a6a54', wind: 0.4, snowAmt: 0.25,
+    partCol: '#d0ffe0', fireflies: 1, bloom: 0.95, exposure: 1.0, sat: 1.12, lift: '#e4e8ff', vig: 0.65, rays: 0,
+  },
+  finale: {
+    skyTop: '#020512', skyMid: '#0a1c44', skyHor: '#28508a', stars: 1.8, aurora: 0.7, clouds: 0.05, sun: 0, moon: 1,
+    fog: '#122650', fogDensity: 0.009, haze: '#1c3870', mist: 0.5, mistCol: '#9fd0f0', hemiSky: '#9fd0ff', hemiGround: '#2a3440', hemi: 1.1,
+    key: '#cfdcff', keyI: 1.9, back: '#6ff0d0', backI: 1.6, rim: '#bff4ff', rimAmt: 1.4,
+    layerTint: '#7a90c8', snowCol: '#3e6a5a', snowShade: '#1e3848', topCol: '#346050', wind: 0.25, snowAmt: 0.2,
+    partCol: '#c0ffe8', fireflies: 1.5, bloom: 1.15, exposure: 1.0, sat: 1.2, contrast: 1.1, lift: '#dcecff', vig: 0.7, rays: 0.35, rayCol: '#c8e4ff',
+  },
+  dawn: {
+    skyTop: '#27386e', skyMid: '#b0708a', skyHor: '#ffb872', stars: 0.12, clouds: 0.3, cloudCol: '#e89a7a', sun: 1, sunCol: '#ffc88a',
+    sunX: 0.274, sunY: 0.137, sunZ: -0.952, fog: '#b88a8c', fogDensity: 0.008, haze: '#e0a088', mist: 0.7, mistCol: '#ffd0a8',
+    hemiSky: '#c8b8e8', hemiGround: '#5a5a3a', hemi: 1.05, key: '#ffd8a8', keyI: 2.5, keyX: 7, keyY: 5, keyZ: 2,
+    back: '#ffb060', backI: 2.2, rim: '#ffd9a0', rimAmt: 1.5, layerTint: '#ffd8c8',
+    snowCol: '#a8b858', snowShade: '#566a48', topCol: '#8aa04a', sparkle: 1, wind: 0.3, snowAmt: 0.3, partCol: '#ffe8b0', fireflies: 0.3,
+    bloom: 0.95, exposure: 1.0, sat: 1.1, contrast: 1.04, lift: '#f0e2f4', gain: '#fff2dc', vig: 0.5, vigColor: '#140a10',
+    rays: 1.0, rayCol: '#ffd09a', outline: '#1a1020', water: '#ffe0c0',
+  },
+  memorial: {
+    skyTop: '#1c2a60', skyMid: '#8a6492', skyHor: '#ffc080', stars: 0.7, aurora: 0.35, clouds: 0.2, cloudCol: '#e0a08a', sun: 1, sunCol: '#ffd09a',
+    sunX: 0.274, sunY: 0.137, sunZ: -0.952, fog: '#a88498', fogDensity: 0.008, haze: '#d8a090', mist: 0.75, mistCol: '#ffd8b8',
+    hemiSky: '#c8c0f0', hemiGround: '#5a5a40', key: '#ffdcb0', keyI: 2.4, keyX: 7, keyY: 5, keyZ: 2,
+    back: '#ffc070', backI: 2.2, rim: '#ffe4b8', rimAmt: 1.6, layerTint: '#ffdcd0',
+    snowCol: '#aebc60', snowShade: '#5a6e4e', topCol: '#90a650', wind: 0.2, snowAmt: 0.25, partCol: '#ffeec0', fireflies: 0.6,
+    bloom: 1.2, exposure: 1.02, sat: 1.05, lift: '#f2e6f6', gain: '#fff4e0', vig: 0.6, vigColor: '#140a10',
+    rays: 1.2, rayCol: '#ffd8a8', outline: '#1a1020', water: '#ffe0c0',
+  },
+};
+const TABLES = { winter: { base: BASE, moods: MOODS }, summer: { base: SUMMER_BASE, moods: SUMMER_MOODS } };
+let table = TABLES.winter;
+
 const isColor = v => typeof v === 'string';
 function resolve(name) {
   const o = {};
-  const src = { ...BASE, ...(MOODS[name] || {}) };
+  const src = { ...table.base, ...(table.moods[name] || {}) };
+  if (table === TABLES.winter && !(table.moods[name] || {}).topCol) src.topCol = src.snowCol;      // talvi: peite = lumen väri
   for (const k in src) o[k] = isColor(src[k]) ? new THREE.Color(src[k]) : src[k];
   return o;
 }
@@ -113,6 +194,15 @@ export function setMood(name, dur = 2) {
   if (mood.name !== name) start(name, dur);
 }
 export function clearMood() { mood.manual = null; }
+
+/** Vaihda vuodenajan tunnelmataulu ('summer' | 'winter') ja siirry heti sen nykyiseen moodiin. */
+export function setSeasonMoods(season) {
+  table = TABLES[season] || TABLES.winter;
+  mood.season = season;
+  const t = resolve(mood.name);
+  for (const k in t) { for (const o of [mood.cur, mood.from, mood.to]) { if (t[k].isColor) (o[k] || (o[k] = new THREE.Color())).copy(t[k]); else o[k] = t[k]; } }
+  mood.t = 1;
+}
 
 /** Ohjaaja: päättelee perusmoodin pelitilasta. Kutsutaan joka frame (kevyt). */
 let dirT = 0, menuEl = null, dawnLatch = false;

@@ -63,7 +63,7 @@ void main(){
     col = vec3(texture2D(tScene, uv + o).r, texture2D(tScene, uv).g, texture2D(tScene, uv - o).b);
   } else col = texture2D(tScene, uv).rgb;
 
-  float blurAmt = uTilt * smoothstep(0.17, 0.5, abs(d.y));
+  float blurAmt = uTilt * smoothstep(0.24, 0.5, abs(d.y));
   if (uDof > 0.01 && uHasDepth > 0.5) {
     float z = texture2D(tDepth, uv).x * 2.0 - 1.0;
     float lin = 2.0 * uNear * uFar / (uFar + uNear - z * (uFar - uNear));

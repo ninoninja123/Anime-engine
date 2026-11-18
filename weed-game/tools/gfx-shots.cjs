@@ -1,6 +1,6 @@
 // Grafiikan kuvakaappaukset (ennen/jälkeen-vertailu) -> screenshots/gfx/<prefix>_<nimi>.png
 // Käyttö: node tools/gfx-shots.cjs <prefix> [scene,scene...] [--q=low|med|high] [--url=http://localhost:4173/]
-// Kohtaukset: menu,cast,battle,battoga,rage,sacrifice,phase2,arrows,phase3,finale  (oletus: kaikki)
+// Kohtaukset: menu,cast,intro,battle,battoga,rage,sacrifice,phase2,arrows,phase3,finale  (oletus: kaikki)
 // Odotukset on sidottu pelin omaan kelloon ja tilaan (ei teksteihin), joten hidas ohjelmistorenderöinti ei haittaa.
 const { chromium } = require('playwright');
 const path = require('path');
@@ -32,6 +32,10 @@ const qs = extra => `?${[extra, q ? (q === 'low' ? 'lowfx' : q === 'high' ? 'hq'
 
   if (has('menu')) { await open(''); await waitGame(2.5); await shot('01_menu'); }
   if (has('cast')) { await open(''); await page.evaluate(() => window.__game.showCast(Math.max(0, window.__game.ROSTER.indexOf('kaibutsu')))); await waitS(() => window.__game.gallery.loaded); await waitGame(4); await shot('03_lauma_kaibutsu'); }
+  if (has('intro')) {
+    await open('play=1'); await waitS(() => window.__S && window.__S.cutscene); await waitGame(2.6); await shot('05_intro_wide');
+    await waitGame(9); await shot('06_intro_later');
+  }
   if (has('battle') || has('battoga') || has('rage') || has('sacrifice')) {
     await open('phase=1&nointro'); await waitGame(3);
     if (has('battle')) {

@@ -170,7 +170,7 @@ export function initEngine(canvas) {
     post.focus = focus;
     const wantDof = E.cine ? THREE.MathUtils.clamp((9.5 - fd) / 5, 0.15, 1) : 0;
     post.dof += (wantDof - post.dof) * Math.min(1, dtReal * 4);
-    const wantTilt = E.cine ? 0.8 : 0;
+    const wantTilt = E.cine ? 0.5 : 0;
     post.tilt += (wantTilt - post.tilt) * Math.min(1, dtReal * 3);
     post.freeze += ((E.freeze ? 1 : 0) - post.freeze) * Math.min(1, dtReal * 18);
     post.fade *= Math.pow(0.0015, dtReal); if (post.fade < 0.004) post.fade = 0;

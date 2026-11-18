@@ -192,7 +192,7 @@ export function burst(pos, o = {}) {
 /** Lumipöly / pölypilvi. big = raskas tömähdys (myös kivimurska ja maa-aalto). */
 export function dust(pos, big = false) {
   if (!init()) return;
-  const n = Math.ceil((big ? 16 : 6) * Q.particles), m = mood.cur.snowCol;
+  const n = Math.ceil((big ? 16 : 6) * Q.particles), m = mood.cur.dustCol;
   for (let i = 0; i < n; i++) {
     const a = Math.random() * Math.PI * 2, sp = (big ? 3.4 : 1.6) * (0.4 + Math.random());
     const s = (big ? 0.9 : 0.4) * (0.6 + Math.random() * 0.8);
@@ -203,10 +203,10 @@ export function dust(pos, big = false) {
   for (let i = 0; i < k; i++) {
     const a = Math.random() * Math.PI * 2, sp = (big ? 5 : 2.6) * (0.3 + Math.random());
     smoke.spawn(pos.x, Math.max(0.05, pos.y), pos.z, Math.cos(a) * sp, 1.5 + Math.random() * (big ? 5 : 2.5), Math.sin(a) * sp * 0.5,
-      0.7 + Math.random() * 0.5, 0.07 + Math.random() * 0.07, 0.03, 1, 1, 1, 0.95, -13, 0.3);
+      0.7 + Math.random() * 0.5, 0.07 + Math.random() * 0.07, 0.03, m.r * 1.15, m.g * 1.15, m.b * 1.15, 0.95, -13, 0.3);
   }
   if (big) {
-    quad(0, _v.set(pos.x, 0.06, pos.z), 0xdfe8ff, { ground: true, s0: 0.4, s1: 4.2, life: 0.55, alpha: 0.55 });
+    quad(0, _v.set(pos.x, 0.06, pos.z), 0xe8e4d8, { ground: true, s0: 0.4, s1: 4.2, life: 0.55, alpha: 0.55 });
     spawnDebris(pos, 7);
     post.ca = Math.max(post.ca, 0.008);
   }
@@ -417,6 +417,12 @@ function autoFx(dt, dtr) {
   const S = window.__S;
   autoT += dtr;
   const tick = autoT > 0.05; if (tick) autoT = 0;
+  const dc = mood.cur.dustCol;
+  // tulikärpäset (kesäillan henget): hitaasti leijuvia valopisteitä areenan ympärillä
+  const ff = mood.cur.fireflies;
+  if (ff > 0.05 && tick && Math.random() < ff * 0.5) {
+    glow.spawn(rnd(11), 0.25 + Math.random() * 2.6, -5 + Math.random() * 8, rnd(0.25), rnd(0.12) + 0.05, rnd(0.15), 2.2 + Math.random() * 2, 0.09, 0.05, 0.75, 1.0, 0.45, 0.9, 0, 0.2);
+  }
   for (const id in cast) {
     const d = cast[id];
     if (!d || !d.root || !d.root.visible) continue;
@@ -426,7 +432,7 @@ function autoFx(dt, dtr) {
     const vx = dt > 0 ? (p.x - st.x) / dt : 0; st.x = p.x;
     // hengityshöyry
     st.breathT -= dt;
-    if (st.breathT <= 0) {
+    if (st.breathT <= 0 && mood.cur.breath > 0.5) {
       st.breathT = 2.2 + Math.random() * 2.2;
       const head = headOf(d);
       if (head && p.y < 0.3) { const f = d.facingTarget || d.facing || 1; head.getWorldPosition(_v); breath(_v.set(_v.x + f * 0.2 * h, _v.y - 0.02 * h, _v.z), f); }
@@ -435,8 +441,8 @@ function autoFx(dt, dtr) {
     st.stepT -= dt;
     if (Math.abs(vx) > 4.5 && p.y < 0.06 && st.stepT <= 0 && Math.abs(vx) < 60) {
       st.stepT = 0.09;
-      smoke.spawn(p.x - Math.sign(vx) * 0.3 * h, 0.08, p.z + rnd(0.15), -Math.sign(vx) * 0.8, 0.6 + Math.random() * 0.6, rnd(0.3), 0.6, 0.18 * h, 0.7 * h, 1, 1, 1, 0.38, 0.3, 2);
-      if (id === 'kaibutsu') smoke.spawn(p.x, 0.1, p.z + rnd(0.5), rnd(1), 1.2, rnd(0.4), 0.9, 0.5, 1.8, 1, 1, 1, 0.4, 0.3, 2);
+      smoke.spawn(p.x - Math.sign(vx) * 0.3 * h, 0.08, p.z + rnd(0.15), -Math.sign(vx) * 0.8, 0.6 + Math.random() * 0.6, rnd(0.3), 0.6, 0.18 * h, 0.7 * h, dc.r, dc.g, dc.b, 0.38, 0.3, 2);
+      if (id === 'kaibutsu') smoke.spawn(p.x, 0.1, p.z + rnd(0.5), rnd(1), 1.2, rnd(0.4), 0.9, 0.5, 1.8, dc.r, dc.g, dc.b, 0.4, 0.3, 2);
     }
     // kuvajäljet: Weedin Battōga-pyörähdys, hirviön syöksy
     st.afterT -= dtr;
