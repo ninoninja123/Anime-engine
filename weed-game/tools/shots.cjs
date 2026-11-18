@@ -48,21 +48,30 @@ const only = process.argv[2] || 'all';
     await page.mouse.up(); await sleep(350); await shot('12_battle_battoga');
     await sleep(1500);
     await page.evaluate(() => window.__game.debug.smith()); await sleep(800); await shot('13_battle_armor_smithcard');
-    await page.tap('.card[data-id="smith"]', { force: true }); await sleep(9000); await shot('14_smith_run');
-    await sleep(4200); await shot('15_smith_rockslide');
-    await sleep(5000); await shot('16_smith_memory');
-    await page.waitForFunction(() => window.__game.debug.S.phase === 2 && !window.__game.debug.S.cutscene, null, { timeout: 60000 });
+    await page.tap('.card[data-id="smith"]', { force: true });
+    // headless-swiftshader renderöi hitaasti -> odotetaan tekstejä/tiloja kiinteiden viiveiden sijaan
+    const waitSub = async (txt, ms = 240000) => page.waitForFunction(t => { const e = document.querySelector('#sub .txt'); const c = document.getElementById('caption'); return (e && e.textContent.includes(t) && !document.getElementById('sub').classList.contains('hidden')) || (c && c.textContent.includes(t) && !c.classList.contains('hidden')); }, txt, { timeout: ms, polling: 100 });
+    const waitS = async (fn, ms = 300000) => page.waitForFunction(fn, null, { timeout: ms, polling: 200 });
+    await waitSub('Elä, Weed'); await sleep(300); await shot('14_smith_leap');
+    await waitSub('SMITH!!'); await sleep(200); await shot('15_smith_rockslide_after');
+    await waitSub('Smith', 240000).catch(() => {}); await page.waitForFunction(() => document.getElementById('caption').textContent === 'Smith' && !document.getElementById('caption').classList.contains('hidden'), null, { timeout: 240000 }); await shot('16_smith_memory');
+    await waitS(() => window.__game.debug.S.phase === 2 && !window.__game.debug.S.cutscene);
     await sleep(1500); await shot('17_phase2');
-    await page.evaluate(() => window.__game.debug.arrows()); await sleep(4500); await shot('18_arrows_title');
-    await sleep(9000); await shot('19_arrows_strike');
-    await page.waitForFunction(() => window.__game.debug.S.phase === 3 && !window.__game.debug.S.cutscene, null, { timeout: 90000 });
+    await page.evaluate(() => window.__game.debug.arrows());
+    await waitSub('NELJÄ NUOLTA'); await shot('18_arrows_title');
+    await waitSub('Ei kuolla vielä'); await shot('19_arrows_heuler');
+    await waitSub('Kapteeni'); await shot('19b_arrows_fallen');
+    await waitSub('Kiitos, toverit'); await sleep(1500); await shot('19c_arrows_spirits');
+    await waitS(() => window.__game.debug.S.phase === 3 && !window.__game.debug.S.cutscene);
     await sleep(1200); await shot('20_phase3_prompt');
     await page.mouse.move(300, 280); await page.mouse.down();
     for (let a = 0; a <= 300; a += 20) { const r = a * Math.PI / 180; await page.mouse.move(420 + Math.cos(r) * 110, 200 + Math.sin(r) * 80); }
-    await page.mouse.up(); await sleep(1300); await shot('21_finale_battoga');
-    await sleep(6000); await shot('22_finale_fall');
-    await sleep(6000); await shot('23_finale_dawn');
-    await page.waitForFunction(() => !document.getElementById('result').classList.contains('hidden'), null, { timeout: 90000 });
+    await page.mouse.up();
+    await waitSub('BATTŌGA'); await sleep(1500); await shot('21_finale_battoga');
+    await waitSub('usvaan'); await shot('22_finale_fall');
+    await waitSub('Ihmiset tekivät'); await shot('23_finale_dawn');
+    await waitSub('MUISTOISSA'); await sleep(1500); await shot('23b_memorial');
+    await waitS(() => !document.getElementById('result').classList.contains('hidden'));
     await sleep(800); await shot('24_result');
   }
   if (only === 'portrait') {

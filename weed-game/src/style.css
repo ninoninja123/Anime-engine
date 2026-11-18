@@ -63,9 +63,9 @@ body.cine #letterbox .bar { height: 11vh; }
 .card.fallen .cd::before { content: '✦ '; }
 #pauseBtn { position: absolute; right: max(14px, env(safe-area-inset-right)); top: 8px; pointer-events: auto; width: 44px; height: 44px; min-height: 44px; padding: 0; font-weight: 900; }
 
-#hint { position: fixed; left: 50%; top: 22%; transform: translateX(-50%); z-index: 6; pointer-events: none; text-align: center;
+#hint { position: fixed; left: 50%; top: 17%; transform: translateX(-50%); z-index: 6; pointer-events: none; text-align: center;
   font-size: clamp(14px, 2.6vw, 20px); font-weight: 700; text-shadow: 0 2px 8px #000, 0 0 2px #000; padding: 6px 14px; border-radius: 10px; background: rgba(5,8,20,0.45); }
-#toast { position: fixed; left: 50%; top: 36%; transform: translate(-50%, 0) scale(0.8); z-index: 6; pointer-events: none; opacity: 0;
+#toast { position: fixed; left: 50%; top: 44%; transform: translate(-50%, 0) scale(0.8); z-index: 6; pointer-events: none; opacity: 0;
   font-size: clamp(18px, 4vw, 34px); font-weight: 900; font-style: italic; letter-spacing: 0.04em; color: #fff;
   text-shadow: 0 0 12px #6af, 0 3px 0 #123; transition: opacity 0.2s, transform 0.2s; white-space: nowrap; }
 #toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); }

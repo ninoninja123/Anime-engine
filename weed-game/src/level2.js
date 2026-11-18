@@ -318,7 +318,7 @@ function checkThresholds() {
     B.hp = 60; B.armored = true; UI.setBossHP(B.hp / B.max, true);
     const sm = S.cards.find(c => c.id === 'smith'); sm.state = 'sacrifice'; UI.updateCard(sm);
     sfx.roar(); shake(0.4);
-    UI.hint('Raivo kovettaa hirviön nahan! Smith katsoo kallion reunaa… <b>Napauta Smithin korttia.</b>');
+    UI.hint('Raivo kovettaa nahan! <b>Napauta Smithin korttia.</b>');
     cast.smith.play('Idle'); cast.smith.earPerk = 1;
   }
   if (S.phase === 2 && B.hp <= 22 && !S.pending) { S.pending = 'arrows'; fourArrows(); }
@@ -406,7 +406,7 @@ async function telegraph(alive, secs) {
   const t0 = E.time;
   while (alive() && E.time - t0 < secs) {
     const k = (E.time - t0) / secs;
-    boss.setTint(0xff2a10, 0.25 + 0.35 * Math.abs(Math.sin(k * 12)));
+    boss.setTint(0xff2a10, 0.06 + 0.14 * Math.abs(Math.sin(k * 12)));
     bang.position.set(B.x, boss.height + 0.9 + Math.sin(k * 20) * 0.05, 0.5);
     await wait(1 / 60);
   }
