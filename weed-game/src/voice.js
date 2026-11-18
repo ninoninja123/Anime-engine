@@ -85,7 +85,7 @@ export async function say(id, opts = {}) {
     src = ctx.createBufferSource(); src.buffer = buf; src.connect(voiceOut()); src.start();
     speakSrc = src; src.onended = () => { if (speakSrc === src) speakSrc = null; };
     dur = (performance.now() - t0) / 1000 + buf.duration;
-    duck(line.who === 'kaibutsu' ? 0.55 : 0.32, buf.duration + 0.2);
+    duck(line.duck ?? (line.who === 'kaibutsu' ? 0.55 : 0.32), buf.duration + 0.2);
   };
   showSub(line);
   E.speaking = line.who === 'narrator' ? null : { who: line.who, level: 0, roar: line.who === 'kaibutsu' && !/speak/.test(id) };
@@ -95,7 +95,7 @@ export async function say(id, opts = {}) {
     if (cached) start(cached);
     else load(line.file, VOICE_BASE()).then(b => { if (b && (performance.now() - t0) / 1000 < dur * 0.6) start(b); });
   }
-  if (!src) duck(line.who === 'kaibutsu' ? 0.55 : 0.32, dur + 0.2);
+  if (!src) duck(line.duck ?? (line.who === 'kaibutsu' ? 0.55 : 0.32), dur + 0.2);
   const finish = () => { if (current === token) { hideSub(); E.speaking = null; speakSrc = null; } };
   if (opts.noWait) { const check = () => { if ((performance.now() - t0) / 1000 >= dur + 0.2) finish(); else setTimeout(check, 100); }; setTimeout(check, 200); return; }
   // odota kunnes repliikki (äänen kesto, joka voi päivittyä latauksen jälkeen) on ohi

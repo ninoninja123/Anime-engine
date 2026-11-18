@@ -184,7 +184,8 @@ export function initEngine(canvas) {
       if (irisT >= 0.9) { irisT = -1; post.iris = 2; }
     }
 
-    if (!renderPost(E.scene, cam, dtReal, E.realTime)) {
+    if (E.noRender) { /* fullscreen 2D overlay (prologue) covers the view: skip the 3D render */ }
+    else if (!renderPost(E.scene, cam, dtReal, E.realTime)) {
       renderer.info.reset();
       renderer.setRenderTarget(null);
       renderer.render(E.scene, cam);

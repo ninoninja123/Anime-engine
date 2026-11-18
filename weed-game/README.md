@@ -17,7 +17,7 @@ npm run build      # -> dist/ (ajaa ensin `npm run voices`)
 npm run preview    # buildin esikatselu
 ```
 
-Testilinkit: `?play=1` (intro), `?phase=2&nointro`, `?phase=3&nointro`, `?gallery=0`, `?lowfx` (kevyet tehosteet),
+Testilinkit: `?prologue` (pakottaa alkucutscenen "The story so far"), `?noprologue` (ohittaa sen), `?play=1` (intro), `?phase=2&nointro`, `?phase=3&nointro`, `?gallery=0`, `?lowfx` (kevyet tehosteet),
 `?synthaudio` (pelkkä syntetisoitu ääni), `?rigdebug` (pehmeän rigin painot väreinä), `?partdbg` (koiratehtaan osat väreinä).
 Konsolissa `__game.debug` (esim. `__game.debug.fillHenki()`, `__game.debug.card('jerome')`).
 
@@ -44,6 +44,8 @@ src/audio.js             Epidemic-musiikki ristiinhäivytyksellä, ducking, teho
 src/voice.js             japaninkieliset puheäänet + englanninkielinen tekstitys, ajastus ilman äänitiedostoja
 src/data/lines.js        KAIKKI repliikit: ja/en, tunne, näyttelijäohje, intensiteetti, tauot (voice-manifesti)
 src/scenes.js            datapohjainen kohtausohjaus (kamera-avainkuvat, orbit, dolly, slow-mo, freeze-frame, valot…)
+src/prologue.js          alkucutscene "The story so far": kuvitetut paneelit (Ken Burns, partikkelit, valo), kertoja, Skip / Skip always
+src/data/scenes_prologue.js alkucutscenen paneelit ja kerronta (kuvat public/story/*.webp eivät ole gitissä; ks. docs/weed-game/story-art-notes.md)
 src/data/scenes_level2.js tason kohtaukset: intro, Smithin uhraus, Neljä nuolta, Battōga-finaali, jälkikohtaus
 src/level2.js            taistelu, bossin tekoäly, kortit/special movet, vaiheet
 src/main.js              käynnistys, valikko, Lauma-galleria (kaikki hahmot pyörivinä ja animoituina), asetukset
