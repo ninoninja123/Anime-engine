@@ -49,6 +49,7 @@ export const intro = ({ cast }) => [
   { cam: [-0.2, 0.9, 3.4], look: [-2.4, 0.7, 0] },
   { cam: [-1.4, 0.75, 1.9], look: [-2.5, 0.65, 0], t: 3.2, ease: 'out' },
   { say: 'intro_vow' },
+  { music: 'smith', fade: 1.8 },                                       // Smith's theme: his first moment in the spotlight
   { dolly: 'smith', dist: 1.5, side: 0.8, t: 0.6 },
   { say: 'intro_proud' },
   // Jerome and his men arrive at a gallop
@@ -97,7 +98,7 @@ export const smith = (ctx) => {
   const boss = cast.kaibutsu, B = S.B, H = boss.height;
   ctx.fallingRocks = [];
   return [
-    { music: null, fade: 1.5 },
+    { music: 'smith', fade: 2 },                                      // Smith's theme carries the whole sacrifice
     { fn: () => {
       S.W.x = -2.5; B.x = 4.4;
       cast.ken.root.position.set(-8.4, 0, -3.4); cast.kagetora.root.position.set(-7.0, 0, -3.0);
@@ -166,7 +167,7 @@ export const smith = (ctx) => {
     { cam: [-1.0, 0.75, 2.0], look: [-2.4, 0.75, 0] },
     { anim: 'weed', name: 'Howl' },
     { say: 'sac_scream' },
-    { music: 'sad', fade: 2.5 },
+    { music: 'smith', fade: 2.5 },                                    // keep the theme through the aftermath
     { light: { rim: 0.6, fog: 0x2a2840, t: 2 } },
     { anim: 'weed', name: 'Idle_2_HeadLow' },
     { fx: 'spirit', at: [6.6, 1.6, 0.6], t: 6 },

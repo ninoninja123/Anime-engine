@@ -208,7 +208,7 @@ export async function startLevel({ phase = 1, intro = true, onExit } = {}) {
   S.cards = cardDefs();
   UI.buildCards(S.cards, useCard);
   if (phase >= 2) { const sm = S.cards.find(c => c.id === 'smith'); sm.state = 'fallen'; }
-  preloadMusic('battle', 'sad', 'dawn');
+  preloadMusic('battle', 'sad', 'dawn', 'smith');
   setupArena(phase);
   ambience(true);
   if (intro && phase === 1) await introCutscene();
