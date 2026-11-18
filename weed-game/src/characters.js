@@ -19,6 +19,7 @@ export const MODELS = {
   hogen:     { file: 'hogen.glb',     rotY: 0 },
   weed_rigged:     { file: 'weed_rigged.glb',     rotY: 0, rigged: true },
   john_auto:       { file: 'john_auto.glb',       rotY: 0, rigged: true },   // john.glb (wolf) auto-rig
+  tesshin_auto:    { file: 'tesshin_auto.glb',    rotY: 0, rigged: true },   // tesshin.glb auto-rig
   gin_auto:        { file: 'gin_auto.glb',        rotY: 0, rigged: true },   // gin_rigged.glb (Tripo) uudelleenrigattu rig_dog_standalone.py:llä -> 9 klippiä
   kagetora_rigged: { file: 'kagetora_rigged.glb', rotY: 0, rigged: true },
   smith_rigged: { file: 'smith_rigged.glb', rotY: 0, rigged: true },
@@ -92,6 +93,13 @@ export const CHARACTERS = {
     gait: 'heavy', speed: 0.85, wag: 0.15,
     rig: { belly: 0.36, neck: 0.32, tail: 0.18, legSwing: 0.38, headAmt: 0.7 },
     outline: 0.01,
+  },
+
+  tesshin: {
+    name: 'Tesshin', jp: '鉄心', kind: 'rigged', model: 'tesshin_auto', height: 1.0,
+    role: 'A ninja dog of the Kōga clan. At the hot spring he teaches Weed Gin\'s secret move, Zetsu Tenrō Battōga – a move he cannot perform himself.',
+    gait: 'light', speed: 1.2, wag: 0.3,
+    outline: 0.008,
   },
 
   // ---------------- koiratehdas ----------------
@@ -211,7 +219,7 @@ export const CHARACTERS = {
 // Pelissä käytetyt (taso 2) ja galleriassa näytettävät
 export const LEVEL2_CAST = ['weed', 'kaibutsu', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'gin'];
 export const ROSTER = ['weed', 'gin', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'kaibutsu',
-  'rocket', 'tobee', 'kurotora', 'moss', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
+  'rocket', 'tobee', 'kurotora', 'moss', 'tesshin', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
 
 // ---------------- geneeriset joukkovariantit (src/data/roster_specs.js) ----------------
 // Ei ylikirjoita yllä olevia hahmoja; lisätyt id:t ROSTER_EXTRA_IDS, galleriaryhmät GROUP_OF.
