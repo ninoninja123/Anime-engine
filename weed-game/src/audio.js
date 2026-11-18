@@ -217,3 +217,15 @@ function synthStart(name) {
     step++;
   }, stepDur * 1000);
 }
+
+// Never keep playing in a hidden tab / when the page is put in the background (phones, other tabs).
+if (typeof document !== 'undefined') {
+  const syncAudioWithVisibility = () => {
+    if (!ctx) return;
+    if (document.hidden) { try { ctx.suspend(); } catch (_) {} }
+    else if (ctx.state === 'suspended') { try { ctx.resume(); } catch (_) {} }
+  };
+  document.addEventListener('visibilitychange', syncAudioWithVisibility);
+  window.addEventListener('pagehide', () => { if (ctx) { try { ctx.suspend(); } catch (_) {} } });
+  window.addEventListener('pageshow', syncAudioWithVisibility);
+}

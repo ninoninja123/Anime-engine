@@ -15,7 +15,7 @@ const GAME_CAM = { cam: [0, 2.4, 9], look: [0, 1.4, 0] };
 // ------------------------------------------------------------------------------------------------
 // PRE-BATTLE: arrival at Gajō, the pack gathers, Weed's vow, Jerome's squad, Kaibutsu appears.
 export const intro = ({ cast }) => [
-  { music: 'intro' },
+  { music: null, fade: 1.2 },                                          // the intro song belongs to the main menu only
   { fn: () => { for (const d of Object.values(cast)) d.root.visible = false; } },
   { place: 'weed', x: -13, z: 0.3, face: 1, anim: 'Walk' },
   { place: 'smith', x: -14.6, z: -0.9, face: 1, anim: 'Walk' },
