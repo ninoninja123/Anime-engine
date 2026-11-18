@@ -164,8 +164,8 @@ export const smith = (ctx) => {
     { hide: 'smith' }, { hide: 'kaibutsu' }, { shake: 0.8 },
     { wait: 1.4 },
     // silence – Weed screams
-    { cam: [-1.0, 0.75, 2.0], look: [-2.4, 0.75, 0] },
     { anim: 'weed', name: 'Howl' },
+    { dolly: 'weed', dist: 1.9, side: 0.5, h: 0.15, lookH: 0.6, t: 0 },
     { say: 'sac_scream' },
     { music: 'smith', fade: 2.5 },                                    // keep the theme through the aftermath
     { light: { rim: 0.6, fog: 0x2a2840, t: 2 } },
