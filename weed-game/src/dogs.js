@@ -17,14 +17,14 @@ const FACING_FIX = Math.PI / 2; // malli katsoo +Z:aan -> käännetään +X:ää
 export const CHARS = {
   weed:     { name: 'Weed',     fur: '#f3efe6', light: '#ffffff', dark: '#2b2622', scale: 0.78, ear: 1.05, speed: 1.15 },
   gin:      { name: 'Gin',      fur: '#aeb8c4', light: '#e9eef3', dark: '#22262c', scale: 1.22, ear: 1.0 },
-  smith:    { name: 'Smith',    fur: '#85817a', light: '#c4beb4', dark: '#262320', scale: 0.98, ear: 0.85, threeLegs: true },
+  smith:    { name: 'Smith',    fur: '#b3b0aa', light: '#e2ded6', dark: '#2e2c2a', scale: 0.98, ear: 0.85, threeLegs: true },
   jerome:   { name: 'Jerome',   fur: '#a9733a', light: '#d6a463', dark: '#1f1912', scale: 1.12, ear: 1.45 },
   ken:      { name: 'Ken',      fur: '#6f737c', light: '#9da2ab', dark: '#1d1e22', scale: 1.3, ear: 0.75 },
   kagetora: { name: 'Kagetora', fur: '#3e322b', light: '#7a6150', dark: '#16110e', scale: 1.0, ear: 1.0 },
   robert:   { name: 'Robert',   fur: '#5b4630', light: '#a07a4c', dark: '#151009', scale: 1.08, ear: 1.4 },
   rocker:   { name: 'Rocker',   fur: '#2d2925', light: '#8e7552', dark: '#0f0d0b', scale: 1.06, ear: 1.4 },
   heuler:   { name: 'Heuler',   fur: '#7d6a55', light: '#b9a283', dark: '#1a1510', scale: 1.1, ear: 1.4 },
-  kaibutsu: { name: 'Kaibutsu', fur: '#6b5634', light: '#8a7350', dark: '#140d08', scale: 2.75, ear: 0.55, monster: true },
+  kaibutsu: { name: 'Kaibutsu', fur: '#a8814a', light: '#c9a46c', dark: '#1a0f08', scale: 2.75, ear: 0.55, monster: true },
 };
 
 export async function loadDogBase(url) {
@@ -138,7 +138,8 @@ export class Dog {
       this.outline = ol;
     }
     this.bones = {};
-    model.traverse(o => { if (o.isBone) this.bones[o.name] = o; });
+    // GLTFLoader poistaa pisteet nimistä (Ear1.L -> Ear1L): tallennetaan molemmat muodot
+    model.traverse(o => { if (o.isBone) { this.bones[o.name] = o; this.bones[o.name.replace(/\./g, '')] = o; } });
 
     // varjo (pehmeä läiskä)
     const sh = new THREE.Mesh(new THREE.CircleGeometry(0.5, 24),
@@ -169,18 +170,19 @@ export class Dog {
     const np = new THREE.Vector3(); neck.getWorldPosition(np);
     const hp = new THREE.Vector3(); head.getWorldPosition(hp);
     const mane = new THREE.Group();
-    const maneMat = new THREE.MeshToonMaterial({ color: 0x3a2716, gradientMap });
+    const maneMat = new THREE.MeshToonMaterial({ color: 0x4a2a14, gradientMap });
     const olMat = new THREE.MeshBasicMaterial({ color: 0x0b0a10, side: THREE.BackSide });
-    const N = 18;
+    const N = 26;
     for (let i = 0; i < N; i++) {
       const a = (i / N) * Math.PI * 2;
-      const len = 0.55 + Math.random() * 0.35;
-      const geo = new THREE.ConeGeometry(0.17, len, 5);
+      const ringK = i % 2;
+      const len = (0.6 + Math.random() * 0.4) * (ringK ? 0.8 : 1.1);
+      const geo = new THREE.ConeGeometry(0.2, len, 5);
       geo.translate(0, len / 2, 0);
       const cone = new THREE.Mesh(geo, maneMat);
       const ol = new THREE.Mesh(geo, olMat); ol.scale.setScalar(1.08); cone.add(ol);
       // säteittäin kaulan ympäri (kaula kulkee x-akselia pitkin, koska malli katsoo +X)
-      cone.position.set(0, Math.cos(a) * 0.32, Math.sin(a) * 0.32);
+      cone.position.set(ringK * 0.18, Math.cos(a) * 0.36, Math.sin(a) * 0.36);
       cone.rotation.x = a - Math.PI / 2;
       cone.rotateZ(0.7); // kallistus taaksepäin
       mane.add(cone);
@@ -209,9 +211,15 @@ export class Dog {
 
     // Hehkuvat silmät
     const eyeMat = new THREE.SpriteMaterial({ map: glowTexture(), color: 0xffb030, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
-    const eyes = new THREE.Sprite(eyeMat); eyes.scale.setScalar(0.5);
-    eyes.position.copy(hp).add(new THREE.Vector3(0.35, 0.12, 0));
-    this.root.add(eyes); head.attach(eyes); this.eyes = eyes;
+    const H = this.height;
+    const eyes = new THREE.Group();
+    for (const zs of [-1, 1]) {
+      const e = new THREE.Sprite(eyeMat); e.scale.setScalar(0.09 * H);
+      e.position.set(0.075 * H, 0.025 * H, zs * 0.04 * H); eyes.add(e);
+    }
+    eyes.position.copy(hp);
+    this.root.add(eyes); head.attach(eyes);
+    this.eyes = { material: eyeMat, scale: { setScalar: v => eyes.children.forEach(c => c.scale.setScalar(v * 0.18 * H)) } };
   }
 
   get x() { return this.root.position.x; }
@@ -270,10 +278,10 @@ export class Dog {
     if (b.Tail1) b.Tail1.rotation.x += Math.sin(this.t * 9) * this.wag * 0.6;
     if (b.Tail2) b.Tail2.rotation.x += Math.sin(this.t * 9 - 0.8) * this.wag * 0.5;
     const es = this.def.ear;
-    for (const n of ['Ear1.L', 'Ear1.R']) if (b[n]) b[n].scale.setScalar(es);
-    if (b['Ear2.L']) b['Ear2.L'].rotation.z += Math.sin(this.t * 1.7) * 0.06 + this.earPerk * 0.3;
-    if (b['Ear2.R']) b['Ear2.R'].rotation.z -= Math.sin(this.t * 1.9) * 0.06 + this.earPerk * 0.3;
-    if (this.def.threeLegs && b['FrontUpperLeg.L']) b['FrontUpperLeg.L'].scale.setScalar(0.001);
+    for (const n of ['Ear1L', 'Ear1R']) if (b[n]) b[n].scale.setScalar(es);
+    if (b.Ear2L) b.Ear2L.rotation.z += Math.sin(this.t * 1.7) * 0.06 + this.earPerk * 0.3;
+    if (b.Ear2R) b.Ear2R.rotation.z -= Math.sin(this.t * 1.9) * 0.06 + this.earPerk * 0.3;
+    if (this.def.threeLegs && b.FrontUpperLegL) { b.FrontUpperLegL.scale.setScalar(0.001); if (b.FrontShoulderL) b.FrontShoulderL.scale.setScalar(0.55); }
     if (this.weak) {
       const pulse = 0.6 + Math.sin(this.t * 8) * 0.4;
       this.weakGlow.material.opacity = this.weakReveal * pulse;
