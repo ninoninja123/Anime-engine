@@ -1,5 +1,5 @@
 // Tehosteet. Julkinen rajapinta (ennallaan): burst, dust, ring, slashArc, spiritLight, flash, hitStop, impact,
-// speedLines, setOverlay.  Uudet: afterimage, lightPillar, hitStar, breath, embers, debris, mistPlume, spiritGhost.
+// speedLines, setOverlay, vortex.  Uudet: afterimage, lightPillar, hitStar, breath, embers, debris, mistPlume, spiritGhost.
 // Toteutus: kaksi GPU-pistepilveä (additiivinen + savu) objektipoolina, poolatut shader-neliöt (shokkiaallot,
 // valopallot, valopilarit, iskutähdet), instansoitu kivimurska, bakatut kuvajäljet (afterimage) ja
 // henkisiluetit (jakavat hahmon geometrian ja vertex-rigin). Ei per-frame-allokaatioita.
@@ -340,14 +340,15 @@ const ghostPool = new Map();   // lähdemesh -> vapaat kopiot
 const ghosts = [];
 function ghostMeshes(root, color) {
   const out = [], srcs = [];
-  root.traverse(o => { if (o.isMesh && !o.userData.gfxGhost && o.material && o.material.side === THREE.BackSide && o.material.isMeshBasicMaterial) srcs.push(o); });
-  if (!srcs.length) root.traverse(o => { if (o.isMesh && !o.isSkinnedMesh && !o.userData.gfxGhost && o.material && o.material.isMeshToonMaterial) srcs.push(o); });
+  // lähteet: ääriviivakuoret (hieman paisutettu = hehkuva kuori); jos niitä ei ole, itse meshit
+  root.traverse(o => { if (o.isMesh && !o.userData.gfxGhost && o.material && !Array.isArray(o.material) && o.material.side === THREE.BackSide) srcs.push(o); });
+  if (!srcs.length) root.traverse(o => { if (o.isMesh && !o.userData.gfxGhost && o.material && o.material.isMeshToonMaterial) srcs.push(o); });
   for (const src of srcs) {
     let free = ghostPool.get(src);
     if (!free) ghostPool.set(src, (free = []));
     let g = free.pop();
     if (!g) {
-      const sm = src.material, shell = sm.side === THREE.BackSide;
+      const sm = src.material, shell = sm.side === THREE.BackSide && sm.isMeshBasicMaterial && !src.isSkinnedMesh;
       const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
       const U = { uGhostOff: { value: new THREE.Vector3() } };
       mat.userData.U = U;
@@ -359,13 +360,14 @@ function ghostMeshes(root, color) {
       };
       const key = 'gfxghost:' + (shell && sm.customProgramCacheKey ? sm.customProgramCacheKey() : 'plain');
       mat.customProgramCacheKey = () => key;
-      g = new THREE.Mesh(src.geometry, mat);
+      if (src.isSkinnedMesh) { g = new THREE.SkinnedMesh(src.geometry, mat); g.bind(src.skeleton, src.bindMatrix); }   // luuranko jaetaan: asento seuraa
+      else g = new THREE.Mesh(src.geometry, mat);
       g.matrixAutoUpdate = false; g.frustumCulled = false; g.renderOrder = 7;
       g.userData.gfxGhost = true; g.userData.noGfx = true; g.userData.src = src;
     }
     g.material.color.set(color); g.material.opacity = 0; g.material.userData.U.uGhostOff.value.set(0, 0, 0);
     src.updateWorldMatrix(true, false);
-    g.matrix.copy(src.matrixWorld); g.matrixWorldNeedsUpdate = true;
+    if (!src.isSkinnedMesh) { g.matrix.copy(src.matrixWorld); g.matrixWorldNeedsUpdate = true; }
     E.scene.add(g); out.push(g);
   }
   return out;
@@ -382,7 +384,7 @@ export function spiritGhost(dog, color = 0xbfe0ff, dur = 4) {
 export function afterimage(target, color = 0x8fc8ff, life = 0.32, alpha = 0.5) {
   if (!init() || Q.tier === 'low' || ghosts.length >= 12) return;
   const meshes = ghostMeshes(target.root || target, color);
-  if (meshes.length) ghosts.push({ meshes, t: 0, life, live: false, alpha });
+  if (meshes.length) ghosts.push({ meshes, t: 0, life, live: false, alpha, trail: meshes[0].isSkinnedMesh ? -(target.facing || 1) : 0 });
 }
 
 // Speed-linet: jälkikäsittelyssä (shader) tai low-tasolla 2D-overlaylla
@@ -466,6 +468,40 @@ function autoFx(dt, dtr) {
 
 function EASEOUT(t) { return 1 - Math.pow(1 - t, 3); }
 
+/** Tuulipyörre (Battōga / Zetsu Tenrō Battōga): additiiviset kartiot pyörivät hahmon pituusakselin ympäri.
+ *  follow = Object3D jota seurataan (esim. dog.root), dir = katsesuunta (+1/-1). */
+const vortices = [];
+export function vortex(follow, dir = 1, size = 1, dur = 1, zetsu = false) {
+  const g = new THREE.Group();
+  const mk = (r, len, op, col) => {
+    const geo = new THREE.ConeGeometry(r, len, 20, 1, true); geo.rotateZ(-Math.PI / 2); geo.translate(len * 0.15, 0, 0);
+    const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+    m.userData.noGfx = true; g.add(m); return m;
+  };
+  mk(0.55 * size, 1.8 * size, zetsu ? 0.35 : 0.22, 0xbfe4ff);
+  mk(0.35 * size, 2.3 * size, zetsu ? 0.3 : 0.18, zetsu ? 0xffffff : 0x9fd0ff);
+  const rg = new THREE.Mesh(new THREE.TorusGeometry(0.6 * size, 0.04 * size, 6, 40), new THREE.MeshBasicMaterial({ color: 0xdff2ff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false }));
+  rg.rotation.y = Math.PI / 2; rg.userData.noGfx = true; g.add(rg);
+  g.scale.x = dir;
+  E.scene.add(g);
+  vortices.push({ mesh: g, t: 0, life: dur, follow, size, zetsu });
+  return g;
+}
+function updateVortices(dt) {
+  for (let i = vortices.length - 1; i >= 0; i--) {
+    const p = vortices[i]; p.t += dt;
+    const k = p.t / p.life;
+    if (p.follow) { p.follow.getWorldPosition(p.mesh.position); p.mesh.position.y += 0.4 * p.size; }
+    p.mesh.rotation.x += dt * (p.zetsu ? 40 : 22);
+    const env = Math.sin(Math.min(1, k) * Math.PI);
+    p.mesh.children.forEach((c, j) => { c.material.opacity = env * (j === 2 ? 0.6 : (p.zetsu ? 0.35 : 0.22)); });
+    p.mesh.children[2].scale.setScalar(1 + k * 0.8);
+    // ilmavirran kipinät pyörteen ympärillä
+    if (glow && Math.random() < 0.6) { const a = Math.random() * 6.28, rr = 0.5 * p.size; glow.spawn(p.mesh.position.x + rnd(p.size), p.mesh.position.y + Math.cos(a) * rr, p.mesh.position.z + Math.sin(a) * rr, -p.mesh.scale.x * 3, Math.cos(a) * 1.5, Math.sin(a) * 1.5, 0.35, 0.1, 0.02, 0.75, 0.9, 1, env, 0, 1.5); }
+    if (k >= 1) { E.scene.remove(p.mesh); p.mesh.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); }); vortices.splice(i, 1); }
+  }
+}
+
 E.updaters.add((dt, dtr) => {
   if (!init()) return;
   // partikkelit
@@ -502,9 +538,10 @@ E.updaters.add((dt, dtr) => {
     const rise = g.live ? g.t * g.t * 0.09 + g.t * 0.12 : 0;
     for (const mm of g.meshes) {
       mm.material.opacity = Math.max(0, a);
+      if (g.trail) mm.material.userData.U.uGhostOff.value.set(g.trail * (0.25 + k * 0.9), 0, 0);    // skinnattu: kaiku liukuu taakse
       if (g.live) {
         const src = mm.userData.src;
-        mm.matrix.copy(src.matrixWorld); mm.matrixWorldNeedsUpdate = true;
+        if (!src.isSkinnedMesh) { mm.matrix.copy(src.matrixWorld); mm.matrixWorldNeedsUpdate = true; }
         mm.material.userData.U.uGhostOff.value.set(Math.sin(g.t * 2.2) * 0.04 * rise, rise, 0);
       }
     }
@@ -525,6 +562,7 @@ E.updaters.add((dt, dtr) => {
     }
     debrisMesh.count = n; if (n) debrisMesh.instanceMatrix.needsUpdate = true;
   }
+  updateVortices(dt);
   autoFx(dt, dtr);
 
   // speed-linet

@@ -38,6 +38,7 @@ Konsolissa `__game.debug` (esim. `__game.debug.fillHenki()`, `__game.debug.card(
 src/characters.js        hahmoluettelo (malli, kierto, korkeus, rigi, värit, kuviot, mittasuhteet, askellus)
 src/dogs.js              mallien laiska lataus + normalisointi (+X, jalat y=0), pehmeä rigi (vertex shader) jäykille
                          malleille, koiratehdas (nivelhierarkia + verteksivärimaalaus), proseduraalinen animaattori
+src/face.js              tehdaskoirien anime-kasvot: silmät (ilmeet, räpäytys, katse), kulmat, suu+hampaat, nenä
 src/accessories.js       lisäosat tehdaskoirille (roster-agentti) · src/data/roster_specs.js geneeriset joukkovariantit
 src/audio.js             Epidemic-musiikki ristiinhäivytyksellä, ducking, tehosteet, syntetisoitu varajärjestelmä
 src/voice.js             japaninkieliset puheäänet + englanninkielinen tekstitys, ajastus ilman äänitiedostoja
@@ -47,6 +48,7 @@ src/data/scenes_level2.js tason kohtaukset: intro, Smithin uhraus, Neljä nuolta
 src/level2.js            taistelu, bossin tekoäly, kortit/special movet, vaiheet
 src/main.js              käynnistys, valikko, Lauma-galleria (kaikki hahmot pyörivinä ja animoituina), asetukset
 tools/optimize-models.mjs  assets/models-src/*.glb -> public/models/*.glb (WebP, simplify, meshopt)
+tools/rig_dog_standalone.py  Geminin auto-riggaaja (staattinen GLB -> 24 luuta + 9 klippiä)
 tools/voices.mjs         public/audio/voice/manifest.json + docs/VOICE_LINES.md
 tools/shots.cjs          Playwright-läpiajo + kuvakaappaukset -> screenshots/
 tools/deploy-cf.py       julkaisu Cloudflare Workeriksi (Workers KV)
@@ -55,9 +57,11 @@ tools/deploy-cf.py       julkaisu Cloudflare Workeriksi (Workers KV)
 ### Animaatiot
 Kaikilla hahmoilla sama poseformaatti: `Idle, Idle_2, Idle_2_HeadLow, Walk, Gallop, Gallop_Jump, Jump_ToIdle, Attack, Bark,
 Howl, Eating, Idle_HitReact1/2, Death, LieDown, Battoga` + hännän heilutus, korvien värähdys, hengitys, squash & stretch.
-- **Jäykät mallit** (Weed, Kaibutsu, Smith, Kagetora, Kurotora, Rocket, Tōbee, Moss): vertex-shaderin pehmeä rigi jakaa
-  mallin automaattisesti alueisiin (etu-/takajalat × vasen/oikea, pää, häntä) ja kiertää ne nivelpisteiden ympäri, joten
-  etu- ja takajalat liikkuvat vastakkain. Smithillä kolmijalkainen "limp3"-askellus.
+- **Rigatut mallit** (kind `rigged`: Weed, Kagetora, Kaibutsu, Smith, Kurotora, Rocket, Tōbee, Moss, Hōgen, Genba):
+  AnimationMixer + mallin omat klipit (idle, walk, run, jump, bite, hurt, die, battoga, zetsu_tenrou_battouga), pelin
+  animaationimet kartoitetaan klippeihin (`CLIPMAP` dogs.js:ssä). Weedin finaali = **Zetsu Tenrō Battōga** (1080° kierre)
+  + tuulipyörre-VFX (idea Geminin `src/ext/dog_combat.js`:stä).
+- **Jäykät mallit** (kind `rigid`, varajärjestelmä): vertex-shaderin pehmeä rigi (etu/taka × vasen/oikea jalka, pää, häntä).
 - **Tehdaskoirat**: oikeat nivelet (lonkat, olat, kaula, pää, korvat, häntä), pivotit lasketaan geometriasta.
 
 ## Äänet

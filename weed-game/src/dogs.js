@@ -9,9 +9,11 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { E } from './engine.js';
 import { CHARACTERS, MODELS } from './characters.js';
 import { attachExtras } from './accessories.js';
+import { buildFace } from './face.js';
 
 export const CHARS = CHARACTERS;
 const RIG_DEBUG = E.params.has('rigdebug');
@@ -27,13 +29,13 @@ export function loadModel(key) {
   if (modelCache[key]) return modelCache[key];
   const def = MODELS[key];
   const url = new URL('models/' + def.file, window.ASSET_BASE || document.baseURI).href;
-  modelCache[key] = loader.loadAsync(url).then(g => (modelData[key] = key === 'dog_parts' ? prepFactory(g) : prepRigid(g, def)));
+  modelCache[key] = loader.loadAsync(url).then(g => (modelData[key] = key === 'dog_parts' ? prepFactory(g) : def.rigged ? prepRigged(g, def) : prepRigid(g, def)));
   return modelCache[key];
 }
 
 /** Lataa kaikki mallit, joita annetut hahmot tarvitsevat. */
 export function loadFor(ids) {
-  const keys = new Set(ids.map(id => CHARACTERS[id].kind === 'factory' ? 'dog_parts' : CHARACTERS[id].model));
+  const keys = new Set(ids.filter(id => CHARACTERS[id]).map(id => CHARACTERS[id].kind === 'factory' ? 'dog_parts' : CHARACTERS[id].model));
   return Promise.all([...keys].map(loadModel));
 }
 export function isLoaded(id) {
@@ -72,6 +74,29 @@ function prepRigid(g, def) {
   };
   return info;
 }
+
+// Rigatut mallit (Gemini/Tripo auto-rig, 24 luuta, valmiit klipit): normalisoidaan +X, jalat y=0, korkeus 1.
+function prepRigged(g, def) {
+  const scene = g.scene; scene.rotation.y = def.rotY || 0; scene.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(scene, true);
+  const h = box.max.y - box.min.y;
+  let map = null; scene.traverse(o => { if (o.isMesh && o.material && o.material.map && !map) map = o.material.map; });
+  return { scene, clips: g.animations, h, minY: box.min.y, cx: (box.max.x + box.min.x) / 2, cz: (box.max.z + box.min.z) / 2,
+    minX: (box.min.x - (box.max.x + box.min.x) / 2) / h, maxX: (box.max.x - (box.max.x + box.min.x) / 2) / h, halfW: (box.max.z - box.min.z) / 2 / h, map };
+}
+function skinnedOutline(width) {
+  const m = new THREE.MeshBasicMaterial({ color: 0x0b0a10, side: THREE.BackSide });
+  m.onBeforeCompile = sh => { sh.vertexShader = sh.vertexShader.replace('#include <skinning_vertex>', `#include <skinning_vertex>\n transformed += normalize(objectNormal) * ${width.toFixed(4)};`); };
+  m.customProgramCacheKey = () => 'skol' + width;
+  return m;
+}
+// pelin animaationimet -> rigattujen mallien klipit [klippi, nopeus, loop?]
+const CLIPMAP = {
+  Idle: ['idle', 1], Idle_2: ['idle', 0.8], Idle_2_HeadLow: ['idle', 0.55], Eating: ['idle', 0.6], Howl: ['idle', 0.5],
+  Walk: ['walk', 1], Gallop: ['run', 1], Gallop_Jump: ['jump', 1, false], Jump_ToIdle: ['idle', 1], Attack: ['bite', 1, false],
+  Bark: ['bite', 0.8, false], Idle_HitReact1: ['hurt', 1, false], Idle_HitReact2: ['hurt', 0.8, false], Death: ['die', 1, false],
+  LieDown: ['die', 1, false, true], Battoga: ['battoga', 1, false], Zetsu: ['zetsu_tenrou_battouga', 1, false],
+};
 
 // dog_parts.glb osien roolit (tarkistettu renderöimällä väriavaimilla)
 const P = { TAIL: 0, BODY: 1, BL: 2, BR: 3, FR: 4, HEAD: 5, FL: 6, CHEST: 7, NECK: 8, EARL: 9, EARR: 10, EYE: 11, NOSE: 12 };
@@ -268,7 +293,8 @@ const PAINT = {
 };
 
 function paintGeometry(geo, part, c, marks) {
-  const pos = geo.attributes.position; const n = pos.count;
+  const pos = geo.attributes.position; const n = pos.count; const nrm = geo.attributes.normal;
+  if (!geo.boundingBox) geo.computeBoundingBox();
   const col = new Float32Array(n * 3);
   const base = {
     [P.TAIL]: c.tail || c.coat, [P.BODY]: c.coat, [P.CHEST]: c.chest || c.coat, [P.NECK]: c.coat,
@@ -283,6 +309,11 @@ function paintGeometry(geo, part, c, marks) {
     if (part !== P.EYE && part !== P.NOSE) for (const [fn, v] of rules) {
       const r = fn(c, part, x, y, z, v); if (!r || r[0] <= 0) continue;
       _c.lerp(new THREE.Color(r[1]), Math.min(1, r[0]));
+    }
+    if ((part === P.EARL || part === P.EARR) && nrm) {
+      const nx = nrm.getX(i), nz = nrm.getZ(i) * (part === P.EARL ? -1 : 1);
+      const inner = ss(0.05, 0.45, nx) * ss(0.2, -0.3, nz) * ss(0.02, 0.06, y - geo.boundingBox.min.y);
+      if (inner > 0) _c.lerp(new THREE.Color(c.earInner || '#d79a92'), inner * 0.75);
     }
     // kevyt varjostus alapuolelle (luettavampi siluetti)
     const sh = 0.86 + 0.14 * ss(0.1, 0.6, y);
@@ -389,7 +420,7 @@ export class Dog {
     this.model.scale.setScalar(this.height);
     this.mats = [];
     this.rig = c.rig || { legSwing: 0.55 };
-    if (c.kind === 'factory') this._buildFactory(); else this._buildRigid();
+    if (c.kind === 'factory') this._buildFactory(); else if (c.kind === 'rigged') this._buildRigged(); else this._buildRigid();
 
     const sh = new THREE.Mesh(new THREE.CircleGeometry(0.5, 24),
       new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35, depthWrite: false }));
@@ -428,6 +459,49 @@ export class Dog {
     if (c.weakSpot) this._makeWeak(c.weakSpot);
     if (c.eyes) this._makeEyes(c.eyes);
   }
+
+  // --- rigattu malli: AnimationMixer + oikeat klipit
+  _buildRigged() {
+    const c = this.def, info = modelData[c.model];
+    const inst = SkeletonUtils.clone(info.scene);
+    const wrap = new THREE.Group(); wrap.add(inst);
+    wrap.scale.setScalar(1 / info.h); if (MODELS[c.model].mirrorZ) { wrap.scale.z *= -1; } wrap.position.set(-info.cx / info.h, -info.minY / info.h, -info.cz / info.h * (MODELS[c.model].mirrorZ ? -1 : 1));
+    this.model.add(wrap);
+    const mat = new THREE.MeshToonMaterial({ map: info.map, gradientMap });
+    if (c.tint) mat.color.set(c.tint);
+    const ol = skinnedOutline(c.outline ? c.outline * info.h : 0.008);
+    this.mat = mat; this.mats.push(mat, ol);
+    const skinned = [];
+    inst.traverse(o => { if (o.isSkinnedMesh) skinned.push(o); });
+    for (const o of skinned) {
+      o.material = mat; o.frustumCulled = false;
+      const om = new THREE.SkinnedMesh(o.geometry, ol); om.bind(o.skeleton, o.bindMatrix); om.frustumCulled = false;
+      o.parent.add(om); this.outline = om;
+    }
+    this.bones = {}; inst.traverse(o => { if (o.isBone) this.bones[o.name] = o; });
+    this.mixer = new THREE.AnimationMixer(inst);
+    this.actions = {}; for (const clip of info.clips) this.actions[clip.name] = this.mixer.clipAction(clip);
+    this.length = (info.maxX - info.minX) * this.height; this.width = info.halfW * 2 * this.height; this.halfW = info.halfW;
+    // pää-ankkuri (silmähehku, katse): head-luu
+    this.headPivot = new THREE.Group(); (this.bones.head || inst).add(this.headPivot);
+    if (c.weakSpot) {
+      const ws = c.weakSpot, anchor = new THREE.Object3D(); anchor.position.set(ws.x, ws.y, ws.z);
+      const spine = this.bones.spine_02 || this.bones.spine_03; this.model.add(anchor);
+      const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture(), color: 0xff5a3c, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+      glow.scale.setScalar(0.5); glow.position.set(ws.x, ws.y, ws.z - 0.06); this.model.add(glow);
+      if (spine) { this.model.updateMatrixWorld(true); spine.attach(anchor); spine.attach(glow); }
+      this.weak = anchor; this.weakGlow = glow; this.weakReveal = 0;
+    }
+    if (c.eyes) {
+      const e = c.eyes, eyeMat = new THREE.SpriteMaterial({ map: glowTexture(), color: new THREE.Color(c.eyeColor || '#ffb030'), transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
+      const eyes = new THREE.Group(); for (const zs of [-1, 1]) { const sp = new THREE.Sprite(eyeMat); sp.scale.setScalar(0.06); sp.position.set(e.x, e.y, zs * e.z); eyes.add(sp); }
+      this.model.add(eyes); this.model.updateMatrixWorld(true); if (this.bones.head) this.bones.head.attach(eyes);
+      const k0 = eyes.scale.x;   // attach() säilyttää maailmamittakaavan -> skaalataan suhteessa
+      this.eyes = { material: eyeMat, scale: { setScalar: v => eyes.scale.setScalar(k0 * v * 2) } };
+      if (c.eyeScale) this.eyes.scale.setScalar(c.eyeScale);
+    }
+  }
+  hasClip(n) { return !!(this.actions && this.actions[(CLIPMAP[n] || [n])[0]]); }
 
   // --- koiratehdas
   _buildFactory() {
@@ -476,9 +550,9 @@ export class Dog {
     const headJ = new THREE.Group(); headJ.position.copy(headAt); neckJ.add(headJ);
     const headS_ = new THREE.Group(); headS_.scale.setScalar(headS); headJ.add(headS_);
     headS_.add(mk(P.HEAD, piv.HEAD));
-    for (const k of ['EYE', 'NOSE']) { const m = mk(P[k], piv.HEAD); headS_.add(m); }
-    // toinen silmä peilattuna (mallissa vain yksi erillinen silmäosa)
-    { const m = mk(P.EYE, piv.HEAD); m.scale.z = -1; headS_.add(m); }
+    // kasvot: anime-silmät, kulmat, suu + hampaat, kiiltävä nenä (face.js); vanhat pikkuosat 11/12 jätetään pois
+    this.faceRig = buildFace(headS_, F, c);
+    this.mats.push(...this.faceRig.mats);
     for (const [k, s] of [['EARL', -1], ['EARR', 1]]) {
       const j = new THREE.Group(); j.position.copy(piv[k]).sub(piv.HEAD); headS_.add(j);
       const m = mk(P[k], piv[k]); m.scale.setScalar(earS); j.add(m);
@@ -502,8 +576,8 @@ export class Dog {
       for (let i = 0; i < a.count; i++) { col[i * 3] = tc.r; col[i * 3 + 1] = tc.g; col[i * 3 + 2] = tc.b; }
       g.setAttribute('color', new THREE.BufferAttribute(col, 3));
       const m = new THREE.Mesh(g, mat), o = new THREE.Mesh(g, olMat);
-      const holder = new THREE.Group(); holder.add(m, o); holder.position.set(-0.05, 0.015, 0);
-      holder.rotation.z = tt === 'docked' ? 1.2 : tt === 'sabre' ? 2.45 : 2.6; // taaksepäin-alas
+      const holder = new THREE.Group(); holder.add(m, o); holder.position.set(-0.085, 0.02, 0);
+      holder.rotation.z = tt === 'docked' ? 1.15 : tt === 'sabre' ? 2.25 : 2.45; // kärki +Y -> taaksepäin-alas
       tailJ.add(holder);
     }
     J.neck = neckJ; J.head = headJ; J.tail = tailJ; J.body = bodyJ; J.rigRoot = rigRoot;
@@ -528,12 +602,13 @@ export class Dog {
   }
 
   _makeEyes(e) {
-    const eyeMat = new THREE.SpriteMaterial({ map: glowTexture(), color: 0xffb030, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
+    const eyeMat = new THREE.SpriteMaterial({ map: glowTexture(), color: new THREE.Color(this.def.eyeColor || '#ffb030'), transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
     const eyes = new THREE.Group();
     for (const zs of [-1, 1]) { const s = new THREE.Sprite(eyeMat); s.scale.setScalar(0.06); s.position.set(e.x, e.y, zs * e.z); eyes.add(s); }
     // silmät seuraavat pään nyökkäystä (sama kierto kuin shaderissa)
     const hp = this.headPivot; eyes.position.sub(hp.position); hp.add(eyes);
     this.eyes = { material: eyeMat, scale: { setScalar: v => eyes.children.forEach(s => s.scale.setScalar(v * 0.12)) } };
+    if (this.def.eyeScale) this.eyes.scale.setScalar(this.def.eyeScale);
   }
 
   get x() { return this.root.position.x; }
@@ -541,12 +616,31 @@ export class Dog {
 
   /** Vaihda animaatiota (nimet kuten ennen: Idle, Walk, Gallop, Attack, Gallop_Jump, Death ...). */
   play(name, { loop = true, fade = 0.18, timeScale = 1 } = {}) {
+    if (this.mixer) return this._playClip(name, { loop, fade, timeScale });
     const fn = ANIMS[name] || ANIMS.Idle;
     if (this.cur && this.cur.name === name && loop && this.cur.loop) { this.cur.ts = timeScale; return this.cur; }
     if (this.cur) this.prev = { ...this.cur, w: 1 };
     const dur = DUR[name] || 1;
     this.cur = { name, fn, t: 0, ts: timeScale, loop, fade: Math.max(fade, 0.001), blend: 0, duration: dur, getClip: () => ({ duration: dur }) };
     this.currentName = name;
+    return this.cur;
+  }
+
+  _playClip(name, { loop, fade, timeScale }) {
+    const [clipName, rate = 1, forceLoop, toEnd] = CLIPMAP[name] || [name, 1];
+    const a = this.actions[clipName] || this.actions.idle;
+    const lp = forceLoop === false ? false : loop;
+    if (this.cur && this.cur.name === name && lp && this.cur.loop) { a.timeScale = rate * timeScale; return this.cur; }
+    const prevA = this.cur && this.cur.action;
+    a.reset(); a.enabled = true;
+    a.setLoop(lp ? THREE.LoopRepeat : THREE.LoopOnce, lp ? Infinity : 1);
+    a.clampWhenFinished = !lp; a.timeScale = rate * timeScale;
+    if (prevA && prevA !== a) a.crossFadeFrom(prevA, Math.max(0.06, fade), false);
+    a.play();
+    if (toEnd) a.time = a.getClip().duration - 0.001;
+    const dur = a.getClip().duration / (rate || 1);
+    this.cur = { name, action: a, t: 0, ts: timeScale, loop: lp, fade, blend: 1, duration: dur, getClip: () => ({ duration: dur }), fn: ANIMS.Idle };
+    this.currentName = name; this.prev = null;
     return this.cur;
   }
 
@@ -565,7 +659,8 @@ export class Dog {
 
   /** Häivytys (0..1). */
   fade(op) {
-    for (const m of this.mats) { m.transparent = op < 1; m.opacity = op; m.depthWrite = op >= 1; }
+    for (const m of this.mats) { if (m.isShaderMaterial) continue; m.transparent = op < 1; m.opacity = op; m.depthWrite = op >= 1; }
+    if (this.faceRig) this.faceRig.setOpacity(op);
     this.shadow.material.opacity = 0.35 * op;
     this.root.visible = op > 0.01;
   }
@@ -577,6 +672,7 @@ export class Dog {
 
   update(dt) {
     this.t += dt;
+    if (this.mixer) return this._updateRigged(dt);
     const P = this.P;
     // animaattorin ajastus + ristihäivytys
     const cur = this.cur;
@@ -626,10 +722,46 @@ export class Dog {
     if (this.weak) {
       const pulse = 0.6 + Math.sin(this.t * 8) * 0.4;
       this.weakGlow.material.opacity = this.weakReveal * pulse * 0.55;
-      this.U.uWeakAmt.value = this.weakReveal * (0.25 + pulse * 0.35);
+      if (this.U) this.U.uWeakAmt.value = this.weakReveal * (0.25 + pulse * 0.35);
+    }
+    if (this.faceRig) {
+      const n = cur.name, k = cur.loop ? 0 : cur.t / cur.duration;
+      const auto = n === 'Death' ? 'closed' : n.startsWith('Idle_HitReact') ? 'hurt' : (n === 'Attack' || n === 'Battoga' || n === 'Gallop_Jump') ? 'angry'
+        : (n === 'Idle_2_HeadLow' || n === 'LieDown') ? 'sad' : n === 'Howl' ? 'closed' : n === 'Gallop' ? 'determined' : 'neutral';
+      this.faceRig.set(this.exprLock || auto);
+      const mouth = n === 'Attack' ? Math.max(0, Math.sin(Math.min(1, k * 1.6) * Math.PI)) : n === 'Bark' ? Math.max(0, Math.sin(Math.min(1, k * 2) * Math.PI)) * 0.8
+        : n === 'Howl' ? 0.6 : n === 'Gallop' ? 0.25 + Math.sin(this.t * 14) * 0.1 : 0;
+      this.faceRig.mouth(mouth);
+      if (this.lookTarget) {
+        const tp = this.lookTarget.isVector3 ? this.lookTarget : this.lookTarget.root.position;
+        const dx = (tp.x - this.root.position.x) * this.facing, dy = (this.lookTarget.height ? tp.y + this.lookTarget.height * 0.7 : tp.y) - (this.root.position.y + this.height * 0.8);
+        this.faceRig.gaze(Math.max(-0.2, Math.min(0.2, dx * 0.06)), Math.max(-0.15, Math.min(0.15, dy * 0.08)));
+      } else this.faceRig.gaze(Math.sin(this.t * 0.37) * 0.08, 0);
+      this.faceRig.update(dt);
     }
     if (this._extras) this._extras(this.t, dt);
   }
+
+  _updateRigged(dt) {
+    this.cur.t += dt * this.cur.ts;
+    this.mixer.update(dt);
+    const targetRot = this.facingTarget > 0 ? 0 : Math.PI;
+    this.turn.rotation.y += (targetRot - this.turn.rotation.y) * Math.min(1, dt * 10);
+    // pieni lisä-squash laukassa/hypyssä (klipit hoitavat raajat)
+    const n = this.cur.name;
+    const sq = n === 'Gallop' ? Math.sin(this.t * 15) * 0.025 : 0;
+    this.pose.scale.set(1 + sq, 1 - sq, 1);
+    this.pose.position.set(0, -sq * this.height * 0.5, 0);
+    if (this.weak) {
+      const pulse = 0.6 + Math.sin(this.t * 8) * 0.4;
+      this.weakGlow.material.opacity = this.weakReveal * pulse * 0.9;
+      this.weakGlow.scale.setScalar(0.35 + this.weakReveal * 0.25 * pulse);
+    }
+    if (this._extras) this._extras(this.t, dt);
+  }
+
+  /** Lukitse ilme (neutral, determined, angry, sad, happy, closed, hurt, dead, surprised) tai null = automaattinen. */
+  expr(name) { this.exprLock = name || null; }
 }
 
 // pelin aikaan sidottu setTimeout (slow-mo vaikuttaa)

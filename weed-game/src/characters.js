@@ -16,6 +16,18 @@ export const MODELS = {
   rocket:    { file: 'rocket.glb',    rotY: 0 },
   tobei:     { file: 'tobei.glb',     rotY: HALF_PI },
   dog_parts: { file: 'dog_parts.glb', rotY: 0 },
+  hogen:     { file: 'hogen.glb',     rotY: 0 },
+  weed_rigged:     { file: 'weed_rigged.glb',     rotY: 0, rigged: true },
+  john_auto:       { file: 'john_auto.glb',       rotY: 0, rigged: true },   // john.glb (wolf) auto-rig
+  tesshin_auto:    { file: 'tesshin_auto.glb',    rotY: 0, rigged: true },   // tesshin.glb auto-rig
+  gin_auto:        { file: 'gin_auto.glb',        rotY: 0, rigged: true },   // gin_rigged.glb (Tripo) uudelleenrigattu rig_dog_standalone.py:llä -> 9 klippiä
+  kagetora_rigged: { file: 'kagetora_rigged.glb', rotY: 0, rigged: true },
+  smith_rigged: { file: 'smith_rigged.glb', rotY: 0, rigged: true },
+  kaibutsu_rigged: { file: 'kaibutsu_rigged.glb', rotY: 0, rigged: true, mirrorZ: true },  // auto-rig peilasi mallin: karvaton laikku takaisin vasemmalle kyljelle
+  rocket_rigged: { file: 'rocket_rigged.glb', rotY: 0, rigged: true },
+  tobei_rigged: { file: 'tobei_rigged.glb', rotY: 0, rigged: true },
+  hogen_rigged: { file: 'hogen_rigged.glb', rotY: 0, rigged: true },
+  striped_b_rigged: { file: 'striped_b_rigged.glb', rotY: 0, rigged: true },
 };
 
 // Liikkeen tyyli: gait = 'trot' | 'limp3' (kolmijalkainen) | 'heavy' | 'light'
@@ -24,14 +36,14 @@ export const MODELS = {
 export const CHARACTERS = {
   // ---------------- päähahmot: omat mallit ----------------
   weed: {
-    name: 'Weed', jp: 'ウィード', kind: 'rigid', model: 'weed', height: 0.78,
+    name: 'Weed', jp: 'ウィード', kind: 'rigged', model: 'weed_rigged', height: 0.78,
     role: 'Son of Gin. Small but swift, and he refuses pointless killing. Signature move: Battōga.',
     gait: 'light', speed: 1.15, wag: 0.6,
     rig: { belly: 0.36, neck: 0.36, tail: 0.24, legSwing: 0.55, headAmt: 1 },
     outline: 0.012,
   },
   kaibutsu: {
-    name: 'Kaibutsu', jp: '怪物', kind: 'rigid', model: 'kaibutsu', height: 2.9,
+    name: 'Kaibutsu', jp: '怪物', kind: 'rigged', model: 'kaibutsu_rigged', height: 2.9,
     role: 'P4. A dog twisted by gene experiments into a lion-like monster. Weak spot: the hairless left flank.',
     gait: 'heavy', speed: 0.8, wag: 0.12, monster: true,
     rig: { belly: 0.40, neck: 0.30, tail: 0.30, legSwing: 0.42, headAmt: 0.8 },
@@ -41,46 +53,53 @@ export const CHARACTERS = {
     outline: 0.006,
   },
   smith: {
-    name: 'Smith', jp: 'スミス', kind: 'rigid', model: 'smith', height: 0.98,
+    name: 'Smith', jp: 'スミス', kind: 'rigged', model: 'smith_rigged', height: 0.98,
     role: 'A three-legged veteran. He lost a leg saving GB from under a truck.',
     gait: 'limp3', speed: 0.9, wag: 0.35,
     rig: { belly: 0.40, neck: 0.30, tail: 0.25, legSwing: 0.45, headAmt: 0.9 },
     outline: 0.01,
   },
   kagetora: {
-    name: 'Kagetora', jp: '影虎', kind: 'rigid', model: 'striped_a', height: 1.02,
+    name: 'Kagetora', jp: '影虎', kind: 'rigged', model: 'kagetora_rigged', height: 1.02,
     role: 'A Kai dog, son of Kurotora. Hot-headed at first, then Ken\'s closest friend.',
     gait: 'trot', speed: 1.1, wag: 0.4,
     rig: { belly: 0.42, neck: 0.30, tail: 0.25, legSwing: 0.5, headAmt: 1 },
     outline: 0.01,
   },
   kurotora: {
-    name: 'Kurotora', jp: '黒虎', kind: 'rigid', model: 'striped_b', height: 1.06,
+    name: 'Kurotora', jp: '黒虎', kind: 'rigged', model: 'striped_b_rigged', height: 1.06,
     role: 'Kai veteran of Gin\'s generation and Kagetora\'s father. Leader of the Kai brothers.',
     gait: 'trot', speed: 1, wag: 0.3,
     rig: { belly: 0.42, neck: 0.30, tail: 0.25, legSwing: 0.48, headAmt: 1 },
     outline: 0.01,
   },
   rocket: {
-    name: 'Rocket', jp: 'ロケット', kind: 'rigid', model: 'rocket', height: 1.18,
+    name: 'Rocket', jp: 'ロケット', kind: 'rigged', model: 'rocket_rigged', height: 1.18,
     role: 'A borzoi and the fastest of Ōu. A trusted scout who defects from Hōgen\'s side.',
     gait: 'light', speed: 1.35, wag: 0.3,
     rig: { belly: 0.48, neck: 0.30, tail: 0.25, legSwing: 0.6, headAmt: 1 },
     outline: 0.01,
   },
   tobee: {
-    name: 'Tōbee', jp: '藤兵衛', kind: 'rigid', model: 'tobei', height: 1.4,
+    name: 'Tōbee', jp: '藤兵衛', kind: 'rigged', model: 'tobei_rigged', height: 1.4,
     role: 'Former fighting-dog yokozuna and one of Hōgen\'s generals. He dies standing, like a mountain.',
     gait: 'heavy', speed: 0.85, wag: 0.15,
     rig: { belly: 0.36, neck: 0.32, tail: 0.18, legSwing: 0.38, headAmt: 0.7 },
     outline: 0.01,
   },
   moss: {
-    name: 'Moss', jp: 'モス', kind: 'rigid', model: 'tobei', height: 1.5, tint: '#8a8f99',
+    name: 'Moss', jp: 'モス', kind: 'rigged', model: 'tobei_rigged', height: 1.5, tint: '#8a8f99',
     role: 'Gin\'s heavyweight veteran. Gives his life shielding his comrades in Hokkaidō.',
     gait: 'heavy', speed: 0.85, wag: 0.15,
     rig: { belly: 0.36, neck: 0.32, tail: 0.18, legSwing: 0.38, headAmt: 0.7 },
     outline: 0.01,
+  },
+
+  tesshin: {
+    name: 'Tesshin', jp: '鉄心', kind: 'rigged', model: 'tesshin_auto', height: 1.0,
+    role: 'A ninja dog of the Kōga clan. At the hot spring he teaches Weed Gin\'s secret move, Zetsu Tenrō Battōga – a move he cannot perform himself.',
+    gait: 'light', speed: 1.2, wag: 0.3,
+    outline: 0.008,
   },
 
   // ---------------- koiratehdas ----------------
@@ -89,12 +108,10 @@ export const CHARACTERS = {
   // c = värit: coat, under, legs, head, ear, tail, muzzle, eye, nose
   // marks = maalatut kuviot (ks. dogs.js PAINT)
   gin: {
-    name: 'Gin', jp: '銀', kind: 'factory', height: 1.22,
+    name: 'Gin', jp: '銀', kind: 'rigged', model: 'gin_auto', height: 1.25, tint: '#dfe5ec',
     role: 'Weed\'s father, Ōu\'s legendary leader. He calls those under him comrades, never servants.',
     gait: 'trot', speed: 1.05, wag: 0.4,
-    p: { leg: 1.05, body: 1.05, neck: 1.05, head: 1.0, ear: 1.0, tail: 'curl' },
-    c: { coat: '#b9c3cf', under: '#f1f4f7', head: '#c3ccd6', ear: '#9aa6b3', muzzle: '#eef2f6' },
-    marks: ['belly', 'brindle:#7f8a98', 'muzzleLight', 'socks'],
+    outline: 0.008,
   },
   jerome: {
     name: 'Jerome', jp: 'ジェローム', kind: 'factory', height: 1.2,
@@ -145,12 +162,10 @@ export const CHARACTERS = {
     marks: ['belly', 'muzzleLight', 'scar'],
   },
   john: {
-    name: 'John', jp: 'ジョン', kind: 'factory', height: 1.18,
-    role: 'Ōu\'s strongest warrior. His last stand becomes a legend that frightens even Hōgen.',
+    name: 'John', jp: 'ジョン', kind: 'rigged', model: 'john_auto', height: 1.22,
+    role: 'Ōu\'s strongest warrior. His last stand against fifty of Hōgen\'s men becomes a legend that frightens even Hōgen.',
     gait: 'trot', speed: 1.05, wag: 0.3,
-    p: { leg: 1.08, body: 1.08, neck: 1.05, ear: 0.9, earTilt: 1.0, tail: 'straight', tailLen: 1.1, muzzle: 1.25 },
-    c: { coat: '#1d1a18', under: '#2a2522', head: '#1f1c1a', ear: '#1a1716', muzzle: '#9a5e2c' },
-    marks: ['tanPoints:#9a5e2c', 'brows:#a8652f'],
+    outline: 0.008,
   },
   ben: {
     name: 'Ben', jp: 'ベン', kind: 'factory', height: 1.46,
@@ -185,27 +200,26 @@ export const CHARACTERS = {
     marks: ['tanPoints:#b97a45', 'brows:#c4844c'],
   },
   hogen: {
-    name: 'Hōgen', jp: '法玄', kind: 'factory', height: 1.85,
+    name: 'Hōgen', jp: '法玄', kind: 'rigged', model: 'hogen_rigged', height: 1.85,
     role: 'A starved Great Dane who came to hate humans. Gathers an army of 700 to rule Japan.',
     gait: 'heavy', speed: 0.9, wag: 0.05,
-    p: { leg: 1.32, legW: 1.2, body: 1.15, neck: 1.3, head: 1.15, ear: 0.75, earTilt: 0.8, tail: 'straight', tailLen: 1.2, muzzle: 1.4 },
-    c: { coat: '#3b3532', under: '#4a423e', head: '#3f3936', ear: '#2a2523', muzzle: '#1d1a19', eye: '#ffcf3a' },
-    marks: ['scar', 'brindle:#2a2522'],
+    rig: { belly: 0.44, neck: 0.26, tail: 0.22, legSwing: 0.45, headAmt: 0.9 },
+    eyes: { x: 0.64, y: 0.86, z: 0.055 }, eyeColor: '#ff3a24', eyeScale: 0.35,   // "god of death" -hehku
+    outline: 0.008,
   },
   genba: {
-    name: 'Genba', jp: '玄馬', kind: 'factory', height: 1.75,
+    name: 'Genba', jp: '玄馬', kind: 'rigged', model: 'hogen_rigged', height: 1.75, tint: '#b8977c',
     role: 'Hōgen\'s brother: raw strength and rage. Hōgen ends his suffering in tears.',
     gait: 'heavy', speed: 0.9, wag: 0.05,
-    p: { leg: 1.2, legW: 1.35, body: 1.2, neck: 1.15, head: 1.22, ear: 0.7, earTilt: 0.9, tail: 'straight', tailLen: 1.0, muzzle: 1.25 },
-    c: { coat: '#5a3d2a', under: '#6a4a34', head: '#5e402c', ear: '#3c2819', muzzle: '#2a1c13', eye: '#ffb03a' },
-    marks: ['belly', 'scar'],
+    rig: { belly: 0.44, neck: 0.26, tail: 0.22, legSwing: 0.42, headAmt: 0.9 },
+    outline: 0.009,
   },
 };
 
 // Pelissä käytetyt (taso 2) ja galleriassa näytettävät
 export const LEVEL2_CAST = ['weed', 'kaibutsu', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'gin'];
 export const ROSTER = ['weed', 'gin', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'kaibutsu',
-  'rocket', 'tobee', 'kurotora', 'moss', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
+  'rocket', 'tobee', 'kurotora', 'moss', 'tesshin', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
 
 // ---------------- geneeriset joukkovariantit (src/data/roster_specs.js) ----------------
 // Ei ylikirjoita yllä olevia hahmoja; lisätyt id:t ROSTER_EXTRA_IDS, galleriaryhmät GROUP_OF.

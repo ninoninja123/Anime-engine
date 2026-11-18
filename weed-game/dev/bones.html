@@ -1,0 +1,13 @@
+<!doctype html><html><body><script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+const f = new URLSearchParams(location.search).get('f') || '../assets/models-src/base_rigged.glb';
+const g = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(f);
+g.scene.updateMatrixWorld(true);
+const out = []; const v = new THREE.Vector3();
+g.scene.traverse(o => { if (o.isBone) { o.getWorldPosition(v); out.push(o.name + ' ' + v.toArray().map(x => x.toFixed(3)).join(',') + ' parent=' + o.parent.name); } });
+let box = new THREE.Box3().setFromObject(g.scene); out.push('BOX ' + box.min.toArray().map(x=>x.toFixed(2)) + ' / ' + box.max.toArray().map(x=>x.toFixed(2)));
+g.scene.traverse(o => { if (o.isSkinnedMesh) out.push('skinned ' + o.geometry.attributes.position.count + ' verts, mat map=' + !!o.material.map); });
+window.out = out.join('\n');
+</script></body></html>

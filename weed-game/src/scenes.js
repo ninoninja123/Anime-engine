@@ -5,7 +5,7 @@
 //   { dolly: 'id', dist, h, side, t }                    nopea dolly hahmon luo (lähikuva)
 //   { place: 'id', x, z, y, face, anim, ts, fade }       hahmon asetus
 //   { move: 'id', x, z, y, t, anim, ts, ease, after }    hahmon siirto (after = animaatio perillä)
-//   { anim: 'id', name, loop, ts }    { face: 'id', dir }    { hide: 'id' }    { fadeOut: 'id', t }
+//   { expr: 'id', name } (ilme, null = automaattinen)   { anim: 'id', name, loop, ts }    { face: 'id', dir }    { hide: 'id' }    { fadeOut: 'id', t }
 //   { say: 'lineId', hold }   { bark: 'lineId' } (ei odota)   { caption: 'html', t }
 //   { wait: s }   { slow: scale } (pelin aikaskaala, palautuu kohtauksen lopussa)   { freeze: s }
 //   { music: 'intro'|'battle'|'sad'|'dawn'|null }   { sfx: 'roar' }   { shake: a }
@@ -38,7 +38,7 @@ async function step(s, ctx) {
   if (E.skipping && !s.always) {
     // ohitus: aja vain tilaa muuttavat askeleet heti (sijainnit, piilotus, musiikki), ohita odotukset
     if (s.place) return step({ ...s, fade: undefined }, { ...ctx });
-    if (!(s.move || s.hide || s.music !== undefined || s.fn || s.par || s.face || s.anim)) return;
+    if (!(s.move || s.hide || s.music !== undefined || s.fn || s.par || s.face || s.anim || s.expr)) return;
   }
   if (s.par) { await Promise.all(s.par.map(x => step(x, ctx))); return; }
   if (s.cam) { await camTo(V(s.cam), V(s.look || [0, 1, 0]), s.t || 0, s.ease); return; }
@@ -74,6 +74,7 @@ async function step(s, ctx) {
   }
   if (s.anim) { castRef[s.anim].play(s.name, { loop: s.loop ?? true, timeScale: s.ts || 1 }); return; }
   if (s.face) { castRef[s.face].face(s.dir); return; }
+  if (s.expr) { const d = castRef[s.expr]; if (d.expr) d.expr(s.name); return; }   // ilme (tehdaskoirat): neutral/determined/angry/sad/happy/closed/hurt/dead/surprised, null = auto
   if (s.hide) { castRef[s.hide].root.visible = false; return; }
   if (s.fadeOut) { const d = castRef[s.fadeOut]; await tween({ v: 1 }, { v: 0 }, s.t || 1.5, { real: true, onUpdate: e => d.fade(1 - e) }); d.root.visible = false; return; }
   if (s.say) { await say(s.say, { hold: s.hold }); return; }

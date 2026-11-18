@@ -29,7 +29,7 @@ async function boot() {
   if (p.has('gallery')) showCast(Number(p.get('gallery')) || 0);
 }
 
-// ---------------------------------------------------------------- main menu: the pack on a snowy ridge
+// ---------------------------------------------------------------- main menu: the pack on the ridge
 function showMenu() {
   mode = 'menu';
   hideGallery();
@@ -97,7 +97,7 @@ async function showCast(i) {
   castIdx = (i + ROSTER.length) % ROSTER.length; castT = 0; demoIdx = -1;
   const id = ROSTER[castIdx]; const c = CHARACTERS[id];
   for (const [k, d] of Object.entries(gallery.dogs)) {
-    const near = Math.abs(ROSTER.indexOf(k) - castIdx) <= 3;
+    const near = Math.abs(ROSTER.indexOf(k) - castIdx) <= 2;
     d.root.visible = near; d.fade(1); d.spin.rotation.set(0, 0, 0);
     if (near && k !== id) d.play(['Walk', 'Idle', 'Idle_2', 'Gallop'][ROSTER.indexOf(k) % 4], { timeScale: 0.8 });
   }
@@ -118,17 +118,19 @@ function castUpdate(dt, dtr) {
   castT += dtr;
   // everyone visible turns slowly on their own turntable; the focused one a bit faster
   for (const [k, g] of Object.entries(gallery.dogs)) if (g.root.visible) g.root.rotation.y += dtr * (k === id ? 0.5 : 0.25);
-  const dist = Math.max(3.4, h * 2.6 + d.length * 0.4);
-  E.camPos.lerp(new THREE.Vector3(x - dist * 0.25, h * 0.75 + 0.3, GAL_Z + dist), Math.min(1, dtr * 3));
-  E.camLook.lerp(new THREE.Vector3(x, h * 0.48, GAL_Z), Math.min(1, dtr * 3));
+  const dist = Math.max(2.3, h * 1.7 + d.length * 0.35);
+  E.camPos.lerp(new THREE.Vector3(x - dist * 0.32, h * 0.7 + 0.25, GAL_Z + dist), Math.min(1, dtr * 3));
+  E.camLook.lerp(new THREE.Vector3(x - dist * 0.22, h * 0.5, GAL_Z), Math.min(1, dtr * 3));   // hahmo oikealle, teksti vasemmalle
   const slot = Math.floor(castT / 2.2) % DEMO.length;
   if (slot !== demoIdx) {
     demoIdx = slot;
     const name = DEMO[slot];
     d.spin.rotation.set(0, 0, 0);
     if (name === 'Battoga') {
-      d.play('Battoga');
-      tween(d.spin.rotation, { z: -Math.PI * 4, x: Math.PI * 2 }, 1.0, { real: true }).then(() => d.spin.rotation.set(0, 0, 0));
+      const z = d.hasClip && d.hasClip('Zetsu') && id === 'weed';
+      d.play(z ? 'Zetsu' : 'Battoga', { loop: false });
+      FX.vortex(d.root, 1, h * 0.9, 1.0, z);
+      if (!(d.hasClip && d.hasClip('Battoga'))) tween(d.spin.rotation, { z: -Math.PI * 4, x: Math.PI * 2 }, 1.0, { real: true }).then(() => d.spin.rotation.set(0, 0, 0));
       FX.slashArc(new THREE.Vector3(x, h * 0.5, GAL_Z), 0xcfeaff, h * 0.9, 0.7);
     } else d.play(name, { loop: !ONCE.includes(name) });
   }

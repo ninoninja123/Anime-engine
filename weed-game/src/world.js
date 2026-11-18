@@ -153,7 +153,7 @@ const SEASONS = {
     near: { rock: ['#263158', '#161d3a'], shade: '#0e1430', snow: '#cfdaf8', snowShade: '#6577b8', snowLine: 290 },
     spire: { body: '#2f3a64', shade: '#141a3a', crack: '#141a36', edge: 'rgba(190,210,255,0.55)', cover: '#dfe8ff', cap: '#eef3ff' },
     rock: 0x565c78, rockTop: 0.75, fgRock: 0x1a2040,
-    pine: ['#16302e', '#1b3a36', '#e6eeff'], leafTrees: 0, tufts: 0, ground: 'snow',
+    pine: ['#16302e', '#1b3a36', '#e6eeff'], pines: 74, leafTrees: 0, deadTrees: 0, tufts: 0, ground: 'snow', particles: 1500,
   },
   summer: {
     far:  { rock: ['#8ea2c4', '#6a86a8'], shade: '#587498', snow: '#f4f8ff', snowShade: '#b4c6e4', snowLine: 150 },
@@ -161,7 +161,20 @@ const SEASONS = {
     near: { rock: ['#4a8048', '#2f5c34'], shade: '#234a2c', snow: null, snowShade: '#234a2c', snowLine: 0 },
     spire: { body: '#8a8478', shade: '#5a5650', crack: '#4a4640', edge: 'rgba(255,244,214,0.6)', cover: '#6f9a4a', cap: '#5f8c40' },
     rock: 0x8a867c, rockTop: 0.5, fgRock: 0x3a4034,
-    pine: ['#1f4a2c', '#28582f', '#4a8a3c'], leafTrees: 46, tufts: 420, ground: 'grass',
+    pine: ['#1f4a2c', '#28582f', '#4a8a3c'], pines: 74, leafTrees: 46, deadTrees: 0, tufts: 420, ground: 'grass', particles: 700,
+    leaf: ['#2f6e34', '#235a2c', '#29642f', '#4c8c3c', '#3a7c36', '#2c6a32'], trunk: '#4a3428', tuft: ['#4a8436', '#62a040'],
+    dots: 'fr > 0.985 ? vec3(1.0, 0.55, 0.7) : (fr > 0.97 ? vec3(1.0, 0.9, 0.35) : vec3(1.0))', dotDensity: 0.955,
+  },
+  // Myöhäissyksy (taso 2, animen jaksot 4–6): ei lunta; ruska, kuiva heinä, kelopuut, harvat havupuut, lämpimän harmaa kivi
+  autumn: {
+    far:  { rock: ['#7f8fb4', '#5f7096'], shade: '#4c5c84', snow: '#dfe6f4', snowShade: '#a8b6d4', snowLine: 110 },     // hento huurre huipuilla
+    mid:  { rock: ['#8a6a4c', '#5e4a40'], shade: '#4a3a38', snow: null, snowShade: '#4a3a38', snowLine: 0 },
+    near: { rock: ['#7a4a2c', '#4a3024'], shade: '#38241e', snow: null, snowShade: '#38241e', snowLine: 0 },
+    spire: { body: '#8c867e', shade: '#5c5854', crack: '#48443f', edge: 'rgba(255,236,200,0.6)', cover: '#b89a52', cap: '#a88c4a' },
+    rock: 0x8e8a82, rockTop: 0.42, fgRock: 0x3c3830,
+    pine: ['#1c3c30', '#234636', '#34583e'], pines: 34, leafTrees: 30, deadTrees: 26, tufts: 380, ground: 'grass', particles: 520,
+    leaf: ['#9c3418', '#742410', '#a8501a', '#c47a22', '#8a2c16', '#b88a2a'], trunk: '#3c2c24', tuft: ['#b89a48', '#d4b860'],
+    dots: 'fr > 0.985 ? vec3(0.78, 0.2, 0.08) : (fr > 0.965 ? vec3(0.9, 0.5, 0.12) : vec3(0.72, 0.55, 0.2))', dotDensity: 0.935,
   },
 };
 
@@ -195,10 +208,10 @@ function groundH(x, z) {
 }
 
 let worldRoot = null, worldUpdater = null, worldUnsub = null;
-/** Rakenna (tai rakenna uudelleen) maailma. season: 'summer' (oletus, taso 2) | 'winter'. Myös ?season=winter. */
+/** Rakenna (tai rakenna uudelleen) maailma. season: 'autumn' (oletus, taso 2) | 'summer' | 'winter'. Myös ?season=winter. */
 export function buildWorld(opts = {}) {
-  const season = SEASONS[opts.season] ? opts.season : (SEASONS[E.params.get('season')] ? E.params.get('season') : (E.season || 'summer'));
-  const SP = SEASONS[season], summer = season === 'summer';
+  const season = SEASONS[opts.season] ? opts.season : (SEASONS[E.params.get('season')] ? E.params.get('season') : (E.season || 'autumn'));
+  const SP = SEASONS[season], summer = SP.ground === 'grass';   // 'summer' = lumeton maasto (kesä tai syksy)
   E.season = season;
   E.setSeason = name => { if (SEASONS[name] && name !== E.season) buildWorld({ season: name }); };
   setSeasonMoods(season);
@@ -348,8 +361,8 @@ export function buildWorld(opts = {}) {
         diffuseColor.rgb = mix(grass, dirt, tr * smoothstep(0.35, 0.65, vnoise(vWPos.xz * 0.9) + tr * 0.35));
         { // kukat: pieniä värillisiä pisteitä nurmessa
           vec2 fp = vWPos.xz * 14.0; vec2 fi = floor(fp); float fr = hash21(fi);
-          float dot_ = step(0.955, fr) * smoothstep(0.42, 0.22, length(fract(fp) - 0.5)) * (1.0 - tr) * smoothstep(30.0, 8.0, length(vViewPosition));
-          vec3 fc = fr > 0.985 ? vec3(1.0, 0.55, 0.7) : (fr > 0.97 ? vec3(1.0, 0.9, 0.35) : vec3(1.0));
+          float dot_ = step(${SP.dotDensity || 0.955}, fr) * smoothstep(0.42, 0.22, length(fract(fp) - 0.5)) * (1.0 - tr) * smoothstep(30.0, 8.0, length(vViewPosition));
+          vec3 fc = ${SP.dots || 'vec3(1.0)'};
           diffuseColor.rgb = mix(diffuseColor.rgb, fc, dot_ * min(uSparkle, 1.0)); }` : `#include <color_fragment>
         float drift = fbm(vec2(vWPos.x * 0.35 + vWPos.z * 0.12, vWPos.z * 0.9));
         float fine = vnoise(vWPos.xz * 7.0);
@@ -439,7 +452,7 @@ export function buildWorld(opts = {}) {
   })();
   const pineMat = makeToonMaterial({ color: 0xffffff, vertexColors: true, steps: 3, rim: 0.8 });
   const spots = [];
-  for (let i = 0; i < 400 && spots.length < 74; i++) {
+  for (let i = 0; i < 400 && spots.length < SP.pines; i++) {
     const band = r();
     const x = -48 + r() * 96, z = band < 0.3 ? -6.5 - r() * 5 : -12 - r() * 15;
     if (Math.abs(x) < 10 && z > -11) continue;                          // areenan takana avoin näkymä vuorille
@@ -456,8 +469,8 @@ export function buildWorld(opts = {}) {
   const vcol = (g, hex, jitter = 0) => { const c = new THREE.Color(hex); const n = g.attributes.position.count; const a = new Float32Array(n * 3); for (let i = 0; i < n; i++) { const k = 1 + (r() - 0.5) * jitter; a[i * 3] = c.r * k; a[i * 3 + 1] = c.g * k; a[i * 3 + 2] = c.b * k; } g.setAttribute('color', new THREE.BufferAttribute(a, 3)); g.deleteAttribute('uv'); return g; };
   if (SP.leafTrees) {
     const parts = [];
-    const trunk = new THREE.CylinderGeometry(0.03, 0.06, 0.55, 5); trunk.translate(0, 0.27, 0); parts.push(vcol(trunk, '#4a3428').toNonIndexed());
-    const blobs = [[0, 0.74, 0, 0.34, '#2f6e34'], [0.2, 0.62, 0.06, 0.24, '#235a2c'], [-0.21, 0.64, -0.04, 0.25, '#29642f'], [0.05, 0.96, 0.02, 0.22, '#4c8c3c'], [-0.06, 0.68, 0.2, 0.21, '#3a7c36'], [0.12, 0.82, -0.16, 0.2, '#2c6a32']];
+    const trunk = new THREE.CylinderGeometry(0.03, 0.06, 0.55, 5); trunk.translate(0, 0.27, 0); parts.push(vcol(trunk, SP.trunk).toNonIndexed());
+    const blobs = [[0, 0.74, 0, 0.34], [0.2, 0.62, 0.06, 0.24], [-0.21, 0.64, -0.04, 0.25], [0.05, 0.96, 0.02, 0.22], [-0.06, 0.68, 0.2, 0.21], [0.12, 0.82, -0.16, 0.2]].map((b, i) => [...b, SP.leaf[i]]);
     for (const [x, y, z, rad, hex] of blobs) { const b = new THREE.IcosahedronGeometry(rad, 1); b.scale(1, 0.82, 1); b.translate(x, y, z); parts.push(vcol(b, hex, 0.12)); }
     const treeGeo = mergeGeometries(parts);
     const tSpots = [];
@@ -472,9 +485,28 @@ export function buildWorld(opts = {}) {
     tSpots.forEach(([x, z, sc], i) => { dm.position.set(x, groundH(x, z) - 0.05, z); dm.scale.set(sc * (0.9 + r() * 0.35), sc, sc * (0.9 + r() * 0.35)); dm.rotation.set(0, r() * 6, 0); dm.updateMatrix(); trees.setMatrixAt(i, dm.matrix); });
     trees.userData.castShadow = false; trees.frustumCulled = false; scene.add(trees);
   }
+  if (SP.deadTrees) {      // kelot: kuolleet, paljaat puut Gajōn ympärillä
+    const parts = [];
+    const limb = (len, r0, r1, pos, rz, ry) => { const c = new THREE.CylinderGeometry(r1, r0, len, 5); c.translate(0, len / 2, 0); c.rotateZ(rz); c.rotateY(ry); c.translate(pos[0], pos[1], pos[2]); parts.push(vcol(c, '#b4ada2', 0.12).toNonIndexed()); };
+    limb(1.0, 0.05, 0.012, [0, 0, 0], 0.04, 0);
+    limb(0.38, 0.018, 0.004, [0, 0.45, 0], 0.9, 0.3); limb(0.32, 0.016, 0.004, [0, 0.58, 0], -1.0, 1.4);
+    limb(0.3, 0.014, 0.003, [0, 0.7, 0], 0.75, 2.6); limb(0.24, 0.012, 0.003, [0, 0.8, 0], -0.8, 4.0); limb(0.2, 0.01, 0.003, [0, 0.33, 0], -1.2, 5.2);
+    const deadGeo = mergeGeometries(parts);
+    const dSpots = [];
+    for (let i = 0; i < 500 && dSpots.length < SP.deadTrees; i++) {
+      const x = -30 + r() * 60, z = r() < 0.55 ? -4.2 - r() * 5 : -9 - r() * 12;
+      if (Math.abs(x) < 7.5 && z > -5.5) continue;
+      if (x > 9 && x < 20 && z > -9) continue;
+      if (dSpots.some(t => Math.hypot(t[0] - x, t[1] - z) < 2.4)) continue;
+      dSpots.push([x, z, 3.2 + r() * 3.4]);
+    }
+    const dead = new THREE.InstancedMesh(deadGeo, makeToonMaterial({ color: 0xffffff, vertexColors: true, steps: 3, rim: 1.1 }), dSpots.length);
+    dSpots.forEach(([x, z, sc], i) => { dm.position.set(x, groundH(x, z) - 0.05, z); dm.scale.set(sc, sc * (0.85 + r() * 0.4), sc); dm.rotation.set((r() - 0.5) * 0.14, r() * 6, (r() - 0.5) * 0.14); dm.updateMatrix(); dead.setMatrixAt(i, dm.matrix); });
+    dead.frustumCulled = false; scene.add(dead);
+  }
   if (SP.tufts) {
     const parts = [];
-    for (let k = 0; k < 5; k++) { const c = new THREE.ConeGeometry(0.035, 0.24 + r() * 0.2, 3); c.translate(0, 0.14, 0); c.rotateZ((r() - 0.5) * 0.9); c.rotateY(r() * 6); c.translate((r() - 0.5) * 0.14, 0, (r() - 0.5) * 0.14); parts.push(vcol(c, k % 2 ? '#4a8436' : '#62a040', 0.2).toNonIndexed()); }
+    for (let k = 0; k < 5; k++) { const c = new THREE.ConeGeometry(0.035, 0.24 + r() * 0.2, 3); c.translate(0, 0.14, 0); c.rotateZ((r() - 0.5) * 0.9); c.rotateY(r() * 6); c.translate((r() - 0.5) * 0.14, 0, (r() - 0.5) * 0.14); parts.push(vcol(c, SP.tuft[k % 2], 0.2).toNonIndexed()); }
     const tuftGeo = mergeGeometries(parts);
     const n = Math.round(SP.tufts * Math.min(1, Q.particles + 0.25));
     const tufts = new THREE.InstancedMesh(tuftGeo, makeToonMaterial({ color: 0xffffff, vertexColors: true, steps: 2, rim: 0.4 }), n);
@@ -528,7 +560,7 @@ export function buildWorld(opts = {}) {
   setupShadows(); worldUnsub = onQuality(setupShadows);
 
   // ---------- lumisade ----------
-  const snow = buildSnow(scene, summer);
+  const snow = buildSnow(scene, SP.particles, season === 'autumn');
 
   // ---------- tunnelman vienti kohtaukseen joka frame ----------
   const su = skyMat.uniforms;
@@ -571,8 +603,8 @@ export function buildWorld(opts = {}) {
 const tmpC = new THREE.Color();
 
 // Ilman hiukkaset: talvella lumihiutaleet, kesällä siitepöly / lehdet (sama shader, eri parametrit tunnelmasta)
-function buildSnow(scene, summer) {
-  const N = Math.round((summer ? 700 : 1500) * Q.particles);
+function buildSnow(scene, count, leaves) {
+  const N = Math.round(count * Q.particles);
   const g = new THREE.BufferGeometry();
   const pos = new Float32Array(N * 3), seed = new Float32Array(N * 2);
   for (let i = 0; i < N; i++) {
@@ -586,9 +618,9 @@ function buildSnow(scene, summer) {
   const mat = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false,
     uniforms: { uTime: toonShared.uTime, uFall: { value: 0 }, uWindX: { value: 0 }, uAmt: { value: 0.6 }, uStretch: { value: 1 },
-      uPointScale: toonShared.uPointScale, uTint: { value: new THREE.Color(1, 1, 1) }, uWind: { value: 1 } },
+      uPointScale: toonShared.uPointScale, uTint: { value: new THREE.Color(1, 1, 1) }, uWind: { value: 1 }, uLeaf: { value: leaves ? 2.2 : 1 } },
     vertexShader: `
-      attribute vec2 seed; uniform float uTime, uFall, uWindX, uAmt, uPointScale, uStretch; varying float vA; varying float vSoft;
+      attribute vec2 seed; uniform float uTime, uFall, uWindX, uAmt, uPointScale, uStretch, uLeaf; varying float vA; varying float vSoft; varying float vHue;
       void main(){
         float s = seed.x, layer = seed.y;
         vec3 p = position;
@@ -596,14 +628,15 @@ function buildSnow(scene, summer) {
         p.x = mod(p.x + uWindX * (0.55 + s * 0.9) + 28.0, 56.0) - 28.0 + sin(uTime * 1.3 + s * 40.0) * 0.35;
         p.z += sin(uTime * 0.7 + s * 17.0) * 0.3;
         vec4 mv = modelViewMatrix * vec4(p, 1.0);
-        float size = layer > 1.5 ? 0.11 + s * 0.12 : (0.035 + s * 0.05);
+        float size = (layer > 1.5 ? 0.11 + s * 0.12 : (0.035 + s * 0.05)) * uLeaf;
+        vHue = fract(s * 13.7);
         float vis = step(fract(s * 7.31), uAmt);
         gl_PointSize = min(size * uPointScale * uStretch / max(-mv.z, 0.4), 64.0) * vis;
         vA = (layer > 1.5 ? 0.3 : 0.55 + s * 0.45) * smoothstep(0.3, 1.2, -mv.z);
         vSoft = layer > 1.5 ? 1.0 : 0.0;
         gl_Position = projectionMatrix * mv;
       }`,
-    fragmentShader: `uniform vec3 uTint; uniform float uStretch; varying float vA; varying float vSoft;
+    fragmentShader: `uniform vec3 uTint; uniform float uStretch, uLeaf, uTime; varying float vA; varying float vSoft; varying float vHue;
       void main(){
         vec2 q = gl_PointCoord - 0.5;
         // tuulessa hiutale venyy viistoon viiruksi
@@ -613,7 +646,14 @@ function buildSnow(scene, summer) {
         float d = length(q) * 2.0;
         if (d > 1.0) discard;
         float a = mix(1.0 - d, smoothstep(1.0, 0.2, d) * 0.8, vSoft);
-        gl_FragColor = vec4(uTint * 1.25, a * vA); ${OUT} }`,
+        vec3 c = uTint * 1.25;
+        if (uLeaf > 1.5) {       // lehti: terävä soikio, joka kieppuu (litistyy) ja vaihtelee ruskan sävyissä
+          vec2 l = gl_PointCoord - 0.5; float sq = 0.35 + 0.65 * abs(sin(uTime * (2.0 + vHue * 3.0) + vHue * 40.0));
+          float dl = length(vec2(l.x, l.y / sq)) * 2.0; if (dl > 1.0) discard;
+          a = smoothstep(1.0, 0.75, dl) * (vSoft > 0.5 ? 0.75 : 1.0);
+          c = uTint * mix(vec3(1.0, 0.45, 0.2), vec3(1.0, 0.95, 0.5), vHue) * (0.75 + 0.35 * sq);
+        }
+        gl_FragColor = vec4(c, a * vA); ${OUT} }`,
   });
   const pts = new THREE.Points(g, mat); pts.frustumCulled = false; pts.renderOrder = 5;
   scene.add(pts);

@@ -12,7 +12,7 @@
 //   toonShared                       – yhteiset uniformit (rim-väri ja -suunta); mood.js päivittää.
 //
 // Lisäksi kohtaus skannataan automaattisesti (upgradeScene): jokainen MeshToonMaterial saa rim-valon ja
-// varjot, ja vanhat MeshBasicMaterial+BackSide-ääriviivat vaihdetaan uuteen. Ohitus: object.userData.noGfx = true.
+// varjot. Hahmojen omiin ääriviivoihin ei kosketa. Ohitus: object.userData.noGfx = true.
 import * as THREE from 'three';
 
 export const toonShared = {
@@ -179,7 +179,7 @@ export function addOutline(mesh, opts = {}) {
 /**
  * Automaattinen päivitys: kutsutaan harvakseltaan (mood.js). Halpa: käy vain uudet objektit läpi.
  * - MeshToonMaterial -> rim + castShadow
- * - vanha ääriviiva (MeshBasicMaterial, BackSide, SkinnedMesh) -> uusi ruutuavaruuden ääriviiva
+ * - ääriviivakuoret (BackSide) tunnistetaan: eivät heitä varjoa; niiden vertex-muunnos lainataan varjoon
  */
 export function upgradeScene(scene, shadows) {
   scene.traverse(o => {
@@ -187,13 +187,9 @@ export function upgradeScene(scene, shadows) {
     o.userData.gfxSeen = true;
     const m = o.material;
     if (!m || Array.isArray(m)) return;
-    if (m.isMeshBasicMaterial && m.side === THREE.BackSide) {
+    if (m.side === THREE.BackSide && (m.isMeshBasicMaterial || m.isShaderMaterial)) {
       o.castShadow = false; o.userData.gfxOutline = true;
-      if (o.isSkinnedMesh) {
-        const nm = makeOutlineMaterial({});
-        nm.opacity = m.opacity; nm.transparent = m.transparent; nm.depthWrite = m.depthWrite;
-        o.material = nm;
-      }
+      // hahmojen omat ääriviivat jätetään ennalleen (fade()/rigi viittaavat niihin)
       return;
     }
     if (m.isMeshToonMaterial) {

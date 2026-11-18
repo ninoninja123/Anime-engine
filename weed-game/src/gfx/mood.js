@@ -160,7 +160,81 @@ const SUMMER_MOODS = {
     rays: 1.2, rayCol: '#ffd8a8', outline: '#1a1020', water: '#ffe0c0',
   },
 };
-const TABLES = { winter: { base: BASE, moods: MOODS }, summer: { base: SUMMER_BASE, moods: SUMMER_MOODS } };
+// ---------------------------------------------------------------- MYÖHÄISSYKSY (taso 2, canon: animen jaksot 4–6)
+// Perustila = kylmä, selkeä aamu: kullankeltainen ja laventelinsävyinen taivas, matala aurinko, pitkät varjot.
+// Smithin kuolema = yö (kuunvalo, sinertävä).  Loppu = nouseva tuuli rotkossa.  Muistohetki = iltahämärä (oranssi-violetti).
+// Nimetyt taulut: autumn_morning_gold (= night-avain), autumn_night, autumn_dusk (= dawn-avain).
+const AUTUMN_BASE = {
+  ...BASE,
+  skyTop: '#4a62b4', skyMid: '#a894cc', skyHor: '#ffd088', stars: 0, aurora: 0, clouds: 0.38, cloudCol: '#a888b8',
+  moon: 0, sun: 1, sunCol: '#ffd27a', sunX: -0.5, sunY: 0.16, sunZ: -0.85,
+  fog: '#b4acc8', fogDensity: 0.005, haze: '#aaa0c8', mist: 0.16, mistCol: '#e8dcf0',
+  hemiSky: '#c8c4e8', hemiGround: '#6a5438', hemi: 0.85, key: '#ffdca0', keyI: 2.5, keyX: -9, keyY: 5.5, keyZ: 6,     // matala aurinko = pitkät varjot
+  back: '#ffc070', backI: 1.3, rim: '#ffe0a0', rimAmt: 1.1,
+  layerTint: '#fff0e0', snowCol: '#a88c48', snowShade: '#665030', topCol: '#98823e', sparkle: 1.0,
+  wind: 0.9, snowAmt: 0.45, stretch: 1.0, partCol: '#e8a050', fall: 0.45, dustCol: '#b8a070', fireflies: 0, breath: 1,
+  bloom: 0.5, exposure: 0.92, sat: 1.05, contrast: 1.08, lift: '#ece6f8', gain: '#fff4dc',
+  vig: 0.5, vigColor: '#140c06', grain: 0.02, rays: 0.4, rayCol: '#ffd890', outline: '#1a120e', water: '#e8f0ff',
+};
+const AUTUMN_NIGHT = {
+  skyTop: '#040818', skyMid: '#13224c', skyHor: '#3a5490', stars: 1.1, clouds: 0.25, cloudCol: '#1a2547', moon: 1, sun: 0,
+  fog: '#1c2a52', fogDensity: 0.009, haze: '#27386a', mist: 0.45, mistCol: '#8fa6dc',
+  hemiSky: '#a9b6e0', hemiGround: '#34322e', hemi: 0.85, key: '#cfdcff', keyI: 1.9, keyX: -6, keyY: 11, keyZ: 8,
+  back: '#6f9bff', backI: 1.0, rim: '#9cc0ff', rimAmt: 0.95, layerTint: '#8090c0',
+  snowCol: '#6a6c62', snowShade: '#34384a', topCol: '#5a5c56', wind: 0.6, snowAmt: 0.3, partCol: '#8088a0', fall: 0.4,
+  bloom: 0.65, exposure: 1.0, sat: 0.9, contrast: 1.06, lift: '#e8ecfb', gain: '#ffffff', vig: 0.65, vigColor: '#02030c',
+  rays: 0.15, rayCol: '#bcd0ff', outline: '#090b18',
+};
+const AUTUMN_DUSK = {
+  skyTop: '#2a2a66', skyMid: '#8a5a90', skyHor: '#ff9a58', stars: 0.35, clouds: 0.3, cloudCol: '#7a4a70', moon: 0, sun: 0.9, sunCol: '#ff9a50',
+  sunX: 0.274, sunY: 0.09, sunZ: -0.952, fog: '#9a6a80', fogDensity: 0.008, haze: '#b07a80', mist: 0.6, mistCol: '#ffb890',
+  hemiSky: '#b0a0d8', hemiGround: '#5a4438', hemi: 0.9, key: '#ffc088', keyI: 2.2, keyX: 7, keyY: 4, keyZ: 2.5,
+  back: '#ff9a50', backI: 2.0, rim: '#ffc890', rimAmt: 1.5, layerTint: '#e8b0a8',
+  snowCol: '#b08a50', snowShade: '#5e4a44', topCol: '#987a48', wind: 0.3, snowAmt: 0.3, partCol: '#e89050', fall: 0.35,
+  bloom: 0.95, exposure: 1.0, sat: 1.08, contrast: 1.04, lift: '#ecdcf4', gain: '#ffeed8', vig: 0.6, vigColor: '#140810',
+  rays: 0.9, rayCol: '#ffb070', outline: '#1a1020', water: '#ffd8c0',
+};
+const AUTUMN_MOODS = {
+  night: {}, autumn_morning_gold: {},
+  autumn_night: AUTUMN_NIGHT, autumn_dusk: AUTUMN_DUSK,
+  // raivo: aamun kulta muuttuu verenpunaiseksi, tuuli yltyy
+  rage: {
+    skyTop: '#3a2c50', skyMid: '#a04a48', skyHor: '#ff9040', clouds: 0.62, cloudCol: '#5a2a38', sunCol: '#ff8a4a',
+    fog: '#7a4a48', haze: '#905048', mistCol: '#d08a60', hemiSky: '#c0a0b0', hemiGround: '#4a3626', hemi: 0.72,
+    key: '#ffc890', keyI: 1.9, back: '#ff4a24', backI: 1.1, rim: '#ff6030', rimAmt: 1.9, layerTint: '#d09a88',
+    snowCol: '#a88044', snowShade: '#5a3e2a', topCol: '#8a6c3c', wind: 2.2, snowAmt: 0.8, stretch: 1.5, partCol: '#ff8040', fall: 0.7,
+    bloom: 0.75, exposure: 0.9, contrast: 1.12, lift: '#f4dcd8', gain: '#ffeedc', vig: 0.82, vigColor: '#220604', rays: 0.7, rayCol: '#ff8a4a',
+  },
+  // Smithin kuolema: yö, kuunvalo, hiljaisuus
+  grief: { ...AUTUMN_NIGHT, sat: 0.6, wind: 0.3, snowAmt: 0.2, bloom: 0.85, vig: 0.8, rays: 0.22, rayCol: '#c8d8ff', back: '#9db4e0', backI: 0.8 },
+  // vaihe 2: seuraava aamu, hirviö nousee raunioista – kylmä kulta + punainen uhka, kova tuuli
+  storm: {
+    skyTop: '#4a4c88', skyMid: '#a07898', skyHor: '#ffb060', clouds: 0.6, cloudCol: '#6a4860', sunCol: '#ffb060',
+    fog: '#9a7880', fogDensity: 0.008, haze: '#a88088', mist: 0.55, mistCol: '#e0a888', hemiSky: '#b8a8d0', hemiGround: '#52402e', hemi: 0.78,
+    key: '#ffd0a0', keyI: 2.0, back: '#ff3a20', backI: 1.1, rim: '#ff5028', rimAmt: 2.0, layerTint: '#d8a8a0',
+    snowCol: '#a8884a', snowShade: '#5c4430', topCol: '#8c7440', wind: 3.2, snowAmt: 1.0, stretch: 1.9, partCol: '#f08038', fall: 0.9,
+    bloom: 0.75, exposure: 0.92, contrast: 1.12, lift: '#f0dce0', gain: '#ffeedc', vig: 0.85, vigColor: '#240404', rays: 0.6, rayCol: '#ffa060',
+  },
+  // neljä nuolta / vaihe 3: laventelinsävyinen aamu, henkien valo
+  spirit: {
+    skyTop: '#4a5cb0', skyMid: '#a894d0', skyHor: '#ffe0a8', clouds: 0.25, cloudCol: '#b8a0d0', sunCol: '#ffe0a0',
+    fog: '#b8a8c8', haze: '#b8a8d0', mist: 0.5, mistCol: '#f0e0f0', hemiSky: '#c8c8f4', hemi: 0.9, key: '#ffe6c0', keyI: 2.2,
+    back: '#8fe8d8', backI: 1.3, rim: '#c8f4f0', rimAmt: 1.3, layerTint: '#f0e0f0', wind: 0.5, snowAmt: 0.35, partCol: '#f0c070',
+    bloom: 0.9, sat: 1.05, lift: '#eee8ff', vig: 0.55, rays: 1.0, rayCol: '#ffe8b8',
+  },
+  // finaali: nouseva tuuli rotkosta – lehdet lentävät YLÖS, taivas hehkuu
+  finale: {
+    skyTop: '#3a4aa8', skyMid: '#9a88d0', skyHor: '#fff0b8', clouds: 0.18, cloudCol: '#c0a8d8', sunCol: '#fff0c0', sun: 1.2,
+    fog: '#b0a8d0', haze: '#b0a8d8', mist: 0.6, mistCol: '#f4ecff', hemiSky: '#d0d0ff', hemi: 1.0, key: '#fff0d0', keyI: 2.5,
+    back: '#9ff4e0', backI: 1.7, rim: '#e0fcff', rimAmt: 1.6, layerTint: '#f4e8f8', wind: 1.4, snowAmt: 1.0, stretch: 1.6, partCol: '#ffc060', fall: -2.6,
+    bloom: 1.1, sat: 1.15, contrast: 1.1, lift: '#ece8ff', vig: 0.6, rays: 1.3, rayCol: '#fff0c8',
+  },
+  // jälkikohtaus ja muistohetki: iltahämärä (canon: ei aamunkoitto)
+  dawn: AUTUMN_DUSK,
+  memorial: { ...AUTUMN_DUSK, skyTop: '#1c1c56', skyMid: '#6a4888', skyHor: '#ff8a50', stars: 0.9, aurora: 0.0, sun: 0.7, hemi: 0.85, keyI: 1.9,
+    bloom: 1.2, rays: 1.1, vig: 0.68, wind: 0.2, snowAmt: 0.25, fireflies: 0.0 },
+};
+const TABLES = { winter: { base: BASE, moods: MOODS }, summer: { base: SUMMER_BASE, moods: SUMMER_MOODS }, autumn: { base: AUTUMN_BASE, moods: AUTUMN_MOODS } };
 let table = TABLES.winter;
 
 const isColor = v => typeof v === 'string';
@@ -180,7 +254,7 @@ export const mood = {
 };
 
 function start(name, dur) {
-  if (!MOODS[name]) return;
+  if (!table.moods[name]) return;
   const c = mood.cur, f = mood.from;
   for (const k in c) { if (c[k].isColor) f[k].copy(c[k]); else f[k] = c[k]; }
   mood.to = resolve(name); mood.name = name; mood.t = 0; mood.dur = Math.max(0.001, dur);
@@ -189,7 +263,7 @@ function start(name, dur) {
 let ctxKey = '';
 /** Vaihda tunnelma käsin. Pysyy voimassa, kunnes pelitilanne (vaihe / cutscene / valikko) vaihtuu. */
 export function setMood(name, dur = 2) {
-  if (!MOODS[name]) return;
+  if (!table.moods[name]) return;
   mood.manual = name; mood.manualKey = ctxKey;
   if (mood.name !== name) start(name, dur);
 }
