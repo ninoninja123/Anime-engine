@@ -24,6 +24,35 @@ const L = (who, id, ja, en, emotion, direction, intensity = 3, pre = 0, post = 0
   [id, { id, who, ja, en, emotion, direction, intensity, pre, post, file: `${who}_${id}.mp3` }];
 
 export const LINES = Object.fromEntries([
+  // ------------------------------------------------------------ PROLOGUE "The story so far" (src/data/scenes_prologue.js)
+  // One calm narrator carries the whole prologue, like the opening of an anime film. Legend → war → peace → crisis → hope.
+  L('narrator', 'story_01', '奥羽の山々には、伝説が眠っている。', 'In the mountains of Ōu, a legend lies sleeping.',
+    'hushed wonder', 'Very slow and low, almost a whisper at the start. Like opening an old book. Let "伝説" breathe.', 2, 0.8, 0.8),
+  L('narrator', 'story_02', 'かつて、熊犬の血を引く秋田犬がいた。名は…銀。', 'Long ago lived an Akita of bear-hunting blood. His name… was Gin.',
+    'warm nostalgia', 'Gentle storytelling. Pause before the name; say "銀" softly, with affection and pride.', 3, 0.2, 0.5),
+  L('narrator', 'story_03', '猟師・五兵衛と少年・大輔に育てられ、銀は熊犬となった。', 'Raised by the hunter Gohee and the boy Daisuke, he became a bear dog.',
+    'tender, steady', 'Even and warm, slightly brighter on "勇敢な熊犬".', 2, 0, 0.6),
+  L('narrator', 'story_04', '双子峠の牙城に君臨する、人喰い熊…赤カブト。', 'At Gajō on Futago Pass reigned a giant man-eater… Akakabuto.',
+    'dread', 'Darker, lower, slower. A long held breath before the name; "赤カブト" heavy and cold.', 4, 0.3, 0.7),
+  L('narrator', 'story_05', '銀は奥羽じゅうの勇敢な犬を集め、軍団を築いた。', 'Gin gathered the bravest dogs of all Ōu into one army.',
+    'rising, heroic', 'Builds gradually; stronger and fuller toward "軍団". Not shouted.', 4, 0.2, 0.4),
+  L('narrator', 'story_06', '多くの仲間が倒れた。それでも…ついに赤カブトは倒された。', 'Many comrades fell. Yet at last… Akakabuto was brought down.',
+    'grief into triumph', 'First sentence quiet and sad. Then gathering strength; "ついに" after a pause, the end firm and moved.', 5, 0.2, 0.6),
+  L('narrator', 'story_07', '銀は奥羽の総大将となり、山は犬たちの楽園となった。', 'Gin became leader of Ōu, and the mountains became a paradise for dogs.',
+    'serene warmth', 'Relieved and warm, a faint smile in the voice. Slow.', 3, 0.3, 0.6),
+  L('narrator', 'story_08', 'それから、長い年月が流れた。', 'Many years have passed since then.',
+    'wistful', 'Soft, slow, a little sad. Like turning a page.', 2, 0.5, 0.9),
+  L('narrator', 'story_09', 'だが今、楽園は崩れ去った。人間の実験が生んだ怪物が、牙城を奪ったのだ。', 'But now that paradise has crumbled. A monster born of human experiments has seized Gajō.',
+    'ominous', 'Tone turns cold. Short pause after the first sentence; "怪物" with quiet horror.', 4, 0.3, 0.6),
+  L('narrator', 'story_10', '犬が人を襲ったと信じ、人間たちは犬狩りを始めた。', 'Believing dogs had attacked people, the humans began to hunt them.',
+    'sorrowful tension', 'Low and tense, bitterness held back. Slightly faster, like being chased.', 4, 0.1, 0.5),
+  L('narrator', 'story_11', 'そして総大将・銀は…今、奥羽にいない。', 'And Gin, their leader… is nowhere in Ōu.',
+    'heavy absence', 'Slow; a long pause before the last phrase. Let the silence after it hang.', 4, 0.3, 0.9),
+  L('narrator', 'story_12', 'その時、一匹の小さな犬が奥羽を目指していた。銀の息子…ウィード。', 'Just then, one small dog was making his way to Ōu. The son of Gin… Weed.',
+    'hope rising', 'Gentle, quietly building. Pause before "銀の息子"; the name "ウィード" warm and hopeful, like sunrise.', 4, 0.5, 0.6),
+  L('weed', 'story_vow', '父さんの国へ…僕は行く。', 'To my father\'s land… I\'m going.',
+    'quiet resolve', 'Soft, young, to himself, looking at the far mountains. A breath in the middle; the end calm and certain.', 4, 0.3, 0.8),
+
   // ------------------------------------------------------------ PRE-BATTLE (intro)
   L('narrator', 'intro_1', '双子峠。奥羽の砦、牙城は…怪物に奪われた。', 'Futago Pass. Gajō, the fortress of Ōu… has fallen to a monster.',
     'ominous calm', 'Slow and low. Small pause after "牙城は…" before the reveal. Let the last word sink.', 2, 0.3, 0.6),
@@ -130,6 +159,9 @@ export const LINES = Object.fromEntries([
   L('smith', 'spirit_echo', '…それでいい、坊主。', '…That\'s the way, boy.',
     'peaceful, from beyond', 'Whispered, warm, with reverb/echo. Like wind.', 3, 0.6, 1.2),
 ]);
+
+// Prologue narration runs over the music the whole time: duck gently so the score keeps carrying the emotion.
+for (const l of Object.values(LINES)) if (l.id.startsWith('story_')) l.duck = 0.62;
 
 /** Arvioi repliikin kesto (s), kun äänitiedostoa ei ole. */
 export function estimateDuration(line) {

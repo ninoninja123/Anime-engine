@@ -69,7 +69,7 @@ export async function say(id, opts = {}) {
       dur = buf.duration;
     }
   }
-  duck(line.who === 'kaibutsu' ? 0.55 : 0.32, dur + 0.2);
+  duck(line.duck ?? (line.who === 'kaibutsu' ? 0.55 : 0.32), dur + 0.2);   // line.duck: per-line music level (prologue narration ducks gently)
   const token = {}; current = token;
   showSub(line);
   if (opts.noWait) { setTimeout(() => { if (current === token) hideSub(); }, (dur + 0.3) * 1000); return; }

@@ -11,6 +11,7 @@ import { settings, setPref } from './voice.js';
 import * as FX from './fx.js';
 import * as UI from './ui.js';
 import { cast, createCast, startLevel, retryPhase, setPaused, quit, debug } from './level2.js';
+import { runPrologue, shouldPlayPrologue } from './prologue.js';
 
 const $ = UI.$;
 let mode = 'menu';
@@ -25,6 +26,7 @@ async function boot() {
   wireUI();
   showMenu();
   const p = E.params;
+  if (p.has('prologue') && !(p.has('play') || p.has('phase'))) startGame(1, true);
   if (p.has('play') || p.has('phase')) startGame(Number(p.get('phase') || 1), !p.has('nointro'));
   if (p.has('gallery')) showCast(Number(p.get('gallery')) || 0);
 }
@@ -144,6 +146,8 @@ async function startGame(phase = 1, intro = true) {
   hideGallery();
   UI.show('menu', false); UI.show('castScreen', false); UI.show('result', false);
   for (const d of Object.values(cast)) d.root.rotation.set(0, 0, 0);
+  // the illustrated prologue ("The story so far") leads into the level's own intro cutscene
+  if (intro && phase === 1 && shouldPlayPrologue()) await runPrologue();
   await startLevel({ phase, intro });
 }
 
@@ -166,6 +170,7 @@ function wireUI() {
   const tap = (id, fn) => $(id).addEventListener('click', e => { e.stopPropagation(); initAudio(); fn(); });
   tap('startBtn', () => startGame(1, true));
   tap('castBtn', () => showCast(0));
+  tap('storyBtn', async () => { UI.show('menu', false); await runPrologue({ force: true }); showMenu(); });
   tap('castNext', () => showCast(castIdx + 1));
   tap('castPrev', () => showCast(castIdx - 1));
   tap('castBack', () => showMenu());

@@ -122,7 +122,8 @@ export function initEngine(canvas) {
     cam.lookAt(E.camLook);
     if (E.camRoll) cam.rotateZ(E.camRoll);
 
-    if (E.composer) E.composer.render(); else renderer.render(E.scene, cam);
+    if (E.noRender) { /* fullscreen 2D overlay (prologue) covers the view: skip the 3D render */ }
+    else if (E.composer) E.composer.render(); else renderer.render(E.scene, cam);
     requestAnimationFrame(loop);
   };
   requestAnimationFrame(loop);
