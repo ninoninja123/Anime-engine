@@ -100,7 +100,7 @@ export const LOOKS = {
 // bones = luiden skaalaus mittasuhteita varten (dogs.js: head, neck, ears, legs, frontLegs, backLegs, tail, spine
 //         tai mikä tahansa luun nimi; luku = tasainen skaala, [x,y,z] = akseleittain).
 export const LOOK_CAST = {
-  jerome:  { model: 'john_auto', look: 'shepherd_tan_saddle', height: 1.2, bones: { ears: 1.1 } },
+  jerome:  { model: 'john_auto', tint: '#5a534d', height: 1.2, bones: { ears: 1.1 } },   // user: Jerome = John's model, but darker
   robert:  { model: 'john_auto', look: 'shepherd_dark_saddle', height: 1.12, bones: { head: 1.04 } },
   heuler:  { model: 'john_auto', look: 'shepherd_grey_sable', height: 1.14, bones: { ears: 1.05 } },
   rocker:  { model: 'john_auto', look: 'pinscher_black_tan', height: 1.08, bones: { ears: 1.2, tail: 0.38, legs: 1.06, head: 0.95 } },

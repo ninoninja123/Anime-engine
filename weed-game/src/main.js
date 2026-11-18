@@ -104,7 +104,7 @@ async function showCast(i) {
   const d = gallery.dogs[id];
   if (d.weak) d.weakReveal = 1;
   $('castName').textContent = c.name;
-  $('castJp').textContent = c.jp || '';
+  $('castJp').textContent = '';
   $('castRole').textContent = c.role || '';
   $('castCount').textContent = `${castIdx + 1} / ${ROSTER.length}`;
   UI.show('menu', false); UI.show('castScreen', true);
@@ -159,7 +159,6 @@ function requestLandscape() {
 function syncSettingLabels() {
   $('soundBtn').textContent = `Sound: ${muted ? 'off' : 'on'}`;
   $('subsBtn').textContent = `Subtitles: ${settings.subs ? 'on' : 'off'}`;
-  $('jpBtn').textContent = `Japanese text: ${settings.jp ? 'on' : 'off'}`;
 }
 
 function wireUI() {
@@ -171,7 +170,6 @@ function wireUI() {
   tap('castBack', () => showMenu());
   tap('soundBtn', () => { setMuted(!muted); syncSettingLabels(); });
   tap('subsBtn', () => { setPref('subs', !settings.subs); syncSettingLabels(); });
-  tap('jpBtn', () => { setPref('jp', !settings.jp); syncSettingLabels(); });
   tap('pauseBtn', () => setPaused(true));
   tap('resumeBtn', () => setPaused(false));
   tap('helpBtn', () => { UI.show('pause', false); UI.show('help', true); });

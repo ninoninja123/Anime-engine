@@ -45,7 +45,7 @@ export function cutin(o) {
   el.style.setProperty('--c1', o.color); el.style.setProperty('--c2', o.color2);
   el.querySelector('.ci-name').textContent = o.name;
   el.querySelector('.ci-move').textContent = o.move;
-  el.querySelector('.ci-jp').textContent = o.jp || '';
+  el.querySelector('.ci-jp').textContent = '';
   el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
 }
 export async function caption(html, secs = 3) {
