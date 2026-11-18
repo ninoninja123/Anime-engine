@@ -23,7 +23,9 @@ ids.forEach((id, i) => {
 });
 E.updaters.add(dt => { for (const d of dogs) d.update(dt); });
 const rows = Math.ceil(ids.length / cols);
-E.camPos.set(0, +(q.get('cy') || 1.4) , +(q.get('cz') || 7 + rows * 1.5)); E.camLook.set(0, +(q.get('ly') || 0.8), -(rows - 1) * 1.1);
+E.camPos.set(+(q.get('cx') || 0), +(q.get('cy') || 1.4) , +(q.get('cz') || 7 + rows * 1.5)); E.camLook.set(+(q.get('lx') || 0), +(q.get('ly') || 0.8), +(q.get('lz') || -(rows - 1) * 1.1));
+if (q.get('ex')) dogs.forEach(d => d.expr && d.expr(q.get('ex')));
+if (q.has('nofx')) { E.composer = null; }
 if (at) { for (let i = 0; i < at * 60; i++) for (const d of dogs) d.update(1 / 60); E.timeScale = 0; }
 window.done = true;
 </script></body></html>

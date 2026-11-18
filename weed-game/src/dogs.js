@@ -12,6 +12,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import { E } from './engine.js';
 import { CHARACTERS, MODELS } from './characters.js';
 import { attachExtras } from './accessories.js';
+import { buildFace } from './face.js';
 
 export const CHARS = CHARACTERS;
 const RIG_DEBUG = E.params.has('rigdebug');
@@ -268,7 +269,8 @@ const PAINT = {
 };
 
 function paintGeometry(geo, part, c, marks) {
-  const pos = geo.attributes.position; const n = pos.count;
+  const pos = geo.attributes.position; const n = pos.count; const nrm = geo.attributes.normal;
+  if (!geo.boundingBox) geo.computeBoundingBox();
   const col = new Float32Array(n * 3);
   const base = {
     [P.TAIL]: c.tail || c.coat, [P.BODY]: c.coat, [P.CHEST]: c.chest || c.coat, [P.NECK]: c.coat,
@@ -283,6 +285,11 @@ function paintGeometry(geo, part, c, marks) {
     if (part !== P.EYE && part !== P.NOSE) for (const [fn, v] of rules) {
       const r = fn(c, part, x, y, z, v); if (!r || r[0] <= 0) continue;
       _c.lerp(new THREE.Color(r[1]), Math.min(1, r[0]));
+    }
+    if ((part === P.EARL || part === P.EARR) && nrm) {
+      const nx = nrm.getX(i), nz = nrm.getZ(i) * (part === P.EARL ? -1 : 1);
+      const inner = ss(0.05, 0.45, nx) * ss(0.2, -0.3, nz) * ss(0.02, 0.06, y - geo.boundingBox.min.y);
+      if (inner > 0) _c.lerp(new THREE.Color(c.earInner || '#d79a92'), inner * 0.75);
     }
     // kevyt varjostus alapuolelle (luettavampi siluetti)
     const sh = 0.86 + 0.14 * ss(0.1, 0.6, y);
@@ -476,9 +483,9 @@ export class Dog {
     const headJ = new THREE.Group(); headJ.position.copy(headAt); neckJ.add(headJ);
     const headS_ = new THREE.Group(); headS_.scale.setScalar(headS); headJ.add(headS_);
     headS_.add(mk(P.HEAD, piv.HEAD));
-    for (const k of ['EYE', 'NOSE']) { const m = mk(P[k], piv.HEAD); headS_.add(m); }
-    // toinen silmä peilattuna (mallissa vain yksi erillinen silmäosa)
-    { const m = mk(P.EYE, piv.HEAD); m.scale.z = -1; headS_.add(m); }
+    // kasvot: anime-silmät, kulmat, suu + hampaat, kiiltävä nenä (face.js); vanhat pikkuosat 11/12 jätetään pois
+    this.face = buildFace(headS_, F, c);
+    this.mats.push(...this.face.mats);
     for (const [k, s] of [['EARL', -1], ['EARR', 1]]) {
       const j = new THREE.Group(); j.position.copy(piv[k]).sub(piv.HEAD); headS_.add(j);
       const m = mk(P[k], piv[k]); m.scale.setScalar(earS); j.add(m);
@@ -565,7 +572,8 @@ export class Dog {
 
   /** Häivytys (0..1). */
   fade(op) {
-    for (const m of this.mats) { m.transparent = op < 1; m.opacity = op; m.depthWrite = op >= 1; }
+    for (const m of this.mats) { if (m.isShaderMaterial) continue; m.transparent = op < 1; m.opacity = op; m.depthWrite = op >= 1; }
+    if (this.face) this.face.setOpacity(op);
     this.shadow.material.opacity = 0.35 * op;
     this.root.visible = op > 0.01;
   }
@@ -628,8 +636,26 @@ export class Dog {
       this.weakGlow.material.opacity = this.weakReveal * pulse * 0.55;
       this.U.uWeakAmt.value = this.weakReveal * (0.25 + pulse * 0.35);
     }
+    if (this.face) {
+      const n = cur.name, k = cur.loop ? 0 : cur.t / cur.duration;
+      const auto = n === 'Death' ? 'dead' : n.startsWith('Idle_HitReact') ? 'hurt' : (n === 'Attack' || n === 'Battoga' || n === 'Gallop_Jump') ? 'angry'
+        : (n === 'Idle_2_HeadLow' || n === 'LieDown') ? 'sad' : n === 'Howl' ? 'closed' : n === 'Gallop' ? 'determined' : 'neutral';
+      this.face.set(this.exprLock || auto);
+      const mouth = n === 'Attack' ? Math.max(0, Math.sin(Math.min(1, k * 1.6) * Math.PI)) : n === 'Bark' ? Math.max(0, Math.sin(Math.min(1, k * 2) * Math.PI)) * 0.8
+        : n === 'Howl' ? 0.6 : n === 'Gallop' ? 0.25 + Math.sin(this.t * 14) * 0.1 : 0;
+      this.face.mouth(mouth);
+      if (this.lookTarget) {
+        const tp = this.lookTarget.isVector3 ? this.lookTarget : this.lookTarget.root.position;
+        const dx = (tp.x - this.root.position.x) * this.facing, dy = (this.lookTarget.height ? tp.y + this.lookTarget.height * 0.7 : tp.y) - (this.root.position.y + this.height * 0.8);
+        this.face.gaze(Math.max(-0.2, Math.min(0.2, dx * 0.06)), Math.max(-0.15, Math.min(0.15, dy * 0.08)));
+      } else this.face.gaze(Math.sin(this.t * 0.37) * 0.08, 0);
+      this.face.update(dt);
+    }
     if (this._extras) this._extras(this.t, dt);
   }
+
+  /** Lukitse ilme (neutral, determined, angry, sad, happy, closed, hurt, dead, surprised) tai null = automaattinen. */
+  expr(name) { this.exprLock = name || null; }
 }
 
 // pelin aikaan sidottu setTimeout (slow-mo vaikuttaa)
