@@ -184,7 +184,7 @@ export const CHARACTERS = {
     marks: ['belly', 'muzzleLight', 'scar'],
   },
   john: {
-    name: 'John', jp: 'ジョン', kind: 'rigged', model: 'john_auto', height: 1.22,
+    name: 'John', jp: 'ジョン', kind: 'rigged', model: 'john_auto', tint: '#5a534d', height: 1.22,
     role: 'Ōu\'s strongest warrior. His last stand against fifty of Hōgen\'s men becomes a legend that frightens even Hōgen.',
     gait: 'trot', speed: 1.05, wag: 0.3,
     outline: 0.008,
