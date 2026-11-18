@@ -20,7 +20,8 @@ export const MODELS = {
   weed_rigged:     { file: 'weed_rigged.glb',     rotY: 0, rigged: true },
   john_auto:       { file: 'john_auto.glb',       rotY: 0, rigged: true },   // john.glb (wolf) auto-rig
   tesshin_auto:    { file: 'tesshin_auto.glb',    rotY: 0, rigged: true },   // tesshin.glb auto-rig
-  ken_auto:        { file: 'ken_auto.glb',        rotY: 0, rigged: true },   // generic lean brown dog (user model) auto-rig: Ken + generic dogs
+  ken_auto:        { file: 'ken_auto.glb',        rotY: 0, rigged: true },   // Ken (user model) auto-rig
+  generic_auto:    { file: 'generic_auto.glb',    rotY: 0, rigged: true },   // generic lean brown dog (user model) auto-rig: base for generic dogs
   gin_auto:        { file: 'gin_auto.glb',        rotY: 0, rigged: true },   // gin_rigged.glb (Tripo) uudelleenrigattu rig_dog_standalone.py:llä -> 9 klippiä
   kagetora_rigged: { file: 'kagetora_rigged.glb', rotY: 0, rigged: true },
   smith_rigged: { file: 'smith_rigged.glb', rotY: 0, rigged: true },
