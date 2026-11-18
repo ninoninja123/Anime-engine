@@ -97,7 +97,7 @@ E.updaters.add((dt, dtr) => {
     if (p.mesh) {
       if (p.spinArc) {
         p.mesh.rotation.z -= dt * 14;
-        p.mesh.material.opacity = 1 - k;
+        p.mesh.material.opacity = 0.7 * (1 - k);
         p.mesh.scale.setScalar(1 + k * 0.4);
       } else {
         const r = 0.2 + p.maxR * EASEOUT(k);

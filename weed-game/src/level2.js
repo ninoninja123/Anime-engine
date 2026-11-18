@@ -648,7 +648,7 @@ async function smithSacrifice() {
   // hirviö horjuu kallion alle
   await Promise.all([
     tween(B, { x: 7 }, 1.6, { real: true, onUpdate: () => { boss.root.position.x = B.x; sm.root.position.x = B.x - 0.3; } }),
-    cam([3.5, 3.5, 12], [6, 4.5, -2], 1.6),
+    cam([3.0, 2.6, 10.5], [5.8, 2.6, -1], 1.6),
   ]);
   await UI.say('Smith', 'Elä, Weed. Elä ja johda heitä!', 2.6);
   sfx.howl();
@@ -807,7 +807,7 @@ async function finale() {
   w.play('Gallop_Jump', { loop: false, timeScale: 0.8 });
   const orbit = { a: -0.6 };
   const p0 = new THREE.Vector3();
-  const arcs = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, 0.45, 0.2)), 0xcfeaff, 0.9, 0.5, Math.random() * 6), 140);
+  const arcs = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, 0.45, 0.2)), 0x9fd0ff, 0.9, 0.4, Math.random() * 6), 230);
   tween(w.spin.rotation, { z: -Math.PI * 6 }, 1.9, { real: true, ease: 'inOut' });
   tween(W, { x: B.x - 0.7, y: 1.9 }, 1.9, { real: true, ease: 'inOut', onUpdate: () => w.root.position.set(W.x, W.y, 0) });
   await tween(orbit, { a: 1.4 }, 1.9, { real: true, ease: 'inOut', onUpdate: () => {
@@ -855,9 +855,9 @@ async function finale() {
   await UI.say('Weed', 'He luottivat sinuun loppuun asti. Kannetaan heidän muistonsa yhdessä.');
   // muistohetki: neljä valoa nousee
   w.face(1); w.play('Idle');
-  await cam([0, 3.5, 11], [0, 4.5, -5], 2);
+  await cam([0, 2.2, 10], [0, 2.6, -3], 2);
   const names = ['Smith', 'Robert', 'Rocker', 'Heuler'];
-  names.forEach((n, i) => setTimeout(() => FX.spiritLight(new THREE.Vector3(-3 + i * 2, 1, -2), 0xffe6b0, 6), i * 450));
+  names.forEach((n, i) => setTimeout(() => FX.spiritLight(new THREE.Vector3(-3 + i * 2, 1.4, -1), 0xffe6b0, 6), i * 450));
   sfx.howl();
   UI.caption('<b>MUISTOISSA</b>' + names.join(' · '), 4.5);
   await wait(5, true);
