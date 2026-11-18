@@ -427,6 +427,7 @@ export const post = (ctx) => {
     { say: 'post_follow' },
     { expr: 'jerome', name: null },
     // memorial: four lights rise over the falls
+    { music: 'smith2', fade: 2.5 },                                  // Smith's second theme for the memorial
     { place: 'ken', x: -1.8, z: -1.2, face: 1, anim: 'Idle' },
     { place: 'kagetora', x: -2.8, z: -0.2, face: 1, anim: 'Idle' },
     { face: 'weed', dir: 1 },
@@ -436,6 +437,7 @@ export const post = (ctx) => {
     { caption: '<b>IN MEMORY</b>Smith · Robert · Rocker · Heuler', t: 5, wait: false },
     { say: 'memorial' },
     // hope: Weed faces the sunrise, thinks of his father
+    { music: 'dawn', fade: 3 },
     { anim: 'weed', name: 'Howl' },
     { cam: [-1.0, 0.6, 2.6], look: [1.6, 1.4, -2] , t: 1.6 },
     { say: 'post_father' },
