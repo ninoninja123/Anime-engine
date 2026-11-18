@@ -45,7 +45,7 @@ Tiedostot on uudelleenkoodattu (mp3 96–112 kbps, äänekkyys normalisoitu, met
 | `sfx_roar.mp3` | Creatures, Monster, Growl, Wide | `e6057939-4715-4f58-b4b4-0d1226480d4f` | Kaibutsun karjunta |
 | `sfx_rockslide.mp3` | Rocks, Crash & Debris, Big Pile, Short Landslide, Slip | `b26fff48-43e8-489e-bf0f-2633cd4159a6` | kivivyöry, maan jyrinä |
 | `sfx_rock.mp3` | Rocks, Crash & Debris, Drop Rock, Rock Debris | `fc1c7686-9749-43c3-b5c3-28228b24f402` | heitetty/putoava kivi, laskeutumiset |
-| `sfx_summer.mp3` | Ambience, Insect, Insects, Cicada, Crickets, Distant Birds, Wind In Trees, Summer, … Mountains (30 s silmukka) | `ccc31fe8-0bf7-4023-9f0c-7828285e629f` | kesäilta-ambienssi tasolla 2 (canon: taistelu on kesällä) |
+| `sfx_ambience.mp3` | Ambience, Forest, Quiet, Night, Ravens Cawing In The Distance 02 (32 s silmukka) | `e903e474-3037-449d-ac53-15828f3d606b` | tason 2 ambienssi (canon: myöhäissyksy, ei lunta) |
 | `sfx_whoosh.mp3` | Swooshes, Swish, Sword Swing, Airy 02 | `13f4c119-6a44-48c5-96eb-76978ad44321` | väistö, hyppy, Battōgan pyörähdys |
 | `sfx_battoga.mp3` | Designed, Impact, Cinematic, Impact, Hit, Slam, Braam | `eb8d9968-205e-48d5-8510-bc2c738a5970` | Battōga-isku, Jeromen neljäs nuoli |
 | `sfx_spirit.mp3` | Magic, Shimmer, Spell, Cast, Transform, Shimmer, Sparkle, Twinkle 04 | `bf4716be-4f43-4a79-8c21-f3325bc3f8cf` | hengen nousu/hehku, Henki täynnä |

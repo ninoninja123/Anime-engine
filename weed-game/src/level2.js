@@ -208,7 +208,7 @@ export async function startLevel({ phase = 1, intro = true, onExit } = {}) {
   S.cards = cardDefs();
   UI.buildCards(S.cards, useCard);
   if (phase >= 2) { const sm = S.cards.find(c => c.id === 'smith'); sm.state = 'fallen'; }
-  preloadMusic('battle', 'sad', 'dawn', 'smith');
+  preloadMusic('battle', 'sad', 'dawn', 'smith', 'smith2');
   setupArena(phase);
   ambience(true);
   if (intro && phase === 1) await introCutscene();
@@ -227,6 +227,7 @@ function setupArena(phase) {
   place('kagetora', -4.2, -2.3, 1);
   if (phase === 1) place('smith', -8.2, -3.6, 1, 'Idle_2');
   if (phase <= 2) MEN.forEach((id, i) => place(id, -9.4 - i * 1.2, -4.4 + (i % 2) * 0.5, 1, 'Idle'));
+  if (phase === 1) place('north', -13.0, -4.0, 1, 'Idle');
   E.camPos.set(0, 2.4, 9); E.camLook.set(0, 1.4, 0);
 }
 
@@ -244,7 +245,7 @@ function beginPhase(p) {
   setInputEnabled(true);
   music('battle');
   if (p === 1) UI.hint('Tap = bite &nbsp;•&nbsp; Swipe ←/→ = dodge &nbsp;•&nbsp; Swipe ↑ = jump', 6);
-  if (p === 2) UI.hint('Kaibutsu is enraged and faster. Use Jerome and strike its flank!', 4);
+  if (p === 2) UI.hint('Kaibutsu is enraged and faster. Use Jerome and strike its left chest!', 4);
   if (p === 3) UI.hint('Kaibutsu is staggering! Draw a circle ⟳ – <b>BATTŌGA!</b>');
   B.token++;
   bossBrain(B.token);
@@ -720,7 +721,7 @@ async function finale() {
   S.active = false; S.cutscene = false;
   ambience(false);
   music('dawn');
-  showResult(['Smith', 'Robert', 'Rocker', 'Heuler']);
+  showResult(['Smith', 'North', 'Robert', 'Rocker', 'Heuler']);
 }
 
 function showResult(names) {

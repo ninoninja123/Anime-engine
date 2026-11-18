@@ -26,8 +26,8 @@
   11 tehostetta + lumimyrsky-ambienssi; syntetisoitu varajärjestelmä.
 - **Julkaisu**: Cloudflare Worker + Workers KV (`tools/deploy-cf.py`), Range-tuki.
 
-- **Kesä (canon)**: Kaibutsu-taistelu on kesällä → lumimyrsky-ambienssi vaihdettu kesäillan sirkka-/tuuliambienssiin;
-  ympäristön kesäversio on toisen agentin (Fable) työn alla. Repliikeissä ei ollut lumi-/talviviittauksia.
+- **Vuodenaika (canon)**: Kaibutsu-arc on myöhäissyksyllä, ei lunta (canon-corrections.md) → lumimyrsky-ambienssi
+  vaihdettu syysyön metsä-/korppiambienssiin; ympäristön versio on toisen agentin (Fable) työn alla.
 
 ## Puuttuu / tunnetut ongelmat
 - Canon-tutkimus (`docs/weed-game/canon-deep-dive.md`, `canon-corrections.md`) ei ollut vielä valmis tämän session aikana:

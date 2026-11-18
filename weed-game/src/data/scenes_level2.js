@@ -15,7 +15,7 @@ const GAME_CAM = { cam: [0, 2.4, 9], look: [0, 1.4, 0] };
 // ------------------------------------------------------------------------------------------------
 // PRE-BATTLE: arrival at Gajō, the pack gathers, Weed's vow, Jerome's squad, Kaibutsu appears.
 export const intro = ({ cast }) => [
-  { music: 'intro' },
+  { music: null, fade: 1.2 },                                          // the intro song belongs to the main menu only
   { fn: () => { for (const d of Object.values(cast)) d.root.visible = false; } },
   { place: 'weed', x: -13, z: 0.3, face: 1, anim: 'Walk' },
   { place: 'smith', x: -14.6, z: -0.9, face: 1, anim: 'Walk' },
@@ -57,12 +57,14 @@ export const intro = ({ cast }) => [
   { place: 'robert', x: -17.5, z: -2.7, face: 1, anim: 'Gallop' },
   { place: 'rocker', x: -18.3, z: -1.2, face: 1, anim: 'Gallop' },
   { place: 'heuler', x: -19.1, z: -2.2, face: 1, anim: 'Gallop' },
+  { place: 'north', x: -19.9, z: -1.0, face: 1, anim: 'Gallop' },
   { cam: [-8.4, 1.4, 6.2], look: [-11, 0.9, -1.5] },
   { par: [
     { move: 'jerome', x: -8.8, z: -1.8, t: 1.9, anim: 'Gallop', after: 'Idle', ease: 'out' },
     { move: 'robert', x: -10.2, z: -2.7, t: 2.0, anim: 'Gallop', after: 'Idle', ease: 'out' },
     { move: 'rocker', x: -11.0, z: -1.3, t: 2.1, anim: 'Gallop', after: 'Idle', ease: 'out' },
     { move: 'heuler', x: -11.8, z: -2.3, t: 2.2, anim: 'Gallop', after: 'Idle', ease: 'out' },
+    { move: 'north', x: -12.6, z: -1.1, t: 2.3, anim: 'Gallop', after: 'Idle', ease: 'out' },
   ] },
   { sfx: 'bark' },
   { dolly: 'jerome', dist: 1.5, side: 0.7, t: 0.5 },
@@ -107,6 +109,9 @@ export const smith = (ctx) => {
     { place: 'kaibutsu', x: 4.4, z: 0, face: -1, anim: 'Idle_2_HeadLow' },
     { place: 'smith', x: -5.6, z: -0.4, face: 1, anim: 'Idle' },
     { place: 'jerome', x: -7.8, z: -2.6, face: 1, anim: 'Idle' },
+    { hide: 'north' },
+    { cam: [-1.0, 1.6, 6.5], look: [-3.0, 0.8, 0] },
+    { say: 'north_fell' },
     // Smith steps forward; quiet close-up
     { cam: [-3.4, 0.8, 2.4], look: [-4.9, 0.7, -0.4] },
     { move: 'smith', x: -4.6, t: 1.2, anim: 'Walk', after: 'Idle' },
@@ -164,8 +169,8 @@ export const smith = (ctx) => {
     { hide: 'smith' }, { hide: 'kaibutsu' }, { shake: 0.8 },
     { wait: 1.4 },
     // silence – Weed screams
-    { cam: [-1.0, 0.75, 2.0], look: [-2.4, 0.75, 0] },
     { anim: 'weed', name: 'Howl' },
+    { dolly: 'weed', dist: 1.9, side: 0.5, h: 0.15, lookH: 0.6, t: 0 },
     { say: 'sac_scream' },
     { music: 'smith', fade: 2.5 },                                    // keep the theme through the aftermath
     { light: { rim: 0.6, fog: 0x2a2840, t: 2 } },
@@ -189,7 +194,12 @@ export const smith = (ctx) => {
     { fx: 'dust', at: [6.5, 0.5, 0], big: true },
     { wait: 1.3 },
     { anim: 'kaibutsu', name: 'Idle' },
+    { cam: [3.2, 1.2, 4.6], look: [6.0, 2.4, 0], t: 0.6 },
+    { say: 'speak' },
     { dolly: 'jerome', dist: 1.5, side: 0.7, t: 0.4 },
+    { expr: 'jerome', name: 'sad' },
+    { say: 'p4_answer' },
+    { expr: 'jerome', name: null },
     { say: 'sac_rises' },
     { dolly: 'weed', dist: 1.2, side: -0.5, t: 0.6 },
     { say: 'sac_nod' },
@@ -267,11 +277,12 @@ export const arrows = (ctx) => {
     { move: 'jerome', x: B.x - half - 1.3, t: 0.5, anim: 'Gallop', ts: 1.5, ease: 'in' },
     { cam: [B.x - half - 2.2, 0.4, 2.6], look: [B.x, 1.8, 0] },
     { slow: 0.22 }, { fx: 'speed', v: 1 },
-    { anim: 'jerome', name: 'Battoga' },
+    { anim: 'jerome', name: 'Gallop_Jump', loop: false },      // canon: Jerome puree valtimoon (ei Battōgaa)
     { move: 'jerome', x: B.x - half * 0.3, y: boss.height * 0.48, t: 0.3, ease: 'out', real: false },
+    { anim: 'jerome', name: 'Attack', loop: true, ts: 0.6 },                 // puree ja pitää kiinni
     { fn: () => {
       const hp = boss.weak.getWorldPosition(new THREE.Vector3());
-      FX.impact(hp, true); FX.flash('#ffffff', 0.5, 0.9); sfx.boom();
+      FX.impact(hp, true); FX.flash('#ffffff', 0.5, 0.9); sfx.bite(); sfx.hit();
       FX.burst(hp, { color: 0xffd090, count: 40, speed: 8 }); FX.ring(hp, 0xffffff, 7, 0.7);
       B.hp = 8;
     } },
@@ -319,15 +330,15 @@ export const finale = (ctx) => {
     { say: 'finale_cry' },
 
     { sfx: 'battoga' }, { fx: 'speed', v: 1 },
-    { anim: 'weed', name: 'Zetsu', loop: false },          // Zetsu Tenrō Battōga: 1080° korkkiruuvi (rigattu klippi)
-    { caption: '<b>ZETSU TENRŌ BATTŌGA</b>', t: 2.0, wait: false },
+    { anim: 'weed', name: 'Battoga', loop: false },        // tavallinen Battōga (canon: Zetsu Tenrō vasta jaksossa 15)
+    { caption: '<b>BATTŌGA</b>', t: 2.0, wait: false },
     { slow: 0.18 },
     { fn: async () => {
       const arcs = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, w.height * 0.5, 0.2)), 0x9fd0ff, 0.9, 0.4, Math.random() * 6), E.lowFx ? 360 : 180);
       const orbit = { a: -0.6 }; const p0 = new THREE.Vector3();
-      FX.vortex(w.root, 1, w.height * 1.2, 2.2, true);
-      if (!w.hasClip || !w.hasClip('Zetsu')) tween(w.spin.rotation, { z: -Math.PI * 6, x: Math.PI * 2 }, 1.9, { real: true, ease: 'inOut' });
-      else { w.cur.action.timeScale = 2.9; }   // 1080° valmis kameran kiertäessä (slow-mo 0.18)
+      FX.vortex(w.root, 1, w.height * 1.1, 2.2, false);
+      if (!w.hasClip || !w.hasClip('Battoga')) tween(w.spin.rotation, { z: -Math.PI * 6, x: Math.PI * 2 }, 1.9, { real: true, ease: 'inOut' });
+      else { w.cur.action.timeScale = 2.6; }   // kierre valmis kameran kiertäessä (slow-mo 0.18)
       tween(W, { x: B.x - ctx.bossHalf() * 0.35, y: boss.height * 0.55 }, 1.9, { real: true, ease: 'inOut', onUpdate: () => w.root.position.set(W.x, W.y, 0) });
       await tween(orbit, { a: 1.4 }, 1.9, { real: true, ease: 'inOut', onUpdate: () => {
         p0.copy(w.root.position);
@@ -346,7 +357,7 @@ export const finale = (ctx) => {
 };
 
 // ------------------------------------------------------------------------------------------------
-// POST-BATTLE: the fall into the waterfall, dawn, the quiet moment, memorial, Jerome stays, hope.
+// POST-BATTLE (canon-based): the fall, the rising wind, Jerome saved from the river, the helicopter, graves at dusk, hope.
 export const post = (ctx) => {
   const { cast, S, E, FX, sfx } = ctx;
   const boss = cast.kaibutsu, w = cast.weed, B = S.B, W = S.W;
@@ -378,64 +389,73 @@ export const post = (ctx) => {
       await tween({ k: 0 }, { k: 1 }, 1.8, { real: true, ease: 'in', onUpdate: k => ds.forEach((d, i) => { d.root.position.set(p0[i].x + k * 3.5, p0[i].y - k * k * 10, p0[i].z); }) });
     } },
     { cam: [12.5, 6.0, 7.0], look: [12, -2, -2], t: 0 },
+    { say: 'fall_wind' },
     { fx: 'dust', at: [12, 0, -1], big: true }, { sfx: 'rock' },
     { fx: 'flash', color: '#ffffff', t: 2.4, peak: 1 },
     { music: null, fade: 1.5 },
     { say: 'fall_mist' },
     { fn: () => { for (const d of Object.values(cast)) d.root.visible = false; } },
     { wait: 0.6 },
-    // dawn at the riverbank below the falls
-    { music: 'dawn', fade: 3 },
-    { light: { rim: 2.6, fog: 0x4a4058, exposure: 1.15, t: 0.1 } },
-    { fn: () => { if (E.snow) tween(E.snow.uniforms.uWind, { value: 0.25 }, 3, { real: true }); } },
-    { place: 'kaibutsu', x: 5.2, z: -0.6, face: -1, anim: 'Death', loop: false },
-    { place: 'weed', x: 0.8, z: 0.2, face: 1, anim: 'LieDown' },
-    { place: 'ken', x: -0.8, z: -0.8, face: 1, anim: 'LieDown' },
-    { place: 'kagetora', x: -1.8, z: 0.6, face: 1, anim: 'LieDown' },
-    { fn: () => { const t = boss.cur; if (t) t.t = 99; } },                         // already lying
-    { cam: [-3.5, 2.6, 9], look: [1.5, 0.6, 0] },
-    { caption: 'Dawn.', t: 2.2 },
-    { cam: [-0.6, 0.8, 3.2], look: [-1.3, 0.4, 0] , t: 2.0 },
-    { anim: 'ken', name: 'Idle_2_HeadLow' },
-    { expr: 'ken', name: 'happy' },
+    // below the falls (canon: Ken carries Kagetora ashore, Weed has pulled Jerome from the river)
+    { light: { rim: 1.5, fog: 0x4a3a46, exposure: 1.0, t: 0.1 } },
+    { place: 'kaibutsu', x: 6.2, z: -1.2, face: -1, anim: 'Death', loop: false },
+    { fn: () => { const t = boss.cur; if (t) { t.t = 99; if (t.action) t.action.time = t.action.getClip().duration - 0.01; } } },   // already lying
+    { place: 'ken', x: -5.5, z: 0.4, face: 1, anim: 'Walk', ts: 0.6 },
+    { place: 'kagetora', x: -5.5, y: cast.ken.height * 0.62, z: 0.4, face: 1, anim: 'LieDown' },
+    { cam: [-4.5, 2.6, 9], look: [0.5, 0.6, 0] },
+    { caption: 'Below the falls', t: 2.4, wait: false },
+    { par: [
+      { move: 'ken', x: -2.2, t: 3.0, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' },
+      { move: 'kagetora', x: -2.2, t: 3.0, faceMove: false },
+      { cam: [-1.0, 1.0, 3.6], look: [-2.4, 0.7, 0.4], t: 3.0 },
+    ] },
+    { expr: 'ken', name: 'determined' },
     { say: 'post_alive_ken' },
-    { expr: 'ken', name: null },
-    { anim: 'kagetora', name: 'Idle' },
     { say: 'post_alive_kage' },
-    { anim: 'weed', name: 'Idle_2_HeadLow' },
-    // the quiet moment with the fallen monster
-    { move: 'weed', x: 2.4, t: 1.8, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' },
-    { cam: [3.4, 0.9, 2.8], look: [4.4, 0.6, -0.4] , t: 1.5 },
+    { expr: 'ken', name: null },
+    { fn: () => { cast.kagetora.root.position.set(-1.5, 0, 0.9); } },
+    // Weed holds Jerome on a rock in the current
+    { place: 'jerome', x: 2.4, z: -0.3, face: -1, anim: 'LieDown' },
+    { place: 'weed', x: 1.5, z: 0.1, face: 1, anim: 'Attack', loop: true, ts: 0.25 },
+    { cam: [2.6, 0.9, 3.0], look: [2.0, 0.45, -0.2], t: 0 },
+    { expr: 'jerome', name: 'sad' },
+    { say: 'post_guilt' },
+    { dolly: 'weed', dist: 1.3, side: 0.6, t: 0.6 },
+    { say: 'post_carry' },
+    { dolly: 'jerome', dist: 1.4, side: -0.6, t: 0.6 },
+    { expr: 'jerome', name: 'closed' },
+    { say: 'post_follow' },
+    { expr: 'jerome', name: null },
+    // the quiet moment with the fallen monster (the whimper is our own interpretation)
+    { anim: 'weed', name: 'Walk', ts: 0.6 },
+    { move: 'weed', x: 4.6, z: -0.6, t: 2.0, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' },
+    { cam: [4.4, 1.0, 3.0], look: [5.6, 0.6, -1.0], t: 1.5 },
     { say: 'whimper' },
     { fn: () => { const p = boss.root.position.clone(); FX.spiritLight(p.add(new THREE.Vector3(0, 1.4, 0.4)), 0xffd8a8, 6); } },
     { dolly: 'weed', dist: 1.2, side: -0.5, t: 1.2 },
     { say: 'post_human' },
-    // Jerome arrives, limping
-    { place: 'jerome', x: -7, z: -0.4, face: 1, anim: 'Walk', ts: 0.6 },
-    { cam: [-2.2, 1.1, 5.2], look: [-3.5, 0.8, 0] },
-    { move: 'jerome', x: -0.6, z: -0.2, t: 3.0, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow', ease: 'out' },
-    { face: 'weed', dir: -1 },
-    { dolly: 'jerome', dist: 1.3, side: 0.6, t: 0.6 },
-    { expr: 'jerome', name: 'sad' },
-    { say: 'post_guilt' },
-    { dolly: 'weed', dist: 1.2, side: 0.6, t: 0.6 },
-    { anim: 'weed', name: 'Idle' },
-    { say: 'post_carry' },
-    { dolly: 'jerome', dist: 1.3, side: -0.6, t: 0.6 },
-    { anim: 'jerome', name: 'Idle' },
-    { expr: 'jerome', name: 'closed' },
-    { say: 'post_follow' },
+    // the laboratory helicopter lands; Jerome refuses to go back
+    { sfx: 'rumble', arg: 2 },
+    { caption: 'A laboratory helicopter sets down by the river.', t: 3.0, wait: false },
+    { place: 'jerome', x: 1.2, z: 0.2, face: 1, anim: 'Idle' },
+    { cam: [-0.4, 1.0, 3.6], look: [1.6, 1.0, -1], t: 1.2 },
+    { anim: 'jerome', name: 'Bark', loop: false }, { sfx: 'bark' },
+    { expr: 'jerome', name: 'determined' },
+    { say: 'post_stay' },
     { expr: 'jerome', name: null },
-    // memorial: four lights rise over the falls
+    { light: { rim: 1.1, fog: 0x3a2e40, exposure: 0.95, t: 2 } },          // dusk: the graves
+    // memorial at dusk: five lights rise over the graves
+    { music: 'smith2', fade: 2.5 },                                  // Smith's second theme for the memorial
     { place: 'ken', x: -1.8, z: -1.2, face: 1, anim: 'Idle' },
     { place: 'kagetora', x: -2.8, z: -0.2, face: 1, anim: 'Idle' },
     { face: 'weed', dir: 1 },
     { cam: [0, 2.2, 10], look: [0, 2.8, -3], t: 2.2 },
-    { fn: () => ['Smith', 'Robert', 'Rocker', 'Heuler'].forEach((n, i) => setTimeout(() => FX.spiritLight(new THREE.Vector3(-3 + i * 2, 1.4, -1), 0xffe6b0, 7), i * 500)) },
+    { fn: () => ['Smith', 'North', 'Robert', 'Rocker', 'Heuler'].forEach((n, i) => setTimeout(() => FX.spiritLight(new THREE.Vector3(-4 + i * 2, 1.4, -1), 0xffe6b0, 7), i * 500)) },
     { sfx: 'spirit' },
-    { caption: '<b>IN MEMORY</b>Smith · Robert · Rocker · Heuler', t: 5, wait: false },
+    { caption: '<b>IN MEMORY</b>Smith · North · Robert · Rocker · Heuler', t: 5, wait: false },
     { say: 'memorial' },
-    // hope: Weed faces the sunrise, thinks of his father
+    // hope: Weed faces the last light, thinks of his father
+    { music: 'dawn', fade: 3 },
     { anim: 'weed', name: 'Howl' },
     { cam: [-1.0, 0.6, 2.6], look: [1.6, 1.4, -2] , t: 1.6 },
     { say: 'post_father' },
