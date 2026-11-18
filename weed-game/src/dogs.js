@@ -37,7 +37,21 @@ export function loadModel(key) {
 /** Lataa kaikki mallit, joita annetut hahmot tarvitsevat. */
 export function loadFor(ids) {
   const keys = new Set(ids.filter(id => CHARACTERS[id]).map(id => CHARACTERS[id].kind === 'factory' ? 'dog_parts' : CHARACTERS[id].model));
-  return Promise.all([...keys].map(loadModel));
+  const looks = new Set(ids.filter(id => CHARACTERS[id] && CHARACTERS[id].look).map(id => CHARACTERS[id].look));
+  return Promise.all([...[...keys].map(loadModel), ...[...looks].map(loadLook)]);
+}
+
+// Ulkonäkövariantit (src/data/looks.js -> tools/make-looks.mjs): sama rigattu malli, oma baseColor-tekstuuri.
+const lookCache = {}, lookTex = {};
+const texLoader = new THREE.TextureLoader();
+export function loadLook(id) {
+  if (lookCache[id]) return lookCache[id];
+  const url = new URL('models/looks/' + id + '.webp', window.ASSET_BASE || document.baseURI).href;
+  lookCache[id] = texLoader.loadAsync(url).then(t => {
+    t.flipY = false; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 2; t.needsUpdate = true;
+    return (lookTex[id] = t);
+  }).catch(e => { console.warn('look ' + id + ' missing', e); return null; });
+  return lookCache[id];
 }
 export function isLoaded(id) {
   const c = CHARACTERS[id]; const k = c.kind === 'factory' ? 'dog_parts' : c.model;
@@ -481,7 +495,9 @@ export class Dog {
     const wrap = new THREE.Group(); wrap.add(inst);
     wrap.scale.setScalar(1 / info.h); if (MODELS[c.model].mirrorZ) { wrap.scale.z *= -1; } wrap.position.set(-info.cx / info.h, -info.minY / info.h, -info.cz / info.h * (MODELS[c.model].mirrorZ ? -1 : 1));
     this.model.add(wrap);
-    const mat = new THREE.MeshToonMaterial({ map: info.map, gradientMap });
+    const lt = c.look && lookTex[c.look];
+    if (lt && info.map) { lt.wrapS = info.map.wrapS; lt.wrapT = info.map.wrapT; lt.channel = info.map.channel; }
+    const mat = new THREE.MeshToonMaterial({ map: lt || info.map, gradientMap });
     if (c.tint) mat.color.set(c.tint);
     const ol = skinnedOutline(c.outline ? c.outline * info.h : 0.008);
     this.mat = mat; this.mats.push(mat, ol);
@@ -493,6 +509,16 @@ export class Dog {
       o.parent.add(om); this.outline = om;
     }
     this.bones = {}; inst.traverse(o => { if (o.isBone) this.bones[o.name] = o; });
+    // mittasuhteet: luiden skaalaus (klipeissä ei ole scale-raitoja, joten skaala säilyy)
+    //   bones: { head: 1.1, ear_L: [x,y,z], ears: 1.2, legs: 1.1, frontLegs, backLegs, neck, tail, spine }
+    if (c.bones) {
+      const alias = { ears: ['ear_L', 'ear_R'], legs: ['front_upper_L', 'front_upper_R', 'back_upper_L', 'back_upper_R'],
+        frontLegs: ['front_upper_L', 'front_upper_R'], backLegs: ['back_upper_L', 'back_upper_R'], tail: ['tail_01'], spine: ['spine_02'] };
+      for (const [k, v] of Object.entries(c.bones)) for (const bn of alias[k] || [k]) {
+        const b = this.bones[bn]; if (!b) continue;
+        if (Array.isArray(v)) b.scale.set(v[0], v[1], v[2]); else b.scale.setScalar(v);
+      }
+    }
     this.mixer = new THREE.AnimationMixer(inst);
     this.actions = {}; for (const clip of info.clips) this.actions[clip.name] = this.mixer.clipAction(clip);
     this.length = (info.maxX - info.minX) * this.height; this.width = info.halfW * 2 * this.height; this.halfW = info.halfW;

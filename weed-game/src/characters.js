@@ -244,6 +244,19 @@ export const LEVEL2_CAST = ['weed', 'kaibutsu', 'smith', 'jerome', 'ken', 'kaget
 export const ROSTER = ['weed', 'gin', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'north', 'kaibutsu',
   'rocket', 'tobee', 'kurotora', 'moss', 'tesshin', 'kite', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
 
+// ---------------- ulkonäkövariantit (src/data/looks.js) ----------------
+// Tehdashahmot siirretään rigattujen pohjamallien päälle omalla tekstuurilla (look) ja luuskaalauksella (bones).
+// ?factory=1 palauttaa vanhat tehdasversiot vertailua varten.
+import { LOOK_CAST } from './data/looks.js';
+if (!MODELS.kagetora_true_auto) MODELS.kagetora_true_auto = { file: 'kagetora_true_auto.glb', rotY: 0, rigged: true };
+if (!(typeof location !== 'undefined' && new URLSearchParams(location.search).has('factory'))) {
+  for (const [id, o] of Object.entries(LOOK_CAST)) {
+    const c = CHARACTERS[id]; if (!c || !MODELS[o.model]) continue;
+    Object.assign(c, { kind: 'rigged' }, o);
+    if (o.tint === null) delete c.tint;
+  }
+}
+
 // ---------------- geneeriset joukkovariantit (src/data/roster_specs.js) ----------------
 // Ei ylikirjoita yllä olevia hahmoja; lisätyt id:t ROSTER_EXTRA_IDS, galleriaryhmät GROUP_OF.
 import { ROSTER_SPECS, resolveSpecs, GROUP_OF, GROUP_LABEL } from './data/roster_specs.js';
