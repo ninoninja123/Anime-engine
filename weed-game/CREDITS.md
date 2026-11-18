@@ -1,23 +1,24 @@
 # Tekijät ja lisenssit
 
-## 3D-mallit (käyttäjän omat, Tripo AI -generoidut)
-Kaikki mallit ovat käyttäjän toimittamia (`assets/models-src/*.glb`, Tripo-tuotannosta). Peliin ne
-optimoidaan skriptillä `tools/optimize-models.mjs` (normal/roughness-kartat pois, 768–1024 px WebP-värikartta,
-geometrian yksinkertaistus ~45–60 %, meshopt-pakkaus) → `public/models/*.glb` (yhteensä ~1,1 MB, alkuperäiset ~21 MB).
+## 3D-mallit (käyttäjän omat, Tripo AI -generoidut; rigit Gemini / Tripo auto-rig)
+Lähteet `assets/models-src/*.glb`. Peliin optimoidaan `tools/optimize-models.mjs`:llä (normal/roughness-kartat pois,
+768–1024 px WebP, geometrian yksinkertaistus ~45–60 %, meshopt; skinnaus ja klipit säilyvät) → `public/models/` (~1,8 MB).
 
-| Tiedosto | Hahmo(t) pelissä | Huom |
-|---|---|---|
-| `weed.glb` (husky) | **Weed** | lähde katsoo +Z → kierto 90° |
-| `kaibutsu.glb` | **Kaibutsu (P4)** | mallin oma karvaton laikku vasemmassa kyljessä = heikko kohta (hehku shaderissa) |
-| `smith.glb` | **Smith** | kolmijalkainen; "limp3"-askellus |
-| `striped_a.glb` | **Kagetora** | |
-| `striped_b.glb` | **Kurotora** (Kagetoran isä, galleriassa) | |
-| `rocket.glb` (borzoi) | **Rocket** (galleriassa) | |
-| `tobei.glb` | **Tōbee**, **Moss** (sävytetty) (galleriassa) | lähde katsoo +Z |
-| `dog_parts.glb` (13 osaa) | **koiratehdas**: Gin, Jerome, Ken, Robert, Rocker, Heuler, Akame, John, Ben, GB, Lector, Thunder, Hōgen, Genba + roster-agentin geneeriset joukkovariantit | osat jaetaan nivelhierarkiaksi, väritys verteksiväreinä |
+| Pelin malli | Lähde | Hahmo(t) | Rigi / animaatiot |
+|---|---|---|---|
+| `weed_rigged.glb` | käyttäjän husky (Tripo) | **Weed** | käyttäjän Gemini: 24 luuta, 9 klippiä (idle, walk, run, jump, bite, hurt, die, battoga, zetsu_tenrou_battouga) |
+| `kagetora_rigged.glb` | `striped_a.glb` | **Kagetora** | Gemini, kuten yllä |
+| `kaibutsu_rigged.glb` | `kaibutsu.glb` | **Kaibutsu (P4)** | `tools/rig_dog_standalone.py` (Gemini, auto-rig) – peilattu takaisin, jotta karvaton laikku on vasemmassa kyljessä |
+| `smith_rigged.glb` | `smith.glb` | **Smith** (kolmijalkainen) | auto-rig |
+| `striped_b_rigged.glb` | `striped_b.glb` | **Kurotora** | auto-rig |
+| `rocket_rigged.glb` | `rocket.glb` | **Rocket** | auto-rig |
+| `tobei_rigged.glb` | `tobei.glb` | **Tōbee**, **Moss** (sävytetty) | auto-rig |
+| `hogen_rigged.glb` | `hogen.glb` (käyttäjän toimittama) | **Hōgen**, **Genba** (sävytetty) | auto-rig |
+| `dog_parts.glb` | käyttäjän 13-osainen peruskoira | **koiratehdas**: Gin, Jerome, Ken, Robert, Rocker, Heuler, Akame, John, Ben, GB, Lector, Thunder + roster-agentin joukkovariantit | omat nivelet + proseduraaliset animaatiot, anime-kasvot (`src/face.js`) |
 
-- Vanha väliaikainen malli `assets/models-src/dog_base.glb` = *Shiba Inu*, **Quaternius**, "Ultimate Animated Animal
-  Pack", **CC0 1.0** (https://quaternius.com/packs/ultimateanimatedanimals.html). Ei enää käytössä pelissä (säilytetty lähteenä).
+- `base_rigged.glb` (rigattu peruskoira, Tripo auto-rig) on lähteissä; tehtaan siirto sille on seuraava askel (ks. NEXT.md).
+- Staattiset alkuperäiset (`weed.glb`, `kaibutsu.glb` …) säilyvät lähteinä; pelissä käytetään rigattuja.
+- Vanha `dog_base.glb` = *Shiba Inu*, **Quaternius**, "Ultimate Animated Animal Pack", **CC0 1.0** – ei enää käytössä.
 
 ## Musiikki ja äänitehosteet – Epidemic Sound
 Käyttäjällä on Epidemic Sound -lisenssi, ja raidat on ladattu hänen tilillään (Epidemic Sound MCP).
