@@ -11,6 +11,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { E } from './engine.js';
 import { CHARACTERS, MODELS } from './characters.js';
+import { attachExtras } from './accessories.js';
 
 export const CHARS = CHARACTERS;
 const RIG_DEBUG = E.params.has('rigdebug');
@@ -403,6 +404,7 @@ export class Dog {
     this.cur = null; this.prev = null;
     this.P = blankPose();
     this.play('Idle');
+    if (c.extras) this._extras = attachExtras(this, c.extras);
   }
 
   // --- jäykkä malli + pehmeä rigi
@@ -626,6 +628,7 @@ export class Dog {
       this.weakGlow.material.opacity = this.weakReveal * pulse;
       this.U.uWeakAmt.value = this.weakReveal * (0.5 + pulse * 0.8);
     }
+    if (this._extras) this._extras(this.t, dt);
   }
 }
 
