@@ -1,4 +1,4 @@
-// DOM-käyttöliittymän apurit: HUD, kortit, tekstitys, vihjeet.
+// DOM-käyttöliittymän apurit: HUD, kortit, cut-in, kuvatekstit, vihjeet. (Repliikit: voice.js)
 import { E, wait } from './engine.js';
 
 export const $ = id => document.getElementById(id);
@@ -38,15 +38,15 @@ export function cine(on) {
   if (!on) { show('sub', false); show('caption', false); }
 }
 
-/** Repliikki: puhuja + teksti, kesto arvioidaan pituudesta. */
-export async function say(who, text, secs) {
-  const d = secs ?? Math.max(2.2, text.length * 0.055);
-  $('sub').querySelector('.who').textContent = who || '';
-  $('sub').querySelector('.who').style.display = who ? '' : 'none';
-  $('sub').querySelector('.txt').textContent = text;
-  show('sub', true);
-  await wait(d, true);
-  show('sub', false);
+/** Anime-style cut-in banner for special moves. o = { name, move, jp, color, color2 } or null to hide. */
+export function cutin(o) {
+  const el = $('cutin'); if (!el) return;
+  if (!o) { el.classList.remove('on'); return; }
+  el.style.setProperty('--c1', o.color); el.style.setProperty('--c2', o.color2);
+  el.querySelector('.ci-name').textContent = o.name;
+  el.querySelector('.ci-move').textContent = o.move;
+  el.querySelector('.ci-jp').textContent = o.jp || '';
+  el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
 }
 export async function caption(html, secs = 3) {
   const el = $('caption'); el.innerHTML = html; el.style.opacity = 1; show('caption', true);
@@ -76,7 +76,8 @@ export function updateCard(d) {
   el.classList.toggle('locked', d.state === 'locked');
   el.classList.toggle('sacrifice', d.state === 'sacrifice');
   el.classList.toggle('fallen', d.state === 'fallen');
-  el.querySelector('.cd').textContent = d.state === 'fallen' ? 'Muistoissa' : d.state === 'sacrifice' ? 'UHRAUS' : d.desc;
+  el.querySelector('.cd').textContent = d.state === 'fallen' ? 'In memory' : d.state === 'sacrifice' ? 'SACRIFICE' : d.state === 'ready' ? 'READY' : d.desc;
+  el.style.setProperty('--p', String(1 - frac));
 }
 
 export function isSkipping() { return E.skipping; }
