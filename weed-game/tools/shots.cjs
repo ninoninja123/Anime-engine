@@ -40,7 +40,7 @@ const only = process.argv[2] || 'all';
     await sleep(250); await shot('10_battle_jump');
     await page.evaluate(() => window.__game.debug.S.cards.forEach(c => { if (c.state === 'cooldown') c.cool = 0; }));
     await sleep(200);
-    await page.tap('.card[data-id="jerome"]'); await sleep(1300); await shot('11_battle_weakspot');
+    await page.tap('.card[data-id="jerome"]', { force: true }); await sleep(1300); await shot('11_battle_weakspot');
     await page.evaluate(() => window.__game.debug.fillHenki()); await sleep(300);
     // kaaren piirto = Battōga
     await page.mouse.move(300, 280); await page.mouse.down();
@@ -48,7 +48,7 @@ const only = process.argv[2] || 'all';
     await page.mouse.up(); await sleep(350); await shot('12_battle_battoga');
     await sleep(1500);
     await page.evaluate(() => window.__game.debug.smith()); await sleep(800); await shot('13_battle_armor_smithcard');
-    await page.tap('.card[data-id="smith"]'); await sleep(9000); await shot('14_smith_run');
+    await page.tap('.card[data-id="smith"]', { force: true }); await sleep(9000); await shot('14_smith_run');
     await sleep(4200); await shot('15_smith_rockslide');
     await sleep(5000); await shot('16_smith_memory');
     await page.waitForFunction(() => window.__game.debug.S.phase === 2 && !window.__game.debug.S.cutscene, null, { timeout: 60000 });

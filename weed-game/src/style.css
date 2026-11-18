@@ -47,10 +47,10 @@ body.cine #letterbox .bar { height: 11vh; }
 @keyframes pulse { from { filter: drop-shadow(0 0 4px #8cf); } to { filter: drop-shadow(0 0 14px #fff); } }
 
 #cards { position: absolute; right: max(14px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); display: flex; gap: 8px; pointer-events: auto; }
-.card { position: relative; width: 74px; height: 92px; border-radius: 10px; padding: 6px 5px; overflow: hidden;
+.card { position: relative; width: 68px; height: 84px; border-radius: 10px; padding: 6px 5px; overflow: hidden;
   background: linear-gradient(180deg, rgba(36,48,92,0.92), rgba(14,18,38,0.95)); border: 1.5px solid rgba(180,200,255,0.5);
   display: flex; flex-direction: column; align-items: center; justify-content: flex-end; text-align: center; min-height: 0; }
-.card .portrait { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; border-radius: 50%;
+.card .portrait { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 34px; height: 34px; border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.6); }
 .card .cn { font-size: 11px; font-weight: 800; line-height: 1.1; }
 .card .cd { font-size: 9px; opacity: 0.75; line-height: 1.1; margin-top: 2px; }

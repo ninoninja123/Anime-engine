@@ -224,7 +224,7 @@ async function bite() {
   if (seq !== W.seq) return;
   sfx.bite();
   const hitPos = new THREE.Vector3(B.x - dir * 0.6, 1.1, 0.4);
-  damageBoss(2.6, hitPos);
+  damageBoss(4, hitPos);
   addHenki(0.1);
   await wait(0.18);
   if (seq !== W.seq) return;

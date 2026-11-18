@@ -196,9 +196,9 @@ export class Dog {
     const torso = this.bones['Torso'] || this.bones['Back'];
     const tp = new THREE.Vector3(); torso.getWorldPosition(tp);
     const w = this.height * 0.2;
-    const patchMat = new THREE.MeshToonMaterial({ color: 0xb98a7a, gradientMap, emissive: 0x000000 });
+    const patchMat = new THREE.MeshToonMaterial({ color: 0x9c7468, gradientMap, emissive: 0x000000 });
     const patch = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), patchMat);
-    patch.scale.set(0.42, 0.3, 0.06);
+    patch.scale.set(0.3, 0.2, 0.05);
     patch.position.set(tp.x + 0.15, tp.y - 0.02, -w);
     this.root.add(patch);
     const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture(), color: 0xff5a3c, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
