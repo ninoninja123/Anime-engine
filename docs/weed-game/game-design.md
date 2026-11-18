@@ -114,6 +114,7 @@ Tason runko on lyhyt kerronnallinen eteneminen (kävely/juoksu, valinnat, pikkuv
 | 5 | **Hylättyjen pentujen kuningas** | Hōgen | Kyōshirō | **Lector & Thunder** (2 bossia yhtä aikaa) | Terun isä kuolee suojellessaan poikaa |
 | 6 | **Kuuma lähde ja ninjat** | Hōgen | Tesshin (opettaa Zetsu Tenrō Battōgan) | **Sanchō-villisika** + **Kamakiri** | Weed oppii perintöliikkeen; Hiron kosto |
 | 7 | **Lumimyrsky Futago-solalla** | Hōgen | Tōbee (lyhyesti) | **Genba** | Hōgen tappaa veljensä; Tōbee kuolee seisaaltaan |
+| 7b | **Kapteenien kaksintaistelut** (loppusota) | Hōgen | Tesshin, Gin | **Hōgenin kapteenit: Kamakiri, Buruge, Batto ja Kite** (Kite = Kaito, teräksiset etujalat) | kapteenit lyödään ja säästetään, katuvat myöhemmin (canon-deep-dive.md jaksot 23–25) |
 | 8 | **Ōun henget** (keskifinaali) | Hōgen | koko armeija | **Hōgen** (3 vaihetta, viimeinen "kuolemanjumala") | Henget nousevat, Weed säästää Hōgenin, Gin nimittää johtajaksi (+ valinnainen Jerome-muisto) |
 | 9 | **Apinoiden vuori** | Shōgun | Yukimura (väliaikainen) | **Shōgun** (kirves → aseeton) | Hienin katumus, Yukimuran kuolema "hän oli veljesi" |
 | 10 | **Pohjoinen meri** | Hokkaidō | Lydia, Maxim | **Boslev** (välissä) + **Victor** | Hakurōn loppu (hienovarainen), Mossin kuolema, Alam vetää Victorin mereen |

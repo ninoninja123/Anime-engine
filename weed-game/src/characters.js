@@ -166,6 +166,15 @@ export const CHARACTERS = {
     c: { coat: '#6e6a63', under: '#bdb5a6', head: '#75706a', ear: '#2b2826', tail: '#3b3836', muzzle: '#2a2725' },
     marks: ['saddle:#2a2725', 'mask:#2a2725', 'belly'],
   },
+  kite: {
+    name: 'Kite', jp: 'カイト', kind: 'factory', height: 1.25,
+    role: 'One of Hōgen\'s captains with Kamakiri, Buruge and Batto (romanised Kite / Kaito, "god of wind"). Steel prosthetic forelegs. Defeated, spared, later repents.',
+    gait: 'light', speed: 1.2, wag: 0.1,
+    p: { leg: 1.15, legW: 1.0, body: 1.08, neck: 1.1, ear: 1.2, earTilt: 0.2, tail: 'sabre', tailLen: 1.1, muzzle: 1.25 },
+    c: { coat: '#5b544c', under: '#a39b8e', head: '#5f5850', ear: '#3a3530', muzzle: '#2d2925' },
+    marks: ['belly', 'mask:#2d2925'],
+    extras: [{ type: 'metalLegs' }, { type: 'collar', color: '#4a2a22' }],
+  },
   akame: {
     name: 'Akame', jp: '赤目', kind: 'factory', height: 1.02,
     role: 'Kishu, Gin\'s contemporary and former leader of the Iga ninja dogs. Messenger and strategist.',
@@ -233,7 +242,7 @@ export const CHARACTERS = {
 // Pelissä käytetyt (taso 2) ja galleriassa näytettävät
 export const LEVEL2_CAST = ['weed', 'kaibutsu', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'north', 'gin'];
 export const ROSTER = ['weed', 'gin', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'north', 'kaibutsu',
-  'rocket', 'tobee', 'kurotora', 'moss', 'tesshin', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
+  'rocket', 'tobee', 'kurotora', 'moss', 'tesshin', 'kite', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
 
 // ---------------- geneeriset joukkovariantit (src/data/roster_specs.js) ----------------
 // Ei ylikirjoita yllä olevia hahmoja; lisätyt id:t ROSTER_EXTRA_IDS, galleriaryhmät GROUP_OF.
