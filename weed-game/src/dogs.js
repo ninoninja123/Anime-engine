@@ -522,7 +522,7 @@ export class Dog {
     this.U.uWeak.value.set(ws.x, ws.y, ws.z, ws.r);
     const anchor = new THREE.Object3D(); anchor.position.set(ws.x, ws.y, ws.z); this.model.add(anchor);
     const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture(), color: 0xff5a3c, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
-    glow.scale.setScalar(0.55); glow.position.set(ws.x, ws.y, ws.z - 0.06);
+    glow.scale.setScalar(0.4); glow.position.set(ws.x, ws.y, ws.z - 0.06);
     this.model.add(glow);
     this.weak = anchor; this.weakGlow = glow; this.weakReveal = 0;
   }
@@ -625,8 +625,8 @@ export class Dog {
     }
     if (this.weak) {
       const pulse = 0.6 + Math.sin(this.t * 8) * 0.4;
-      this.weakGlow.material.opacity = this.weakReveal * pulse;
-      this.U.uWeakAmt.value = this.weakReveal * (0.5 + pulse * 0.8);
+      this.weakGlow.material.opacity = this.weakReveal * pulse * 0.55;
+      this.U.uWeakAmt.value = this.weakReveal * (0.25 + pulse * 0.35);
     }
     if (this._extras) this._extras(this.t, dt);
   }
