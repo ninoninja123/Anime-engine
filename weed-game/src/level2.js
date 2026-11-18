@@ -1,6 +1,6 @@
 // LEVEL 2 "Gajō – Kaibutsu": real-time gesture-controlled boss fight + data-driven cutscenes (scenes.js).
 // Phases: 1) fight -> armor -> Smith's sacrifice (rockslide)  2) fight -> "Four Arrows"
-//         3) staggering monster -> Weed's Battōga finisher -> fall into the falls -> dawn + memorial.
+//         3) staggering monster -> Weed's Battōga finisher -> fall into the gorge -> river, helicopter, graves at dusk.
 // Pack cards = special moves with an anime cut-in, choreography, impact FX and a clean exit.
 import * as THREE from 'three';
 import { E, tween, wait, shake } from './engine.js';
@@ -227,6 +227,7 @@ function setupArena(phase) {
   place('kagetora', -4.2, -2.3, 1);
   if (phase === 1) place('smith', -8.2, -3.6, 1, 'Idle_2');
   if (phase <= 2) MEN.forEach((id, i) => place(id, -9.4 - i * 1.2, -4.4 + (i % 2) * 0.5, 1, 'Idle'));
+  if (phase === 1) place('north', -13.0, -4.0, 1, 'Idle');
   E.camPos.set(0, 2.4, 9); E.camLook.set(0, 1.4, 0);
 }
 
@@ -244,7 +245,7 @@ function beginPhase(p) {
   setInputEnabled(true);
   music('battle');
   if (p === 1) UI.hint('Tap = bite &nbsp;•&nbsp; Swipe ←/→ = dodge &nbsp;•&nbsp; Swipe ↑ = jump', 6);
-  if (p === 2) UI.hint('Kaibutsu is enraged and faster. Use Jerome and strike its flank!', 4);
+  if (p === 2) UI.hint('Kaibutsu is enraged and faster. Use Jerome and strike its left chest!', 4);
   if (p === 3) UI.hint('Kaibutsu is staggering! Draw a circle ⟳ – <b>BATTŌGA!</b>');
   B.token++;
   bossBrain(B.token);
@@ -720,7 +721,7 @@ async function finale() {
   S.active = false; S.cutscene = false;
   ambience(false);
   music('dawn');
-  showResult(['Smith', 'Robert', 'Rocker', 'Heuler']);
+  showResult(['Smith', 'North', 'Robert', 'Rocker', 'Heuler']);
 }
 
 function showResult(names) {

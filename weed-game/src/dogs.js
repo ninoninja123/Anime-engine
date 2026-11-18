@@ -17,6 +17,7 @@ import { buildFace } from './face.js';
 
 export const CHARS = CHARACTERS;
 const RIG_DEBUG = E.params.has('rigdebug');
+let scarTex = null;
 
 // ------------------------------------------------------------------ lataus
 const loader = new GLTFLoader();
@@ -299,6 +300,19 @@ const PAINT = {
     const d = spotNoise(x + 3, y, z, 0.07);
     return [ss(0.42, 0.3, d) * (part === P.HEAD ? 0.5 : 1) * ss(0.12, 0.2, y), col];
   },
+  capHead: (c, part, x, y, z, col) => part === P.HEAD ? [ss(0.86, 0.9, y) * ss(0.5, 0.42, x), col] : part === P.NECK ? [ss(0.78, 0.84, y), col] : null,
+  eyeMask: (c, part, x, y, z, col) => part === P.HEAD ? [ss(0.075, 0.045, Math.hypot((x - 0.45) * 0.8, y - 0.855, Math.abs(z) - 0.09)), col] : null,
+  eyeStripe: (c, part, x, y, z, col) => {      // musta raita silmästä taaksepäin (saksanpaimen-Jerome)
+    if (part !== P.HEAD) return null;
+    const t = Math.min(1, Math.max(0, (0.47 - x) / 0.14)); const py = 0.855 + t * 0.025;
+    return [ss(0.03, 0.015, Math.abs(y - py)) * (x > 0.32 && x < 0.48 ? 1 : 0) * ss(0.04, 0.07, Math.abs(z)), col];
+  },
+  scarL: (c, part, x, y, z) => {               // kaksi arpea kasvojen vasemmalla (-Z) puolella
+    if (part !== P.HEAD || z > 0) return null;
+    let w = 0;
+    for (const o of [0, 0.035]) { const t = Math.min(1, Math.max(0, (x - 0.42 - o) / 0.09)); const py = 0.86 - t * 0.09 - o * 0.4; w = Math.max(w, ss(0.01, 0.004, Math.abs(y - py)) * (x > 0.41 + o && x < 0.52 + o ? 1 : 0)); }
+    return [w, '#d8a49c'];
+  },
   scar: (c, part, x, y, z) => {
     if (part !== P.HEAD || z < 0) return null;
     const t = Math.min(1, Math.max(0, (x - 0.40) / 0.1)); const py = 0.93 - t * 0.12;
@@ -518,6 +532,7 @@ export class Dog {
       if (spine) { this.model.updateMatrixWorld(true); spine.attach(anchor); spine.attach(glow); }
       this.weak = anchor; this.weakGlow = glow; this.weakReveal = 0;
     }
+    if (c.scars) this._makeScars(c.scars);
     if (c.eyes) {
       const e = c.eyes, eyeMat = new THREE.SpriteMaterial({ map: glowTexture(), color: new THREE.Color(c.eyeColor || '#ffb030'), transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false });
       const eyes = new THREE.Group(); for (const zs of [-1, 1]) { const sp = new THREE.Sprite(eyeMat); sp.scale.setScalar(0.06); sp.position.set(e.x, e.y, zs * e.z); eyes.add(sp); }
@@ -525,6 +540,23 @@ export class Dog {
       const k0 = eyes.scale.x;   // attach() säilyttää maailmamittakaavan -> skaalataan suhteessa
       this.eyes = { material: eyeMat, scale: { setScalar: v => eyes.scale.setScalar(k0 * v * 2) } };
       if (c.eyeScale) this.eyes.scale.setScalar(c.eyeScale);
+    }
+  }
+  _makeScars(list) {
+    // ohuet arpiviivat tekstuurina pienellä tasolla, kiinni pääluussa (rigatut mallit)
+    if (!scarTex) {
+      const cv = document.createElement('canvas'); cv.width = cv.height = 64; const g = cv.getContext('2d');
+      g.strokeStyle = '#e6b2a8'; g.lineWidth = 5; g.lineCap = 'round';
+      for (const o of [0, 18]) { g.beginPath(); g.moveTo(14 + o, 12); g.lineTo(34 + o, 52); g.stroke(); }
+      scarTex = new THREE.CanvasTexture(cv); scarTex.colorSpace = THREE.SRGBColorSpace;
+    }
+    for (const sc of list) {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(sc.size || 0.08, sc.size || 0.08),
+        new THREE.MeshBasicMaterial({ map: scarTex, transparent: true, alphaTest: 0.3, polygonOffset: true, polygonOffsetFactor: -4, side: THREE.DoubleSide }));
+      m.position.set(...sc.at); m.rotation.y = sc.at[2] < 0 ? Math.PI : 0;
+      this.model.add(m); this.model.updateMatrixWorld(true);
+      if (this.bones && this.bones.head) this.bones.head.attach(m);
+      this.mats.push(m.material);
     }
   }
   hasClip(n) { return !!(this.actions && this.actions[(CLIPMAP[n] || [n])[0]]); }
