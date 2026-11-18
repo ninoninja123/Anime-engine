@@ -9,52 +9,65 @@
 import * as THREE from 'three';
 
 const geoCache = new Map();
-const matCache = new Map();
 function geo(key, make) { if (!geoCache.has(key)) geoCache.set(key, make()); return geoCache.get(key); }
-let gradientMapRef = null;
-export function setGradientMap(g) { gradientMapRef = g; }
+import { gradientMap } from './dogs.js';
+
+// Materiaalit: per koira (jotta Dog.fade() voi häivyttää yhden koiran), mutta saman koiran sisällä jaetut.
+let CUR = null; // { cache: Map, mats: [] } rakennuksen ajan
+function addMat(key, make) {
+  if (!CUR.cache.has(key)) { const m = make(); CUR.cache.set(key, m); CUR.mats.push(m); }
+  return CUR.cache.get(key);
+}
 function toon(hex, opts = {}) {
-  const key = 't' + hex + JSON.stringify(opts);
-  if (!matCache.has(key)) {
-    const m = new THREE.MeshToonMaterial({ color: new THREE.Color(hex), ...opts });
-    if (gradientMapRef) m.gradientMap = gradientMapRef;
-    matCache.set(key, m);
-  }
-  return matCache.get(key);
+  return addMat('t' + hex + JSON.stringify(opts), () => new THREE.MeshToonMaterial({ color: new THREE.Color(hex), gradientMap, ...opts }));
 }
 function basic(hex, opts = {}) {
-  const key = 'b' + hex + JSON.stringify(opts);
-  if (!matCache.has(key)) matCache.set(key, new THREE.MeshBasicMaterial({ color: new THREE.Color(hex), ...opts }));
-  return matCache.get(key);
+  return addMat('b' + hex + JSON.stringify(opts), () => new THREE.MeshBasicMaterial({ color: new THREE.Color(hex), ...opts }));
 }
 const OUTLINE = () => basic('#0b0a10', { side: THREE.BackSide });
 
 function withOutline(mesh, k = 1.12) {
   const ol = new THREE.Mesh(mesh.geometry, OUTLINE());
-  ol.scale.setScalar(k); ol.renderOrder = -1; mesh.add(ol);
+  ol.scale.setScalar(k); mesh.add(ol);
   return mesh;
 }
 
-// paikallinen bounding box osalle (ilman lapsia, jotka me lisäsimme)
-const boxCache = new WeakMap();
-export function partBox(part) {
-  if (boxCache.has(part)) return boxCache.get(part);
+// Liitososa: { part: Group johon lisäosa liitetään, src: [Object3D] joiden meshit määräävät mitat }
+// Mitat lasketaan osan omassa koordinaatistossa (src-meshien bounding box).
+function partBox(anchor) {
+  if (anchor._box) return anchor._box;
+  const { part, src } = anchor;
   const box = new THREE.Box3();
-  const meshes = [];
-  part.traverse(o => { if (o.isMesh && !o.userData.extra) meshes.push(o); });
-  part.updateMatrixWorld(true);
+  part.updateWorldMatrix(true, true);
   const inv = new THREE.Matrix4().copy(part.matrixWorld).invert();
-  for (const m of meshes) {
-    if (!m.geometry.boundingBox) m.geometry.computeBoundingBox();
-    const b = m.geometry.boundingBox.clone().applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld));
-    box.union(b);
-  }
+  const m4 = new THREE.Matrix4();
+  for (const s of src) s.traverse(o => {
+    if (!o.isMesh || o.userData.extra || o.material?.side === THREE.BackSide) return;
+    if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+    box.union(o.geometry.boundingBox.clone().applyMatrix4(m4.multiplyMatrices(inv, o.matrixWorld)));
+  });
   if (box.isEmpty()) box.set(new THREE.Vector3(-0.05, -0.05, -0.05), new THREE.Vector3(0.05, 0.05, 0.05));
-  boxCache.set(part, box);
-  return box;
+  return (anchor._box = box);
 }
 
-function mark(o) { o.userData.extra = true; o.traverse(c => { c.userData.extra = true; c.castShadow = false; }); return o; }
+/** Koiratehtaan koirasta liitososat. Jokainen src = vain kyseisen osan oma mesh-holder. */
+function anchorsFromDog(d) {
+  const P = d.parts; if (!P) return null;
+  const first = g => g && g.children.filter(c => !c.isBone && c.children.some(m => m.isMesh)).slice(0, 1);
+  const holders = g => g ? g.children.filter(c => c.children.some(m => m.isMesh)) : [];
+  const A = (part, src) => part ? { part, src: src && src.length ? src : [part] } : null;
+  return {
+    head: A(P.head, first(P.head)),
+    torso: A(P.torso, holders(P.torso).slice(0, 2)),   // body + chest
+    neck: A(P.neck, first(P.neck)),
+    tail: A(P.tail, holders(P.tail)),
+    legs: (P.legs || []).map(l => A(l, holders(l))),
+    earL: A(P.ears?.[0], holders(P.ears?.[0])),
+    earR: A(P.ears?.[1], holders(P.ears?.[1])),
+    dog: d,
+  };
+}
+const add = (anchor, obj) => anchor.part.add(obj);
 
 // ---------------- yksittäiset lisäosat ----------------
 const BUILDERS = {
@@ -77,7 +90,7 @@ const BUILDERS = {
       sc.rotation.z = 0.45;
       g.add(sc);
     }
-    head.add(mark(g));
+    add(head, mark(g));
   },
   // sokeat silmät: vaaleat, hehkuttomat "maitosilmät" + arpi silmien yli
   blind(a) {
@@ -95,7 +108,7 @@ const BUILDERS = {
     band.position.set(b.min.x + s.x * 0.72, b.min.y + s.y * 0.7, (b.min.z + b.max.z) / 2);
     band.rotation.x = 0.0; band.rotation.z = 0.5;
     g.add(band);
-    head.add(mark(g));
+    add(head, mark(g));
   },
   // kaulapanta (valinnaisesti piikit) kaulan ympäri
   collar(a, e) {
@@ -120,7 +133,7 @@ const BUILDERS = {
     // pieni metallilaatta / solki edessä
     const tag = new THREE.Mesh(geo('tag', () => new THREE.CylinderGeometry(0.22, 0.22, 0.08, 8)), toon('#d8b25a'));
     tag.position.set(0, -1.15, 0); tag.rotation.x = Math.PI / 2; ring.add(tag);
-    neck.add(mark(ring));
+    add(neck, mark(ring));
   },
   // ninjahuivi: rengas kaulassa + kaksi liehuvaa päätä
   scarf(a, e) {
@@ -143,7 +156,7 @@ const BUILDERS = {
     }
     tails.rotation.y = -Math.PI / 2;   // ring-avaruudessa takaisin osan x-suuntaan
     ring.add(tails);
-    neck.add(mark(ring));
+    add(neck, mark(ring));
     a.animated?.push(t => { tails.children.forEach((c, i) => { c.rotation.z = 0.35 + i * 0.25 + Math.sin(t * 6 + i) * 0.18; }); });
   },
   // villisian torahampaat
@@ -159,7 +172,7 @@ const BUILDERS = {
       withOutline(t, 1.15);
       g.add(t);
     }
-    head.add(mark(g));
+    add(head, mark(g));
   },
   // litteä kärsä
   snout(a, e) {
@@ -174,7 +187,7 @@ const BUILDERS = {
       const n = new THREE.Mesh(geo('nostril', () => new THREE.SphereGeometry(1, 6, 5)), basic('#1a1210'));
       n.scale.set(0.12, 0.25, 0.22); n.position.set(0, 0.5, z * 0.4); disc.add(n);
     }
-    head.add(mark(disc));
+    add(head, mark(disc));
   },
   // harjasharja selkärangan päällä (torso + kaula)
   bristles(a, e) {
@@ -192,7 +205,7 @@ const BUILDERS = {
         withOutline(cone, 1.15);
         g.add(cone);
       }
-      part.add(mark(g));
+      add(part, mark(g));
     }
   },
   // kaulaharja / tuuhea rintakarva: kartiorengas kaulan ympärillä
@@ -214,7 +227,7 @@ const BUILDERS = {
       g.add(cone);
     }
     g.position.set(c.x - s.x * 0.1, c.y - s.y * 0.12, c.z);
-    neck.add(mark(g));
+    add(neck, mark(g));
   },
   // metalliset etujalat: harmaa kiiltävä holkki + nivelrenkaat
   metalLegs(a, e) {
@@ -236,8 +249,7 @@ const BUILDERS = {
         ring.position.set(c.x, b.min.y + s.y * f, c.z);
         g.add(ring);
       }
-      leg.add(mark(g));
-      if (leg.isMesh) leg.visible = true;
+      add(leg, mark(g));
     }
   },
   // aura: läpikuultavat pyörivät liekkikartiot (kuolemanjumala-Hōgen)
@@ -254,7 +266,7 @@ const BUILDERS = {
       fl.position.set(c.x + Math.cos(ang) * s.x * 0.55, b.min.y - s.y * 0.2, c.z + Math.sin(ang) * s.z * 0.7);
       g.add(fl);
     }
-    torso.add(mark(g));
+    add(torso, mark(g));
     a.animated?.push(t => g.children.forEach((f, i) => {
       f.scale.y = s.y * (1.3 + (i % 3) * 0.35) * (0.8 + 0.35 * Math.sin(t * 7 + i * 1.7));
     }));
@@ -272,7 +284,7 @@ const BUILDERS = {
       sc.scale.set(s.x * 0.035, s.y * 0.36, Math.max(0.004, s.z * 0.03));
       sc.position.set(b.min.x + s.x * (0.3 + f * 0.4), b.min.y + s.y * (0.5 + (i % 3) * 0.1), side * 1.005);
       sc.rotation.z = 0.5 + (i % 3) * 0.3;
-      part.add(mark(sc));
+      add(part, mark(sc));
     }
   },
   // korvalovi: pieni tumma kolmio korvan kärjessä
@@ -283,18 +295,24 @@ const BUILDERS = {
     n.scale.set(s.x * 0.5, s.y * 0.35, s.z * 1.3);
     n.position.set(c.x, b.max.y - s.y * 0.15, c.z);
     n.rotation.z = Math.PI;
-    ear.add(mark(n));
+    add(ear, mark(n));
   },
 };
 
-/** Lisää lisäosat koiraan. Palauttaa päivitysfunktion (aika t sekunteina) tai null. */
-export function attachExtras(anchors, extras) {
+/** Lisää lisäosat koiraan (kutsutaan Dog-konstruktorista). Palauttaa päivitysfunktion (t, dt) tai null. */
+export function attachExtras(dog, extras) {
   if (!extras || !extras.length) return null;
+  const anchors = anchorsFromDog(dog);
+  if (!anchors) return null;
   const animated = [];
   const a = { ...anchors, animated };
+  CUR = { cache: new Map(), mats: [] };
   for (const e of extras) {
     const f = BUILDERS[e.type];
-    if (f) f(a, e); else console.warn('tuntematon lisäosa', e.type);
+    if (f) f(a, e); else console.warn('unknown extra', e.type);
   }
+  if (dog.mats) dog.mats.push(...CUR.mats);
+  dog.extraMats = CUR.mats;
+  CUR = null;
   return animated.length ? t => { for (const f of animated) f(t); } : null;
 }
