@@ -88,3 +88,56 @@ URL=http://localhost:4187/ node tools/shots.cjs all       # menu, gallery, intro
 URL=http://localhost:4187/ node tools/shots.cjs story     # koko tarina: Smith, Neljä nuolta, finaali, aamunkoitto
 ```
 Kaappaukset: `screenshots/` (844×390, DPR 2).
+
+## Grafiikka (renderöinti, tunnelma, tehosteet)
+
+```
+src/engine.js        renderöijä, pelisilmukka, elokuvakamera (tärinä + FOV-isku, käsivara cutsceneissä, rack focus)
+src/gfx/quality.js   laatutasot low / med / high + dynaaminen resoluutio (fps < 50 -> 3D-resoluutio alas, lopuksi taso alas)
+src/gfx/post.js      oma kevyt jälkikäsittely: HDR + MSAA -> bloom (dual kawase) -> god rays, kromaattinen aberraatio,
+                     tilt-shift / syvyys-DoF, ACES, värigradaatio, vinjetti, filmirae, impact frame, nopeuslinjat, iris/häivytys
+src/gfx/mood.js      tunnelmat: night, rage, storm, grief, spirit, finale, dawn, memorial (taivas, sumu, valot, sää, gradaatio)
+src/gfx/toon.js      cel-varjostuksen rajapinta hahmo- ja ympäristökoodille (alla)
+src/gfx/ui.css       anime-tyylinen HUD/valikko (ylikirjoittaa style.css:n ulkoasun, ei rakennetta)
+src/world.js         proseduraalinen taivas (tähdet, kuu, revontulet, pilvet, auringonnousu), maalatut parallax-vuoret,
+                     kalliot, vesiputous, instansoitu mäntymetsä, kimaltava lumi, usvakerrokset, varjot, lumisade
+src/fx.js            GPU-partikkelipoolit, shokkiaallot, valopilarit, iskutähdet, henkisiluetit, kuvajäljet, kivimurska
+tools/gfx-shots.cjs  grafiikan ennen/jälkeen-kaappaukset -> screenshots/gfx/
+```
+
+**Laatutasot:** automaattinen valinta (heikko puhelin = low, puhelin = med, työpöytä = high). Pakotus: `?lowfx`, `?q=med`, `?hq`.
+`?fps` näyttää fps:n, tason, resoluutioskaalan ja piirtokutsut. `?fixedres` poistaa dynaamisen resoluution.
+
+| | low | med | high |
+|---|---|---|---|
+| Jälkikäsittely (bloom, gradaatio, god rays, CA, rae) | – (renderöijän ACES) | kyllä, bloom 3 tasoa | kyllä, bloom 4 tasoa |
+| Varjokartta | – (vain läiskävarjo) | 1024 PCF soft | 2048 PCF soft |
+| Syväterävyys cutsceneissä | – | tilt-shift | syvyyspohjainen rack focus |
+| MSAA / max DPR | 4x (canvas) / 1.25 | 4x / 1.5 | 4x / 2.0 |
+| Partikkelit, usvakerrokset | 50 %, 1 | 100 %, 3 | 150 %, 3 |
+
+**Tunnelma on automaattinen:** `mood.js`:n ohjaaja lukee pelitilan (`window.__S`: vaihe, panssari, cutscene) ja
+kohtausskriptin `light: { rim }` -arvon (rim > 1.25 vaiheessa 3 = aamunkoitto), joten pelilogiikan ei tarvitse kutsua
+grafiikkaa. Käsin: `E.setMood('dawn', 4)` (pysyy, kunnes vaihe/cutscene vaihtuu). `FX.spiritLight` vaihtaa itse
+suruun / henkiin / muistohetkeen, `FX.slashArc` finaalissa revontuliin.
+
+### Rajapinta hahmokoodille (`src/gfx/toon.js`, `src/fx.js`)
+```js
+import { applyToonMaterial, makeToonMaterial, makeOutlineMaterial, addOutline, toonRamp } from './gfx/toon.js';
+applyToonMaterial(meshTaiObjekti, { steps: 3, rim: 1, rimWidth: 0.38, outline: 0.0032, castShadow: true });
+//  MeshToonMaterial päivitetään PAIKALLAAN (dog.mat, setTint, fade, map ja vertexColors säilyvät, oma onBeforeCompile ketjutetaan);
+//  Standard/Lambert/Phong korvataan MeshToonMaterialilla (convert: false estää).
+makeToonMaterial({ color, map, steps, rim, snow: 0.75, detail: 1, flatShading: true });   // ympäristö: lumi yläpinnoille, kalliokuvio
+FX.afterimage(dog, 0x8fc8ff);      // jäädytetty hehkuva kuvajälki (special movet)
+FX.spiritGhost(dog, 0xbfe0ff, 4);  // henki nousee hahmosta
+FX.lightPillar(pos, color, sek, korkeus);  FX.hitStar(pos);  FX.embers(pos, n);  FX.mistPlume(pos);  FX.breath(pos, suunta);
+```
+- **Automatiikka:** kohtaus skannataan 2 x sekunnissa; jokainen `MeshToonMaterial` saa rim-valon ja heittää varjon.
+  Jos samassa vanhemmassa on saman geometrian ääriviivakuori (MeshBasicMaterial, BackSide), sen `onBeforeCompile`
+  (pehmeä rigi) lainataan varjokartan syvyysmateriaaliin ja henki-/kuvajälkikopioihin – varjo ja haamut seuraavat asentoa.
+  Ohitus: `object.userData.noGfx = true` (kaikki) tai `userData.castShadow = false`.
+- **Automaattiset tehosteet** (`window.__game.cast`): hengityshöyry (`dog.headPivot`), juoksun lumipölly, Weedin
+  Battōga-kuvajäljet (`dog.spin.rotation.z`), Kaibutsun raivon kekäleet ja heikon kohdan kipinät, usva putoamisessa.
+- Vanha API toimii ennallaan: `E.rimLight.intensity`, `E.snow.uniforms.uWind`, `E.cliff`, `E.lowFx`, `gradientMap` (dogs.js),
+  `FX.burst/dust/ring/slashArc/spiritLight/flash/impact/speedLines`, `shake()` (lisää nyt myös FOV-iskun ja CA:n).
+  `E.scene.fog.color` ja `renderer.toneMappingExposure` ovat tunnelman ohjaamia (kirjoitukset ylikirjoittuvat).
