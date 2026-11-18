@@ -39,7 +39,7 @@ const COMP_FS = `
 uniform sampler2D tScene, tBlur, tBloom, tDepth;
 uniform vec2 uBlurTexel, uSun, uCenter;
 uniform float uAspect, uTime, uBloom, uExposure, uSat, uContrast, uVig, uGrain, uCA, uImpact, uTilt, uDof, uFocus,
-  uNear, uFar, uRays, uFade, uIris, uSpeed, uHasDepth, uHasBloom;
+  uNear, uFar, uRays, uFade, uIris, uSpeed, uHasDepth, uHasBloom, uFreeze;
 uniform vec3 uLift, uGain, uVigColor, uRayColor;
 varying vec2 vUv;
 
@@ -91,6 +91,10 @@ void main(){
   col *= mix(uLift, uGain, smoothstep(0.0, 0.75, l));
   col = max(col, 0.0);
 
+  if (uFreeze > 0.01) {                                // freeze frame: anime-pysäytyskuva
+    vec3 fz = mix(vec3(l), col, 0.5); fz = (fz - 0.5) * 1.4 + 0.55;
+    col = mix(col, max(fz, 0.0), uFreeze);
+  }
   if (uImpact > 0.01) {
     float k = smoothstep(0.28, 0.42, l);
     col = mix(col, vec3(1.0 - k) * vec3(0.92, 0.96, 1.0) + vec3(0.02, 0.02, 0.06), uImpact);
@@ -126,7 +130,7 @@ export const post = {
   sunWorld: new THREE.Vector3(0, 30, -200),
   // hetkelliset tehosteet
   ca: 0, impactT: 0, bloomKick: 0, exposureKick: 0,
-  speed: 0, fade: 0, iris: 2, tilt: 0, dof: 0, focus: 10,
+  speed: 0, fade: 0, iris: 2, tilt: 0, dof: 0, focus: 10, freeze: 0,
   center: new THREE.Vector2(0.5, 0.5),
   stats: { calls: 0, tris: 0 },
 };
@@ -176,7 +180,7 @@ export function initPost(r) {
     uAspect: { value: 1 }, uTime: { value: 0 }, uBloom: { value: 1 }, uExposure: { value: 1 }, uSat: { value: 1 }, uContrast: { value: 1 },
     uVig: { value: 0.5 }, uGrain: { value: 0.03 }, uCA: { value: 0 }, uImpact: { value: 0 }, uTilt: { value: 0 }, uDof: { value: 0 },
     uFocus: { value: 10 }, uNear: { value: 0.1 }, uFar: { value: 400 }, uRays: { value: 0 }, uFade: { value: 0 }, uIris: { value: 2 },
-    uSpeed: { value: 0 }, uHasDepth: { value: 0 }, uHasBloom: { value: 1 },
+    uSpeed: { value: 0 }, uHasDepth: { value: 0 }, uHasBloom: { value: 1 }, uFreeze: { value: 0 },
     uLift: { value: b.lift }, uGain: { value: b.gain }, uVigColor: { value: b.vigColor }, uRayColor: { value: b.rayColor },
   });
   quad = new THREE.Mesh(geo, matDown); quad.frustumCulled = false;
@@ -231,7 +235,8 @@ export function renderPost(scene, camera, dtReal, time) {
   c.uCA.value = post.ca; c.uImpact.value = post.impactT > 0 ? 1 : 0;
   c.uTilt.value = post.tilt; c.uDof.value = post.dof; c.uFocus.value = post.focus;
   c.uNear.value = camera.near; c.uFar.value = camera.far;
-  c.uFade.value = post.fade; c.uIris.value = post.iris; c.uSpeed.value = post.speed;
+  c.uFade.value = post.fade; c.uIris.value = post.iris; c.uSpeed.value = post.speed; c.uFreeze.value = post.freeze;
+  c.uVig.value = Math.min(1, b.vig + post.freeze * 0.35);
   // aurinko/kuu ruudulla (god rays)
   let rays = 0;
   if (Q.rays && b.rays > 0.01) {

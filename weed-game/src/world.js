@@ -165,9 +165,10 @@ function addLayer(scene, tex, w, h, z, y, hazeAmt, sunLit) {
 // ---------- maaston korkeus ----------
 function groundH(x, z) {
   const back = THREE.MathUtils.smoothstep(-z, 8, 17);
-  const far = THREE.MathUtils.smoothstep(-z, 16, 44);
+  // takamaasto kohoaa, mutta laskee takaisin tasaiseksi: z = -40 on Lauma-gallerian rivi (main.js GAL_Z)
+  const far = THREE.MathUtils.smoothstep(-z, 13, 20) * (1 - THREE.MathUtils.smoothstep(-z, 24, 29));
   const n = Math.sin(x * 0.23 + 1.3) * Math.cos(z * 0.31) * 0.5 + Math.sin(x * 0.61 + z * 0.4) * 0.25;
-  return back * (0.45 + n * 0.5) + far * (2.2 + Math.sin(x * 0.11) * 1.2);
+  return back * (1 - THREE.MathUtils.smoothstep(-z, 24, 29)) * (0.45 + n * 0.5) + far * (2.2 + Math.sin(x * 0.11) * 1.2);
 }
 
 export function buildWorld() {
@@ -318,7 +319,7 @@ export function buildWorld() {
 
   // ---------- kivet ja kallio ----------
   const r = rng(99);
-  const rockMat = makeToonMaterial({ color: 0x4d5470, steps: 3, snow: 0.75, rim: 0.7, flatShading: true });
+  const rockMat = makeToonMaterial({ color: 0x565c78, steps: 3, snow: 0.75, rim: 0.7, flatShading: true, detail: 1 });
   const rockGeo = (rad, seed, detail = 0, sy = 0.85, j = 0.26) => {
     const rr = rng(seed);
     let g = new THREE.IcosahedronGeometry(rad, detail);
@@ -388,7 +389,7 @@ export function buildWorld() {
   const spots = [];
   for (let i = 0; i < 400 && spots.length < 74; i++) {
     const band = r();
-    const x = -48 + r() * 96, z = band < 0.3 ? -6.5 - r() * 5 : -12 - r() * 24;
+    const x = -48 + r() * 96, z = band < 0.3 ? -6.5 - r() * 5 : -12 - r() * 15;
     if (Math.abs(x) < 10 && z > -11) continue;                          // areenan takana avoin näkymä vuorille
     if (x > 8 && x < 20 && z > -10) continue;                           // kallion kohta
     if (spots.some(s => Math.hypot(s[0] - x, (s[1] - z) * 1.5) < 1.7)) continue;
@@ -401,7 +402,7 @@ export function buildWorld() {
 
   // ---------- usvakerrokset (korkeussumu) ----------
   const mists = [];
-  const mistDefs = [[150, 9, 3.4, -13, 1.0, 3.0], [240, 22, 8, -40, 0.9, 2.2], [420, 44, 15, -110, 0.8, 1.6]].slice(0, Q.mist);
+  const mistDefs = [[150, 9, 3.4, -13, 1.0, 3.0], [240, 22, 8, -44.5, 0.9, 2.2], [420, 44, 15, -110, 0.8, 1.6]].slice(0, Q.mist);
   for (const [w, h, y, z, op, sc] of mistDefs) {
     const mat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false,
@@ -455,7 +456,9 @@ export function buildWorld() {
     hemi.color.copy(m.hemiSky); hemi.groundColor.copy(m.hemiGround); hemi.intensity = m.hemi;
     key.color.copy(m.key); key.intensity = m.keyI;
     keyPos.set(m.keyX, m.keyY, m.keyZ).normalize().multiplyScalar(24);
-    key.target.position.set(0, 0, -1.5); key.position.copy(key.target.position).add(keyPos);
+    // varjokartta seuraa kameran katsetta (areena z = 0, galleria z = -40), puolen yksikön askelin
+    key.target.position.set(Math.round(E.camLook.x * 2) / 2, 0, Math.round(E.camLook.z * 2) / 2 - 1.5);
+    key.position.copy(key.target.position).add(keyPos);
     back.color.copy(m.back); back.intensity = m.backI;
     toonShared.uRimColor.value.copy(m.rim); toonShared.uRimAmt.value = m.rimAmt; toonShared.uSnowColor.value.copy(m.snowCol);
     toonShared.uOutlineColor.value.copy(m.outline);

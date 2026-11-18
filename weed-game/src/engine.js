@@ -99,6 +99,7 @@ export function initEngine(canvas) {
   new MutationObserver(() => {
     const c = document.body.classList.contains('cine');
     if (c !== E.cine) { E.cine = c; post.fade = Math.max(post.fade, 0.85); }
+    E.freeze = document.body.classList.contains('freeze');
   }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   initUiFx(E);
 
@@ -171,6 +172,7 @@ export function initEngine(canvas) {
     post.dof += (wantDof - post.dof) * Math.min(1, dtReal * 4);
     const wantTilt = E.cine ? 0.8 : 0;
     post.tilt += (wantTilt - post.tilt) * Math.min(1, dtReal * 3);
+    post.freeze += ((E.freeze ? 1 : 0) - post.freeze) * Math.min(1, dtReal * 18);
     post.fade *= Math.pow(0.0015, dtReal); if (post.fade < 0.004) post.fade = 0;
     // iris-siirtymä, kun taso alkaa tai päättyy
     const S = window.__S, playing = !!(S && (S.active || S.cutscene));

@@ -2,7 +2,7 @@
 // speedLines, setOverlay.  Uudet: afterimage, lightPillar, hitStar, breath, embers, debris, mistPlume, spiritGhost.
 // Toteutus: kaksi GPU-pistepilveä (additiivinen + savu) objektipoolina, poolatut shader-neliöt (shokkiaallot,
 // valopallot, valopilarit, iskutähdet), instansoitu kivimurska, bakatut kuvajäljet (afterimage) ja
-// henkisiluetit (jakavat koiran luurangon). Ei per-frame-allokaatioita.
+// henkisiluetit (jakavat hahmon geometrian ja vertex-rigin). Ei per-frame-allokaatioita.
 import * as THREE from 'three';
 import { E, shake } from './engine.js';
 import { Q } from './gfx/quality.js';
@@ -264,7 +264,8 @@ export function spiritLight(pos, color = 0xbfe0ff, dur = 4) {
   const dog = nearestDog(pos, 1.4);
   if (dog && dog.id !== 'weed' && dog.id !== 'kaibutsu') spiritGhost(dog, color, dur);
   // tunnelma: suru / henget / muistohetki
-  if (mood.name === 'dawn') setMood('memorial', 3);
+  const now = E.realTime, quick = now - lastSpirit < 2.5; lastSpirit = now;
+  if (mood.name === 'dawn') { if (quick) setMood('memorial', 3); }     // useita henkiä peräkkäin = muistohetki
   else if (mood.name === 'rage' || mood.name === 'night') setMood('grief', 2.5);
   else if (mood.name === 'storm') setMood('spirit', 3);
   return q ? q.m : null;
@@ -332,81 +333,56 @@ function spawnDebris(pos, n) {
 }
 export function debrisBurst(pos, n = 10) { if (init()) spawnDebris(pos, n); }
 
-// ---------- henkisiluetti: jakaa koiran luurangon, nousee ylöspäin ----------
+// ---------- hehkuvat kopiot hahmosta: henkisiluetti (elävä, nousee) ja kuvajälki (jäädytetty) ----------
+// Toimii minkä tahansa hahmototeutuksen kanssa: kopio jakaa lähteen geometrian ja lainaa sen ääriviivakuoren
+// vertex-muunnoksen (onBeforeCompile: pehmeä rigi), joten asento seuraa lähdettä ilman CPU-työtä.
+const ghostPool = new Map();   // lähdemesh -> vapaat kopiot
 const ghosts = [];
-const GHOST_VS = `
-#include <common>
-#include <skinning_pars_vertex>
-uniform float uRise, uTime; varying float vF;
-void main(){
-  #include <beginnormal_vertex>
-  #include <skinbase_vertex>
-  #include <skinnormal_vertex>
-  #include <defaultnormal_vertex>
-  #include <begin_vertex>
-  #include <skinning_vertex>
-  vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0);
-  mvPosition.xyz += (viewMatrix * vec4(sin(uTime * 2.0 + mvPosition.y * 3.0) * 0.03 * uRise, uRise, 0.0, 0.0)).xyz;
-  vF = 1.0 - abs(dot(normalize(transformedNormal), normalize(-mvPosition.xyz)));
-  gl_Position = projectionMatrix * mvPosition;
-}`;
-const GHOST_FS = `uniform vec3 uColor; uniform float uAlpha; varying float vF;
-void main(){ float f = pow(vF, 1.6); gl_FragColor = vec4(uColor * (0.22 + 1.9 * f), uAlpha); ${OUT} }`;
-
-export function spiritGhost(dog, color = 0xbfe0ff, dur = 4) {
-  const root = dog.root || dog;
-  const made = [];
-  root.traverse(o => {
-    if (!o.isSkinnedMesh || o.userData.gfxOutline || o.userData.gfxGhost || (o.material && o.material.side === THREE.BackSide)) return;
-    const mat = new THREE.ShaderMaterial({
-      vertexShader: GHOST_VS, fragmentShader: GHOST_FS, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-      uniforms: { uColor: { value: new THREE.Color(color) }, uAlpha: { value: 0 }, uRise: { value: 0 }, uTime: toonShared.uTime },
-    });
-    const g = new THREE.SkinnedMesh(o.geometry, mat);
-    g.bind(o.skeleton, o.bindMatrix); g.frustumCulled = false;
-    g.userData.gfxGhost = true; g.userData.noGfx = true; g.renderOrder = 7;
-    made.push(g);
-  });
-  for (const g of made) E.scene.add(g);
-  if (made.length) ghosts.push({ meshes: made, t: 0, life: dur });
+function ghostMeshes(root, color) {
+  const out = [], srcs = [];
+  root.traverse(o => { if (o.isMesh && !o.userData.gfxGhost && o.material && o.material.side === THREE.BackSide && o.material.isMeshBasicMaterial) srcs.push(o); });
+  if (!srcs.length) root.traverse(o => { if (o.isMesh && !o.isSkinnedMesh && !o.userData.gfxGhost && o.material && o.material.isMeshToonMaterial) srcs.push(o); });
+  for (const src of srcs) {
+    let free = ghostPool.get(src);
+    if (!free) ghostPool.set(src, (free = []));
+    let g = free.pop();
+    if (!g) {
+      const sm = src.material, shell = sm.side === THREE.BackSide;
+      const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+      const U = { uGhostOff: { value: new THREE.Vector3() } };
+      mat.userData.U = U;
+      mat.onBeforeCompile = (sh, r) => {
+        if (shell && sm.onBeforeCompile) sm.onBeforeCompile.call(sm, sh, r);
+        Object.assign(sh.uniforms, U);
+        sh.vertexShader = 'uniform vec3 uGhostOff;\n' + sh.vertexShader.replace('#include <project_vertex>',
+          '#include <project_vertex>\n mvPosition.xyz += (viewMatrix * vec4(uGhostOff, 0.0)).xyz; gl_Position = projectionMatrix * mvPosition;');
+      };
+      const key = 'gfxghost:' + (shell && sm.customProgramCacheKey ? sm.customProgramCacheKey() : 'plain');
+      mat.customProgramCacheKey = () => key;
+      g = new THREE.Mesh(src.geometry, mat);
+      g.matrixAutoUpdate = false; g.frustumCulled = false; g.renderOrder = 7;
+      g.userData.gfxGhost = true; g.userData.noGfx = true; g.userData.src = src;
+    }
+    g.material.color.set(color); g.material.opacity = 0; g.material.userData.U.uGhostOff.value.set(0, 0, 0);
+    src.updateWorldMatrix(true, false);
+    g.matrix.copy(src.matrixWorld); g.matrixWorldNeedsUpdate = true;
+    E.scene.add(g); out.push(g);
+  }
+  return out;
 }
 
-// ---------- kuvajäljet (afterimage): skinnattu asento bakataan CPU:lla ----------
-const afterPool = new Map();  // lähdegeometria -> vapaat bakatut geometriat
-const afters = [];
-const afterMat = () => new THREE.ShaderMaterial({
-  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
-  uniforms: { uColor: { value: new THREE.Color() }, uAlpha: { value: 0 } },
-  vertexShader: 'varying float vY; void main(){ vY = position.y; gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0); }',
-  fragmentShader: `uniform vec3 uColor; uniform float uAlpha; varying float vY; void main(){ gl_FragColor = vec4(uColor * 1.2, uAlpha); ${OUT} }`,
-});
-/** Jäädytetty hehkuva kopio hahmon nykyisestä asennosta. target = Dog tai Object3D. */
-export function afterimage(target, color = 0x8fc8ff, life = 0.32, alpha = 0.55) {
-  if (Q.tier === 'low' || afters.length >= 7) return;
-  const root = target.root || target;
-  root.updateWorldMatrix(true, true);
-  root.traverse(o => {
-    if (!o.isSkinnedMesh || !o.visible || o.userData.gfxOutline || o.userData.gfxGhost || (o.material && o.material.side === THREE.BackSide)) return;
-    const src = o.geometry, n = src.attributes.position.count;
-    if (n > 9000) return;
-    let free = afterPool.get(src);
-    if (!free) afterPool.set(src, (free = []));
-    let rec = free.pop();
-    if (!rec) {
-      const g = new THREE.BufferGeometry();
-      g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3).setUsage(THREE.DynamicDrawUsage));
-      if (src.index) g.setIndex(src.index);
-      const m = new THREE.Mesh(g, afterMat()); m.frustumCulled = false; m.userData.noGfx = true; m.renderOrder = 7;
-      rec = { m, src };
-    }
-    const arr = rec.m.geometry.attributes.position.array;
-    o.skeleton.update();
-    for (let i = 0; i < n; i++) { o.getVertexPosition(i, _v).applyMatrix4(o.matrixWorld); arr[i * 3] = _v.x; arr[i * 3 + 1] = _v.y; arr[i * 3 + 2] = _v.z; }
-    rec.m.geometry.attributes.position.needsUpdate = true;
-    rec.m.material.uniforms.uColor.value.set(color);
-    rec.t = 0; rec.life = life; rec.alpha = alpha;
-    E.scene.add(rec.m); afters.push(rec);
-  });
+/** Henki nousee hahmosta: läpikuultava hehkuva siluetti, joka seuraa hahmon asentoa ja kohoaa ylös. */
+export function spiritGhost(dog, color = 0xbfe0ff, dur = 4) {
+  if (!init()) return;
+  const meshes = ghostMeshes(dog.root || dog, color);
+  if (meshes.length) ghosts.push({ meshes, t: 0, life: dur, live: true, alpha: 0.5 });
+}
+
+/** Kuvajälki (afterimage): jäädytetty hehkuva kopio hahmon nykyisestä sijainnista. target = Dog tai Object3D. */
+export function afterimage(target, color = 0x8fc8ff, life = 0.32, alpha = 0.5) {
+  if (!init() || Q.tier === 'low' || ghosts.length >= 12) return;
+  const meshes = ghostMeshes(target.root || target, color);
+  if (meshes.length) ghosts.push({ meshes, t: 0, life, live: false, alpha });
 }
 
 // Speed-linet: jälkikäsittelyssä (shader) tai low-tasolla 2D-overlaylla
@@ -428,9 +404,10 @@ function nearestDog(pos, maxD) {
   return best;
 }
 const dogState = new WeakMap();
+let lastSpirit = -99;
 function headOf(d) {
   if (d._gfxHead !== undefined) return d._gfxHead;
-  let h = (d.bones && (d.bones.Head || d.bones.head)) || null;
+  let h = d.headPivot || (d.bones && (d.bones.Head || d.bones.head)) || null;
   if (!h && d.root) d.root.traverse(o => { if (!h && o.isBone && /head/i.test(o.name)) h = o; });
   return (d._gfxHead = h);
 }
@@ -452,7 +429,7 @@ function autoFx(dt, dtr) {
     if (st.breathT <= 0) {
       st.breathT = 2.2 + Math.random() * 2.2;
       const head = headOf(d);
-      if (head && p.y < 0.3) { head.getWorldPosition(_v); breath(_v.set(_v.x + (d.facing || 1) * 0.16 * h, _v.y - 0.04 * h, _v.z), d.facing || 1); }
+      if (head && p.y < 0.3) { const f = d.facingTarget || d.facing || 1; head.getWorldPosition(_v); breath(_v.set(_v.x + f * 0.2 * h, _v.y - 0.02 * h, _v.z), f); }
     }
     // juoksun lumipölly
     st.stepT -= dt;
@@ -464,8 +441,8 @@ function autoFx(dt, dtr) {
     // kuvajäljet: Weedin Battōga-pyörähdys, hirviön syöksy
     st.afterT -= dtr;
     if (st.afterT <= 0) {
-      if (id === 'weed' && d.spin && Math.abs(d.spin.rotation.z) > 0.25) { st.afterT = 0.07; afterimage(d, 0x8fd0ff, 0.34, 0.6); }
-      else if (id === 'kaibutsu' && Math.abs(vx) > 9 && Math.abs(vx) < 60) { st.afterT = 0.1; afterimage(d, 0xff5030, 0.26, 0.35); }
+      if (id === 'weed' && d.spin && Math.abs(d.spin.rotation.z) > 0.25) { st.afterT = 0.06; afterimage(d, 0x6fb8ff, 0.3, 0.45); }
+      else if (id === 'kaibutsu' && Math.abs(vx) > 9 && Math.abs(vx) < 60) { st.afterT = 0.1; afterimage(d, 0xff4020, 0.24, 0.28); }
     }
     if (id === 'kaibutsu' && tick) {
       // raivon kekäleet
@@ -511,20 +488,21 @@ E.updaters.add((dt, dtr) => {
     }
     if (k >= 1) { q.on = false; q.m.visible = false; q.sparkle = null; q.sx = 0; }
   }
-  // henget
+  // henkisiluetit ja kuvajäljet
   for (let i = ghosts.length - 1; i >= 0; i--) {
-    const g = ghosts[i]; g.t += dt;
+    const g = ghosts[i]; g.t += g.live ? dt : dtr;
     const k = g.t / g.life;
-    const a = Math.min(1, g.t / 0.9) * (1 - Math.max(0, (k - 0.6) / 0.4)) * 0.75;
-    for (const mm of g.meshes) { mm.material.uniforms.uAlpha.value = a; mm.material.uniforms.uRise.value = g.t * g.t * 0.09 + g.t * 0.12; }
-    if (k >= 1) { for (const mm of g.meshes) { E.scene.remove(mm); mm.material.dispose(); } ghosts.splice(i, 1); }
-  }
-  // kuvajäljet
-  for (let i = afters.length - 1; i >= 0; i--) {
-    const r = afters[i]; r.t += dtr;
-    const k = r.t / r.life;
-    r.m.material.uniforms.uAlpha.value = r.alpha * (1 - k);
-    if (k >= 1) { E.scene.remove(r.m); afterPool.get(r.src).push(r); afters.splice(i, 1); }
+    const a = g.live ? Math.min(1, g.t / 0.9) * (1 - Math.max(0, (k - 0.6) / 0.4)) * g.alpha : g.alpha * (1 - k);
+    const rise = g.live ? g.t * g.t * 0.09 + g.t * 0.12 : 0;
+    for (const mm of g.meshes) {
+      mm.material.opacity = Math.max(0, a);
+      if (g.live) {
+        const src = mm.userData.src;
+        mm.matrix.copy(src.matrixWorld); mm.matrixWorldNeedsUpdate = true;
+        mm.material.userData.U.uGhostOff.value.set(Math.sin(g.t * 2.2) * 0.04 * rise, rise, 0);
+      }
+    }
+    if (k >= 1) { for (const mm of g.meshes) { E.scene.remove(mm); ghostPool.get(mm.userData.src).push(mm); } ghosts.splice(i, 1); }
   }
   // kivimurska
   if (debrisMesh) {

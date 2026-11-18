@@ -38,17 +38,28 @@ export function toonRamp(steps = 3) {
 }
 
 /** Lisää MeshToonMaterialiin rim-valon (ja valinnaisen lumipeitteen). Idempotentti. */
-function patchToon(mat, { rim = 1, rimWidth = 0.38, snow = 0 } = {}) {
+function patchToon(mat, { rim = 1, rimWidth = 0.38, snow = 0, detail = 0 } = {}) {
   if (mat.userData.gfxToon) return mat;
-  mat.userData.gfxToon = { rim, rimWidth, snow };
+  mat.userData.gfxToon = { rim, rimWidth, snow, detail };
   const prev = mat.onBeforeCompile;
   mat.onBeforeCompile = (sh, r) => {
     if (prev) prev.call(mat, sh, r);
     const o = mat.userData.gfxToon;
     sh.uniforms.uRimColor = toonShared.uRimColor; sh.uniforms.uRimDir = toonShared.uRimDir; sh.uniforms.uRimAmt = toonShared.uRimAmt;
     sh.uniforms.uSnowColor = toonShared.uSnowColor;
+    if (o.detail > 0) {    // maalattu kalliopinta: kaksisävyiset laikut + kerrosjuovat maailmankoordinaateissa
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vGfxW;')
+        .replace('#include <project_vertex>', '#include <project_vertex>\n vGfxW = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+      sh.fragmentShader = sh.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
+        { vec3 w = vGfxW; vec2 q = vec2(w.x + w.z * 0.7, w.y);
+          vec2 i = floor(q * 0.9), f = fract(q * 0.9); f = f * f * (3.0 - 2.0 * f);
+          #define GH(p) fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453)
+          float n = mix(mix(GH(i), GH(i + vec2(1.0, 0.0)), f.x), mix(GH(i + vec2(0.0, 1.0)), GH(i + vec2(1.0, 1.0)), f.x), f.y);
+          float strata = smoothstep(0.35, 0.5, fract(w.y * 0.55 + n * 0.8));
+          diffuseColor.rgb *= mix(0.74, 1.0, smoothstep(0.42, 0.5, n)) * mix(0.86, 1.06, strata); }`);
+    }
     sh.fragmentShader = sh.fragmentShader
-      .replace('#include <common>', '#include <common>\nuniform vec3 uRimColor, uRimDir, uSnowColor; uniform float uRimAmt;')
+      .replace('#include <common>', `#include <common>\nuniform vec3 uRimColor, uRimDir, uSnowColor; uniform float uRimAmt;${o.detail > 0 ? '\nvarying vec3 vGfxW;' : ''}`)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>${o.snow > 0 ? `\n { float up = inverseTransformDirection(normal, viewMatrix).y; diffuseColor.rgb = mix(diffuseColor.rgb, uSnowColor, smoothstep(${(1 - o.snow * 0.75).toFixed(3)}, ${(1.06 - o.snow * 0.75).toFixed(3)}, up)); }` : ''}`)
       .replace('#include <opaque_fragment>', `
         { float fres = 1.0 - saturate(dot(normalize(vViewPosition), normal));
@@ -56,16 +67,16 @@ function patchToon(mat, { rim = 1, rimWidth = 0.38, snow = 0 } = {}) {
           outgoingLight += uRimColor * (rimK * uRimAmt * ${rim.toFixed(3)}) * (diffuseColor.rgb * 0.6 + 0.4); }
         #include <opaque_fragment>`);
   };
-  const key = `gfxToon:${rim}:${rimWidth}:${snow}`;
+  const key = `gfxToon:${rim}:${rimWidth}:${snow}:${detail}`;
   const prevKey = mat.customProgramCacheKey ? mat.customProgramCacheKey.bind(mat) : null;
   mat.customProgramCacheKey = () => (prevKey ? prevKey() : '') + key;
   mat.needsUpdate = true;
   return mat;
 }
 
-export function makeToonMaterial({ color = 0xffffff, map = null, steps = 3, rim = 1, rimWidth = 0.38, snow = 0, ...rest } = {}) {
+export function makeToonMaterial({ color = 0xffffff, map = null, steps = 3, rim = 1, rimWidth = 0.38, snow = 0, detail = 0, ...rest } = {}) {
   const m = new THREE.MeshToonMaterial({ color, map, gradientMap: toonRamp(steps), ...rest });
-  return patchToon(m, { rim, rimWidth, snow });
+  return patchToon(m, { rim, rimWidth, snow, detail });
 }
 
 /**
@@ -189,7 +200,22 @@ export function upgradeScene(scene, shadows) {
       patchToon(m, m.userData.gfxToon || {});
       // luuhun kiinnitetyt pikkuosat (harja ym.) eivät heitä varjoa: säästää kymmeniä piirtokutsuja
       const onBone = !o.isSkinnedMesh && o.parent && (o.parent.isBone || (o.parent.parent && o.parent.parent.isBone));
-      if (shadows && o.userData.castShadow !== false && !m.transparent && !onBone) o.castShadow = true;
+      if (shadows && o.userData.castShadow !== false && !m.transparent && !onBone) {
+        o.castShadow = true;
+        // Hahmot, joiden asento tehdään vertex-shaderissa (dogs.js pehmeä rigi): varjokartta tarvitsee saman
+        // muodonmuutoksen. Lainataan se saman geometrian ääriviivakuorelta (onBeforeCompile), jos sellainen on.
+        if (!o.isSkinnedMesh && !o.customDepthMaterial && o.parent) {
+          const shell = o.parent.children.find(c => c !== o && c.isMesh && c.geometry === o.geometry && c.material && c.material.side === THREE.BackSide && c.material.isMeshBasicMaterial);
+          if (shell) {
+            const sm = shell.material;
+            const dm = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking });
+            dm.onBeforeCompile = (sh, r) => sm.onBeforeCompile.call(sm, sh, r);
+            const k = 'gfxdepth:' + sm.customProgramCacheKey();
+            dm.customProgramCacheKey = () => k;
+            o.customDepthMaterial = dm;
+          }
+        }
+      }
     }
   });
 }

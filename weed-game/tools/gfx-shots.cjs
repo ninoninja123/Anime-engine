@@ -18,8 +18,9 @@ const qs = extra => `?${[extra, q ? (q === 'low' ? 'lowfx' : q === 'high' ? 'hq'
   const ctx = await browser.newContext({ viewport: { width: 844, height: 390 }, deviceScaleFactor: Number(opt('dpr') || 2), isMobile: true, hasTouch: true });
   const page = await ctx.newPage();
   const errors = [];
+  const ignore = /fonts\.g|ERR_|Failed to load resource|decode audio/;
   page.on('console', m => { if (m.type() === 'error' && !/fonts\.g|ERR_|Failed to load resource/.test(m.text())) errors.push(m.text()); });
-  page.on('pageerror', e => errors.push('PAGEERROR ' + e.message));
+  page.on('pageerror', e => { if (!ignore.test(e.message)) errors.push('PAGEERROR ' + e.message); });
   const shot = async n => { await page.screenshot({ path: path.join(OUT, `${prefix}_${n}.png`) }); console.log('shot', n); };
   const ready = async () => page.waitForFunction(() => window.__game && document.getElementById('loading').classList.contains('hidden'), null, { timeout: 90000 });
   const open = async extra => { await page.goto(BASE + qs(extra)); await ready(); };
@@ -30,7 +31,7 @@ const qs = extra => `?${[extra, q ? (q === 'low' ? 'lowfx' : q === 'high' ? 'hq'
   const has = s => want.includes(s);
 
   if (has('menu')) { await open(''); await waitGame(2.5); await shot('01_menu'); }
-  if (has('cast')) { await open(''); await page.evaluate(() => window.__game.showCast(6)); await waitGame(5.2); await shot('03_lauma_kaibutsu'); }
+  if (has('cast')) { await open(''); await page.evaluate(() => window.__game.showCast(Math.max(0, window.__game.ROSTER.indexOf('kaibutsu')))); await waitS(() => window.__game.gallery.loaded); await waitGame(4); await shot('03_lauma_kaibutsu'); }
   if (has('battle') || has('battoga') || has('rage') || has('sacrifice')) {
     await open('phase=1&nointro'); await waitGame(3);
     if (has('battle')) {

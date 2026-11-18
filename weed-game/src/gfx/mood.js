@@ -11,13 +11,13 @@ const BASE = {
   stars: 1.0, aurora: 0.0, clouds: 0.22, cloudCol: '#1a2547',
   moon: 1.0, sun: 0.0, sunCol: '#ffc98a',
   fog: '#1c2a52', fogDensity: 0.0105, haze: '#27386a', mist: 0.55, mistCol: '#8fa6dc',
-  hemiSky: '#9db0ee', hemiGround: '#34324e', hemi: 0.9,
+  hemiSky: '#a9b6e0', hemiGround: '#3a3850', hemi: 0.9,
   key: '#cfdcff', keyI: 1.9, keyX: -6, keyY: 11, keyZ: 8,
   back: '#6f9bff', backI: 1.0,
   rim: '#9cc0ff', rimAmt: 0.9,
   layerTint: '#ffffff', snowCol: '#bccbf0', snowShade: '#7388c4', sparkle: 1.0,
   wind: 1.0, snowAmt: 0.6, stretch: 1.0,
-  bloom: 0.6, exposure: 1.0, sat: 1.0, contrast: 1.05, lift: '#e9eeff', gain: '#ffffff',
+  bloom: 0.6, exposure: 1.0, sat: 0.94, contrast: 1.06, lift: '#eef0fb', gain: '#ffffff',
   vig: 0.6, vigColor: '#02030c', grain: 0.022, rays: 0.0, rayCol: '#bcd0ff',
   outline: '#090b18', water: '#bcd6ff',
 };
@@ -115,7 +115,7 @@ export function setMood(name, dur = 2) {
 export function clearMood() { mood.manual = null; }
 
 /** Ohjaaja: päättelee perusmoodin pelitilasta. Kutsutaan joka frame (kevyt). */
-let dirT = 0, menuEl = null;
+let dirT = 0, menuEl = null, dawnLatch = false;
 export function directMood(E, dtReal) {
   dirT -= dtReal;
   if (dirT <= 0) {
@@ -125,10 +125,13 @@ export function directMood(E, dtReal) {
     const inMenu = !S || (!S.active && !S.cutscene && menuEl && !menuEl.classList.contains('hidden'));
     const castEl = document.getElementById('castScreen');
     const inCast = castEl && !castEl.classList.contains('hidden');
-    const dawnSignal = E.rimLight && E.rimLight.intensity > 1.2;
+    // aamunkoitto lukittuu päälle (kohtausskripti nostaa rim-valon) ja pysyy tulosruudun yli valikkoon asti
+    if (E.rimLight && E.rimLight.intensity > 1.25 && S && S.phase === 3) dawnLatch = true;
+    if (S && S.active && !S.cutscene) dawnLatch = false;
+    const dawnSignal = dawnLatch;
     let auto = 'night', dur = 2.5;
     if (inMenu || inCast) {
-      auto = 'night'; dur = 1.2;
+      auto = 'night'; dur = 1.2; dawnLatch = false;
       if (E.rimLight) E.rimLight.intensity = 0.9;
       if (E.snow) E.snow.uniforms.uWind.value = 1;
       if (E.resetWorld) E.resetWorld();
