@@ -171,15 +171,16 @@ async function kenKageStrike() {
   ]);
   say('sync_reply', { noWait: true });
   // crossing leap with spinning bodies (X-shaped slash)
-  k.play('Battoga'); g.play('Battoga');
+  k.play('Battoga', { loop: false }); g.play('Battoga', { loop: false });
+  FX.vortex(g.root, dir, g.height * 0.8, 0.6);
   E.timeScale = 0.3; FX.speedLines(0.8);
   const hit = boss.weak.getWorldPosition(new THREE.Vector3());
   const top = boss.height * 0.75;
   await Promise.all([
     tween(k.root.position, { x: B.x - dir * 0.4, y: top, z: -0.6 }, 0.32, { ease: 'out' }),
     tween(g.root.position, { x: B.x - dir * 0.2, y: top + 0.3, z: 0.7 }, 0.32, { ease: 'out' }),
-    tween(k.spin.rotation, { z: -dir * Math.PI * 2 }, 0.32),
-    tween(g.spin.rotation, { z: -dir * Math.PI * 2, x: Math.PI * 2 }, 0.32),
+    k.hasClip && k.hasClip('Battoga') ? Promise.resolve() : tween(k.spin.rotation, { z: -dir * Math.PI * 2 }, 0.32),
+    g.hasClip && g.hasClip('Battoga') ? Promise.resolve() : tween(g.spin.rotation, { z: -dir * Math.PI * 2, x: Math.PI * 2 }, 0.32),
   ]);
   k.spin.rotation.set(0, 0, 0); g.spin.rotation.set(0, 0, 0);
   FX.slashArc(new THREE.Vector3(B.x, top, 0.6), 0xd8e6ff, 1.5, 0.5, 0.8);
@@ -343,9 +344,10 @@ async function battoga() {
   say('battoga', { noWait: true }); sfx.battoga(); setSlow(0.3, 1.0); FX.speedLines(1);
   w.play('Jump_ToIdle', { loop: false });               // crouch
   await wait(0.12);
-  w.play('Battoga');
+  w.play('Battoga', { loop: false });
   const startX = W.x;
-  tween(w.spin.rotation, { z: -dir * Math.PI * 4, x: Math.PI * 2 }, 0.55, { ease: 'inOut' });
+  FX.vortex(w.root, dir, w.height * 0.9, 0.7);
+  if (!w.hasClip || !w.hasClip('Battoga')) tween(w.spin.rotation, { z: -dir * Math.PI * 4, x: Math.PI * 2 }, 0.55, { ease: 'inOut' });   // rigatulla mallilla klippi hoitaa kierteen
   const trail = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, w.height * 0.5, 0.3)), 0xbfe4ff, 0.7, 0.35, Math.random() * 6), 70);
   await tween(W, { x: B.x - dir * bossHalf() * 0.5, y: 1.8 }, 0.5, { ease: 'inOut' });
   clearInterval(trail);

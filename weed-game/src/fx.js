@@ -95,6 +95,15 @@ E.updaters.add((dt, dtr) => {
     p.t += dt;
     const k = p.t / p.life;
     if (p.mesh) {
+      if (p.vortex) {
+        if (p.follow) { p.follow.getWorldPosition(p.mesh.position); p.mesh.position.y += 0.4 * p.size; }
+        p.mesh.rotation.x += dt * (p.zetsu ? 40 : 22);
+        const env = Math.sin(Math.min(1, k) * Math.PI);
+        p.mesh.children.forEach((c, i) => { c.material.opacity = env * (i === 2 ? 0.6 : (p.zetsu ? 0.35 : 0.22)); });
+        p.mesh.children[2].scale.setScalar(1 + k * 0.8);
+        if (k >= 1) { E.scene.remove(p.mesh); p.mesh.traverse(o => { if (o.geometry) o.geometry.dispose(); }); parts.splice(i, 1); }
+        continue;
+      }
       if (p.spinArc) {
         p.mesh.rotation.z -= dt * 14;
         p.mesh.material.opacity = 0.7 * (1 - k);
@@ -140,3 +149,22 @@ E.updaters.add((dt, dtr) => {
 });
 
 function EASEOUT(t) { return 1 - Math.pow(1 - t, 3); }
+
+/** Tuulipyörre (idea: Geminin dog_combat.js): kaksi additiivista kartiota pyörii hahmon pituusakselin ympäri.
+ *  follow = Object3D jota seurataan (esim. dog.root), dir = katsesuunta (+1/-1). */
+export function vortex(follow, dir = 1, size = 1, dur = 1, zetsu = false) {
+  const g = new THREE.Group();
+  const mk = (r, len, op, col) => {
+    const geo = new THREE.ConeGeometry(r, len, 20, 1, true); geo.rotateZ(-Math.PI / 2); geo.translate(len * 0.15, 0, 0);
+    const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, wireframe: !zetsu && false }));
+    g.add(m); return m;
+  };
+  mk(0.55 * size, 1.8 * size, zetsu ? 0.35 : 0.22, 0xbfe4ff);
+  mk(0.35 * size, 2.3 * size, zetsu ? 0.3 : 0.18, zetsu ? 0xffffff : 0x9fd0ff);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.6 * size, 0.04 * size, 6, 40), new THREE.MeshBasicMaterial({ color: 0xdff2ff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false }));
+  ring.rotation.y = Math.PI / 2; g.add(ring);
+  g.scale.x = dir;
+  E.scene.add(g);
+  parts.push({ mesh: g, t: 0, life: dur, vortex: true, follow, size, zetsu });
+  return g;
+}

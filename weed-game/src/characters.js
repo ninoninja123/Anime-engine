@@ -17,6 +17,14 @@ export const MODELS = {
   tobei:     { file: 'tobei.glb',     rotY: HALF_PI },
   dog_parts: { file: 'dog_parts.glb', rotY: 0 },
   hogen:     { file: 'hogen.glb',     rotY: 0 },
+  weed_rigged:     { file: 'weed_rigged.glb',     rotY: 0, rigged: true },
+  kagetora_rigged: { file: 'kagetora_rigged.glb', rotY: 0, rigged: true },
+  smith_rigged: { file: 'smith_rigged.glb', rotY: 0, rigged: true },
+  kaibutsu_rigged: { file: 'kaibutsu_rigged.glb', rotY: 0, rigged: true, mirrorZ: true },  // auto-rig peilasi mallin: karvaton laikku takaisin vasemmalle kyljelle
+  rocket_rigged: { file: 'rocket_rigged.glb', rotY: 0, rigged: true },
+  tobei_rigged: { file: 'tobei_rigged.glb', rotY: 0, rigged: true },
+  hogen_rigged: { file: 'hogen_rigged.glb', rotY: 0, rigged: true },
+  striped_b_rigged: { file: 'striped_b_rigged.glb', rotY: 0, rigged: true },
 };
 
 // Liikkeen tyyli: gait = 'trot' | 'limp3' (kolmijalkainen) | 'heavy' | 'light'
@@ -25,14 +33,14 @@ export const MODELS = {
 export const CHARACTERS = {
   // ---------------- päähahmot: omat mallit ----------------
   weed: {
-    name: 'Weed', jp: 'ウィード', kind: 'rigid', model: 'weed', height: 0.78,
+    name: 'Weed', jp: 'ウィード', kind: 'rigged', model: 'weed_rigged', height: 0.78,
     role: 'Son of Gin. Small but swift, and he refuses pointless killing. Signature move: Battōga.',
     gait: 'light', speed: 1.15, wag: 0.6,
     rig: { belly: 0.36, neck: 0.36, tail: 0.24, legSwing: 0.55, headAmt: 1 },
     outline: 0.012,
   },
   kaibutsu: {
-    name: 'Kaibutsu', jp: '怪物', kind: 'rigid', model: 'kaibutsu', height: 2.9,
+    name: 'Kaibutsu', jp: '怪物', kind: 'rigged', model: 'kaibutsu_rigged', height: 2.9,
     role: 'P4. A dog twisted by gene experiments into a lion-like monster. Weak spot: the hairless left flank.',
     gait: 'heavy', speed: 0.8, wag: 0.12, monster: true,
     rig: { belly: 0.40, neck: 0.30, tail: 0.30, legSwing: 0.42, headAmt: 0.8 },
@@ -42,42 +50,42 @@ export const CHARACTERS = {
     outline: 0.006,
   },
   smith: {
-    name: 'Smith', jp: 'スミス', kind: 'rigid', model: 'smith', height: 0.98,
+    name: 'Smith', jp: 'スミス', kind: 'rigged', model: 'smith_rigged', height: 0.98,
     role: 'A three-legged veteran. He lost a leg saving GB from under a truck.',
     gait: 'limp3', speed: 0.9, wag: 0.35,
     rig: { belly: 0.40, neck: 0.30, tail: 0.25, legSwing: 0.45, headAmt: 0.9 },
     outline: 0.01,
   },
   kagetora: {
-    name: 'Kagetora', jp: '影虎', kind: 'rigid', model: 'striped_a', height: 1.02,
+    name: 'Kagetora', jp: '影虎', kind: 'rigged', model: 'kagetora_rigged', height: 1.02,
     role: 'A Kai dog, son of Kurotora. Hot-headed at first, then Ken\'s closest friend.',
     gait: 'trot', speed: 1.1, wag: 0.4,
     rig: { belly: 0.42, neck: 0.30, tail: 0.25, legSwing: 0.5, headAmt: 1 },
     outline: 0.01,
   },
   kurotora: {
-    name: 'Kurotora', jp: '黒虎', kind: 'rigid', model: 'striped_b', height: 1.06,
+    name: 'Kurotora', jp: '黒虎', kind: 'rigged', model: 'striped_b_rigged', height: 1.06,
     role: 'Kai veteran of Gin\'s generation and Kagetora\'s father. Leader of the Kai brothers.',
     gait: 'trot', speed: 1, wag: 0.3,
     rig: { belly: 0.42, neck: 0.30, tail: 0.25, legSwing: 0.48, headAmt: 1 },
     outline: 0.01,
   },
   rocket: {
-    name: 'Rocket', jp: 'ロケット', kind: 'rigid', model: 'rocket', height: 1.18,
+    name: 'Rocket', jp: 'ロケット', kind: 'rigged', model: 'rocket_rigged', height: 1.18,
     role: 'A borzoi and the fastest of Ōu. A trusted scout who defects from Hōgen\'s side.',
     gait: 'light', speed: 1.35, wag: 0.3,
     rig: { belly: 0.48, neck: 0.30, tail: 0.25, legSwing: 0.6, headAmt: 1 },
     outline: 0.01,
   },
   tobee: {
-    name: 'Tōbee', jp: '藤兵衛', kind: 'rigid', model: 'tobei', height: 1.4,
+    name: 'Tōbee', jp: '藤兵衛', kind: 'rigged', model: 'tobei_rigged', height: 1.4,
     role: 'Former fighting-dog yokozuna and one of Hōgen\'s generals. He dies standing, like a mountain.',
     gait: 'heavy', speed: 0.85, wag: 0.15,
     rig: { belly: 0.36, neck: 0.32, tail: 0.18, legSwing: 0.38, headAmt: 0.7 },
     outline: 0.01,
   },
   moss: {
-    name: 'Moss', jp: 'モス', kind: 'rigid', model: 'tobei', height: 1.5, tint: '#8a8f99',
+    name: 'Moss', jp: 'モス', kind: 'rigged', model: 'tobei_rigged', height: 1.5, tint: '#8a8f99',
     role: 'Gin\'s heavyweight veteran. Gives his life shielding his comrades in Hokkaidō.',
     gait: 'heavy', speed: 0.85, wag: 0.15,
     rig: { belly: 0.36, neck: 0.32, tail: 0.18, legSwing: 0.38, headAmt: 0.7 },
@@ -186,7 +194,7 @@ export const CHARACTERS = {
     marks: ['tanPoints:#b97a45', 'brows:#c4844c'],
   },
   hogen: {
-    name: 'Hōgen', jp: '法玄', kind: 'rigid', model: 'hogen', height: 1.85,
+    name: 'Hōgen', jp: '法玄', kind: 'rigged', model: 'hogen_rigged', height: 1.85,
     role: 'A starved Great Dane who came to hate humans. Gathers an army of 700 to rule Japan.',
     gait: 'heavy', speed: 0.9, wag: 0.05,
     rig: { belly: 0.44, neck: 0.26, tail: 0.22, legSwing: 0.45, headAmt: 0.9 },
@@ -194,7 +202,7 @@ export const CHARACTERS = {
     outline: 0.008,
   },
   genba: {
-    name: 'Genba', jp: '玄馬', kind: 'rigid', model: 'hogen', height: 1.75, tint: '#b8977c',
+    name: 'Genba', jp: '玄馬', kind: 'rigged', model: 'hogen_rigged', height: 1.75, tint: '#b8977c',
     role: 'Hōgen\'s brother: raw strength and rage. Hōgen ends his suffering in tears.',
     gait: 'heavy', speed: 0.9, wag: 0.05,
     rig: { belly: 0.44, neck: 0.26, tail: 0.22, legSwing: 0.42, headAmt: 0.9 },

@@ -316,14 +316,17 @@ export const finale = (ctx) => {
     { music: null, fade: 0.4 },
     { dolly: 'weed', dist: 1.3, side: 0.5, h: 0.05, t: 0.3 },
     { say: 'finale_cry' },
-    { caption: '<b>BATTŌGA</b>', t: 1.8, wait: false },
+
     { sfx: 'battoga' }, { fx: 'speed', v: 1 },
-    { anim: 'weed', name: 'Battoga' },
+    { anim: 'weed', name: 'Zetsu', loop: false },          // Zetsu Tenrō Battōga: 1080° korkkiruuvi (rigattu klippi)
+    { caption: '<b>ZETSU TENRŌ BATTŌGA</b>', t: 2.0, wait: false },
     { slow: 0.18 },
     { fn: async () => {
       const arcs = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, w.height * 0.5, 0.2)), 0x9fd0ff, 0.9, 0.4, Math.random() * 6), E.lowFx ? 360 : 180);
       const orbit = { a: -0.6 }; const p0 = new THREE.Vector3();
-      tween(w.spin.rotation, { z: -Math.PI * 6, x: Math.PI * 2 }, 1.9, { real: true, ease: 'inOut' });
+      FX.vortex(w.root, 1, w.height * 1.2, 2.2, true);
+      if (!w.hasClip || !w.hasClip('Zetsu')) tween(w.spin.rotation, { z: -Math.PI * 6, x: Math.PI * 2 }, 1.9, { real: true, ease: 'inOut' });
+      else { w.cur.action.timeScale = 2.9; }   // 1080° valmis kameran kiertäessä (slow-mo 0.18)
       tween(W, { x: B.x - ctx.bossHalf() * 0.35, y: boss.height * 0.55 }, 1.9, { real: true, ease: 'inOut', onUpdate: () => w.root.position.set(W.x, W.y, 0) });
       await tween(orbit, { a: 1.4 }, 1.9, { real: true, ease: 'inOut', onUpdate: () => {
         p0.copy(w.root.position);

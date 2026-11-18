@@ -127,8 +127,10 @@ function castUpdate(dt, dtr) {
     const name = DEMO[slot];
     d.spin.rotation.set(0, 0, 0);
     if (name === 'Battoga') {
-      d.play('Battoga');
-      tween(d.spin.rotation, { z: -Math.PI * 4, x: Math.PI * 2 }, 1.0, { real: true }).then(() => d.spin.rotation.set(0, 0, 0));
+      const z = d.hasClip && d.hasClip('Zetsu') && id === 'weed';
+      d.play(z ? 'Zetsu' : 'Battoga', { loop: false });
+      FX.vortex(d.root, 1, h * 0.9, 1.0, z);
+      if (!(d.hasClip && d.hasClip('Battoga'))) tween(d.spin.rotation, { z: -Math.PI * 4, x: Math.PI * 2 }, 1.0, { real: true }).then(() => d.spin.rotation.set(0, 0, 0));
       FX.slashArc(new THREE.Vector3(x, h * 0.5, GAL_Z), 0xcfeaff, h * 0.9, 0.7);
     } else d.play(name, { loop: !ONCE.includes(name) });
   }
