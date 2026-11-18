@@ -7,7 +7,7 @@
   Genba + roster-agentin geneeriset joukkovariantit. Parametrit: jalan pituus/paksuus, vartalo, kaula, pää, korvat (pystyt/luimussa),
   häntä (kippura/suora/sapeli/typistetty), kuono; kuviot verteksiväreinä (satula, maski, tan points, kulmat, brindle, pilkut, sukat, arpi).
 - **Animaatiot**: kaikki käyttäjän omat mallit ovat nyt **rigattuja** (Weed & Kagetora: Gemini; Kaibutsu, Smith, Kurotora,
-  Rocket, Tōbee/Moss, Hōgen/Genba: `tools/rig_dog_standalone.py` auto-rig, tarkistettu renderillä) ja käyttävät oikeita
+  Rocket, Tōbee/Moss, Hōgen/Genba, Gin, John, Tesshin: `tools/rig_dog_standalone.py` auto-rig, tarkistettu renderillä) ja käyttävät oikeita
   klippejä AnimationMixerilla. Tehdaskoirilla proseduraalinen animaattori (nivelet). Battōga = klippi + tuulipyörre;
   finaalissa **Zetsu Tenrō Battōga** (1080°). Jäykän mallin vertex-shader-rigi on jäljellä varajärjestelmänä.
 - **Tehdaskoirien kasvot** (`src/face.js`): anime-silmät (iiris hahmon värillä, pupilli, 2 heijastusta, luomiviiva),
@@ -26,7 +26,12 @@
   11 tehostetta + lumimyrsky-ambienssi; syntetisoitu varajärjestelmä.
 - **Julkaisu**: Cloudflare Worker + Workers KV (`tools/deploy-cf.py`), Range-tuki.
 
+- **Kesä (canon)**: Kaibutsu-taistelu on kesällä → lumimyrsky-ambienssi vaihdettu kesäillan sirkka-/tuuliambienssiin;
+  ympäristön kesäversio on toisen agentin (Fable) työn alla. Repliikeissä ei ollut lumi-/talviviittauksia.
+
 ## Puuttuu / tunnetut ongelmat
+- Canon-tutkimus (`docs/weed-game/canon-deep-dive.md`, `canon-corrections.md`) ei ollut vielä valmis tämän session aikana:
+  kohtausten tapahtumajärjestys ja repliikit pitää tarkistaa sitä vasten.
 - **Puheäänitiedostot puuttuvat** (rakenteet valmiit). ElevenLabs-MCP oli tämän session lopussa yhteydessä, mutta ääniä ei
   generoitu (käyttäjän krediitit) – seuraava askel: valitse ääni per hahmo ja generoi `docs/VOICE_LINES.md`:n mukaan.
 - Auto-rigatuissa malleissa painot ovat automaattiset: Kaibutsun etujalka venyy laukan ääriasennossa, Smithin 3-jalkaisuus

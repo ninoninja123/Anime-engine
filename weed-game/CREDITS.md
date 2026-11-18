@@ -14,7 +14,10 @@ Lähteet `assets/models-src/*.glb`. Peliin optimoidaan `tools/optimize-models.mj
 | `rocket_rigged.glb` | `rocket.glb` | **Rocket** | auto-rig |
 | `tobei_rigged.glb` | `tobei.glb` | **Tōbee**, **Moss** (sävytetty) | auto-rig |
 | `hogen_rigged.glb` | `hogen.glb` (käyttäjän toimittama) | **Hōgen**, **Genba** (sävytetty) | auto-rig |
-| `dog_parts.glb` | käyttäjän 13-osainen peruskoira | **koiratehdas**: Gin, Jerome, Ken, Robert, Rocker, Heuler, Akame, John, Ben, GB, Lector, Thunder + roster-agentin joukkovariantit | omat nivelet + proseduraaliset animaatiot, anime-kasvot (`src/face.js`) |
+| `gin_auto.glb` | `gin_rigged.glb` (käyttäjän Tripo-rigi, ei klippejä) | **Gin** | uudelleenrigattu `rig_dog_standalone.py`:llä → 9 klippiä |
+| `john_auto.glb` | `john.glb` (susimainen) | **John** | auto-rig |
+| `tesshin_auto.glb` | `tesshin.glb` | **Tesshin** | auto-rig |
+| `dog_parts.glb` | käyttäjän 13-osainen peruskoira | **koiratehdas**: Jerome, Ken, Robert, Rocker, Heuler, Akame, Ben, GB, Lector, Thunder + roster-agentin joukkovariantit | omat nivelet + proseduraaliset animaatiot, anime-kasvot (`src/face.js`) |
 
 - `base_rigged.glb` (rigattu peruskoira, Tripo auto-rig) on lähteissä; tehtaan siirto sille on seuraava askel (ks. NEXT.md).
 - Staattiset alkuperäiset (`weed.glb`, `kaibutsu.glb` …) säilyvät lähteinä; pelissä käytetään rigattuja.
