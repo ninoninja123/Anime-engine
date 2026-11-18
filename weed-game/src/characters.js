@@ -44,7 +44,7 @@ export const CHARACTERS = {
   },
   kaibutsu: {
     name: 'Kaibutsu', jp: '怪物', kind: 'rigged', model: 'kaibutsu_rigged', height: 2.9,
-    role: 'P4. A dog twisted by gene experiments into a lion-like monster. Weak spot: the hairless left flank.',
+    role: 'P4. A dog twisted by gene experiments into a lion-like monster. Weak spot: the bare skin on its left chest.',
     gait: 'heavy', speed: 0.8, wag: 0.12, monster: true,
     rig: { belly: 0.40, neck: 0.30, tail: 0.30, legSwing: 0.42, headAmt: 0.8 },
     // karvaton laikku näkyy mallissa vasemmassa kyljessä olan takana (mallin omassa avaruudessa, h=1)
@@ -158,6 +158,14 @@ export const CHARACTERS = {
     c: { coat: '#ece6da', under: '#f4f0e8', head: '#1c1a19', ear: '#1c1a19', tail: '#ece6da', muzzle: '#ece6da' },
     marks: ['spots:#1c1a19', 'muzzleLight'],
   },
+  north: {
+    name: 'North', jp: 'ノース', kind: 'factory', height: 1.12,
+    role: 'The fifth of Jerome\'s men. Falls in the ambush inside Gajō, just before Smith\'s sacrifice. (Appearance not confirmed by sources.)',
+    gait: 'trot', speed: 1.05, wag: 0.25,
+    p: { leg: 1.1, body: 1.08, neck: 1.06, ear: 1.4, tail: 'sabre', tailLen: 1.1, muzzle: 1.2 },
+    c: { coat: '#6e6a63', under: '#bdb5a6', head: '#75706a', ear: '#2b2826', tail: '#3b3836', muzzle: '#2a2725' },
+    marks: ['saddle:#2a2725', 'mask:#2a2725', 'belly'],
+  },
   akame: {
     name: 'Akame', jp: '赤目', kind: 'factory', height: 1.02,
     role: 'Kishu, Gin\'s contemporary and former leader of the Iga ninja dogs. Messenger and strategist.',
@@ -223,8 +231,8 @@ export const CHARACTERS = {
 };
 
 // Pelissä käytetyt (taso 2) ja galleriassa näytettävät
-export const LEVEL2_CAST = ['weed', 'kaibutsu', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'gin'];
-export const ROSTER = ['weed', 'gin', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'kaibutsu',
+export const LEVEL2_CAST = ['weed', 'kaibutsu', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'north', 'gin'];
+export const ROSTER = ['weed', 'gin', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'north', 'kaibutsu',
   'rocket', 'tobee', 'kurotora', 'moss', 'tesshin', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
 
 // ---------------- geneeriset joukkovariantit (src/data/roster_specs.js) ----------------
