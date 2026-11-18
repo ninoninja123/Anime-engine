@@ -6,14 +6,15 @@
 //   img        public/story/<file>.webp (generated art, not in git). If it fails to load, `paint` draws a fallback.
 //   paint      fallback painting: { sky:[top,bottom], orb:{x,y,r,color,glow}, ridges:[colors far→near], haze }
 //   kb         Ken Burns: { from:[scale, x%, y%], to:[scale, x%, y%] } (translate in % of the frame)
-//   fx         particle layers: 'stars' 'snow' 'blizzard' 'motes' 'seeds' 'rain' 'fireflies' 'embers' 'sparks'
+//   fx         particle layers: 'stars' 'snow' 'blizzard' 'motes' 'seeds' 'leaves' 'rain' 'fireflies' 'sparks'
+//   filter     optional CSS filter on the art (e.g. autumn grading of the final panel: Weed's journey is in late autumn)
 //   light      animated light: 'moon' 'warm' 'redstorm' 'flash' 'sun' 'alarm' 'beams' 'dawn'
 //   grade      CSS colour grade layered over the art (mix-blend soft-light)
 //   kicker     small chapter text (top left), title: big centred title card
 //   steps      what happens over the panel: { say }, { wait }, { sfx, arg }, { shake }, { flash }, { music }, { ambience }
 //   hold       extra seconds after the last step; xfade = crossfade into this panel (s)
 
-export const PROLOGUE_MUSIC = 'intro';     // the user's own intro theme (mus_intro_user.mp3), restarted from the top
+export const PROLOGUE_MUSIC = 'dawn';      // 'A New Horizon' (Epidemic) – the menu's intro song stays in the menu (user's wish); crisis panels switch to 'sad'
 
 export const PANELS = [
   {
@@ -66,7 +67,7 @@ export const PANELS = [
     paint: { sky: ['#5f9ad6', '#dff0ff'], orb: { x: 0.2, y: 0.18, r: 0.07, color: '#fffbe6', glow: 'rgba(255,250,210,0.5)' }, ridges: ['#8fb0c9', '#4f7d5a', '#2f5a3a', '#1d3a24'], haze: 'rgba(255,255,240,0.18)' },
     kb: { from: [1.18, -2, -2], to: [1.04, 1, 1] },
     fx: ['seeds', 'motes'], light: 'sun', grade: 'linear-gradient(180deg, rgba(255,230,160,0.12), rgba(255,255,255,0.05))',
-    kicker: 'Years of peace',
+    kicker: 'Fourteen years of peace',
     steps: [{ ambience: true }, { say: 'story_07' }, { say: 'story_08' }],
     hold: 0.6, xfade: 2.0,
   },
@@ -83,8 +84,8 @@ export const PANELS = [
     id: 'hunt', img: 'story/08_hunt.webp',
     paint: { sky: ['#03050c', '#162038'], ridges: ['#1b2540', '#111829', '#0a0f1b', '#03050a'], haze: 'rgba(200,215,255,0.1)' },
     kb: { from: [1.2, 4, 1], to: [1.06, 0, -1] },
-    fx: ['fireflies'], light: 'beams', grade: 'linear-gradient(180deg, rgba(20,30,70,0.25), rgba(0,0,0,0.3))',
-    kicker: 'Ōu, summer',
+    fx: ['leaves', 'motes'], light: 'beams', grade: 'linear-gradient(180deg, rgba(20,30,70,0.25), rgba(0,0,0,0.3))',
+    kicker: 'Futago Pass, late autumn',
     steps: [{ ambience: true }, { say: 'story_10' }, { say: 'story_11' }],
     hold: 0.4,
   },
@@ -92,8 +93,8 @@ export const PANELS = [
     id: 'weed', img: 'story/09_weed.webp',
     paint: { sky: ['#7aa6d8', '#ffd18a'], orb: { x: 0.8, y: 0.3, r: 0.06, color: '#fff6d8', glow: 'rgba(255,220,150,0.6)' }, ridges: ['#9fb7c9', '#6f927a', '#456b4c', '#26402b'], haze: 'rgba(255,235,200,0.22)' },
     kb: { from: [1.06, 0, 0], to: [1.22, 4, -3] },
-    fx: ['seeds', 'motes'], light: 'dawn', grade: 'linear-gradient(180deg, rgba(255,210,140,0.12), rgba(255,255,255,0))',
-    kicker: 'Weed',
+    fx: ['leaves', 'motes'], light: 'dawn', grade: 'linear-gradient(180deg, rgba(255,190,110,0.16), rgba(200,90,30,0.14))',
+    kicker: 'Weed', filter: 'sepia(0.28) saturate(1.15) hue-rotate(-10deg)',
     steps: [{ ambience: false }, { music: 'dawn', fade: 2.4 }, { say: 'story_12' }, { say: 'story_vow' },
       { title: { kicker: 'A small dog with a great heart', main: 'WEED', sub: 'Ōu Saga', jp: '銀牙伝説ウィード' } }, { wait: 3.2 }],
     hold: 0.4, xfade: 1.8,

@@ -111,6 +111,7 @@ function spawn(kind, init) {
     case 'blizzard': p.vx = R(-260, -140) * s; p.vy = R(60, 120) * s; p.r = R(0.7, 1.6) * s; p.x = init ? R(0, fxW) : fxW + 10; p.y = R(-20, fxH); break;
     case 'rain': p.vx = -60 * s; p.vy = R(620, 820) * s; p.r = s; p.len = R(10, 18) * s; break;
     case 'motes': p.vx = R(-5, 5); p.vy = R(-8, -2); p.r = R(0.8, 2) * s; p.y = init ? R(0, fxH) : fxH + 5; break;
+    case 'leaves': p.vx = R(-30, -8) * s; p.vy = R(14, 34) * s; p.r = R(2, 3.6) * s; p.x = init ? R(0, fxW) : R(0, fxW * 1.3); p.spin = R(1, 4); p.col = ['#c8642a', '#e0a040', '#a8401e', '#d8b060'][Math.floor(R(0, 4))]; break;
     case 'seeds': p.vx = R(12, 30) * s; p.vy = R(-6, 4); p.r = R(1, 2.2) * s; p.x = init ? R(0, fxW) : -10; p.y = R(0, fxH); break;
     case 'fireflies': p.vx = R(-6, 6); p.vy = R(-6, 6); p.r = R(1.2, 2.4) * s; p.y = init ? R(fxH * 0.3, fxH) : R(fxH * 0.3, fxH); p.x = R(0, fxW); break;
     case 'sparks': p.vx = R(-160, 160); p.vy = R(-160, 40); p.r = R(0.8, 1.8) * s; p.x = fxW * R(0.25, 0.55); p.y = fxH * R(0.3, 0.6); p.life = R(0.6, 1.4); break;
@@ -118,7 +119,7 @@ function spawn(kind, init) {
   }
   return p;
 }
-const COUNTS = { snow: 90, blizzard: 220, rain: 160, motes: 40, seeds: 26, fireflies: 34, sparks: 0, stars: 70 };
+const COUNTS = { leaves: 22, snow: 90, blizzard: 220, rain: 160, motes: 40, seeds: 26, fireflies: 34, sparks: 0, stars: 70 };
 function setFx(kinds) {
   fxKinds = kinds || [];
   const keep = parts.filter(p => fxKinds.includes(p.kind));
@@ -134,6 +135,7 @@ function drawFx(dt, time) {
     const p = parts[i]; p.t += dt;
     p.x += p.vx * dt; p.y += p.vy * dt;
     if (p.kind === 'snow') p.x += Math.sin(time * 0.8 + p.a) * 12 * p.s * dt;
+    if (p.kind === 'leaves') p.x += Math.sin(time * 1.4 + p.a) * 20 * p.s * dt;
     if (p.kind === 'fireflies' || p.kind === 'motes') { p.vx += R(-20, 20) * dt; p.vy += R(-20, 20) * dt; p.vx *= 0.98; p.vy *= 0.98; }
     if (p.kind === 'sparks') p.vy += 220 * dt;
     const out = p.y > fxH + 20 || p.x < -30 || p.x > fxW + 30 || p.y < -30 || p.t > p.life;
@@ -146,6 +148,9 @@ function drawFx(dt, time) {
     g.globalAlpha = Math.max(0, alpha) * (p.z === 0 ? 0.55 : p.z === 1 ? 0.8 : 0.95);
     if (p.kind === 'rain') {
       g.strokeStyle = 'rgba(190,220,230,0.45)'; g.lineWidth = p.r; g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(p.x + p.vx * 0.02, p.y - p.len); g.stroke();
+    } else if (p.kind === 'leaves') {
+      g.fillStyle = p.col; g.save(); g.translate(p.x, p.y); g.rotate(time * p.spin + p.a); g.scale(1, 0.45 + 0.4 * Math.sin(time * p.spin * 1.7 + p.a));
+      g.beginPath(); g.ellipse(0, 0, p.r * 1.6, p.r * 0.8, 0, 0, Math.PI * 2); g.fill(); g.restore();
     } else if (p.kind === 'blizzard') {
       g.strokeStyle = 'rgba(235,242,255,0.8)'; g.lineWidth = p.r; g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(p.x - p.vx * 0.03, p.y - p.vy * 0.03); g.stroke();
     } else {
@@ -161,7 +166,7 @@ let grainT = 0;
 function drawGrain(dt) {
   grainT -= dt; if (grainT > 0) return; grainT = 0.08;
   const g = els.grain.getContext('2d'); const d = g.createImageData(256, 256);
-  for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 22; }
+  for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 16; }
   g.putImageData(d, 0, 0);
 }
 
@@ -204,6 +209,7 @@ async function showPanel(p) {
   el.innerHTML = `<div class="pl-img"></div><div class="pl-grade"></div>`;
   el.firstChild.style.backgroundImage = `url("${src}")`;
   el.querySelector('.pl-grade').style.background = p.grade || 'none';
+  if (p.filter) el.firstChild.style.filter = p.filter;
   el.firstChild.style.transform = kbTransform(p, 0);
   els.stage.appendChild(el);
   const xf = E.skipping ? 0 : (p.xfade ?? 1.2);

@@ -9,16 +9,16 @@
 #prologue .pl-img { background-size: cover; background-position: center; will-change: transform; transform-origin: 50% 50%; }
 #prologue .pl-grade { mix-blend-mode: soft-light; }
 #prologue .pl-light { mix-blend-mode: screen; }
-#prologue .pl-fog { opacity: 0.22; mix-blend-mode: screen; width: 200%;
+#prologue .pl-fog { opacity: 0.16; width: 200%;
   background: radial-gradient(40% 30% at 20% 70%, rgba(220,230,255,0.5), transparent 70%), radial-gradient(35% 25% at 70% 80%, rgba(220,230,255,0.4), transparent 70%);
   animation: plFog 38s linear infinite; }
-#prologue .pl-fog.b { opacity: 0.14; animation-duration: 62s; animation-direction: reverse; top: 8%; }
+#prologue .pl-fog.b { opacity: 0.1; animation-duration: 62s; animation-direction: reverse; top: 8%; }
 @keyframes plFog { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 #prologue .pl-vig { background: linear-gradient(0deg, rgba(0,0,0,0.6) 11vh, rgba(0,0,0,0.25) 30vh, transparent 45vh),
   radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,0.65) 100%); }
 /* main menu: "Story so far" sits beside "The Pack" so the menu still fits a 390 px tall phone */
 .menuduo { display: flex; gap: 8px; } .menuduo button { flex: 1; }
-#prologue .pl-grain { image-rendering: pixelated; opacity: 0.55; mix-blend-mode: overlay; }
+#prologue .pl-grain { image-rendering: pixelated; opacity: 0.35; }
 #prologue .pl-flash { background: #eaf4ff; opacity: 0; mix-blend-mode: screen; }
 #prologue .pl-black { background: #000; opacity: 1; }
 #prologue .pl-bar { position: absolute; left: 0; right: 0; height: 11vh; background: #000; z-index: 2; }
@@ -39,7 +39,7 @@
 #prologue .pl-title .s { font-size: clamp(11px, 2vw, 16px); letter-spacing: 0.5em; text-transform: uppercase; color: #cfdaff; }
 #prologue .pl-title .j { font-size: clamp(11px, 1.8vw, 15px); letter-spacing: 0.35em; opacity: 0.7; margin-top: 6px; }
 #prologue .pl-title.big .m { font-family: inherit; font-weight: 900; font-size: clamp(44px, 10vw, 92px); letter-spacing: 0.12em;
-  background: linear-gradient(180deg, #fff, #ffe2a8); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 4px 22px rgba(255,190,110,0.45)); }
+  color: #fff8ea; text-shadow: 0 0 28px rgba(255,190,110,0.55), 0 4px 18px rgba(0,0,0,0.75); }
 @keyframes plTitle { from { letter-spacing: 0.05em; filter: blur(6px); opacity: 0; } 35% { opacity: 1; filter: blur(0); } to { } }
 
 #prologue .pl-btns { position: absolute; z-index: 9; right: max(12px, env(safe-area-inset-right)); top: calc(11vh + 8px); display: flex; gap: 8px; }
