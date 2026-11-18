@@ -1,2 +1,5 @@
 node_modules/
 dist/
+
+# Licensed audio (Epidemic Sound): do not redistribute in a public repo
+public/audio/
