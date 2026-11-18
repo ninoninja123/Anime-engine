@@ -16,9 +16,9 @@ const MUSIC_LOOP = { intro: true, battle: true, sad: false, dawn: false };
 export const SFX_FILES = {
   bite: 'sfx_bite.mp3', hit: 'sfx_hit.mp3', roar: 'sfx_roar.mp3', rock: 'sfx_rock.mp3', rumble: 'sfx_rockslide.mp3',
   whoosh: 'sfx_whoosh.mp3', boom: 'sfx_battoga.mp3', spirit: 'sfx_spirit.mp3', bark: 'sfx_bark.mp3', hurt: 'sfx_hurt.mp3',
-  wind: 'sfx_wind.mp3',
+  wind: 'sfx_summer.mp3',   // kesäinen vuoristoambienssi (sirkat, tuuli puissa) – Kaibutsu-taistelu on kesällä
 };
-const SFX_VOL = { bite: 0.9, hit: 0.8, roar: 0.9, rock: 0.8, rumble: 1, whoosh: 0.55, boom: 1, spirit: 0.7, bark: 0.6, hurt: 0.6, wind: 0.35 };
+const SFX_VOL = { bite: 0.9, hit: 0.8, roar: 0.9, rock: 0.8, rumble: 1, whoosh: 0.55, boom: 1, spirit: 0.7, bark: 0.6, hurt: 0.6, wind: 0.4 };
 
 const buffers = {};     // tiedosto -> AudioBuffer | null (epäonnistui)
 const loading = {};
@@ -109,7 +109,7 @@ function fadeOutCurrent(fade) {
 }
 export function currentMusic() { return current ? current.name : (synthMode ? 'synth:' + synthMode : null); }
 
-// ---------------------------------------------------------------- ambienssi (tuuli)
+// ---------------------------------------------------------------- ambienssi (kesäilta: sirkat + tuuli puissa)
 let amb = null;
 export function ambience(on, vol = SFX_VOL.wind) {
   if (!ctx) return;

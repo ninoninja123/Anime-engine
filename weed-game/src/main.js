@@ -29,7 +29,7 @@ async function boot() {
   if (p.has('gallery')) showCast(Number(p.get('gallery')) || 0);
 }
 
-// ---------------------------------------------------------------- main menu: the pack on a snowy ridge
+// ---------------------------------------------------------------- main menu: the pack on the ridge
 function showMenu() {
   mode = 'menu';
   hideGallery();

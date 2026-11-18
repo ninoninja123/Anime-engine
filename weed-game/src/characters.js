@@ -18,6 +18,8 @@ export const MODELS = {
   dog_parts: { file: 'dog_parts.glb', rotY: 0 },
   hogen:     { file: 'hogen.glb',     rotY: 0 },
   weed_rigged:     { file: 'weed_rigged.glb',     rotY: 0, rigged: true },
+  john_auto:       { file: 'john_auto.glb',       rotY: 0, rigged: true },   // john.glb (wolf) auto-rig
+  gin_auto:        { file: 'gin_auto.glb',        rotY: 0, rigged: true },   // gin_rigged.glb (Tripo) uudelleenrigattu rig_dog_standalone.py:llä -> 9 klippiä
   kagetora_rigged: { file: 'kagetora_rigged.glb', rotY: 0, rigged: true },
   smith_rigged: { file: 'smith_rigged.glb', rotY: 0, rigged: true },
   kaibutsu_rigged: { file: 'kaibutsu_rigged.glb', rotY: 0, rigged: true, mirrorZ: true },  // auto-rig peilasi mallin: karvaton laikku takaisin vasemmalle kyljelle
@@ -98,12 +100,10 @@ export const CHARACTERS = {
   // c = värit: coat, under, legs, head, ear, tail, muzzle, eye, nose
   // marks = maalatut kuviot (ks. dogs.js PAINT)
   gin: {
-    name: 'Gin', jp: '銀', kind: 'factory', height: 1.22,
+    name: 'Gin', jp: '銀', kind: 'rigged', model: 'gin_auto', height: 1.25,
     role: 'Weed\'s father, Ōu\'s legendary leader. He calls those under him comrades, never servants.',
     gait: 'trot', speed: 1.05, wag: 0.4,
-    p: { leg: 1.05, body: 1.05, neck: 1.05, head: 1.0, ear: 1.0, tail: 'curl' },
-    c: { coat: '#b9c3cf', under: '#f1f4f7', head: '#c3ccd6', ear: '#9aa6b3', muzzle: '#eef2f6' },
-    marks: ['belly', 'brindle:#7f8a98', 'muzzleLight', 'socks'],
+    outline: 0.008,
   },
   jerome: {
     name: 'Jerome', jp: 'ジェローム', kind: 'factory', height: 1.2,
@@ -154,12 +154,10 @@ export const CHARACTERS = {
     marks: ['belly', 'muzzleLight', 'scar'],
   },
   john: {
-    name: 'John', jp: 'ジョン', kind: 'factory', height: 1.18,
-    role: 'Ōu\'s strongest warrior. His last stand becomes a legend that frightens even Hōgen.',
+    name: 'John', jp: 'ジョン', kind: 'rigged', model: 'john_auto', height: 1.22,
+    role: 'Ōu\'s strongest warrior. His last stand against fifty of Hōgen\'s men becomes a legend that frightens even Hōgen.',
     gait: 'trot', speed: 1.05, wag: 0.3,
-    p: { leg: 1.08, body: 1.08, neck: 1.05, ear: 0.9, earTilt: 1.0, tail: 'straight', tailLen: 1.1, muzzle: 1.25 },
-    c: { coat: '#1d1a18', under: '#2a2522', head: '#1f1c1a', ear: '#1a1716', muzzle: '#9a5e2c' },
-    marks: ['tanPoints:#9a5e2c', 'brows:#a8652f'],
+    outline: 0.008,
   },
   ben: {
     name: 'Ben', jp: 'ベン', kind: 'factory', height: 1.46,
