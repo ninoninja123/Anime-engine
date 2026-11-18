@@ -69,10 +69,10 @@
 | Hahmo | Nyt | Canon | Varmuus |
 |---|---|---|---|
 | **Jerome** | ruskea (tan) ja musta satula (klassinen saksanpaimenkoira) | **musta viitta, korvat ja päälaki, kerma- tai vaaleanharmaat kasvot ja rinta, mustat raitamerkit silmien ympärillä, hyvin vaaleat silmät** | VARMA |
-| **Ken** | harmaa | **vaaleanruskea (fawn) ja musta naamio**, pystyt typistetyt korvat | VARMA |
+| **Ken** | harmaa | **ruskea (fawn), tummempi kuono, musta naamio silmien yli, typistetyt pystykorvat, vaaleat silmät**; mahdollisesti kaksi arpea kasvoissa | VARMA (arvet EPÄVARMA) |
 | **GB** | valkoinen, ruskeat täplät ja korvat | kermanvalkoinen, **mustat** täplät, **pitkät mustat korvat** | KUVA |
 | **Smith** | (malli) | valkoinen vartalo, musta pää, pitkät mustat roikkokorvat, **oikea etujalka puuttuu** | VARMA |
-| **Kagetora** | (malli) | vaaleanharmaa tai valkoinen pohja, selvät mustat tiikeriraidat, kellanvihreät silmät | KUVA |
+| **Kagetora** | valkoinen ja raidallinen (käyttäjän havainto) | **tumma (mustanharmaa) selkä ja päälaki, paksut mustat tiikeriraidat, vaaleammat harmaat posket, kuono ja rinta**, kellertävät silmät; mahdollisesti kaksi arpea kuonon vasemmalla puolella | väri VARMA (KV + animemanga), arvet EPÄVARMA |
 | **Weed** | (malli) | teräksensininen, valkoinen kuono, rinta ja vatsa, **kolme vaaleaa pyöreää otsalaikkua**, siniset silmät, kippurahäntä | VARMA |
 | **Kaibutsu** | (malli) | leijonamainen harja, pitkä turkki, tiibetinmastiffin näköinen, erittäin iso pää. Väri todennäköisesti ruskea ja musta. | Muoto VARMA, väri EPÄVARMA |
 | **Rocker** | musta ja ruskea (black & tan), typistetty häntä | dobermanni, joten melko hyvin oikein | VARMA |

@@ -18,6 +18,58 @@ Lähteiden lyhenteet (koko lista lopussa):
 
 ---
 
+## 00. HAHMOJEN ULKONÄKÖ ANIMESSA (pikataulukko hahmoagentille)
+
+*Lähteet:*
+- **KV** = viralliset jaksokuvat (dアニメストア/niconico), katsottu itse.
+- **AM** = animemanga.com-hahmosivut (fani-wikiin pohjautuvia, osin manga-painotteisia).
+- **EW-L** = en.wikipedia "List of Silver Fang characters".
+- **JW**, **OK**, **FB** kuten alla.
+
+*[VARMA] = vähintään 2 itsenäistä lähdettä; [EPÄVARMA] = yksi lähde tai ristiriita. "Koko" on suhteellinen ja verrattu Weediin, jonka koko on 1.0. Koot ovat suuntaa antavia arvioita kuvista ja roduista [EPÄVARMA].*
+
+| Hahmo | Rotu | Turkin väri ja kuviot | Silmät | Arvet ja tunnusmerkit | Koko | Varmuus ja lähteet |
+|---|---|---|---|---|---|---|
+| **Kagetora** | kai (puhdasrotuinen) | **Tumma (mustanharmaa, yövalossa oliivinsävyinen) selkä ja päälaki, joissa paksut mustat tiikeriraidat. Posket, kuono ja rinta selvästi vaaleammat harmaat**, ja raidat jatkuvat kasvoihin. **Ei valkoinen pohja.** | kellertävät tai kellanvihreät (AM: ruskea, kellertävä tai vihertävä) | **Kaksi arpea kuonon vasemmalla puolella** (Kaibutsun jäljiltä) [EPÄVARMA: AM]. Pystykorvat. | n. 1.3 | väri ja raidat [VARMA: KV ep4 + AM "dark fur, black stripes"]; arvet [EPÄVARMA] |
+| **Ken** | tanskandoggi × saluki (Benin ja Crossin poika); näyttää doggilta | **ruskea (punaruskea, fawn) turkki, tummempi ruskea kuono, musta naamiovyö silmien yli** | vaaleat, harmaanvalkoiset | **typistetyt pystykorvat**, kaksi arpea kasvoissa [EPÄVARMA: AM]. Kuvissa näkyy tumma arpiviiva kuonossa ja poskessa. | n. 1.7 (suurin nuorista) | väri ja naamio [VARMA: KV ep4 + ep14, AM, FB "フォーン"]; rotu [VARMA: EW-L, AM] |
+| **Weed** | akita (kerronnassa tiikerijuovainen, 虎毛) | **teräksensininen tai siniharmaa yläpuoli; valkoinen kuono, posket, rinta, vatsa ja jalkojen sisäpinnat; kolme vaaleaa pyöreää laikkua otsassa** (kaksi kulmien yllä). Kippurahäntä. | **siniset** | ei arpia, pentumainen pää | 1.0 (pienin) | [VARMA: KV, AM "blue and white fur, blue eyes", EW-L "blue brindle"] |
+| **Gin** | akita | hopeinen tiikerijuova, piirretty sinertävänä (Weedin näköinen) | myöhemmissä sarjoissa siniset (aiemmin vihreänruskeat) | **kolme arpea otsassa** (karhusta); kaulapanta vaihtelee | n. 1.5 | [VARMA: AM, FB "Weed on kuin Gin ilman kolmea arpea"] |
+| **Jerome** | saksanpaimenkoira | **musta "viitta", korvat ja päälaki; kerma- tai vaaleanharmaat kasvot, rinta ja jalat; mustat raitamaiset merkit silmien ympärillä**; musta kuono. Ei ruskeaa satulaa. | **hyvin vaaleat**, harmaanvalkoiset | **toinen korva revitty**. Animessa Kamakiri repii korvan jaksossa 14 [EW]; AM:n mukaan (manga) oikea korva, revijänä Ron. Luoti jäi jalkaan jaksosta 14 lähtien. | n. 1.6 | väri [VARMA: KV ep5, AM "black and light cream"]; korvan puoli [EPÄVARMA] |
+| **Smith** | ranskanspanielin sekoitus | **valkoinen vartalo, musta pää ja pitkät mustat roikkuvat ja hapsuiset korvat**; pörröinen rinta | – | **toinen etujalka puuttuu**: OK oikea, AM (GB:n tarinassa) vasen → [EPÄVARMA] | n. 1.3 | väri [KUVA KV ep4]; rotu [JW] |
+| **Robert** | amerikkalaisen ajokoiran sekoitus | ei kuvaa | – | "1. nuoli" | n. 1.4? | [EPÄVARMA: JW] |
+| **Rocker (ロッカ)** | dobermanni | ei kuvaa (dobermannina luultavasti musta ja ruskea) | – | vähäpuheinen, "cool" | n. 1.4? | rotu [VARMA: JW, OK] |
+| **Heuler (ホイラー)** | JW: gascon-saintongeois; OK: "dobermannin tyyppinen?" | ei kuvaa | – | Jeromen varapäällikkö, kiivas | n. 1.4? | [EPÄVARMA, ristiriita] |
+| **North** | ? | ei tietoa | – | kuolee ensimmäisenä | ? | – |
+| **GB** | englanninsetteri | **kermanvalkoinen, mustat täplät, pitkät mustat korvat**, musta kuonon pää | tummat | – | n. 1.3 | [KUVA KV ep4, ep11, ep19]; rotu [VARMA] |
+| **Akame** | kishu | AM-sivua ei ole. JW: kuten edellisessä sarjassa, mutta leukaparta. | nimi = "punasilmä" | leukaparta | n. 1.3 | väri [EPÄVARMA, avoin] |
+| **John** | saksanpaimenkoira | JW: väri hieman haalistunut edellisestä sarjasta | – | animessa oksahaava vatsassa (kuolema) | n. 1.6 | [EPÄVARMA] |
+| **Hiro** | pyreneittenkoira tai bernhardilaisen sekoitus | **paksu, pitkä vaalea kermankultainen turkki, punaruskeat korvat** (KV:ssa ainakin toinen korva punaruskea), tummat merkit kuonon selässä | sinertävät | AM: **pystysuora arpi oikean silmän yli** (Kamakirin jäljiltä); mangassa yksisilmäinen | n. 1.9 | väri [VARMA: KV ep11 + AM]; silmä [EPÄVARMA] |
+| **Kyōshirō** | kishu | valkoinen; animessa harmaa läikkä nenän alla | mustat | arpi kasvojen poikki (sijainti vaihtelee animessa, AM) | n. 1.2 | [VARMA: KV ep20 + AM] |
+| **Rocket** | borzoi | **vaalea punaruskea (tan) ja valkoinen**, pitkä ja kapea pää | – | – | n. 1.6, hoikka | [KUVA KV ep18]; rotu [VARMA] |
+| **Jet, Missile** | borzoi | Missile on veljeksistä tummin (tummanruskea) | – | – | n. 1.6 | [VARMA: OK, KV ep6] |
+| **Tesshin** | Kōgan ninjakoira (Kurojakin poika; Kurojaki muistutti täplähyeenaa) | kuvaa ei tarkistettu | – | – | n. 1.2 | [EPÄVARMA, avoin] |
+| **Tōbee** | tosa | ruskea, musta kuono, raskas ja leveä | ruskeat | Hōgen vie toisen silmän (jakso 18) | n. 1.9 | [KV ep21 + OK] |
+| **Hōgen** | harlekiinitanskandoggi | **valkoinen, mustat läiskät** | – | **typistetyt korvat** ("korvaton" FB) | n. 2.4 | [VARMA: EW-L, FB] |
+| **Genba** | tanskandoggi | väri tuntematon | – | **luppakorvat** (eroaa Hōgenista) | n. 2.3 | [EPÄVARMA: EW-L] |
+| **Kamakiri** | irlanninsusikoira | **harmaa, karkeakarvainen**, iäkäs | – | arpia [KV ep22] | n. 2.3, korkea | [VARMA: EW "huge grey dog" + KV] |
+| **Lector** | dobermanni, **typistämättömät korvat** | väri tuntematon | – | Weed katkaisee hampaat veitsellä (jakso 16) | n. 1.4 | korvat [VARMA: JW + OK] |
+| **Thunder** | dobermanni, **typistämättömät ja pitkähköt korvat** | väri tuntematon | – | Weed katkaisee hampaat oksalla (jakso 11) | n. 1.4 | [VARMA: JW + OK] |
+| **Kaibutsu / P4** | japanilaisen koiran sekoitus, geenimuunneltu | **leijonamainen harja, pitkä turkki, tiibetinmastiffin näköinen, suhteettoman iso pää**. Väri todennäköisesti ruskea ja musta. Alkuperäinen koira oli saksanpaimenkoiran kuvioinen (hakuote). | vihreät? | nahka on niin kova, ettei koirien hampaat pure siihen; **ainoa pehmeä kohta vasemmassa rinnassa**; Weedin haava poskessa (jakso 3) | n. 4–5 | muoto [VARMA: JW + FB]; väri ja silmät [EPÄVARMA: silverfang-hakuote, sivu estetty] |
+| **Reika** | akita | punainen ja valkoinen, ruskea kaulapanta | ruskeat | – | n. 1.4 | [KV ep6] |
+| **Mel** | kultainennoutaja | pieni kullanvärinen pentu | – | – | n. 0.9 | [VARMA] |
+
+**Pelin kannalta tärkeimmät korjaukset:**
+- **Kagetora** on *tumma* ja mustaraidallinen, kasvot vaaleammat; ei valkoinen raidallinen.
+- **Ken** on *ruskea* doggi, jolla on musta naamio ja typistetyt korvat; ei harmaa.
+- **Jerome** on musta ja kerma, ei ruskea ja musta.
+- **GB:n** korvat ja täplät ovat *mustat*.
+
+Ken–Kagetora-kaksikon arvet (molemmilla mahdollisesti kaksi arpea kuonon vasemmalla puolella) ovat [EPÄVARMA]. Ne perustuvat yhteen fani-wikiin pohjautuvaan lähteeseen (AM), joka kuvaa pääosin mangaa.
+
+**Estetty (ei kierretty):** wiki2.silverfang.net (403 WebFetchille), ginga.fandom.com (402), hero.fandom.com. Breezewiki-peilejä ei käytetty.
+
+---
+
 ## 0. PELIN YMPÄRISTÖ- JA AIKAOHJE (tiivistelmä grafiikka-agentille)
 
 | Taso / kohtaus (jakso) | Paikka | Vuodenaika | Vuorokaudenaika | Sää | Värimaailma | Keskeiset visuaaliset elementit |
@@ -354,33 +406,7 @@ Nämä ovat mangaa [VARMA: OK, JW: animessa ihmisten osuus on karsittu].
 
 ## 5. Hahmojen ulkonäkö animessa
 
-| Hahmo | Rotu | Väritys ja tunnusmerkit (anime) | Silmät | Varmuus |
-|---|---|---|---|---|
-| **Weed** | akita (animessa myös "kishu" EW:n listassa) | **teräksensininen / siniharmaa** turkki, valkoinen kuono, poskit, rinta, vatsa ja jalkojen sisäpinnat, **kolme vaaleaa pyöreää laikkua otsalla** (kaksi kulmien yllä ja yksi), kippurahäntä, pieni koko. Kerronnassa "tiikerijuova" (虎毛), mutta piirroksessa yhtenäinen sininen. | **siniset** | [VARMA: KV, FB, EW "blue brindle"] |
-| **Gin** | akita | Weedin näköinen, mutta ilman pentumaisuutta, ja hänellä on **kolme arpea** [FB: Weed on kuin Gin "ilman kolmea arpea"]. Katse on terävä. | – | [EPÄVARMA] |
-| **Jerome** | saksanpaimenkoira | **musta "viitta", korvat ja päälaki, kerma- tai vaaleanharmaat kasvot ja rinta, mustat raitamaiset merkit silmien ympärillä**, musta kuono. Ei klassista ruskeaa satulaa. Kishūsta (jakso 14) lähtien toinen korva on revitty [EW]. | **hyvin vaaleat** (harmaanvalkoiset) | [VARMA: KV, silverfang-hakuote "gray, black, cream"] |
-| **Ken** | tanskandoggi (EW: doggin ja salukin sekoitus) | **vaaleanruskea (fawn) ja musta naamio**, typistetyt pystykorvat | – | [VARMA: KV ep4 ja ep14, FB "フォーン"] |
-| **Kagetora** | kai | **vaaleanharmaa tai valkoinen pohja ja selvät mustat tiikeriraidat**, myös kasvoissa | kellanvihreät | [KUVA] |
-| **Smith** | ranskanspanielin sekoitus | **valkoinen vartalo, musta pää ja pitkät mustat roikkuvat korvat**, pörröinen rinta, **oikea etujalka puuttuu** | – | [VARMA: KV, OK (oikea etujalka)] |
-| **GB** | englanninsetteri | kermanvalkoinen, **mustia täpliä, pitkät mustat korvat**, musta kuonon pää | – | [KUVA] |
-| **Robert** | amerikkalaisen ajokoiran sekoitus | ei kuvaa | – | [JW] |
-| **Rocker (ロッカ, Rocca)** | dobermanni, vähäpuheinen ja "cool" | ei kuvaa | – | [VARMA: JW, OK] |
-| **Heuler (ホイラー)** | JW: gascon-saintongeois (ajokoira). OK: "dobermannin tyyppinen?" | ei kuvaa. Jeromen varapäällikkö, kiivas. | – | [EPÄVARMA, ristiriita] |
-| **North** | ? | ei tietoa | – | – |
-| **Kaibutsu / P4** | japanilaisen koiran sekoitus | **leijonamainen harja, pitkä turkki, muistuttaa tiibetinmastiffia** [JW]. Valtava ja **iso pää** [FB]. Nahka on niin kova, ettei hampaat pure siihen [OK]. Ihmiset kutsuvat sitä "leijonan kaltaiseksi hirviöksi" [FB]. Väritys silverfang-hakuotteen mukaan ruskea ja musta. | silverfang-hakuote: vihreät | [Muoto VARMA: JW, FB. Väri EPÄVARMA] |
-| **Hōgen** | harlekiinitanskandoggi | valkoinen ja mustatäpläinen, **typistetyt korvat** ("korvaton" FB), valtava | – | [VARMA: EW, FB] |
-| **Genba** | tanskandoggi | **luppakorvat**, muuten tuntematon | – | [EPÄVARMA: EW] |
-| **Kamakiri** | irlanninsusikoira | **harmaa, iäkäs**, arpinen | – | [VARMA: EW "huge grey dog", KV] |
-| **Lector, Thunder** | dobermanni, **typistämättömät korvat**. Thunderin korvat ovat pitkähköt. | väri tuntematon | – | [VARMA korvista: JW, OK] |
-| **Rocket** | borzoi | **vaaleanruskea tai punertava ja valkoinen**, pitkä | – | [KUVA] |
-| **Missile** | borzoi | veljeksistä **tummin** (tummanruskea) | – | [VARMA: OK, KV] |
-| **Tōbee** | tosa | ruskea, **musta kuono**, raskas; Hōgen repii häneltä silmän (jakso 18) | ruskeat | [KV, OK] |
-| **Hiro** | pyreneittenkoira tai bernhardilaisen sekoitus | **kermanvalkoinen, toinen korva punaruskea**, iso ja pitkäkarvainen. Mangassa yksisilmäinen; animessa EW:n mukaan Kamakiri vei silmän. | sinertävät | [KV; silmä EPÄVARMA] |
-| **Kyōshirō** | kishu | valkoinen, **arpi kasvojen poikki** | harmaat | [KV] |
-| **Reika** | akita | punainen ja valkoinen, ruskea kaulapanta | ruskeat | [KV] |
-| **Akame** | kishu | sama kuin edellisessä sarjassa, mutta leukaparta [JW] | – | [EPÄVARMA] |
-| **John** | saksanpaimenkoira | väri hieman haalistunut edelliseen sarjaan verrattuna [JW] | – | [EPÄVARMA] |
-| **Mel** | kultainennoutaja | pieni kultainen pentu | – | [VARMA] |
+Katso luku **00** tiedoston alussa. Se on päivitetty ja korjattu versio: aiempi luonnos väitti Kagetoran pohjaväriä vaaleaksi, mikä oli virhe.
 
 ---
 
@@ -456,6 +482,7 @@ Nämä ovat mangaa [VARMA: OK, JW: animessa ihmisten osuus on karsittu].
 - [アニメ 銀牙伝説WEED – katselupäiväkirja (biglobe, fumi-01)](http://www5f.biglobe.ne.jp/~fumi-01/weed.html): jaksokohtaiset kuvaukset ja havainnot, sivut weed01–weed13 (FB)
 - Viralliset jaksokuvaukset ja -kuvat: [dアニメストア](https://animestore.docomo.ne.jp/animestore/ci_pc?workId=11556) (jaksosivut partId 11556001–11556026) ja [niconico, dアニメストア ニコニコ支店](https://www.nicovideo.jp/watch/so31942073), haettu niconicon julkisella hakurajapinnalla (VS, KV). **Kuvat on tallennettu vain scratchpadiin, ei repoon.**
 - [Ginga Densetsu Weed parody, jaksot 1–26 – azureflame.info](https://azureflame.info/2006/07/21/ginga-densetsu-weed-parody-episode-five/) (AZ): vain tapahtumajärjestyksen tukena
+- [animeMANGA – hahmosivut](https://www.animemanga.com/anime/7567,ginga-densetsu-weed): Kagetora, Ken, Jerome, Gin, Hiro, Kyōshirō, Weed (AM)
 - [MyAnimeList – Ginga Densetsu Weed](https://myanimelist.net/anime/915/Ginga_Densetsu_Weed): perustiedot ja ääninäyttelijät
 - [TMDB – Silver Fang Legend Weed](https://www.themoviedb.org/tv/91613/season/1): englanninkieliset jaksonimet
 - [Bandai Channel](https://www.b-ch.com/titles/4474/): perustiedot
@@ -463,7 +490,7 @@ Nämä ovat mangaa [VARMA: OK, JW: animessa ihmisten osuus on karsittu].
 
 **Estetyt (ei kierretty):**
 - ginga.fandom.com, villains.fandom.com, tropedia.fandom.com: HTTP 402
-- wiki.silverfang.net (myös jaksosivut): HTTP 403
+- wiki.silverfang.net (myös jaksosivut) ja wiki2.silverfang.net: HTTP 403
 - anidb.net: 403
 - tvtropes.org: 403
 - myfigurecollection.net: 403
