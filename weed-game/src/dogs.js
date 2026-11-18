@@ -762,6 +762,7 @@ export class Dog {
     const lieDrop = (c - this.halfW * H) * Math.abs(Math.sin(P.lie));
     pose.position.set(P.x * H, P.y * H - (1 - P.sy) * c - lieDrop, 0);
 
+    if (this.U && E.speaking && E.speaking.who === this.id) P.hp += E.speaking.level * 0.12;   // jäykkä malli: puhe = pieni nyökkäys
     if (this.U) { // jäykkä: rigi-uniformit
       this.U.uLeg.value.set(P.l0, P.l1, P.l2, P.l3);
       this.U.uLift.value.set(P.f0, P.f1, P.f2, P.f3);
@@ -789,7 +790,8 @@ export class Dog {
       this.faceRig.set(this.exprLock || auto);
       const mouth = n === 'Attack' ? Math.max(0, Math.sin(Math.min(1, k * 1.6) * Math.PI)) : n === 'Bark' ? Math.max(0, Math.sin(Math.min(1, k * 2) * Math.PI)) * 0.8
         : n === 'Howl' ? 0.6 : n === 'Gallop' ? 0.25 + Math.sin(this.t * 14) * 0.1 : 0;
-      this.faceRig.mouth(mouth);
+      const spk = E.speaking && E.speaking.who === this.id ? E.speaking.level : 0;
+      this.faceRig.mouth(spk > 0.01 ? Math.max(mouth, spk * 0.9) : mouth);
       if (this.lookTarget) {
         const tp = this.lookTarget.isVector3 ? this.lookTarget : this.lookTarget.root.position;
         const dx = (tp.x - this.root.position.x) * this.facing, dy = (this.lookTarget.height ? tp.y + this.lookTarget.height * 0.7 : tp.y) - (this.root.position.y + this.height * 0.8);
@@ -803,6 +805,9 @@ export class Dog {
   _updateRigged(dt) {
     this.cur.t += dt * this.cur.ts;
     this.mixer.update(dt);
+    const sp = E.speaking && E.speaking.who === this.id ? E.speaking.level : 0;
+    if (sp > 0.01 && this.bones.jaw) this.bones.jaw.rotateZ(-sp * 0.5);          // puhuva leuka (klippi + lisäkierto)
+    else if (sp > 0.01 && this.bones.head) this.bones.head.rotateZ(sp * 0.08);    // ei leukaluuta: pieni nyökkäys
     const targetRot = this.facingTarget > 0 ? 0 : Math.PI;
     this.turn.rotation.y += (targetRot - this.turn.rotation.y) * Math.min(1, dt * 10);
     // pieni lisä-squash laukassa/hypyssä (klipit hoitavat raajat)

@@ -5,6 +5,7 @@
 // Selaimen autoplay-sääntö: AudioContext luodaan vasta käyttäjän ensimmäisestä napautuksesta (initAudio).
 import { E } from './engine.js';
 
+let analyser = null, anaBuf = null;
 let ctx = null, master = null, musicBus = null, duckGain = null, sfxBus = null, voiceBus = null, synthMusic = null;
 export let muted = false;
 const NO_FILES = E.params.has('synthaudio');
@@ -33,6 +34,8 @@ export function initAudio() {
     musicBus = ctx.createGain(); musicBus.gain.value = 1; musicBus.connect(duckGain);
     sfxBus = ctx.createGain(); sfxBus.gain.value = 0.9; sfxBus.connect(master);
     voiceBus = ctx.createGain(); voiceBus.gain.value = 1; voiceBus.connect(master);
+    analyser = ctx.createAnalyser(); analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.3;
+    voiceBus.connect(analyser); anaBuf = new Float32Array(analyser.fftSize);
     synthMusic = ctx.createGain(); synthMusic.gain.value = 0.35; synthMusic.connect(duckGain);
   } catch (e) { ctx = null; return; }
   // esilataa pienet tehosteet + valikon musiikki; muut kun niitä tarvitaan
@@ -42,6 +45,15 @@ export function initAudio() {
 }
 export function audioCtx() { return ctx; }
 export function voiceOut() { return voiceBus; }
+/** Puheen voimakkuus 0..1 (RMS voiceBusista) – suun animointiin. */
+export function voiceLevel() {
+  if (!analyser) return 0;
+  analyser.getFloatTimeDomainData(anaBuf);
+  let s = 0; for (let i = 0; i < anaBuf.length; i++) s += anaBuf[i] * anaBuf[i];
+  return Math.min(1, Math.sqrt(s / anaBuf.length) * 6);
+}
+/** Valmiiksi ladattu puskuri (tai undefined, jos lataus kesken / ei ladattu). */
+export function cachedBuffer(file) { return buffers[file] || undefined; }
 export function setMuted(m) { muted = m; if (master) master.gain.setTargetAtTime(m ? 0 : 0.9, ctx.currentTime, 0.05); }
 
 /** Lataa ja purkaa äänitiedoston (välimuisti). Palauttaa AudioBufferin tai null. */
