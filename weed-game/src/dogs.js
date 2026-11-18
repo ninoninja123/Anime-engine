@@ -576,7 +576,7 @@ export class Dog {
       for (let i = 0; i < a.count; i++) { col[i * 3] = tc.r; col[i * 3 + 1] = tc.g; col[i * 3 + 2] = tc.b; }
       g.setAttribute('color', new THREE.BufferAttribute(col, 3));
       const m = new THREE.Mesh(g, mat), o = new THREE.Mesh(g, olMat);
-      const holder = new THREE.Group(); holder.add(m, o); holder.position.set(-0.13, 0.035, 0);
+      const holder = new THREE.Group(); holder.add(m, o); holder.position.set(-0.085, 0.02, 0);
       holder.rotation.z = tt === 'docked' ? 1.15 : tt === 'sabre' ? 2.25 : 2.45; // kärki +Y -> taaksepäin-alas
       tailJ.add(holder);
     }
