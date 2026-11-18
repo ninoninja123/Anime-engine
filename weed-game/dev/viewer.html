@@ -10,7 +10,7 @@ const s = new THREE.Scene(); s.background = new THREE.Color(0x888888);
 s.add(new THREE.HemisphereLight(0xffffff, 0x444444, 2)); const dl = new THREE.DirectionalLight(0xffffff, 2); dl.position.set(1, 2, 3); s.add(dl);
 s.add(new THREE.AxesHelper(0.6)); s.add(new THREE.GridHelper(2, 20));
 const cam = new THREE.OrthographicCamera(-1, 1, 0.5, -0.5, 0.01, 10);
-if (view === 'side') cam.position.set(0, 0.4, 3); else if (view === 'top') { cam.position.set(0, 3, 0); cam.up.set(0, 0, -1); } else cam.position.set(3, 0.4, 0);
+if (view === 'side') cam.position.set(0, 0.4, 3); else if (view === 'top') { cam.position.set(0, 3, 0); cam.up.set(0, 0, -1); } else if (view==='under') { cam.position.set(0,-3,0); cam.up.set(0,0,-1);} else cam.position.set(3, 0.4, 0);
 cam.lookAt(0, view === 'top' ? 0 : 0.4, 0);
 const g = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('../public/models/' + m + '.glb');
 s.add(g.scene);
