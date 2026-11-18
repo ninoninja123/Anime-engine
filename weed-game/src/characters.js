@@ -21,6 +21,7 @@ export const MODELS = {
   john_auto:       { file: 'john_auto.glb',       rotY: 0, rigged: true },   // john.glb (wolf) auto-rig
   tesshin_auto:    { file: 'tesshin_auto.glb',    rotY: 0, rigged: true },   // tesshin.glb auto-rig
   ken_auto:        { file: 'ken_auto.glb',        rotY: 0, rigged: true },   // Ken (user model) auto-rig
+  akame_auto:      { file: 'akame_auto.glb',      rotY: 0, rigged: true },   // Akame (user model, white wolf) auto-rig
   generic_auto:    { file: 'generic_auto.glb',    rotY: 0, rigged: true },   // generic lean brown dog (user model) auto-rig: base for generic dogs
   gin_auto:        { file: 'gin_auto.glb',        rotY: 0, rigged: true },   // gin_rigged.glb (Tripo) uudelleenrigattu rig_dog_standalone.py:llä -> 9 klippiä
   kagetora_rigged: { file: 'kagetora_rigged.glb', rotY: 0, rigged: true },
@@ -111,7 +112,7 @@ export const CHARACTERS = {
   // c = värit: coat, under, legs, head, ear, tail, muzzle, eye, nose
   // marks = maalatut kuviot (ks. dogs.js PAINT)
   gin: {
-    name: 'Gin', jp: '銀', kind: 'rigged', model: 'gin_auto', height: 1.25, tint: '#9fb6d2',
+    name: 'Gin', jp: '銀', kind: 'rigged', model: 'gin_auto', height: 1.25, tint: '#d3d7dc',
     role: 'A blue-grey Akita, Weed\'s father and Ōu\'s legendary leader. He calls those under him comrades, never servants.',
     gait: 'trot', speed: 1.05, wag: 0.4,
     outline: 0.008,

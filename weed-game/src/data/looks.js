@@ -117,5 +117,5 @@ export const LOOK_CAST = {
   ben:     { model: 'hogen_rigged', look: 'dane_grey_old', height: 1.46 },
   genba:   { model: 'hogen_rigged', height: 1.75, bones: { head: 1.06, neck: 1.08 }, tint: '#9aa0a8' },   // reference: grey with black spots (Hogen's harlequin model, tinted grey)
   gb:      { model: 'smith_rigged', look: 'setter_white_spotted', height: 1.0 },
-  akame:   { model: 'kagetora_true_auto', look: 'kishu_red', height: 1.02 },
+  akame:   { model: 'akame_auto', height: 1.02, tint: null },   // the user's own Akame model, used as is
 };
