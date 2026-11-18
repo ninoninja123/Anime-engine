@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { E, initEngine } from '../src/engine.js';
 import { loadFor, makeDog } from '../src/dogs.js';
-import { ROSTER } from '../src/characters.js';
+import { ROSTER, CHARACTERS } from '../src/characters.js';
 const q = new URLSearchParams(location.search);
 const ids = (q.get('ids') || ROSTER.join(',')).split(',');
 const anim = q.get('a') || 'Idle'; const at = +(q.get('t') || 0);
@@ -12,6 +12,8 @@ E.scene.background = new THREE.Color(0x8890a0);
 E.scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 1.6));
 const dl = new THREE.DirectionalLight(0xffffff, 2.2); dl.position.set(3, 6, 8); E.scene.add(dl);
 const gnd = new THREE.Mesh(new THREE.PlaneGeometry(200, 50), new THREE.MeshLambertMaterial({ color: 0x667055 })); gnd.rotation.x = -Math.PI / 2; E.scene.add(gnd);
+// ?looks=a,b (paritettuna ids:n kanssa) = kokeile ulkonäkövarianttia hahmolle (look-dev)
+if (q.get('looks')) q.get('looks').split(',').forEach((lk, i) => { if (lk && CHARACTERS[ids[i]]) CHARACTERS[ids[i]].look = lk; });
 await loadFor(ids);
 const cols = +(q.get('cols') || 6); let x = 0, row = 0; const dogs = [];
 ids.forEach((id, i) => {
