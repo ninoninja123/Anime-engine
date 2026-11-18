@@ -90,7 +90,7 @@ Status: **0 / 65** lines have audio.
 | 61 | `jerome_post_follow.mp3` | Jerome | ……ウィード。 | …Weed. | silent tears | 5 | 0.8/1 | Barely a whisper; a breath that breaks. He is crying without sound. | – |
 | 62 | `jerome_post_stay.mp3` | Jerome | 俺は戻らない。ここ、奥羽に残る。…もう誰の道具でもない。 | I'm not going back. I'm staying here, in Ōu. …I'm no one's tool anymore. | calm defiance | 4 | 0.3/0.6 | Barked toward the humans at the helicopter: firm, steady, free. | – |
 | 63 | `narrator_memorial.mp3` | Narrator | スミス。ノース。ロバート。ロッカ。ホイラー。その名は、奥羽の風に刻まれた。 | Smith. North. Robert. Rocker. Heuler. Their names are carved into the wind of Ōu. | reverent | 4 | 0.6/1 | Each name slow and separate, with a beat of silence. Final sentence warm. | – |
-| 64 | `weed_post_father.mp3` | Weed | 父さん…どこにいるの。僕、もっと強くなるよ。 | Father… where are you? I'll become stronger. | hopeful longing | 4 | 0.5/0.6 | Looking at the sunrise; soft, a little shaky, ending with a small brave smile. | – |
+| 64 | `weed_post_father.mp3` | Weed | 父さん…どこにいるの。僕、もっと強くなるよ。 | Father… where are you? I'll become stronger. | hopeful longing | 4 | 0.5/0.6 | Looking at the last light of dusk; soft, a little shaky, ending with a small brave smile. | – |
 | 65 | `smith_spirit_echo.mp3` | Smith | …それでいい、坊主。 | …That's the way, boy. | peaceful, from beyond | 3 | 0.6/1.2 | Whispered, warm, with reverb/echo. Like wind. | – |
 
 ## Tips for ElevenLabs (Japanese TTS)

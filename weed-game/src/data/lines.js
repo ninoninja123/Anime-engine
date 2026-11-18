@@ -165,7 +165,7 @@ export const LINES = Object.fromEntries([
   L('narrator', 'memorial', 'スミス。ノース。ロバート。ロッカ。ホイラー。その名は、奥羽の風に刻まれた。', 'Smith. North. Robert. Rocker. Heuler. Their names are carved into the wind of Ōu.',
     'reverent', 'Each name slow and separate, with a beat of silence. Final sentence warm.', 4, 0.6, 1.0),
   L('weed', 'post_father', '父さん…どこにいるの。僕、もっと強くなるよ。', 'Father… where are you? I\'ll become stronger.',
-    'hopeful longing', 'Looking at the sunrise; soft, a little shaky, ending with a small brave smile.', 4, 0.5, 0.6),
+    'hopeful longing', 'Looking at the last light of dusk; soft, a little shaky, ending with a small brave smile.', 4, 0.5, 0.6),
   L('smith', 'spirit_echo', '…それでいい、坊主。', '…That\'s the way, boy.',
     'peaceful, from beyond', 'Whispered, warm, with reverb/echo. Like wind.', 3, 0.6, 1.2),
 ]);
