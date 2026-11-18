@@ -381,18 +381,18 @@ export const post = (ctx) => {
       { move: 'kagetora', x: 7.7, y: 0.8, z: -0.2, t: 0.35, ease: 'out', anim: 'Attack' },
     ] },
     { say: 'fall_with' },
-    // over the edge
+    // over the edge: everyone plunges into the gorge (no gorge mesh yet -> white-out while falling)
+    { cam: [5.5, 3.2, 8.5], look: [10, 0.5, 0], t: 0.3 },
     { fn: async () => {
       boss.play('Death', { loop: false, timeScale: 0.5 });
       const ds = [boss, w, cast.ken, cast.kagetora];
       const p0 = ds.map(d => d.root.position.clone());
-      await tween({ k: 0 }, { k: 1 }, 1.8, { real: true, ease: 'in', onUpdate: k => ds.forEach((d, i) => { d.root.position.set(p0[i].x + k * 3.5, p0[i].y - k * k * 10, p0[i].z); }) });
+      setTimeout(() => FX.flash('#ffffff', 3.2, 1), 650);
+      await tween({ k: 0 }, { k: 1 }, 1.1, { real: true, ease: 'in', onUpdate: k => ds.forEach((d, i) => { d.root.position.set(p0[i].x + k * 2.5, p0[i].y + Math.sin(k * Math.PI) * 0.6 - k * k * 1.5, p0[i].z); d.fade(1 - Math.max(0, k - 0.6) * 2.5); }) });
     } },
-    { cam: [12.5, 6.0, 7.0], look: [12, -2, -2], t: 0 },
-    { say: 'fall_wind' },
-    { fx: 'dust', at: [12, 0, -1], big: true }, { sfx: 'rock' },
-    { fx: 'flash', color: '#ffffff', t: 2.4, peak: 1 },
+    { sfx: 'rock' },
     { music: null, fade: 1.5 },
+    { say: 'fall_wind' },
     { say: 'fall_mist' },
     { fn: () => { for (const d of Object.values(cast)) d.root.visible = false; } },
     { wait: 0.6 },

@@ -1,6 +1,6 @@
 // LEVEL 2 "Gajō – Kaibutsu": real-time gesture-controlled boss fight + data-driven cutscenes (scenes.js).
 // Phases: 1) fight -> armor -> Smith's sacrifice (rockslide)  2) fight -> "Four Arrows"
-//         3) staggering monster -> Weed's Battōga finisher -> fall into the falls -> dawn + memorial.
+//         3) staggering monster -> Weed's Battōga finisher -> fall into the gorge -> river, helicopter, graves at dusk.
 // Pack cards = special moves with an anime cut-in, choreography, impact FX and a clean exit.
 import * as THREE from 'three';
 import { E, tween, wait, shake } from './engine.js';
