@@ -222,7 +222,7 @@ export const CHARACTERS = {
     outline: 0.008,
   },
   genba: {
-    name: 'Genba', jp: '玄婆', kind: 'rigged', model: 'hogen_rigged', height: 1.75, tint: '#b8977c',
+    name: 'Genba', jp: '玄婆', kind: 'rigged', model: 'hogen_rigged', height: 1.75, tint: '#9c9ea3',   // harmaa, mustat täplät (käyttäjän kooste; väri canonissa epävarma)
     role: 'Hōgen\'s brother: raw strength and rage. Hōgen ends his suffering in tears.',
     gait: 'heavy', speed: 0.9, wag: 0.05,
     rig: { belly: 0.44, neck: 0.26, tail: 0.22, legSwing: 0.42, headAmt: 0.9 },
