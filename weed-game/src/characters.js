@@ -206,3 +206,18 @@ export const CHARACTERS = {
 export const LEVEL2_CAST = ['weed', 'kaibutsu', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'gin'];
 export const ROSTER = ['weed', 'gin', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'kaibutsu',
   'rocket', 'tobee', 'kurotora', 'moss', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
+
+// ---------------- geneeriset joukkovariantit (src/data/roster_specs.js) ----------------
+// Ei ylikirjoita yllä olevia hahmoja; lisätyt id:t ROSTER_EXTRA_IDS, galleriaryhmät GROUP_OF.
+import { ROSTER_SPECS, resolveSpecs, GROUP_OF, GROUP_LABEL } from './data/roster_specs.js';
+export const ROSTER_EXTRA_IDS = [];
+{
+  const resolved = resolveSpecs(ROSTER_SPECS);
+  for (const id of Object.keys(ROSTER_SPECS)) {
+    if (CHARACTERS[id]) continue;
+    CHARACTERS[id] = resolved[id];
+    ROSTER_EXTRA_IDS.push(id);
+    if (!ROSTER.includes(id)) ROSTER.push(id);
+  }
+}
+export { GROUP_OF, GROUP_LABEL };

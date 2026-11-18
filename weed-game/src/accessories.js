@@ -68,6 +68,7 @@ function anchorsFromDog(d) {
   };
 }
 const add = (anchor, obj) => anchor.part.add(obj);
+function mark(o) { o.traverse(c => { c.userData.extra = true; c.frustumCulled = false; }); return o; }
 
 // ---------------- yksittäiset lisäosat ----------------
 const BUILDERS = {
@@ -197,11 +198,11 @@ const BUILDERS = {
       const g = new THREE.Group();
       for (let i = 0; i < n; i++) {
         const f = i / (n - 1);
-        const h = s.y * (0.18 + 0.22 * Math.sin(f * Math.PI)) * k * (0.85 + ((i * 37) % 10) / 40);
+        const h = s.y * (0.08 + 0.14 * Math.sin(f * Math.PI)) * k * (0.7 + ((i * 37) % 10) / 22);
         const cone = new THREE.Mesh(geo('bristle', () => new THREE.ConeGeometry(0.5, 1, 4).translate(0, 0.5, 0)), toon(e.color || '#1e1814'));
-        cone.scale.set(s.x * 0.09, h, s.z * 0.16);
+        cone.scale.set(s.x * 0.07, h, s.z * 0.12);
         cone.position.set(b.min.x + s.x * (0.08 + f * 0.84), b.max.y - s.y * 0.06, c.z);
-        cone.rotation.z = 0.5;
+        cone.rotation.z = 0.7 + ((i * 13) % 5) * 0.06;
         withOutline(cone, 1.15);
         g.add(cone);
       }
@@ -238,13 +239,13 @@ const BUILDERS = {
       const g = new THREE.Group();
       const sleeve = new THREE.Mesh(geo('metalSleeve', () => new THREE.CylinderGeometry(0.5, 0.42, 1, 8)),
         new THREE.MeshStandardMaterial({ color: e.color || '#8d97a3', metalness: 0.85, roughness: 0.3 }));
-      sleeve.scale.set(s.x * 1.12, s.y * 0.72, s.z * 1.12);
-      sleeve.position.set(c.x, b.min.y + s.y * 0.38, c.z);
+      sleeve.scale.set(s.x * 0.62, s.y * 0.5, s.z * 0.7);
+      sleeve.position.set(c.x, b.min.y + s.y * 0.3, c.z);
       withOutline(sleeve, 1.06);
       g.add(sleeve);
-      for (const f of [0.1, 0.42, 0.72]) {
+      for (const f of [0.08, 0.3, 0.52]) {
         const ring = new THREE.Mesh(geo('metalRing', () => new THREE.TorusGeometry(0.5, 0.09, 5, 12)), toon('#3d434b'));
-        ring.scale.set(s.x * 1.2, s.z * 1.2, s.x);
+        ring.scale.set(s.x * 0.68, s.z * 0.76, s.x * 0.6);
         ring.rotation.x = Math.PI / 2;
         ring.position.set(c.x, b.min.y + s.y * f, c.z);
         g.add(ring);
