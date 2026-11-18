@@ -60,14 +60,15 @@ export const CHARACTERS = {
     outline: 0.01,
   },
   kagetora: {
-    name: 'Kagetora', jp: '影虎', kind: 'rigged', model: 'kagetora_rigged', height: 1.02,
-    role: 'A Kai dog, son of Kurotora. Hot-headed at first, then Ken\'s closest friend.',
+    name: 'Kagetora', jp: '影虎', kind: 'rigged', model: 'striped_b_rigged', height: 1.02,
+    role: 'A black brindle Kai dog, son of Kurotora, with two scars on the left of his muzzle. Hot-headed at first, then Ken\'s closest friend.',
     gait: 'trot', speed: 1.1, wag: 0.4,
     rig: { belly: 0.42, neck: 0.30, tail: 0.25, legSwing: 0.5, headAmt: 1 },
     outline: 0.01,
+    scars: [{ at: [0.7, 0.74, -0.062], size: 0.085, n: 2 }],   // canon: kaksi arpea kuonon vasemmalla puolella
   },
   kurotora: {
-    name: 'Kurotora', jp: '黒虎', kind: 'rigged', model: 'striped_b_rigged', height: 1.06,
+    name: 'Kurotora', jp: '黒虎', kind: 'rigged', model: 'striped_b_rigged', height: 1.08, tint: '#a39d96',
     role: 'Kai veteran of Gin\'s generation and Kagetora\'s father. Leader of the Kai brothers.',
     gait: 'trot', speed: 1, wag: 0.3,
     rig: { belly: 0.42, neck: 0.30, tail: 0.25, legSwing: 0.48, headAmt: 1 },
@@ -81,7 +82,7 @@ export const CHARACTERS = {
     outline: 0.01,
   },
   tobee: {
-    name: 'Tōbee', jp: '藤兵衛', kind: 'rigged', model: 'tobei_rigged', height: 1.4,
+    name: 'Tōbee', jp: '闘兵衛', kind: 'rigged', model: 'tobei_rigged', height: 1.4,
     role: 'Former fighting-dog yokozuna and one of Hōgen\'s generals. He dies standing, like a mountain.',
     gait: 'heavy', speed: 0.85, wag: 0.15,
     rig: { belly: 0.36, neck: 0.32, tail: 0.18, legSwing: 0.38, headAmt: 0.7 },
@@ -96,7 +97,7 @@ export const CHARACTERS = {
   },
 
   tesshin: {
-    name: 'Tesshin', jp: '鉄心', kind: 'rigged', model: 'tesshin_auto', height: 1.0,
+    name: 'Tesshin', jp: '哲心', kind: 'rigged', model: 'tesshin_auto', height: 1.0,
     role: 'A ninja dog of the Kōga clan. At the hot spring he teaches Weed Gin\'s secret move, Zetsu Tenrō Battōga – a move he cannot perform himself.',
     gait: 'light', speed: 1.2, wag: 0.3,
     outline: 0.008,
@@ -108,37 +109,40 @@ export const CHARACTERS = {
   // c = värit: coat, under, legs, head, ear, tail, muzzle, eye, nose
   // marks = maalatut kuviot (ks. dogs.js PAINT)
   gin: {
-    name: 'Gin', jp: '銀', kind: 'rigged', model: 'gin_auto', height: 1.25, tint: '#dfe5ec',
-    role: 'Weed\'s father, Ōu\'s legendary leader. He calls those under him comrades, never servants.',
+    name: 'Gin', jp: '銀', kind: 'rigged', model: 'gin_auto', height: 1.25, tint: '#9fb6d2',
+    role: 'A blue-grey Akita, Weed\'s father and Ōu\'s legendary leader. He calls those under him comrades, never servants.',
     gait: 'trot', speed: 1.05, wag: 0.4,
     outline: 0.008,
   },
   jerome: {
-    name: 'Jerome', jp: 'ジェローム', kind: 'factory', height: 1.2,
+    name: 'Jerome', jp: 'ジェロム', kind: 'factory', height: 1.2,
     role: 'German shepherd, former laboratory guard dog and the pack\'s strategist.',
     gait: 'trot', speed: 1.1, wag: 0.25,
     p: { leg: 1.12, body: 1.12, neck: 1.1, head: 1.02, ear: 1.5, earTilt: -0.1, tail: 'sabre', tailLen: 1.25, muzzle: 1.25 },
-    c: { coat: '#b47a3c', under: '#d9a764', head: '#b8803f', ear: '#2a1f17', tail: '#5a3b1e', muzzle: '#1f1813' },
-    marks: ['saddle:#1e1712', 'mask:#1f1813', 'belly'],
+    // canon: musta viitta, korvat ja päälaki; kerma/vaaleanharmaat kasvot ja rinta; mustat raidat silmien ympärillä; hyvin vaaleat silmät
+    c: { coat: '#e2d9c8', under: '#ece4d4', head: '#e0d6c3', ear: '#151313', tail: '#1a1716', muzzle: '#d8cdb8', eye: '#c9d6e4' },
+    marks: ['saddle:#171514', 'capHead:#171514', 'eyeStripe:#171514'],
   },
   ken: {
     name: 'Ken', jp: 'ケン', kind: 'factory', height: 1.5,
     role: 'Great Dane, son of Ben. At first he quarrels with Kagetora.',
     gait: 'trot', speed: 1, wag: 0.3,
-    p: { leg: 1.38, legW: 1.05, body: 1.12, neck: 1.35, head: 1.08, ear: 0.7, earTilt: 0.9, tail: 'straight', tailLen: 1.2, muzzle: 1.35 },
-    c: { coat: '#666c78', under: '#8c919c', head: '#6c7280', ear: '#4f545e', muzzle: '#3b3f47' },
-    marks: ['belly', 'chestBlaze:#d8dbe0'],
+    p: { leg: 1.4, legW: 1.1, body: 1.14, neck: 1.35, head: 1.12, ear: 1.05, earTilt: -0.15, tail: 'straight', tailLen: 1.2, muzzle: 1.35 },
+    // canon: ruskea (fawn) tanskandoggi-salukiristeytys, musta naamio, tummempi kuono, pystyt typistetyt korvat, 2 arpea vasemmalla
+    c: { coat: '#c39a62', under: '#d7b787', head: '#c69c64', ear: '#2a2018', muzzle: '#1b1512', eye: '#d39a3a' },
+    marks: ['belly', 'mask:#1b1512', 'eyeMask:#171210', 'scarL'],
   },
   robert: {
     name: 'Robert', jp: 'ロバート', kind: 'factory', height: 1.1,
-    role: 'One of Jerome\'s men. Quiet and steady; the first of the Four Arrows.',
+    role: 'One of Jerome\'s men, a hound mix. Quiet and steady; the first of the Four Arrows.',
     gait: 'trot', speed: 1.1, wag: 0.25,
-    p: { leg: 1.08, body: 1.08, neck: 1.05, ear: 1.4, tail: 'sabre', tailLen: 1.15, muzzle: 1.2 },
-    c: { coat: '#5c4631', under: '#a57d4e', head: '#5f4832', ear: '#1d1610', tail: '#2c2116', muzzle: '#1b140e' },
-    marks: ['saddle:#17110c', 'mask:#1b140e'],
+    p: { leg: 1.08, body: 1.08, neck: 1.05, ear: 1.3, earTilt: 1.15, tail: 'sabre', tailLen: 1.15, muzzle: 1.25 },
+    // canon (JW): amerikkalaisen ajokoiran sekoitus, luppakorvat
+    c: { coat: '#9a6633', under: '#dcc199', head: '#a06c38', ear: '#5a3a1e', tail: '#2c2116', muzzle: '#d9bd92' },
+    marks: ['saddle:#1d1712', 'muzzleLight', 'belly'],
   },
   rocker: {
-    name: 'Rocker', jp: 'ロッカー', kind: 'factory', height: 1.08,
+    name: 'Rocker', jp: 'ロッカ', kind: 'factory', height: 1.08,
     role: 'One of Jerome\'s men. Black and tan, sharp-eared and fearless.',
     gait: 'trot', speed: 1.15, wag: 0.25,
     p: { leg: 1.15, legW: 0.9, body: 1.05, neck: 1.12, ear: 1.45, earTilt: -0.15, tail: 'docked', muzzle: 1.25 },
@@ -146,12 +150,13 @@ export const CHARACTERS = {
     marks: ['tanPoints:#a8743c', 'brows:#b07a40'],
   },
   heuler: {
-    name: 'Heuler', jp: 'ヒューラー', kind: 'factory', height: 1.14,
+    name: 'Heuler', jp: 'ホイラー', kind: 'factory', height: 1.14,
     role: 'One of Jerome\'s men. "Let\'s not die yet, Robert. We go together."',
     gait: 'trot', speed: 1.05, wag: 0.25,
-    p: { leg: 1.1, body: 1.1, neck: 1.08, ear: 1.4, tail: 'sabre', tailLen: 1.2, muzzle: 1.2 },
-    c: { coat: '#7e6c5a', under: '#bfae96', head: '#86735f', ear: '#3a3028', tail: '#4b3e32', muzzle: '#2d261f' },
-    marks: ['saddle:#3d342b', 'belly'],
+    p: { leg: 1.1, body: 1.1, neck: 1.08, ear: 1.3, earTilt: 1.15, tail: 'sabre', tailLen: 1.2, muzzle: 1.25 },
+    // canon (JW): gascon-saintongeois – valkomusta ajokoira, luppakorvat
+    c: { coat: '#ece6da', under: '#f4f0e8', head: '#1c1a19', ear: '#1c1a19', tail: '#ece6da', muzzle: '#ece6da' },
+    marks: ['spots:#1c1a19', 'muzzleLight'],
   },
   akame: {
     name: 'Akame', jp: '赤目', kind: 'factory', height: 1.02,
@@ -179,15 +184,16 @@ export const CHARACTERS = {
     name: 'GB', jp: 'ジービー', kind: 'factory', height: 1.0,
     role: 'English setter. Lazy and boastful, yet he keeps his promise to bring Weed to Ōu.',
     gait: 'light', speed: 1.0, wag: 0.8,
-    p: { leg: 1.0, body: 1.05, neck: 1.0, ear: 1.1, earTilt: 1.15, tail: 'straight', tailLen: 1.15, muzzle: 1.2 },
-    c: { coat: '#f2eee6', under: '#fbf9f4', head: '#f2eee6', ear: '#4a3424', muzzle: '#f2eee6' },
-    marks: ['spots:#3b2c22'],
+    p: { leg: 1.0, body: 1.05, neck: 1.0, ear: 1.35, earTilt: 1.2, tail: 'straight', tailLen: 1.15, muzzle: 1.2 },
+    // canon (kuva): kermanvalkoinen, mustat täplät, pitkät mustat korvat
+    c: { coat: '#f0e9da', under: '#f8f4ea', head: '#efe7d7', ear: '#1b1918', muzzle: '#efe7d7' },
+    marks: ['spots:#1d1a18'],
   },
   lector: {
     name: 'Lector', jp: 'レクター', kind: 'factory', height: 1.12,
     role: 'One of Hōgen\'s Killer Fang assassins. A Dobermann with razor teeth.',
     gait: 'light', speed: 1.25, wag: 0.1,
-    p: { leg: 1.2, legW: 0.85, body: 1.02, neck: 1.18, ear: 1.6, earTilt: -0.25, tail: 'docked', muzzle: 1.35 },
+    p: { leg: 1.2, legW: 0.85, body: 1.02, neck: 1.18, ear: 1.2, earTilt: 0.85, tail: 'docked', muzzle: 1.35 },
     c: { coat: '#181514', under: '#181514', head: '#1b1817', ear: '#171413', muzzle: '#8a4b22', eye: '#e2a23a' },
     marks: ['tanPoints:#8a4b22', 'brows:#9a5526'],
   },
@@ -195,7 +201,7 @@ export const CHARACTERS = {
     name: 'Thunder', jp: 'サンダー', kind: 'factory', height: 1.12,
     role: 'Lector\'s partner in the Killer Fang duo. Red Dobermann, quick as lightning.',
     gait: 'light', speed: 1.25, wag: 0.1,
-    p: { leg: 1.2, legW: 0.85, body: 1.02, neck: 1.18, ear: 1.6, earTilt: -0.25, tail: 'docked', muzzle: 1.35 },
+    p: { leg: 1.2, legW: 0.85, body: 1.02, neck: 1.18, ear: 1.45, earTilt: 0.85, tail: 'docked', muzzle: 1.35 },
     c: { coat: '#5e2f1c', under: '#5e2f1c', head: '#623120', ear: '#552a19', muzzle: '#b97a45', eye: '#e2a23a' },
     marks: ['tanPoints:#b97a45', 'brows:#c4844c'],
   },
@@ -208,7 +214,7 @@ export const CHARACTERS = {
     outline: 0.008,
   },
   genba: {
-    name: 'Genba', jp: '玄馬', kind: 'rigged', model: 'hogen_rigged', height: 1.75, tint: '#b8977c',
+    name: 'Genba', jp: '玄婆', kind: 'rigged', model: 'hogen_rigged', height: 1.75, tint: '#b8977c',
     role: 'Hōgen\'s brother: raw strength and rage. Hōgen ends his suffering in tears.',
     gait: 'heavy', speed: 0.9, wag: 0.05,
     rig: { belly: 0.44, neck: 0.26, tail: 0.22, legSwing: 0.42, headAmt: 0.9 },
