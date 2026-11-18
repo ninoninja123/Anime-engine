@@ -484,8 +484,8 @@ export class Dog {
     const headS_ = new THREE.Group(); headS_.scale.setScalar(headS); headJ.add(headS_);
     headS_.add(mk(P.HEAD, piv.HEAD));
     // kasvot: anime-silmät, kulmat, suu + hampaat, kiiltävä nenä (face.js); vanhat pikkuosat 11/12 jätetään pois
-    this.face = buildFace(headS_, F, c);
-    this.mats.push(...this.face.mats);
+    this.faceRig = buildFace(headS_, F, c);
+    this.mats.push(...this.faceRig.mats);
     for (const [k, s] of [['EARL', -1], ['EARR', 1]]) {
       const j = new THREE.Group(); j.position.copy(piv[k]).sub(piv.HEAD); headS_.add(j);
       const m = mk(P[k], piv[k]); m.scale.setScalar(earS); j.add(m);
@@ -509,8 +509,8 @@ export class Dog {
       for (let i = 0; i < a.count; i++) { col[i * 3] = tc.r; col[i * 3 + 1] = tc.g; col[i * 3 + 2] = tc.b; }
       g.setAttribute('color', new THREE.BufferAttribute(col, 3));
       const m = new THREE.Mesh(g, mat), o = new THREE.Mesh(g, olMat);
-      const holder = new THREE.Group(); holder.add(m, o); holder.position.set(-0.05, 0.015, 0);
-      holder.rotation.z = tt === 'docked' ? 1.2 : tt === 'sabre' ? 2.45 : 2.6; // taaksepäin-alas
+      const holder = new THREE.Group(); holder.add(m, o); holder.position.set(-0.13, 0.035, 0);
+      holder.rotation.z = tt === 'docked' ? 1.15 : tt === 'sabre' ? 2.25 : 2.45; // kärki +Y -> taaksepäin-alas
       tailJ.add(holder);
     }
     J.neck = neckJ; J.head = headJ; J.tail = tailJ; J.body = bodyJ; J.rigRoot = rigRoot;
@@ -574,7 +574,7 @@ export class Dog {
   /** Häivytys (0..1). */
   fade(op) {
     for (const m of this.mats) { if (m.isShaderMaterial) continue; m.transparent = op < 1; m.opacity = op; m.depthWrite = op >= 1; }
-    if (this.face) this.face.setOpacity(op);
+    if (this.faceRig) this.faceRig.setOpacity(op);
     this.shadow.material.opacity = 0.35 * op;
     this.root.visible = op > 0.01;
   }
@@ -637,20 +637,20 @@ export class Dog {
       this.weakGlow.material.opacity = this.weakReveal * pulse * 0.55;
       this.U.uWeakAmt.value = this.weakReveal * (0.25 + pulse * 0.35);
     }
-    if (this.face) {
+    if (this.faceRig) {
       const n = cur.name, k = cur.loop ? 0 : cur.t / cur.duration;
-      const auto = n === 'Death' ? 'dead' : n.startsWith('Idle_HitReact') ? 'hurt' : (n === 'Attack' || n === 'Battoga' || n === 'Gallop_Jump') ? 'angry'
+      const auto = n === 'Death' ? 'closed' : n.startsWith('Idle_HitReact') ? 'hurt' : (n === 'Attack' || n === 'Battoga' || n === 'Gallop_Jump') ? 'angry'
         : (n === 'Idle_2_HeadLow' || n === 'LieDown') ? 'sad' : n === 'Howl' ? 'closed' : n === 'Gallop' ? 'determined' : 'neutral';
-      this.face.set(this.exprLock || auto);
+      this.faceRig.set(this.exprLock || auto);
       const mouth = n === 'Attack' ? Math.max(0, Math.sin(Math.min(1, k * 1.6) * Math.PI)) : n === 'Bark' ? Math.max(0, Math.sin(Math.min(1, k * 2) * Math.PI)) * 0.8
         : n === 'Howl' ? 0.6 : n === 'Gallop' ? 0.25 + Math.sin(this.t * 14) * 0.1 : 0;
-      this.face.mouth(mouth);
+      this.faceRig.mouth(mouth);
       if (this.lookTarget) {
         const tp = this.lookTarget.isVector3 ? this.lookTarget : this.lookTarget.root.position;
         const dx = (tp.x - this.root.position.x) * this.facing, dy = (this.lookTarget.height ? tp.y + this.lookTarget.height * 0.7 : tp.y) - (this.root.position.y + this.height * 0.8);
-        this.face.gaze(Math.max(-0.2, Math.min(0.2, dx * 0.06)), Math.max(-0.15, Math.min(0.15, dy * 0.08)));
-      } else this.face.gaze(Math.sin(this.t * 0.37) * 0.08, 0);
-      this.face.update(dt);
+        this.faceRig.gaze(Math.max(-0.2, Math.min(0.2, dx * 0.06)), Math.max(-0.15, Math.min(0.15, dy * 0.08)));
+      } else this.faceRig.gaze(Math.sin(this.t * 0.37) * 0.08, 0);
+      this.faceRig.update(dt);
     }
     if (this._extras) this._extras(this.t, dt);
   }

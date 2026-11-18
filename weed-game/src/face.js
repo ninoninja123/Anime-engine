@@ -33,20 +33,20 @@ void main(){
       vec2 c = vec2(0.12, -0.04) + uGaze;
       vec2 q = (p - c) * vec2(1.15, 0.95);
       float r = length(q);
-      vec3 sclera = mix(vec3(0.97, 0.98, 1.0), vec3(0.72, 0.76, 0.86), smoothstep(top - 0.25, top, p.y));
+      vec3 sclera = mix(vec3(0.86, 0.87, 0.9), vec3(0.6, 0.63, 0.72), smoothstep(top - 0.3, top, p.y));
       vec3 cc = sclera;
-      if (r < 0.5) {
+      if (r < 0.6) {
         float g = clamp((c.y + 0.45 - p.y) / 0.9, 0., 1.);
         cc = mix(uIris * 1.35 + 0.08, uIris * 0.45, g);
-        cc = mix(cc, uIris * 0.35, smoothstep(0.38, 0.5, r));     // tumma reuna
-        if (r < 0.22) cc = vec3(0.03);
+        cc = mix(cc, uIris * 0.3, smoothstep(0.46, 0.6, r));     // tumma reuna
+        if (r < 0.26) cc = vec3(0.03);
       }
-      if (length(p - c - vec2(-0.14, 0.17)) < 0.13) cc = vec3(1.);   // heijastukset
-      if (length(p - c - vec2(0.16, -0.2)) < 0.06) cc = vec3(1.);
+      if (length(p - c - vec2(-0.14, 0.17)) < 0.13) cc = vec3(0.95);   // heijastukset
+      if (length(p - c - vec2(0.18, -0.22)) < 0.07) cc = vec3(0.9);
       col = vec4(cc + uIris * uGlow * 0.5, 1.);
     }
     // ylä-luomiviiva (paksumpi ulkonurkassa) + ripsiväkänen, alaluomi ohut
-    float lw = 0.075 + max(0., -p.x) * 0.06;
+    float lw = 0.11 + max(0., -p.x) * 0.07;
     if (abs(p.x) < 1.0 && p.y >= top - 0.02 && p.y < top + lw) col = vec4(uLine, 1.);
     if (p.x < -0.75 && p.x > -1.05 && abs(p.y - (top + 0.1 + (-p.x - 0.75) * 0.5)) < 0.06) col = vec4(uLine, 1.);
     if (abs(p.x) < 0.8 && abs(p.y - bot) < 0.03) col = vec4(uLine * 1.5 + 0.1, 1.);
@@ -110,7 +110,7 @@ export function buildFace(head, F, c) {
     uIris: { value: eyeCol }, uBrow: { value: browCol }, uLine: { value: new THREE.Color(lum < 0.2 ? '#050404' : '#141010') },
     uGaze: { value: new THREE.Vector2() }, uOpen: { value: 1 }, uTilt: { value: 0 }, uLower: { value: 0 },
     uBrowA: { value: 0 }, uBrowY: { value: 0.92 }, uBrowStyle: { value: (c.marks || []).some(s => s.startsWith('brows')) ? 1 : 0 },
-    uMode: { value: 0 }, uOpacity: { value: 1 }, uGlow: { value: lum < 0.22 ? 0.6 : 0.15 },
+    uMode: { value: 0 }, uOpacity: { value: 1 }, uGlow: { value: lum < 0.22 ? 0.3 : 0.08 },
   };
   const eyeMat = new THREE.ShaderMaterial({ uniforms: U, vertexShader: EYE_VS, fragmentShader: EYE_FS, side: THREE.DoubleSide, transparent: false,
     polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4 });
@@ -118,14 +118,14 @@ export function buildFace(head, F, c) {
   const mouthMat = new THREE.ShaderMaterial({ uniforms: MU, vertexShader: EYE_VS, fragmentShader: MOUTH_FS, side: THREE.DoubleSide,
     polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4 });
   const es = p.eye || 1;
-  const eyeGeo = new THREE.PlaneGeometry(0.078 * es, 0.098 * es);
+  const eyeGeo = new THREE.PlaneGeometry(0.1 * es, 0.125 * es);
   const mouthGeo = new THREE.PlaneGeometry(0.115 * m, 0.06);
   const group = new THREE.Group(); head.add(group);
   for (const s of [-1, 1]) {
     // silmä: pään yläsivulla, normaali ulos-ylös-eteen -> näkyy sivulta, 3/4-kulmasta ja lähikuvassa
     const e = new THREE.Mesh(eyeGeo, eyeMat);
-    e.position.copy(L([0.418, 0.872, s * 0.106]));
-    e.lookAt(e.position.clone().add(new THREE.Vector3(0.42, 0.32, s * 0.85)));
+    e.position.copy(L([0.452, 0.852, s * 0.096]));
+    e.lookAt(e.position.clone().add(new THREE.Vector3(0.3, 0.22, s * 0.92)));
     if (s < 0) e.scale.x = -1;                        // uv.x osoittaa aina kuonoon päin
     // lookAt kääntää tason +Z:n ulos; varmistetaan "ylös" = pään ylös
     group.add(e);
