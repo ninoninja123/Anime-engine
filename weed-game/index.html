@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <title>Ōun tarina – fanipelin luonnos</title>
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <canvas id="gl"></canvas>
+  <canvas id="overlay"></canvas>
+  <div id="touch"></div>
+  <div id="flash"></div>
+  <div id="vignette"></div>
+  <div id="letterbox"><div class="bar top"></div><div class="bar bottom"></div></div>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div id="weedbox">
+      <div class="nm">WEED</div>
+      <div id="hearts"></div>
+    </div>
+    <div id="bossbox">
+      <div class="nm">KAIBUTSU <span class="sub">(P4)</span></div>
+      <div id="bossbar"><div id="bosshp"></div><div id="bossghost"></div><div class="mark" style="left:60%"></div><div class="mark" style="left:22%"></div></div>
+    </div>
+    <div id="henki"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="bg"/><circle cx="50" cy="50" r="42" class="fg" id="henkiArc"/></svg><div class="lbl">HENKI</div></div>
+    <div id="cards"></div>
+    <button id="pauseBtn" class="iconbtn" aria-label="Tauko">II</button>
+  </div>
+  <div id="hint" class="hidden"></div>
+  <div id="toast"></div>
+
+  <!-- Cutscene-tekstit -->
+  <div id="sub" class="hidden"><div class="who"></div><div class="txt"></div></div>
+  <div id="caption" class="hidden"></div>
+  <button id="skipBtn" class="hidden">Ohita ▸▸</button>
+
+  <!-- Päävalikko -->
+  <div id="menu" class="screen">
+    <div class="titlewrap">
+      <div class="kicker">Epävirallinen fanipelin luonnos</div>
+      <h1>WEED<span>Ōun tarina</span></h1>
+      <div class="tag">Pieni mutta sitkeä.</div>
+    </div>
+    <div class="menubtns">
+      <button id="startBtn" class="big">▶ Taso 2: Gajō – Kaibutsu</button>
+      <button id="castBtn">Lauma</button>
+      <button id="soundBtn">Ääni: päällä</button>
+    </div>
+    <div id="memorial" class="hidden"></div>
+    <div class="foot">Ei-kaupallinen fanityö. Hahmot ja tarina © Yoshihiro Takahashi / Nihon Bungeisha. Tämä luonnos ei käytä virallisia kuvia, logoja, musiikkia tai ääniä.</div>
+  </div>
+
+  <div id="castScreen" class="screen hidden">
+    <div class="castname" id="castName"></div>
+    <div class="castrole" id="castRole"></div>
+    <div class="castnav"><button id="castPrev">◀</button><button id="castBack">Takaisin</button><button id="castNext">▶</button></div>
+  </div>
+
+  <div id="pause" class="screen hidden">
+    <h2>Tauko</h2>
+    <button id="resumeBtn" class="big">Jatka</button>
+    <button id="helpBtn">Ohjeet</button>
+    <button id="quitBtn">Päävalikkoon</button>
+  </div>
+
+  <div id="help" class="screen hidden">
+    <h2>Ohjaus</h2>
+    <div class="helpgrid">
+      <div><b>Napauta</b> ruutua<br>= Weed puree</div>
+      <div><b>Pyyhkäise ←/→</b><br>= väistö sivulle</div>
+      <div><b>Pyyhkäise ↑</b><br>= hyppy (väistä syöksy)</div>
+      <div><b>Piirrä kaari ⟳</b><br>= Battōga (kun Henki on täynnä)</div>
+      <div><b>Laumakortit</b> oikealla alhaalla<br>= kutsu toveri apuun</div>
+      <div><b>Täydellinen väistö</b> viime hetkellä<br>= hidastus + Henkeä</div>
+    </div>
+    <button id="helpClose" class="big">Selvä</button>
+  </div>
+
+  <div id="result" class="screen hidden">
+    <div class="kicker">Taso 2 läpäisty</div>
+    <h2>Gajō on vapaa</h2>
+    <div id="stars"></div>
+    <div id="fallen"></div>
+    <button id="resultBtn" class="big">Päävalikkoon</button>
+  </div>
+
+  <div id="defeat" class="screen hidden">
+    <h2>Weed kaatui…</h2>
+    <p>Lauma odottaa. Nouse vielä kerran.</p>
+    <button id="retryBtn" class="big">Yritä vaiheesta uudelleen</button>
+    <button id="defeatQuit">Päävalikkoon</button>
+  </div>
+
+  <div id="rotate">
+    <div class="phone"></div>
+    <p>Käännä puhelin <b>vaakatasoon</b></p>
+    <button id="rotateIgnore">Jatka silti</button>
+  </div>
+
+  <div id="loading" class="screen"><div class="spinner"></div><div>Ladataan laumaa…</div></div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
