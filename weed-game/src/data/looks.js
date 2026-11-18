@@ -70,6 +70,13 @@ export const LOOKS = {
     { type: 'mask', color: '#c4bdb1', extent: 2, eyes: true, opacity: 0.55 },
     { type: 'ears', color: '#5e574e' },
   ] },
+  // Ken (canon: brown, darker muzzle, black mask over the eyes, two scars on the left side of the face)
+  ken_canon: { base: 'ken_auto', coat: '#8c5b36', detail: 1.0, marks: [
+    { type: 'under', color: '#b98a5c' },
+    { type: 'muzzle', color: '#2a1d15', extent: 0.7 },
+    { type: 'mask', color: '#120d0a', extent: 0.62, eyes: true, opacity: 0.95 },
+    { type: 'ears', color: '#3a271a' },
+  ] },
   dane_tan_brute: { base: 'hogen_rigged', coat: '#9c7656', detail: 0.9, marks: [
     { type: 'under', color: '#c4a582' },
     { type: 'muzzle', color: '#2b221c', extent: 0.62 },
@@ -106,9 +113,9 @@ export const LOOK_CAST = {
   rocker:  { model: 'john_auto', look: 'pinscher_black_tan', height: 1.08, bones: { ears: 1.2, tail: 0.38, legs: 1.06, head: 0.95 } },
   lector:  { model: 'john_auto', look: 'pinscher_black_rust', height: 1.12, bones: { ears: 1.25, tail: 0.32, legs: 1.08, head: 0.96 } },
   thunder: { model: 'john_auto', look: 'pinscher_red', height: 1.12, bones: { ears: 1.25, tail: 0.32, legs: 1.08, head: 0.96 } },
-  ken:     { model: 'hogen_rigged', look: 'dane_blue', height: 1.5, bones: { head: 0.95 } },
+  ken:     { model: 'ken_auto', look: 'ken_canon', height: 1.5, tint: null },
   ben:     { model: 'hogen_rigged', look: 'dane_grey_old', height: 1.46 },
-  genba:   { model: 'hogen_rigged', look: 'dane_tan_brute', height: 1.75, bones: { head: 1.06, neck: 1.08 }, tint: null },
+  genba:   { model: 'hogen_rigged', height: 1.75, bones: { head: 1.06, neck: 1.08 }, tint: '#9aa0a8' },   // reference: grey with black spots (Hogen's harlequin model, tinted grey)
   gb:      { model: 'smith_rigged', look: 'setter_white_spotted', height: 1.0 },
   akame:   { model: 'kagetora_true_auto', look: 'kishu_red', height: 1.02 },
 };
