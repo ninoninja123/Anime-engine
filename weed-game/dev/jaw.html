@@ -1,0 +1,9 @@
+<!doctype html><html><body><script type="module">
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+const g = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('../public/models/weed_rigged.glb');
+const out = [];
+for (const c of g.animations) for (const t of c.tracks) if (t.name.startsWith('jaw')) out.push(c.name + ' ' + t.name + ' ' + Array.from(t.values).slice(0, 12).map(v => v.toFixed(3)).join(','));
+let jaw; g.scene.traverse(o => { if (o.name === 'jaw') jaw = o; }); out.push('rest ' + jaw.quaternion.toArray().map(v => v.toFixed(3)));
+window.out = out.join('\n');
+</script></body></html>
