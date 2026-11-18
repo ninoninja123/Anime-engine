@@ -10,7 +10,7 @@ export let muted = false;
 const NO_FILES = E.params.has('synthaudio');
 
 const AUDIO_BASE = () => new URL('audio/', window.ASSET_BASE || document.baseURI).href;
-export const MUSIC_FILES = { intro: 'mus_intro.mp3', battle: 'mus_battle.mp3', sad: 'mus_sad.mp3', dawn: 'mus_dawn.mp3' };
+export const MUSIC_FILES = { intro: 'mus_intro_user.mp3', battle: 'mus_battle.mp3', sad: 'mus_sad.mp3', dawn: 'mus_dawn.mp3' };
 const MUSIC_VOL = { intro: 0.55, battle: 0.5, sad: 0.6, dawn: 0.6 };
 const MUSIC_LOOP = { intro: true, battle: true, sad: false, dawn: false };
 export const SFX_FILES = {
