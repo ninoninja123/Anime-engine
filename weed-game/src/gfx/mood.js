@@ -26,26 +26,26 @@ const MOODS = {
   night: {},
   // Kaibutsun raivo: panssari päällä, punainen hätä
   rage: {
-    skyTop: '#0b0614', skyMid: '#2a1230', skyHor: '#6b2a38', stars: 0.35, clouds: 0.55, cloudCol: '#2a1020',
-    fog: '#2a1428', haze: '#3a1c30', mistCol: '#8a5a6c', hemiSky: '#9a8cc0', hemiGround: '#3a1c28', hemi: 0.7,
-    key: '#e8d0d8', keyI: 1.5, back: '#ff4a2a', backI: 2.2, rim: '#ff6a40', rimAmt: 1.4,
-    layerTint: '#b88a98', snowCol: '#a898b8', snowShade: '#5a4672', wind: 2.2, snowAmt: 0.85, stretch: 1.6,
-    bloom: 0.75, sat: 1.05, contrast: 1.12, lift: '#f4dce4', gain: '#fff0e6', vig: 0.85, vigColor: '#1c0206', moon: 0.6,
+    skyTop: '#07050f', skyMid: '#1c0f26', skyHor: '#5c1f2a', stars: 0.35, clouds: 0.55, cloudCol: '#200c18',
+    fog: '#1e1426', haze: '#2c1a2c', mistCol: '#6a4a5c', hemiSky: '#8088b8', hemiGround: '#30202c', hemi: 0.72,
+    key: '#dcd4e8', keyI: 1.5, back: '#ff4a2a', backI: 0.9, rim: '#ff5a34', rimAmt: 1.9,
+    layerTint: '#9a8298', snowCol: '#9896b8', snowShade: '#46406c', wind: 2.2, snowAmt: 0.85, stretch: 1.6,
+    bloom: 0.75, sat: 1.05, contrast: 1.1, lift: '#efe2ee', gain: '#fff2ea', vig: 0.85, vigColor: '#200306', moon: 0.6,
   },
   // vaihe 2: lumimyrsky, punavioletti
   storm: {
-    skyTop: '#0a0714', skyMid: '#221633', skyHor: '#58304a', stars: 0.15, clouds: 0.72, cloudCol: '#231426',
-    fog: '#241630', fogDensity: 0.014, haze: '#33203e', mist: 0.8, mistCol: '#7a5a80', hemiSky: '#948ac8', hemiGround: '#33202e', hemi: 0.7,
-    key: '#dccce4', keyI: 1.45, back: '#ff3a24', backI: 2.6, rim: '#ff5a3a', rimAmt: 1.5,
-    layerTint: '#a888a4', snowCol: '#a094bc', snowShade: '#54446e', wind: 3.4, snowAmt: 1.0, stretch: 2.3,
-    bloom: 0.8, sat: 1.05, contrast: 1.14, lift: '#f2dce8', gain: '#ffeee4', vig: 0.9, vigColor: '#200308', moon: 0.35,
+    skyTop: '#07050f', skyMid: '#1a1028', skyHor: '#6a2228', stars: 0.15, clouds: 0.72, cloudCol: '#1c0e1a',
+    fog: '#1c1428', fogDensity: 0.014, haze: '#2a1a30', mist: 0.8, mistCol: '#644a66', hemiSky: '#7c84b8', hemiGround: '#2e1e2a', hemi: 0.7,
+    key: '#d4cce4', keyI: 1.45, back: '#ff3a24', backI: 1.0, rim: '#ff4a2c', rimAmt: 2.1,
+    layerTint: '#8c7a94', snowCol: '#9290b6', snowShade: '#423c68', wind: 3.4, snowAmt: 1.0, stretch: 2.3,
+    bloom: 0.8, sat: 1.05, contrast: 1.12, lift: '#eee0ee', gain: '#fff0e6', vig: 0.9, vigColor: '#260306', moon: 0.35,
   },
   // suru: hiljaisuus Smithin jälkeen
   grief: {
     skyTop: '#05070f', skyMid: '#141c30', skyHor: '#3a4660', stars: 0.6, clouds: 0.4, cloudCol: '#161c2c',
     fog: '#1c2436', haze: '#2a3448', mistCol: '#9aa6c0', back: '#9db4e0', backI: 0.8, rim: '#c8d8ff', rimAmt: 0.8,
     wind: 0.35, snowAmt: 0.45, bloom: 0.85, sat: 0.55, contrast: 1.0, lift: '#e8ecf8', gain: '#f4f6ff', vig: 0.8,
-    rays: 0.5, rayCol: '#c8d8ff',
+    rays: 0.22, rayCol: '#c8d8ff',
   },
   // Ōun henget: neljä nuolta / vaihe 3 – syvä sininen, revontulet syttyvät
   spirit: {

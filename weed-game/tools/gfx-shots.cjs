@@ -15,7 +15,7 @@ const qs = extra => `?${[extra, q ? (q === 'low' ? 'lowfx' : q === 'high' ? 'hq'
 
 (async () => {
   const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
-  const ctx = await browser.newContext({ viewport: { width: 844, height: 390 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+  const ctx = await browser.newContext({ viewport: { width: 844, height: 390 }, deviceScaleFactor: Number(opt('dpr') || 2), isMobile: true, hasTouch: true });
   const page = await ctx.newPage();
   const errors = [];
   page.on('console', m => { if (m.type() === 'error' && !/fonts\.g|ERR_|Failed to load resource/.test(m.text())) errors.push(m.text()); });

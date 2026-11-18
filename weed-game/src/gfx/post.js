@@ -77,10 +77,10 @@ void main(){
     col += bloom * uBloom;
     if (uRays > 0.01) {
       vec2 stp = (uSun - uv) * 0.085;
-      vec2 p = uv + stp * hash(uv * 311.0 + uTime);
+      vec2 p = uv;
       float w = 1.0; vec3 acc = vec3(0.0);
       for (int i = 0; i < 10; i++) { p += stp; acc += texture2D(tBloom, p).rgb * w; w *= 0.86; }
-      col += acc * uRayColor * (uRays * 0.16);
+      col += acc * uRayColor * (uRays * 0.12);
     }
   }
 

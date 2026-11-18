@@ -103,7 +103,7 @@ export function initEngine(canvas) {
   initUiFx(E);
 
   const clock = new THREE.Clock();
-  let fpsAcc = 0, fpsN = 0, scanT = 0, focus = 10, lastFov = baseFov;
+  let fpsAcc = 0, fpsN = 0, scanT = 0, focus = 10, lastFov = baseFov, wasPlaying = null, irisT = -1;
   const look = new THREE.Vector3();
   E.fps = 60;
   const loop = () => {
@@ -172,6 +172,15 @@ export function initEngine(canvas) {
     const wantTilt = E.cine ? 0.8 : 0;
     post.tilt += (wantTilt - post.tilt) * Math.min(1, dtReal * 3);
     post.fade *= Math.pow(0.0015, dtReal); if (post.fade < 0.004) post.fade = 0;
+    // iris-siirtymä, kun taso alkaa tai päättyy
+    const S = window.__S, playing = !!(S && (S.active || S.cutscene));
+    if (wasPlaying !== null && playing !== wasPlaying) irisT = 0;
+    wasPlaying = playing;
+    if (irisT >= 0) {
+      irisT += dtReal;
+      post.iris = EASE.out(Math.min(1, irisT / 0.9)) * 1.4;
+      if (irisT >= 0.9) { irisT = -1; post.iris = 2; }
+    }
 
     if (!renderPost(E.scene, cam, dtReal, E.realTime)) {
       renderer.info.reset();

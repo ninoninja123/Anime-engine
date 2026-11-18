@@ -124,11 +124,10 @@ function paintSpires(g, w, h) {
     g.globalAlpha = 1;
     // kuunvalon reuna vasemmalla
     g.strokeStyle = 'rgba(190,210,255,0.55)'; g.lineWidth = 5; g.beginPath(); g.moveTo(L[0][0] + 2, L[0][1]); for (const p of L) g.lineTo(p[0] + 2, p[1]); g.lineTo(tip[0], tip[1]); g.stroke();
-    // lumihyllyt
-    for (let i = 2; i <= N; i += 1 + Math.floor(r() * 3)) {
-      const y = L[i][1], x0 = L[i][0] - 2, x1 = x0 + (R[i][0] - L[i][0]) * (0.12 + r() * 0.28);
-      g.fillStyle = '#e4ecff'; g.beginPath(); g.moveTo(x0, y); g.quadraticCurveTo((x0 + x1) / 2, y - 12 - r() * 8, x1, y + 2); g.lineTo(x1 - 8, y + 9); g.lineTo(x0 + 4, y + 7); g.closePath(); g.fill();
-      g.fillStyle = '#93a6dc'; g.beginPath(); g.moveTo(x0 + 6, y + 6); g.lineTo(x1 - 6, y + 8); g.lineTo((x0 + x1) / 2, y + 13); g.closePath(); g.fill();
+    // lumijuovat vasemmalla reunalla
+    for (let i = 2; i <= N; i += 1 + Math.floor(r() * 2)) {
+      const y = L[i][1], x0 = L[i][0] - 1, len = 14 + r() * 30;
+      g.fillStyle = '#dfe8ff'; g.beginPath(); g.moveTo(x0, y - 6); g.lineTo(x0 + len, y + 4 + r() * 6); g.lineTo(x0 + len * 0.5, y + 12 + r() * 10); g.lineTo(x0 + 1, y + 16); g.closePath(); g.fill();
     }
     // huipun lumi
     g.fillStyle = '#eef3ff'; g.beginPath(); g.moveTo(tip[0], tip[1] - 2); g.lineTo(L[N][0] - 4, L[N][1] + 26); g.lineTo(x - 4, L[N][1] + 12 + r() * 20); g.lineTo(x + 10, L[N][1] + 40); g.lineTo(R[N][0] + 2, L[N][1] + 14); g.closePath(); g.fill();
@@ -329,6 +328,15 @@ export function buildWorld() {
     g.computeVertexNormals();
     return g;
   };
+  const slabGeo = (rad, seed) => {          // kulmikas kalliolohkare (jalusta)
+    const rr = rng(seed);
+    let g = new THREE.BoxGeometry(rad * 1.5, rad * 3.2, rad * 1.5, 2, 3, 2);
+    g.deleteAttribute('uv'); g.deleteAttribute('normal'); g = mergeVertices(g);
+    const p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) { const t = p.getY(i) / (rad * 3.2) + 0.5, k = 1.15 - t * 0.5; p.setXYZ(i, p.getX(i) * k + (rr() - 0.5) * rad * 0.5, p.getY(i) + (rr() - 0.5) * rad * 0.5, p.getZ(i) * k + (rr() - 0.5) * rad * 0.5); }
+    g.computeVertexNormals();
+    return g;
+  };
   const staticRocks = [];
   for (let i = 0; i < 16; i++) {
     const g = rockGeo(0.7 + r() * 1.7, 100 + i);
@@ -344,14 +352,14 @@ export function buildWorld() {
   // oikean reunan kallio (josta kivivyöry tulee). children[3..] ovat irtolohkareita.
   const cliff = new THREE.Group();
   const cliffDefs = [
-    [15.8, 3.0, -6.8, 3.3], [13.5, 0.8, -4.9, 1.5], [17.6, 7.0, -7.6, 4.2],        // jalusta (pysyy)
+    [15.6, 4.2, -6.9, 3.1], [13.3, 1.6, -5.0, 1.5], [18.4, 6.0, -7.8, 4.0],        // jalusta (pysyy)
     [13.6, 5.6, -5.6, 2.3], [12.2, 7.4, -4.9, 1.6], [14.6, 8.4, -6.0, 2.4], [11.4, 9.0, -5.0, 1.5],
     [13.0, 10.2, -5.6, 2.0], [10.6, 10.4, -4.6, 1.2], [15.2, 11.4, -6.4, 2.4], [12.0, 12.2, -5.2, 1.6],
   ];
 
   cliffDefs.forEach(([x, y, z, rad], i) => {
-    const b = new THREE.Mesh(i < 3 ? rockGeo(rad, 300 + i, 1, 1.7, 0.3) : rockGeo(rad, 300 + i, 0, 1.0, 0.22), rockMat);
-    b.position.set(x, y, z); b.rotation.set(r() * 0.6, r() * 6, r() * 0.6);
+    const b = new THREE.Mesh(i < 3 ? slabGeo(rad, 300 + i) : rockGeo(rad, 300 + i, 0, 1.0, 0.22), rockMat);
+    b.position.set(x, y, z); b.rotation.set(i < 3 ? 0 : r() * 0.6, r() * 6, i < 3 ? (r() - 0.5) * 0.16 : r() * 0.6);
     b.castShadow = true; b.userData.home = b.position.clone();
     cliff.add(b); addOutline(b, { width: 0.0028 });
   });
