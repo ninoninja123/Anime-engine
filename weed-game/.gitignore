@@ -1,2 +1,9 @@
 node_modules/
 dist/
+
+# Licensed audio (Epidemic Sound): do not redistribute in a public repo
+public/audio/
+
+# Epidemic Sound -tiedostot: lisenssi ei salli uudelleenjakelua julkisessa repossa (ks. CREDITS.md)
+public/audio/mus_*.mp3
+public/audio/sfx_*.mp3

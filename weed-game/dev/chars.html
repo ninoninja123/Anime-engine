@@ -1,0 +1,29 @@
+<!doctype html><html><head><style>body{margin:0;background:#334}canvas{display:block}</style></head><body><canvas id="gl"></canvas>
+<script>window.ASSET_BASE = location.origin + '/public/';</script><script type="module">
+import * as THREE from 'three';
+import { E, initEngine } from '../src/engine.js';
+import { loadFor, makeDog } from '../src/dogs.js';
+import { ROSTER } from '../src/characters.js';
+const q = new URLSearchParams(location.search);
+const ids = (q.get('ids') || ROSTER.join(',')).split(',');
+const anim = q.get('a') || 'Idle'; const at = +(q.get('t') || 0);
+initEngine(document.getElementById('gl'));
+E.scene.background = new THREE.Color(0x8890a0);
+E.scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 1.6));
+const dl = new THREE.DirectionalLight(0xffffff, 2.2); dl.position.set(3, 6, 8); E.scene.add(dl);
+const gnd = new THREE.Mesh(new THREE.PlaneGeometry(200, 50), new THREE.MeshLambertMaterial({ color: 0x667055 })); gnd.rotation.x = -Math.PI / 2; E.scene.add(gnd);
+await loadFor(ids);
+const cols = +(q.get('cols') || 6); let x = 0, row = 0; const dogs = [];
+ids.forEach((id, i) => {
+  const d = makeDog(id); E.scene.add(d.root);
+  const c = i % cols; if (c === 0 && i) row++;
+  const sp = +(q.get("sp") || 2.0); d.root.position.set((c - (cols - 1) / 2) * sp, 0, -row * 2.6);
+  d.face(q.has('left') ? -1 : 1, true); d.play(anim, { loop: !q.has('once') }); dogs.push(d);
+  if (d.weak) d.weakReveal = q.has('weak') ? 1 : 0;
+});
+E.updaters.add(dt => { for (const d of dogs) d.update(dt); });
+const rows = Math.ceil(ids.length / cols);
+E.camPos.set(0, +(q.get('cy') || 1.4) , +(q.get('cz') || 7 + rows * 1.5)); E.camLook.set(0, +(q.get('ly') || 0.8), -(rows - 1) * 1.1);
+if (at) { for (let i = 0; i < at * 60; i++) for (const d of dogs) d.update(1 / 60); E.timeScale = 0; }
+window.done = true;
+</script></body></html>

@@ -1,71 +1,86 @@
-# Ōun tarina – Weed-fanipelin pelattava luonnos (vertical slice)
+# Weed – Ōu Saga (fanipelin pelattava luonnos, vertical slice)
 
-Epävirallinen, ei-kaupallinen fanipelin **luonnos**, joka näyttää, millainen lopullinen peli voisi olla.
-Sisältää yhden tason: **Taso 2 "Gajō – Kaibutsu"**. Suunnittelu: `../docs/weed-game/game-design.md`, tarina: `../docs/weed-game/research.md`.
+Epävirallinen, ei-kaupallinen fanipelin **luonnos** (Three.js, puhelin vaakatasossa). Yksi taso:
+**Level 2 "Gajō – Kaibutsu"** cutsceneineen. Suunnittelu: `../docs/weed-game/game-design.md`, tarina: `../docs/weed-game/research.md`.
 
-Hahmot ovat **omia tyyliteltyjä low-poly-koiria**, jotka on tehty yhdestä CC0-perusmallista värejä,
-mittakaavaa ja lisäosia vaihtamalla. Ne eivät kopioi animen/mangan hahmosuunnittelua. Virallisia kuvia,
-logoja, musiikkia tai ääniä ei käytetä.
+- **Kieli:** käyttöliittymä ja tekstitys **englanniksi**, hahmot **puhuvat japania** (tekstitys päälle/pois, japaninkielinen rivi päälle/pois).
+- **Hahmot:** käyttäjän omat 3D-mallit (Tripo) pääosille + **koiratehdas** (`dog_parts.glb`) muille. Ks. CREDITS.md.
+- **Live:** https://weed-game.huone-k7q2.workers.dev/
 
 ## Ajaminen
 
 ```bash
 cd weed-game
 npm install
-npm run dev        # kehityspalvelin (vite --host), näyttää myös lähiverkko-osoitteen
-npm run build      # staattinen build -> dist/
-npm run preview    # buildin esikatselu (vite preview --host)
+npm run dev        # kehityspalvelin (vite --host), lähiverkko-osoite puhelimelle
+npm run build      # -> dist/ (ajaa ensin `npm run voices`)
+npm run preview    # buildin esikatselu
 ```
 
-### Puhelimella
+Testilinkit: `?play=1` (intro), `?phase=2&nointro`, `?phase=3&nointro`, `?gallery=0`, `?lowfx` (kevyet tehosteet),
+`?synthaudio` (pelkkä syntetisoitu ääni), `?rigdebug` (pehmeän rigin painot väreinä), `?partdbg` (koiratehtaan osat väreinä).
+Konsolissa `__game.debug` (esim. `__game.debug.fillHenki()`, `__game.debug.card('jerome')`).
 
-1. Kone ja puhelin samaan Wi-Fi-verkkoon.
-2. `npm run dev` → Vite tulostaa rivin `Network: http://192.168.x.x:5173/`.
-3. Avaa osoite puhelimen selaimessa ja käännä puhelin **vaakatasoon**. Androidilla peli pyytää
-   koko näytön tilaa ja lukitsee vaakasuunnan, kun painat "Taso 2".
-4. Vaihtoehto: `npm run build` ja `dist/` minkä tahansa staattisen palvelimen (GitHub Pages, Netlify)
-   taakse. `base: './'` tekee buildista polkuriippumattoman.
-
-### Ohjaus (kosketus tai hiiri)
+## Ohjaus
 
 | Ele | Toiminto |
 |---|---|
-| Napautus | Weed puree (ryntää hirviön luo ja palaa) |
-| Pyyhkäisy ←/→ | Väistö sivulle |
-| Pyyhkäisy ↑ | Hyppy (väistää syöksyn) |
-| Kaaren piirto ⟳ | **Battōga**, kun Henki-mittari on täynnä |
-| Laumakortit (oikea alakulma) | Jerome paljastaa heikon kohdan, Ken & Kagetora yhteisisku, Smith = uhraus |
-| Täydellinen väistö viime hetkellä | Hidastus + Henkeä |
-| Pitkä painallus / "Ohita" | Ohita cutscene |
-
-### Testilinkit
-- `?play=1` aloittaa suoraan tason intron, `?phase=2&nointro` / `?phase=3&nointro` suoraan vaiheeseen.
-- `?lowfx` poistaa bloomin ja puolittaa partikkelit (heikot puhelimet).
-- Konsolissa `__game.debug` (esim. `__game.debug.fillHenki()`).
+| Napautus | Weed puree |
+| Pyyhkäisy ←/→ | väistö · täydellinen väistö = slow-mo + Spirit |
+| Pyyhkäisy ↑ | hyppy |
+| Ympyrä ⟳ | **Battōga** (kun Spirit on täynnä) |
+| Laumakortit | special movet: **Jerome** (heikon kohdan analyysi), **Ken & Kagetora** (Twin Fang), **Smith** (uhraus, cutscene) |
+| Napautus special moven aikana / "Skip" / pitkä painallus | ohita |
 
 ## Rakenne
 
 ```
-index.html            UI-kerros (HUD, kortit, valikot, tekstitys)
-public/models/dog_base.glb   koiran perusmalli (Quaternius ShibaInu, CC0, meshopt-pakattu)
-src/engine.js         renderöijä, bloom, pelisilmukka, tweenit, slow-mo, cutscenen ohitus
-src/dogs.js           perusmallin lataus, kloonaus hahmoiksi (värit, koko, korvat, kolme jalkaa,
-                      Kaibutsun harja + heikko kohta + hehkuvat silmät), cel-ääriviiva, häntä/korvat
-src/world.js          Gajōn yö: parallax-vuoret, kalliotornit, vesiputous, männyt, lumisade (GPU-shader)
-src/fx.js             partikkelit, iskurenkaat, Battōga-kaari, hengen valot, välähdys, speed-linet
-src/input.js          eleiden tunnistus (napautus/pyyhkäisy/kaari) + eleen valojälki
-src/audio.js          WebAudio-syntetisoidut äänet ja generatiivinen musiikki
-src/level2.js         bossin tekoäly, vaiheet, kortit, cutscenet
-src/main.js           käynnistys, päävalikko, Lauma-esittely
-tools/shots.cjs       Playwright-läpiajo ja kuvakaappaukset -> screenshots/
+src/characters.js        hahmoluettelo (malli, kierto, korkeus, rigi, värit, kuviot, mittasuhteet, askellus)
+src/dogs.js              mallien laiska lataus + normalisointi (+X, jalat y=0), pehmeä rigi (vertex shader) jäykille
+                         malleille, koiratehdas (nivelhierarkia + verteksivärimaalaus), proseduraalinen animaattori
+src/accessories.js       lisäosat tehdaskoirille (roster-agentti) · src/data/roster_specs.js geneeriset joukkovariantit
+src/audio.js             Epidemic-musiikki ristiinhäivytyksellä, ducking, tehosteet, syntetisoitu varajärjestelmä
+src/voice.js             japaninkieliset puheäänet + englanninkielinen tekstitys, ajastus ilman äänitiedostoja
+src/data/lines.js        KAIKKI repliikit: ja/en, tunne, näyttelijäohje, intensiteetti, tauot (voice-manifesti)
+src/scenes.js            datapohjainen kohtausohjaus (kamera-avainkuvat, orbit, dolly, slow-mo, freeze-frame, valot…)
+src/data/scenes_level2.js tason kohtaukset: intro, Smithin uhraus, Neljä nuolta, Battōga-finaali, jälkikohtaus
+src/level2.js            taistelu, bossin tekoäly, kortit/special movet, vaiheet
+src/main.js              käynnistys, valikko, Lauma-galleria (kaikki hahmot pyörivinä ja animoituina), asetukset
+tools/optimize-models.mjs  assets/models-src/*.glb -> public/models/*.glb (WebP, simplify, meshopt)
+tools/voices.mjs         public/audio/voice/manifest.json + docs/VOICE_LINES.md
+tools/shots.cjs          Playwright-läpiajo + kuvakaappaukset -> screenshots/
+tools/deploy-cf.py       julkaisu Cloudflare Workeriksi (Workers KV)
 ```
 
-## Kuvakaappaukset ja testaus
+### Animaatiot
+Kaikilla hahmoilla sama poseformaatti: `Idle, Idle_2, Idle_2_HeadLow, Walk, Gallop, Gallop_Jump, Jump_ToIdle, Attack, Bark,
+Howl, Eating, Idle_HitReact1/2, Death, LieDown, Battoga` + hännän heilutus, korvien värähdys, hengitys, squash & stretch.
+- **Jäykät mallit** (Weed, Kaibutsu, Smith, Kagetora, Kurotora, Rocket, Tōbee, Moss): vertex-shaderin pehmeä rigi jakaa
+  mallin automaattisesti alueisiin (etu-/takajalat × vasen/oikea, pää, häntä) ja kiertää ne nivelpisteiden ympäri, joten
+  etu- ja takajalat liikkuvat vastakkain. Smithillä kolmijalkainen "limp3"-askellus.
+- **Tehdaskoirat**: oikeat nivelet (lonkat, olat, kaula, pää, korvat, häntä), pivotit lasketaan geometriasta.
 
+## Äänet
+- Musiikki ja tehosteet: **Epidemic Sound** (käyttäjän lisenssi), tiedot CREDITS.md:ssä.
+- **`public/audio/mus_*.mp3` ja `sfx_*.mp3` EIVÄT ole gitissä** (julkinen repo; .gitignore). Ne ovat vain tässä
+  ympäristössä ja julkaistussa pelissä. Jos ne puuttuvat, peli käyttää syntetisoitua ääntä.
+- Ääni alkaa vasta käyttäjän ensimmäisestä napautuksesta (mobiilin autoplay-sääntö) ja ladataan laiskasti.
+- **Puheäänet puuttuvat vielä.** Pudota tiedostot `public/audio/voice/<who>_<id>.mp3` (nimet: `docs/VOICE_LINES.md`)
+  ja aja `npm run voices` (tai `npm run build`) – ei koodimuutoksia.
+
+## Julkaisu (Cloudflare Worker + Workers KV)
 ```bash
-npm run build && (npx vite preview --port 4173 &) && node tools/shots.cjs        # kaikki
-node tools/shots.cjs menu | intro | battle | portrait                            # osa
+npm run build && python3 tools/deploy-cf.py      # oletus: tili 44ae83ec…, worker "weed-game"
+URL=https://weed-game.huone-k7q2.workers.dev/ node tools/shots.cjs live   # tarkistus: sivu, mallit, äänet
 ```
+Aja **samassa ympäristössä, jossa `public/audio/` on** (muuten julkaisuun ei tule ääniä). Skripti lataa dist/-tiedostot
+KV:hen sisältöosoitteisina (vain muuttuneet), julkaisee pienen workerin (manifesti) ja poistaa vanhat avaimet.
+Worker palvelee oikeat Content-Type-, Cache-Control-, ETag- ja **Range**-otsikot (iOS Safari).
 
-Kaappaukset: `screenshots/` (844×390, DPR 2). Läpiajo pelaa tason alusta tulosruutuun asti
-(valikko → taistelu → Smithin uhraus → Neljä nuolta → Battōga → loppu → tulokset).
+## Testaus
+```bash
+npm run build && (npx vite preview --port 4187 --strictPort &)
+URL=http://localhost:4187/ node tools/shots.cjs all       # menu, gallery, intro, battle+specials
+URL=http://localhost:4187/ node tools/shots.cjs story     # koko tarina: Smith, Neljä nuolta, finaali, aamunkoitto
+```
+Kaappaukset: `screenshots/` (844×390, DPR 2).

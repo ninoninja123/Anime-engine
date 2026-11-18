@@ -7,7 +7,10 @@
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview --host",
-    "shots": "node tools/shots.cjs"
+    "shots": "node tools/shots.cjs",
+    "voices": "node tools/voices.mjs",
+    "prebuild": "node tools/voices.mjs",
+    "optimize-models": "node tools/optimize-models.mjs"
   },
   "dependencies": {
     "three": "0.170.0"
