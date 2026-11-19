@@ -171,7 +171,7 @@ const AUTUMN_BASE = {
   fog: '#b4acc8', fogDensity: 0.005, haze: '#aaa0c8', mist: 0.16, mistCol: '#e8dcf0',
   hemiSky: '#c8c4e8', hemiGround: '#6a5438', hemi: 0.85, key: '#ffdca0', keyI: 2.5, keyX: -9, keyY: 5.5, keyZ: 6,     // matala aurinko = pitkät varjot
   back: '#ffc070', backI: 1.3, rim: '#ffe0a0', rimAmt: 1.1,
-  layerTint: '#fff0e0', snowCol: '#a88c48', snowShade: '#665030', topCol: '#98823e', sparkle: 1.0,
+  layerTint: '#fff0e0', snowCol: '#b0944c', snowShade: '#705a34', topCol: '#98823e', sparkle: 1.0,
   wind: 0.9, snowAmt: 0.45, stretch: 1.0, partCol: '#e8a050', fall: 0.45, dustCol: '#b8a070', fireflies: 0, breath: 1,
   bloom: 0.5, exposure: 0.92, sat: 1.05, contrast: 1.08, lift: '#ece6f8', gain: '#fff4dc',
   vig: 0.5, vigColor: '#140c06', grain: 0.02, rays: 0.4, rayCol: '#ffd890', outline: '#1a120e', water: '#e8f0ff',
@@ -192,7 +192,7 @@ const AUTUMN_DUSK = {
   back: '#ff9a50', backI: 2.0, rim: '#ffc890', rimAmt: 1.5, layerTint: '#e8b0a8',
   snowCol: '#b08a50', snowShade: '#5e4a44', topCol: '#987a48', wind: 0.3, snowAmt: 0.3, partCol: '#e89050', fall: 0.35,
   bloom: 0.95, exposure: 1.0, sat: 1.08, contrast: 1.04, lift: '#ecdcf4', gain: '#ffeed8', vig: 0.6, vigColor: '#140810',
-  rays: 0.9, rayCol: '#ffb070', outline: '#1a1020', water: '#ffd8c0',
+  rays: 0.55, rayCol: '#ffb070', outline: '#1a1020', water: '#ffd8c0',
 };
 const AUTUMN_MOODS = {
   night: {}, autumn_morning_gold: {},
@@ -219,20 +219,20 @@ const AUTUMN_MOODS = {
   spirit: {
     skyTop: '#4a5cb0', skyMid: '#a894d0', skyHor: '#ffe0a8', clouds: 0.25, cloudCol: '#b8a0d0', sunCol: '#ffe0a0',
     fog: '#b8a8c8', haze: '#b8a8d0', mist: 0.5, mistCol: '#f0e0f0', hemiSky: '#c8c8f4', hemi: 0.9, key: '#ffe6c0', keyI: 2.2,
-    back: '#8fe8d8', backI: 1.3, rim: '#c8f4f0', rimAmt: 1.3, layerTint: '#f0e0f0', wind: 0.5, snowAmt: 0.35, partCol: '#f0c070',
-    bloom: 0.9, sat: 1.05, lift: '#eee8ff', vig: 0.55, rays: 1.0, rayCol: '#ffe8b8',
+    back: '#e8e0ff', backI: 1.3, rim: '#f0ecff', rimAmt: 1.3, layerTint: '#f0e0f0', wind: 0.5, snowAmt: 0.35, partCol: '#f0c070',
+    bloom: 0.55, exposure: 0.9, sat: 1.05, lift: '#eee8ff', vig: 0.55, rays: 0.4, rayCol: '#ffe8b8',
   },
   // finaali: nouseva tuuli rotkosta – lehdet lentävät YLÖS, taivas hehkuu
   finale: {
     skyTop: '#3a4aa8', skyMid: '#9a88d0', skyHor: '#fff0b8', clouds: 0.18, cloudCol: '#c0a8d8', sunCol: '#fff0c0', sun: 1.2,
     fog: '#b0a8d0', haze: '#b0a8d8', mist: 0.6, mistCol: '#f4ecff', hemiSky: '#d0d0ff', hemi: 1.0, key: '#fff0d0', keyI: 2.5,
-    back: '#9ff4e0', backI: 1.7, rim: '#e0fcff', rimAmt: 1.6, layerTint: '#f4e8f8', wind: 1.4, snowAmt: 1.0, stretch: 1.6, partCol: '#ffc060', fall: -2.6,
-    bloom: 1.1, sat: 1.15, contrast: 1.1, lift: '#ece8ff', vig: 0.6, rays: 1.3, rayCol: '#fff0c8',
+    back: '#ffe8b0', backI: 1.6, rim: '#fff4d8', rimAmt: 1.6, layerTint: '#f4e8f8', wind: 1.4, snowAmt: 1.0, stretch: 1.6, partCol: '#ffc060', fall: -2.6,
+    bloom: 0.75, exposure: 0.92, sat: 1.15, contrast: 1.1, lift: '#ece8ff', vig: 0.6, rays: 0.6, rayCol: '#fff0c8',
   },
   // jälkikohtaus ja muistohetki: iltahämärä (canon: ei aamunkoitto)
   dawn: AUTUMN_DUSK,
   memorial: { ...AUTUMN_DUSK, skyTop: '#1c1c56', skyMid: '#6a4888', skyHor: '#ff8a50', stars: 0.9, aurora: 0.0, sun: 0.7, hemi: 0.85, keyI: 1.9,
-    bloom: 1.2, rays: 1.1, vig: 0.68, wind: 0.2, snowAmt: 0.25, fireflies: 0.0 },
+    bloom: 1.0, rays: 0.7, vig: 0.68, wind: 0.2, snowAmt: 0.25, fireflies: 0.0 },
 };
 const TABLES = { winter: { base: BASE, moods: MOODS }, summer: { base: SUMMER_BASE, moods: SUMMER_MOODS }, autumn: { base: AUTUMN_BASE, moods: AUTUMN_MOODS } };
 let table = TABLES.winter;

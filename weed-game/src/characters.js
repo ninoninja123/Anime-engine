@@ -112,7 +112,7 @@ export const CHARACTERS = {
   // c = värit: coat, under, legs, head, ear, tail, muzzle, eye, nose
   // marks = maalatut kuviot (ks. dogs.js PAINT)
   gin: {
-    name: 'Gin', jp: '銀', kind: 'rigged', model: 'gin_auto', height: 1.25, tint: '#d3d7dc',
+    name: 'Gin', jp: '銀', kind: 'rigged', model: 'gin_auto', height: 1.25, tint: '#9fb6d2',
     role: 'A blue-grey Akita, Weed\'s father and Ōu\'s legendary leader. He calls those under him comrades, never servants.',
     gait: 'trot', speed: 1.05, wag: 0.4,
     outline: 0.008,
@@ -272,5 +272,12 @@ export const ROSTER_EXTRA_IDS = [];
     ROSTER_EXTRA_IDS.push(id);
     if (!ROSTER.includes(id)) ROSTER.push(id);
   }
+}
+// rigatut joukkovariantit (looks.js LOOK_ARMY): eri pohjamallit ja värimuunnokset
+import { LOOK_ARMY } from './data/looks.js';
+for (const [id, o] of Object.entries(LOOK_ARMY)) {
+  if (CHARACTERS[id] || !MODELS[o.model]) continue;
+  CHARACTERS[id] = { ...o }; GROUP_OF[id] = o.group;
+  ROSTER_EXTRA_IDS.push(id); if (!ROSTER.includes(id)) ROSTER.push(id);
 }
 export { GROUP_OF, GROUP_LABEL };
