@@ -11,17 +11,28 @@
 //   { music: 'intro'|'battle'|'sad'|'dawn'|null }   { sfx: 'roar' }   { shake: a }
 //   { fx: 'flash'|'ring'|'burst'|'impact'|'spirit'|'dust'|'speed'|'arc', at: 'id'|[x,y,z], ... }
 //   { light: { rim, fog, exposure, t } }   { par: [step, ...] } (rinnakkain)   { fn: async ctx => ... }
+//   KONTAKTI (src/contact.js) – iskut osuvat oikeasti:
+//   { strike: 'id', target: 'id', point: 'neck'|'nape'|'throat'|'shoulder'|'chest'|'chest_weak'|'flank'|'back'|'hip'|'leg'|'foreleg'|'hindleg'|'head',
+//     side: 'near'|'far', part: 'jaw'|'paw', t, arc, anim, hitAt, yaw, pin: s|true, then: 'drop'|'throw', react: 'flinch'|'stagger'|'roar'|'hurt'|'none',
+//     fx: 'impact'|'crit'|'none', sfx: [...], hitstop, shake, strong, recoil: { dist, t, arc }, wait: 'end' }   -> odottaa kontaktihetkeen
+//   { release: 'id', mode: 'drop'|'throw'|'back', to: [x, z], arc, t, land: 'Death'|..., after }   (purennan irrotus, odottaa laskeutumiseen)
+//   { thrash: 'id', t, amp, freq, wait }   (pään riuhtonta)     { react: 'id', kind, dir }
+//   { track: 'id'|'mouth:id', from: [dx,dy,dz], to, look, t }   (seuraava/työntyvä kamera hahmon tai hampaiden mukana)
+//   { reach: 'id', target, point, t, hold, fx, sfx, react }   (iso hahmo ojentaa kaulansa ja puree paikaltaan, CCD-IK)
 // Hahmoviittaus 'id' = cast[id]; sijainti [x,y,z] tai { at:'id', dx, dy, dz }.
 import * as THREE from 'three';
 import { E, tween, wait, shake } from './engine.js';
 import * as FX from './fx.js';
 import { sfx, music, ambience } from './audio.js';
+import { setMood } from './gfx/mood.js';
 import { setSurface } from './footsteps.js';
 import { say } from './voice.js';
 import * as UI from './ui.js';
+import * as C from './contact.js';
 
 let castRef = {};
-export function setSceneCast(c) { castRef = c; }
+export function setSceneCast(c) { castRef = c; C.setContactCast(c); }
+const FAST = E.params.has('fastcine');      // contact-check: puhe ja tauot lyhyiksi, iskut ennallaan
 
 const V = (a) => new THREE.Vector3(a[0], a[1], a[2]);
 function resolvePos(p, dy = 0) {
@@ -38,10 +49,32 @@ const camTo = (pos, look, t, ease = 'inOut') => t <= 0 ? (E.camPos.copy(pos), E.
 async function step(s, ctx) {
   if (E.skipping && !s.always) {
     // ohitus: aja vain tilaa muuttavat askeleet heti (sijainnit, piilotus, musiikki), ohita odotukset
-    if (s.place) return step({ ...s, fade: undefined }, { ...ctx });
+    if (s.place) { doPlace({ ...s, fade: undefined }); return; }   // suoraan: ei rekursiota (ohitus pysyy päällä)
+    if (s.release || s.strike || s.thrash || s.reach) { C.releaseAll(); return; }
+    if (s.track) return;
     if (!(s.move || s.hide || s.music !== undefined || s.amb !== undefined || s.surface !== undefined || s.fn || s.par || s.face || s.anim || s.expr)) return;
   }
   if (s.par) { await Promise.all(s.par.map(x => step(x, ctx))); return; }
+  if (s.strike) {
+    if (E.skipping) return;
+    const { strike, ...o } = s; await C.strike({ who: strike, ...o }); return;
+  }
+  if (s.track) {   // seuraava kamera: { track: 'id' | 'mouth:id', from: [dx,dy,dz], to, look: [dx,dy,dz], t } (kamera ei koskaan jäädy)
+    const tgt = () => { const m = s.track.startsWith('mouth:'); const id = m ? s.track.slice(6) : s.track; return m ? C.mouthWorld(id) : resolvePos(id, 0); };
+    const f = s.from, t2 = s.to || s.from, L = s.look || [0, 0, 0];
+    const upd = k => { const p = tgt(); E.camPos.set(p.x + f[0] + (t2[0] - f[0]) * k, p.y + f[1] + (t2[1] - f[1]) * k, p.z + f[2] + (t2[2] - f[2]) * k); E.camLook.set(p.x + L[0], p.y + L[1], p.z + L[2]); };
+    upd(0); await tween({ k: 0 }, { k: 1 }, s.t || 2, { real: !C.LOG.seq, ease: s.ease || 'inOut', onUpdate: upd }); return;   // kuvasarjatarkistuksessa pelin ajassa (pysäytys pysäyttää myös kameran)
+  }
+  if (s.reach) { if (E.skipping) return; const { reach, ...o } = s; await C.reach({ who: reach, ...o }); return; }
+  if (s.release) { const { release, ...o } = s; await C.release({ who: release, ...o }); return; }
+  if (s.thrash) { const p = C.thrash(s.thrash, s.t ?? 1.5, s.amp ?? 0.45, s.freq ?? 2.6); if (s.wait) await p; return; }
+  if (s.react) { C.react(s.react, s.kind || 'flinch', s.dir || 1, s); return; }
+  if (FAST) {
+    if (s.say) { await wait(0.2, true); return; }
+    if (s.caption) return;
+    if (s.wait !== undefined && typeof s.wait === 'number') { await wait(Math.min(s.wait, 0.25), true); return; }
+    if (s.freeze !== undefined) { await freezeFrame(Math.min(s.freeze, 0.15), s.tint); return; }
+  }
   if (s.cam) { await camTo(V(s.cam), V(s.look || [0, 1, 0]), s.t || 0, s.ease); return; }
   if (s.orbit) {
     const o = { a: s.from || 0 };
@@ -55,14 +88,7 @@ async function step(s, ctx) {
     const pos = new THREE.Vector3(look.x + (s.side || 0.6) * h, look.y + (s.h ?? 0.05) * h, look.z + (s.dist || 1.4) * h);
     await camTo(pos, look, s.t ?? 0.35, s.ease || 'out'); return;
   }
-  if (s.place) {
-    const d = castRef[s.place]; d.root.visible = true; d.fade(s.fade ?? 1);
-    d.root.position.set(s.x ?? d.root.position.x, s.y ?? 0, s.z ?? d.root.position.z);
-    if (s.face) d.face(s.face, true);
-    d.spin.rotation.set(0, 0, 0);
-    if (s.anim) d.play(s.anim, { timeScale: s.ts || 1, loop: s.loop ?? true });
-    return;
-  }
+  if (s.place) { doPlace(s); return; }
   if (s.move) {
     const d = castRef[s.move];
     if (s.anim) d.play(s.anim, { timeScale: s.ts || 1 });
@@ -75,6 +101,7 @@ async function step(s, ctx) {
   }
   if (s.anim) { castRef[s.anim].play(s.name, { loop: s.loop ?? true, timeScale: s.ts || 1 }); return; }
   if (s.face) { castRef[s.face].face(s.dir); return; }
+  if (s.mood) { setMood(s.mood, s.t ?? 2); return; }   // tunnelma (gfx/mood.js): autumn_night, grief, storm, spirit, finale, dawn, memorial
   if (s.expr) { const d = castRef[s.expr]; if (d.expr) d.expr(s.name); return; }   // ilme (tehdaskoirat): neutral/determined/angry/sad/happy/closed/hurt/dead/surprised, null = auto
   if (s.hide) { castRef[s.hide].root.visible = false; return; }
   if (s.fadeOut) { const d = castRef[s.fadeOut]; await tween({ v: 1 }, { v: 0 }, s.t || 1.5, { real: true, onUpdate: e => d.fade(1 - e) }); d.root.visible = false; return; }
@@ -92,6 +119,14 @@ async function step(s, ctx) {
   if (s.fx) { doFx(s); return; }
   if (s.light) { await light(s.light); return; }
   if (s.fn) { await s.fn(ctx); return; }
+}
+
+function doPlace(s) {
+  const d = castRef[s.place]; d.root.visible = true; d.fade(s.fade ?? 1);
+  d.root.position.set(s.x ?? d.root.position.x, s.y ?? 0, s.z ?? d.root.position.z);
+  if (s.face) d.face(s.face, true);
+  d.spin.rotation.set(0, 0, 0); d.pose.rotation.order = 'XYZ'; d.pose.rotation.set(0, 0, 0);
+  if (s.anim) d.play(s.anim, { timeScale: s.ts || 1, loop: s.loop ?? true });
 }
 
 function doFx(s) {
@@ -129,9 +164,10 @@ export async function freezeFrame(secs, tint = 'freeze') {
 }
 
 /** Aja kohtaus. ctx välitetään fn-askelille. */
-export async function runScene(steps, ctx = {}) {
+export async function runScene(steps, ctx = {}, opts = {}) {
   for (const s of steps) {
     try { await step(s, ctx); } catch (e) { console.error('scene step failed', s, e); }
   }
+  if (!opts.keepPins) C.releaseAll();     // keepPins: purenta jatkuu seuraavaan kohtaukseen (finaali -> jälkikohtaus)
   E.timeScale = 1; FX.speedLines(0);
 }

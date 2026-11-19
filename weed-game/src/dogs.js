@@ -462,6 +462,7 @@ export class Dog {
     this.earTw = 0; this.nextTwitch = 1 + Math.random() * 4;
     this.cur = null; this.prev = null;
     this.P = blankPose();
+    this.overlays = new Set();
     this.play('Idle');
     if (c.extras) this._extras = attachExtras(this, c.extras);
   }
@@ -508,6 +509,7 @@ export class Dog {
       const om = new THREE.SkinnedMesh(o.geometry, ol); om.bind(o.skeleton, o.bindMatrix); om.frustumCulled = false;
       o.parent.add(om); this.outline = om;
     }
+    this.skinned = skinned[0] || null;      // kontakti-API (contact.js): verteksien luupainot -> kuono, pinnan pisteet
     this.bones = {}; inst.traverse(o => { if (o.isBone) this.bones[o.name] = o; });
     // mittasuhteet: luiden skaalaus (klipeissä ei ole scale-raitoja, joten skaala säilyy)
     //   bones: { head: 1.1, ear_L: [x,y,z], ears: 1.2, legs: 1.1, frontLegs, backLegs, neck, tail, spine }
@@ -799,6 +801,7 @@ export class Dog {
       } else this.faceRig.gaze(Math.sin(this.t * 0.37) * 0.08, 0);
       this.faceRig.update(dt);
     }
+    if (this.overlays.size) for (const f of this.overlays) f(this, dt);
     if (this._extras) this._extras(this.t, dt);
   }
 
@@ -808,6 +811,7 @@ export class Dog {
     const sp = E.speaking && E.speaking.who === this.id ? E.speaking.level : 0;
     if (sp > 0.01 && this.bones.jaw) this.bones.jaw.rotateZ(-sp * 0.6);          // puhuva leuka (klippi + lisäkierto)
     else if (sp > 0.01 && this.bones.head) this.bones.head.rotateZ(sp * 0.08);    // ei leukaluuta: pieni nyökkäys
+    if (this.overlays.size) for (const f of this.overlays) f(this, dt);           // kontakti-API: riuhtonta, nytkähdys (luiden lisäkierto klipin päälle)
     const targetRot = this.facingTarget > 0 ? 0 : Math.PI;
     this.turn.rotation.y += (targetRot - this.turn.rotation.y) * Math.min(1, dt * 10);
     // pieni lisä-squash laukassa/hypyssä (klipit hoitavat raajat)
@@ -822,6 +826,9 @@ export class Dog {
     }
     if (this._extras) this._extras(this.t, dt);
   }
+
+  /** Kontakti-API: lisää/poista luukerros (fn(dog, dt)), ajetaan klipin jälkeen joka ruutu. Palauttaa poistajan. */
+  overlay(fn) { this.overlays.add(fn); return () => this.overlays.delete(fn); }
 
   /** Lukitse ilme (neutral, determined, angry, sad, happy, closed, hurt, dead, surprised) tai null = automaattinen. */
   expr(name) { this.exprLock = name || null; }

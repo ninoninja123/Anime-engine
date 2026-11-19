@@ -84,23 +84,28 @@ fs.mkdirSync(OUT, { recursive: true });
       await sleep(1500);
     }
     if (want('story')) {
-      await page.evaluate(() => window.__game.debug.smith()); await sleep(800); await shot('21_armor_smithcard');
-      await page.tap('.card[data-id="smith"]', { force: true });
+      // canon order: intro (day) -> gorge (night) -> inside Gajō: North falls, Smith's sacrifice -> next morning P4 rises
+      await go('?play=1&noprologue');
+      await waitSub('The gorge before'); await sleep(1500); await shot('21_gorge_night');
       await waitSub('North fell'); await shot('22a_north_fell');
-      await waitSub('Leave this to me'); await shot('22_smith_cliff');
+      await waitSub('rock ceiling'); await shot('22_smith_cliff');
       await waitSub('Live, Weed'); await shot('23_smith_leap');
       await waitSub('SMITH!!'); await sleep(300); await shot('24_smith_scream');
-      await waitSub('Smith', 240000); await page.waitForFunction(() => document.getElementById('caption').textContent === 'Smith' && !document.getElementById('caption').classList.contains('hidden'), null, { timeout: 240000 }); await shot('25_smith_memory');
+      await waitSub('The next morning'); await sleep(1500); await shot('25_next_morning');
       await waitSub('betrayed us first'); await shot('26a_p4_speaks');
-      await waitSub('not given in vain'); await shot('26_smith_rises');
-      await waitS(() => window.__game.debug.S.phase === 2 && !window.__game.debug.S.cutscene);
-      await sleep(1500); await shot('27_phase2');
+      await waitS(() => window.__game.debug.S.phase === 1 && window.__game.debug.S.active && !window.__game.debug.S.cutscene);
+      await sleep(1500); await shot('27_phase1');
       await page.evaluate(() => window.__game.debug.arrows());
       await waitSub('FOUR ARROWS'); await shot('28_arrows_title');
       await waitSub('We go together'); await shot('29_arrows_heuler');
       await waitSub('it was an honor'); await shot('30_arrows_robert_falls');
-      await waitSub('is ME'); await shot('31_arrows_jerome');
+      await waitSub('is ME'); await sleep(1500); await shot('31_arrows_jerome_dodged');
       await waitSub('Thank you, my comrades'); await sleep(2000); await shot('32_arrows_spirits');
+      await waitS(() => window.__game.debug.S.phase === 2 && !window.__game.debug.S.cutscene);
+      await page.evaluate(() => window.__game.debug.lockReady()); await sleep(800); await shot('32b_lock_card');
+      await page.tap('.card[data-id="lock"]', { force: true });
+      await waitSub('Pin it down'); await sleep(500); await shot('32c_lock_pin');
+      await waitSub('Reach'); await shot('32d_lock_jerome_bites');
       await waitS(() => window.__game.debug.S.phase === 3 && !window.__game.debug.S.cutscene);
       await sleep(1200); await shot('33_phase3_prompt');
       await page.mouse.move(300, 280); await page.mouse.down();

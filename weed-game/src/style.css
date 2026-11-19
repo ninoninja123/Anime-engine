@@ -168,3 +168,7 @@ body.freeze #vignette { opacity: 1 !important; }
 #castScreen .castrole { text-align: left; max-width: 46vw; font-size: clamp(11px, 1.8vw, 14px); }
 #castScreen .castnav { align-self: center; margin-top: auto; }
 #castScreen .castcount { position: absolute; right: max(5vw, env(safe-area-inset-right)); top: max(16px, env(safe-area-inset-top)); }
+/* prologue chapter: compact Level 2 button under the main Prologue button */
+html .menubtns #startBtn { min-height: 32px; padding-top: 5px; padding-bottom: 5px; font-size: 13px; }
+#startBtn small { font-size: 0.72em; opacity: 0.7; }
+#result1 .r1txt { max-width: 520px; text-align: center; opacity: 0.85; line-height: 1.5; }

@@ -14,9 +14,10 @@ import { runScene, setSceneCast, freezeFrame } from './scenes.js';
 import * as UI from './ui.js';
 import { onGesture, setInputEnabled } from './input.js';
 import * as SC from './data/scenes_level2.js';
+import * as C from './contact.js';
 
 const ARENA = { min: -5.6, max: 5.6 };
-const PHASE_HP = { 1: 100, 2: 45, 3: 8 };
+const PHASE_HP = { 1: 100, 2: 45, 3: 8 };   // 1: taistelu -> Neljä nuolta (45)  2: taistelu -> lukitus (20)  3: Battōga
 const MEN = ['robert', 'rocker', 'heuler'];
 
 export const cast = {};
@@ -78,7 +79,7 @@ export async function createCast() {
 
 function place(id, x, z = 0, face = 1, anim = 'Idle') {
   const d = cast[id]; d.root.visible = true; d.fade(1);
-  d.root.position.set(x, 0, z); d.face(face, true); d.spin.rotation.set(0, 0, 0);
+  d.root.position.set(x, 0, z); d.face(face, true); d.spin.rotation.set(0, 0, 0); d.pose.rotation.set(0, 0, 0); d._cxBusy = null;
   d.play(anim); return d;
 }
 
@@ -87,7 +88,7 @@ function cardDefs() {
   return [
     { id: 'jerome', name: 'Jerome', desc: 'Weak-spot analysis', color: '#a9733a', color2: '#e0b070', cooldown: 15, cool: 4, state: 'cooldown' },
     { id: 'kenkage', name: 'Ken & Kagetora', desc: 'Twin Fang', color: '#585c66', color2: '#d8d2c4', cooldown: 20, cool: 9, state: 'cooldown' },
-    { id: 'smith', name: 'Smith', desc: 'Waits for his moment', color: '#3a3a3e', color2: '#e8e4dc', cooldown: 1, cool: 0, state: 'locked' },
+    { id: 'lock', name: 'Weed, Ken & Kagetora', desc: 'Pin it down', color: '#4a5a72', color2: '#e6ecf4', cooldown: 1, cool: 0, state: 'locked' },   // canon: kolmikko lukitsee P4:n, Jerome puree valtimoon
   ];
 }
 
@@ -95,7 +96,7 @@ function useCard(id) {
   if (!S.active || S.cutscene || S.special || S.paused) return;
   const c = S.cards.find(k => k.id === id);
   if (!c) return;
-  if (c.state === 'sacrifice') { c.state = 'fallen'; UI.updateCard(c); sfx.sacrifice(); smithSacrifice(); return; }
+  if (c.state === 'sacrifice') { c.state = 'fallen'; UI.updateCard(c); sfx.sacrifice(); lockScene(); return; }
   if (c.state !== 'ready') { sfx.denied(); return; }
   if (S.phase === 3) { UI.toast('This is Weed\'s moment!'); return; }
   sfx.card();
@@ -118,7 +119,7 @@ async function special(fn) {
 async function jeromeReveal() {
   const j = cast.jerome, B = S.B, boss = cast.kaibutsu;
   const home = { x: j.x, z: j.root.position.z };
-  UI.cutin({ name: 'JEROME', move: 'Weak-Spot Analysis', jp: '弱点看破', color: '#a9733a', color2: '#ffd27a' });
+  UI.cutin({ name: 'JEROME', move: 'Weak-Spot Analysis', color: '#a9733a', color2: '#ffd27a' });
   sfx.cutin(); duck(0.4, 1.2);
   E.timeScale = 0.12;
   await wait(0.75, true);
@@ -158,7 +159,7 @@ async function jeromeReveal() {
 async function kenKageStrike() {
   const k = cast.ken, g = cast.kagetora, B = S.B, boss = cast.kaibutsu;
   const homes = [[k.x, k.root.position.z], [g.x, g.root.position.z]];
-  UI.cutin({ name: 'KEN & KAGETORA', move: 'Twin Fang', jp: '双牙', color: '#585c66', color2: '#f2eadc' });
+  UI.cutin({ name: 'KEN & KAGETORA', move: 'Twin Fang', color: '#585c66', color2: '#f2eadc' });
   sfx.cutin(); duck(0.4, 1.4);
   E.timeScale = 0.12;
   await wait(0.7, true);
@@ -167,39 +168,34 @@ async function kenKageStrike() {
   // both charge from different lanes, camera low behind them
   for (const d of [k, g]) { d.play('Gallop', { timeScale: 1.5 }); d.face(dir); }
   say('sync_call', { noWait: true });
-  E.camPos.set(B.x - dir * 4.2, 0.6, 5.6); E.camLook.set(B.x - dir * 2.2, 1.2, 0);
+  E.camPos.set(B.x - dir * 4.6, 0.7, 6.2); E.camLook.set(B.x - dir * 2.2, 1.3, 0.6);
   await Promise.all([
-    tween(k.root.position, { x: B.x - dir * (bossHalf() + 1.6), z: 1.1 }, 0.42, { ease: 'in' }),
-    tween(g.root.position, { x: B.x - dir * (bossHalf() + 1.2), z: -1.1 }, 0.38, { ease: 'in' }),
+    tween(k.root.position, { x: B.x - dir * (bossHalf() + 2.0), z: 1.5 }, 0.42, { ease: 'in' }),
+    tween(g.root.position, { x: B.x - dir * (bossHalf() + 1.6), z: 0.9 }, 0.38, { ease: 'in' }),
   ]);
   say('sync_reply', { noWait: true });
-  // crossing leap with spinning bodies (X-shaped slash)
-  k.play('Battoga', { loop: false }); g.play('Battoga', { loop: false });
+  // two spinning fangs at once: Ken's jaws close on the shoulder, Kagetora's on the haunch (both real contacts)
   FX.vortex(g.root, dir, g.height * 0.8, 0.6);
   E.timeScale = 0.3; FX.speedLines(0.8);
-  const hit = boss.weak.getWorldPosition(new THREE.Vector3());
-  const top = boss.height * 0.75;
-  await Promise.all([
-    tween(k.root.position, { x: B.x - dir * 0.4, y: top, z: -0.6 }, 0.32, { ease: 'out' }),
-    tween(g.root.position, { x: B.x - dir * 0.2, y: top + 0.3, z: 0.7 }, 0.32, { ease: 'out' }),
-    k.hasClip && k.hasClip('Battoga') ? Promise.resolve() : tween(k.spin.rotation, { z: -dir * Math.PI * 2 }, 0.32),
-    g.hasClip && g.hasClip('Battoga') ? Promise.resolve() : tween(g.spin.rotation, { z: -dir * Math.PI * 2, x: Math.PI * 2 }, 0.32),
-  ]);
-  k.spin.rotation.set(0, 0, 0); g.spin.rotation.set(0, 0, 0);
-  FX.slashArc(new THREE.Vector3(B.x, top, 0.6), 0xd8e6ff, 1.5, 0.5, 0.8);
-  FX.slashArc(new THREE.Vector3(B.x, top, 0.6), 0xffe0b0, 1.5, 0.5, -0.8);
-  sfx.bite(); sfx.hit(); sfx.twinFang(); FX.flash('#ffffff', 0.25, 0.6);
-  FX.ring(new THREE.Vector3(B.x, top, 0.5), 0xffffff, 5, 0.5);
+  tween(E.camPos, { x: B.x - dir * 2.4, y: 1.6, z: 5.6 }, 0.9, { real: true, ease: 'out' });
+  tween(E.camLook, { x: B.x - dir * 0.4, y: 1.7, z: 0.4 }, 0.9, { real: true, ease: 'out' });
+  const fang = (who, point, arc) => C.strike({ who, target: 'kaibutsu', point, side: 'near', wind: 0.12, t: 0.3, arc, anim: 'Battoga', ts: 1.8, hitAt: 0.4,
+    pin: 0.45, then: 'drop', react: 'none', fx: 'impact', strong: true, sfx: [], hitstop: 0, maxPitch: 1.0, tug: 0.25 });
+  await Promise.all([fang('ken', 'shoulder', 0.8), fang('kagetora', 'hip', 0.6)]);
+  const pk = C.mouthWorld('ken'), pg = C.mouthWorld('kagetora'), mid = pk.clone().lerp(pg, 0.5);
+  FX.slashArc(mid, 0xd8e6ff, 1.5, 0.5, 0.8);
+  FX.slashArc(mid, 0xffe0b0, 1.5, 0.5, -0.8);
+  sfx.bite(); sfx.twinFang(); FX.flash('#ffffff', 0.25, 0.6);
+  FX.ring(mid, 0xffffff, 5, 0.5);
   E.timeScale = 1; FX.speedLines(0);
-  damageBoss(9, hit, { stagger: 1.8, force: false });
+  damageBoss(9, pk, { stagger: 1.8, force: false });
   await freezeFrame(0.22);
   shake(0.5);
-  for (const d of [k, g]) d.play('Gallop_Jump', { loop: false });
-  await Promise.all([tween(k.root.position, { y: 0, x: B.x + dir * 0.4 }, 0.3), tween(g.root.position, { y: 0, x: B.x + dir * 0.9 }, 0.3)]);
+  await wait(0.75);             // fangs held, then they drop off
   for (const d of [k, g]) { d.play('Gallop', { timeScale: 1.2 }); d.face(-dir); }
   await Promise.all([
-    tween(k.root.position, { x: homes[0][0], z: homes[0][1] }, 0.7),
-    tween(g.root.position, { x: homes[1][0], z: homes[1][1] }, 0.7),
+    tween(k.root.position, { x: homes[0][0], y: 0, z: homes[0][1] }, 0.8),
+    tween(g.root.position, { x: homes[1][0], y: 0, z: homes[1][1] }, 0.8),
   ]);
   for (const d of [k, g]) { d.face(1); d.play('Idle'); }
 }
@@ -210,7 +206,7 @@ export async function startLevel({ phase = 1, intro = true, onExit } = {}) {
   S.defeats = 0;
   S.cards = cardDefs();
   UI.buildCards(S.cards, useCard);
-  if (phase >= 2) { const sm = S.cards.find(c => c.id === 'smith'); sm.state = 'fallen'; }
+  if (phase >= 3) { const lk = S.cards.find(c => c.id === 'lock'); lk.state = 'fallen'; }
   preloadMusic('battle', 'sad', 'dawn', 'smith', 'smith2');
   setupArena(phase);
   preloadSfx('boss', 'cine');     // boss- ja kohtausäänet ennen intro-kohtausta
@@ -229,9 +225,8 @@ function setupArena(phase) {
   place('jerome', -5.6, -2.6, 1);
   place('ken', -7.2, -3.0, 1);
   place('kagetora', -4.2, -2.3, 1);
-  if (phase === 1) place('smith', -8.2, -3.6, 1, 'Idle_2');
-  if (phase <= 2) MEN.forEach((id, i) => place(id, -9.4 - i * 1.2, -4.4 + (i % 2) * 0.5, 1, 'Idle'));
-  if (phase === 1) place('north', -13.0, -4.0, 1, 'Idle');
+  // Smith ja North kaatuivat yöllä Gajōn sisällä (intro); Jeromen miehet ovat mukana Neljään nuoleen asti
+  if (phase === 1) MEN.forEach((id, i) => place(id, -9.4 - i * 1.2, -4.4 + (i % 2) * 0.5, 1, 'Idle'));
   E.camPos.set(0, 2.4, 9); E.camLook.set(0, 1.4, 0);
 }
 
@@ -293,25 +288,16 @@ async function bite() {
   if (W.busy || W.y > 0.05) return;
   W.busy = true; const seq = ++W.seq;
   const dir = Math.sign(B.x - W.x) || 1;
-  w.face(dir);
-  const reach = bossHalf() * 0.85 + 0.3;
-  const target = B.x - dir * reach;
-  w.play('Gallop', { timeScale: 1.6 });
+  w.face(dir, true);
   sfx.lunge();
-  await tween(W, { x: target }, clamp(Math.abs(target - W.x) / 14, 0.08, 0.3), { ease: 'in' });
+  // real contact: Weed's jaws close on the near foreleg (he is small – the leg is what he can reach)
+  w.root.position.x = W.x; w.root.position.y = 0;
+  const dist = Math.abs(B.x - W.x);
+  await C.strike({ who: 'weed', target: 'kaibutsu', point: 'leg', side: 'near', t: clamp(dist / 10, 0.14, 0.4), anim: 'Gallop', ts: 1.6, hitAt: 0.35,
+    react: B.attacking ? 'none' : 'flinch', fx: B.armored ? 'none' : undefined, sfx: [], recoil: { dist: 1.8, t: 0.26, arc: 0.2 }, after: 'Idle', wait: 'end',
+    onHit: (P) => { if (seq !== W.seq) return; sfx.bite(); damageBoss(4, P); addHenki(0.1); } });
   if (seq !== W.seq) return;
-  w.play('Attack', { loop: false, timeScale: 1.6, fade: 0.06 });
-  await wait(0.16);
-  if (seq !== W.seq) return;
-  sfx.bite();
-  const hitPos = new THREE.Vector3(B.x - dir * reach * 0.75, 1.1, 0.4);
-  damageBoss(4, hitPos);
-  addHenki(0.1);
-  await wait(0.18);
-  if (seq !== W.seq) return;
-  w.play('Gallop', { timeScale: 1.6 });
-  await tween(W, { x: clamp(W.x - dir * 2.2, ARENA.min, ARENA.max) }, 0.22, { ease: 'out' });
-  if (seq !== W.seq) return;
+  W.x = clamp(w.root.position.x, ARENA.min, ARENA.max); W.y = 0;
   w.play('Idle'); W.busy = false;
 }
 
@@ -349,27 +335,29 @@ async function battoga() {
   W.busy = true; const seq = ++W.seq; W.inv = 2;
   const dir = Math.sign(B.x - W.x) || 1; w.face(dir);
   say('battoga', { noWait: true }); sfx.battoga(); setSlow(0.3, 1.0); FX.speedLines(1);
+  const startX = W.x;
   w.play('Jump_ToIdle', { loop: false });               // crouch
   await wait(0.12);
-  w.play('Battoga', { loop: false });
-  const startX = W.x;
-  FX.vortex(w.root, dir, w.height * 0.9, 0.7);
-  if (!w.hasClip || !w.hasClip('Battoga')) tween(w.spin.rotation, { z: -dir * Math.PI * 4, x: Math.PI * 2 }, 0.55, { ease: 'inOut' });   // rigatulla mallilla klippi hoitaa kierteen
-  const trail = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, w.height * 0.5, 0.3)), 0xbfe4ff, 0.7, 0.35, Math.random() * 6), 70);
-  await tween(W, { x: B.x - dir * bossHalf() * 0.5, y: 1.8 }, 0.5, { ease: 'inOut' });
-  clearInterval(trail);
-  if (seq !== W.seq) { w.spin.rotation.set(0, 0, 0); return; }
-  FX.speedLines(0);
-  const p = new THREE.Vector3(B.x - dir * 0.3, 1.5, 0.5);
-  FX.flash('#dff0ff', 0.3, 0.8); sfx.boom();
-  FX.ring(p, 0xbfe4ff, 5, 0.5);
-  damageBoss(16, p, { strong: true, stagger: 1.2, battoga: true });
-  w.spin.rotation.set(0, 0, 0);
-  w.play('Gallop_Jump', { loop: false });
-  await tween(W, { x: clamp(startX, ARENA.min, ARENA.max), y: 0 }, 0.45, { ease: 'out' });
   if (seq !== W.seq) return;
-  w.play('Jump_ToIdle', { loop: false });
-  setTimeout(() => { if (!W.busy) w.play('Idle'); }, 400);
+  FX.vortex(w.root, dir, w.height * 0.9, 0.7);
+  const trail = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, w.height * 0.5, 0.3)), 0xbfe4ff, 0.7, 0.35, Math.random() * 6), 70);
+  // the spinning fang closes on P4's shoulder (real contact), holds for a beat, then Weed drops off
+  w.root.position.set(W.x, 0, w.root.position.z);
+  await C.strike({ who: 'weed', target: 'kaibutsu', point: 'shoulder', side: 'near', t: 0.5, arc: 0.9, anim: 'Battoga', ts: 1.6, hitAt: 0.4,
+    pin: 0.2, then: 'drop', releaseOpts: { land: 'Jump_ToIdle', after: 'Idle' }, react: 'none', fx: 'none', sfx: ['bite'], hitstop: 0, maxPitch: 1.0, tug: 0.3,
+    onHit: (p) => {
+      clearInterval(trail); FX.speedLines(0);
+      FX.flash('#dff0ff', 0.3, 0.8); sfx.boom(); FX.ring(p, 0xbfe4ff, 5, 0.5);
+      if (seq === W.seq) damageBoss(16, p, { strong: true, stagger: 1.2, battoga: true });
+    } });
+  clearInterval(trail); FX.speedLines(0);
+  while (w._cxBusy && seq === W.seq) await wait(0.05);
+  if (seq !== W.seq) return;
+  W.x = clamp(w.root.position.x, ARENA.min, ARENA.max); W.y = 0;
+  w.play('Gallop', { timeScale: 1.4 });
+  await tween(W, { x: clamp(startX, ARENA.min, ARENA.max) }, 0.4, { ease: 'out' });
+  if (seq !== W.seq) return;
+  w.play('Idle');
   W.busy = false;
 }
 
@@ -404,26 +392,30 @@ function damageBoss(amount, pos, o = {}) {
 
 function checkThresholds() {
   const B = S.B;
-  if (S.phase === 1 && B.hp <= 60 && !B.armored) {
-    B.hp = 60; B.armored = true; UI.setBossHP(B.hp / B.max, true);
-    const sm = S.cards.find(c => c.id === 'smith'); sm.state = 'sacrifice'; UI.updateCard(sm);
-    sfx.roar(); sfx.armor(); shake(0.4); say('roar_armor', { noWait: true });
-    UI.hint('Rage has hardened its hide! <b>Tap Smith\'s card.</b>');
-    cast.smith.play('Idle'); cast.smith.earPerk = 1;
-    setTimeout(() => say('card_ready', { noWait: true }), 1800);
+  if (S.phase === 1 && B.hp <= PHASE_HP[2] && !S.pending) { S.pending = 'arrows'; fourArrows(); }
+  if (S.phase === 2 && B.hp <= 20) {
+    B.hp = Math.max(B.hp, 20); UI.setBossHP(B.hp / B.max);
+    const lk = S.cards.find(c => c.id === 'lock');
+    if (lk.state === 'locked') {
+      lk.state = 'sacrifice'; UI.updateCard(lk);
+      sfx.roar(); shake(0.4); say('roar_armor', { noWait: true });
+      UI.hint('Its hide is too tough to finish it! <b>Tap the card – pin it down for Jerome.</b>');
+    }
   }
-  if (S.phase === 2 && B.hp <= 22 && !S.pending) { S.pending = 'arrows'; fourArrows(); }
 }
 
-function hurtWeed(fromX) {
+function hurtWeed(fromX, o = {}) {
   const W = S.W, w = cast.weed;
   if (W.inv > 0) return;
+  C.cancel('weed');
   W.hp -= 1; W.inv = 1.3; W.seq++; W.busy = false;
   UI.setHearts(W.hp, W.max);
   sfx.hurt(); shake(0.35); FX.flash('#ff2040', 0.35, 0.35);
   if (navigator.vibrate) try { navigator.vibrate(120); } catch (_) {}
-  const dir = Math.sign(W.x - fromX) || -1;
-  tween(W, { x: clamp(W.x + dir * 1.8, ARENA.min, ARENA.max) }, 0.3, { ease: 'out' });
+  const dir = o.dir || Math.sign(W.x - fromX) || -1;
+  // thrown by the blow: arc through the air (gravity in update() lands him with dust)
+  if (o.toss) { W.vy = o.toss; W.y = Math.max(W.y, 0.02); }
+  tween(W, { x: clamp(W.x + dir * (o.dist || 1.8), ARENA.min, ARENA.max) }, o.toss ? 0.55 : 0.3, { ease: 'out' });
   w.play('Idle_HitReact2', { loop: false, fade: 0.05 });
   setTimeout(() => { if (!W.busy && W.y <= 0.01) w.play('Idle'); }, 500);
   if (W.hp <= 0) defeat();
@@ -526,18 +518,36 @@ async function atkCharge(alive) {
   boss.play('Gallop', { timeScale: 1.1 });
   sfx.roar();
   const speed = 12 * B.speed;
-  let hit = false;
+  let hit = false, reaching = null;
+  C.SEP.skip.add('weed');                         // stays in the lane: the charge either connects or he must dodge/jump
   while (alive() && Math.sign(endX - B.x) === dir) {
     const step = speed * Math.min(E.timeScale > 0 ? 1 / 60 : 0, 1);
     B.x += dir * step;
     const ahead = (W.x - B.x) * dir;
     B.threatT = ahead > 0 ? ahead / speed : -1;
-    if (!hit && Math.abs(W.x - B.x) < bossHalf() * 0.7 && W.y < 0.9 && W.inv <= 0) { hit = true; hurtWeed(B.x); }
+    // close enough: P4 plants its forelegs and drives its jaws down into Weed (real contact, below)
+    if (W.y < 0.9 && W.inv <= 0 && Math.abs(cast.weed.root.position.z) < 0.9) {
+      const gap = (W.x - C.pawWorld('kaibutsu').x) * dir;
+      if (gap > 0.2 && gap < 1.0) { reaching = gap; break; }
+    }
     if (Math.random() < 0.3) FX.dust(new THREE.Vector3(B.x - dir, 0.1, 0));
     await wait(1 / 60);
   }
   showWarn(0, 1, false); B.threatT = -1;
+  C.SEP.skip.delete('weed');
   if (!alive()) return;
+  if (reaching !== null) {
+    tween(B, { x: B.x + dir * clamp(reaching - 0.5, 0, 0.5) }, 0.14, { ease: 'out' });     // last step in
+    boss.play('Jump_ToIdle', { loop: false }); FX.dust(new THREE.Vector3(B.x + dir, 0.1, 0), true); sfx.slide({}, { x: B.x });
+    // the forepaw comes down on him (a small dog is struck with the paw, not swallowed by the jaws)
+    await C.reach({ who: 'kaibutsu', target: 'weed', point: 'back', side: 'near', part: 'paw', t: 0.16, hold: 0.12, back: 0.35, fx: 'impact', strong: true, sfx: ['hitHeavy', 'bodyfall'], react: 'none',
+      onHit: () => { if (S.W.y < 0.9 && S.W.inv <= 0) { hit = true; hurtWeed(B.x, { dir, dist: 3.2, toss: 7 }); sfx.roar(); } } });
+  }
+  if (hit && reaching === null) {                      // skids to a stop after the blow
+    const v0 = speed * 0.6; let v = v0;
+    while (alive() && v > 0.3) { B.x = clamp(B.x + dir * v / 60, ARENA.min - 0.3, ARENA.max + 0.3); v *= 0.88; if (Math.random() < 0.4) FX.dust(new THREE.Vector3(B.x + dir, 0.1, 0)); await wait(1 / 60); }
+    boss.play('Idle_HitReact1', { loop: false });
+  }
   shake(0.3); sfx.bossCrash({}, { x: B.x });
   await recover(alive, 1.5 / B.speed);
 }
@@ -583,8 +593,11 @@ async function atkPounce(alive) {
   const dir = Math.sign(W.x - B.x) || -1; boss.face(dir);
   boss.play('Idle_2_HeadLow', { timeScale: 2 });
   const tell = (S.phase === 3 ? 1.4 : 0.6) / B.speed;
-  const landX = clamp(B.x + dir * 2.9, ARENA.min, ARENA.max);
-  showWarn(landX + dir * bossHalf() * 0.4, 3);
+  // land so that the jaws come down on Weed (mouth is ~bossHalf*0.85 ahead of the body centre), max leap 3.4
+  const mOff = dir * Math.abs(C.mouthWorld('kaibutsu').x - B.x);          // jaws ahead of the body centre
+  const want = W.x - mOff * 0.55;   // lands with its forepaws over him
+  const landX = clamp(B.x + dir * clamp((want - B.x) * dir, 1.2, 3.6), ARENA.min, ARENA.max);
+  showWarn(landX + mOff, 2.4);
   await telegraph(alive, tell);
   if (!alive()) return;
   boss.play('Gallop_Jump', { loop: false, timeScale: 1.2 });
@@ -600,7 +613,12 @@ async function atkPounce(alive) {
   if (!alive()) return;
   boss.play('Jump_ToIdle', { loop: false });
   shake(0.35); sfx.bossLand({}, { x: landX }); FX.dust(new THREE.Vector3(landX, 0.1, 0), true);
-  if (Math.abs(W.x - (landX + dir * bossHalf() * 0.4)) < 1.9 && W.y < 0.8) hurtWeed(landX);
+  const mouth = C.pawWorld('kaibutsu');
+  if (Math.abs(W.x - mouth.x) < 1.4 && W.y < 0.8 && W.inv <= 0) {
+    // the forepaw slams down on Weed's back (real contact), then he is flung aside
+    await C.reach({ who: 'kaibutsu', target: 'weed', point: 'back', side: 'near', part: 'paw', t: 0.14, hold: 0.12, back: 0.35, fx: 'impact', strong: true, sfx: ['hitHeavy', 'bodyfall'], react: 'none' });
+    hurtWeed(landX, { dir, dist: 2.6, toss: 6 });
+  }
   await recover(alive, (S.phase === 3 ? 2.5 : 1.2) / B.speed);
 }
 
@@ -620,7 +638,10 @@ function update(dt, dtr) {
     if (W.y <= 0) { W.y = 0; W.vy = 0; sfx.land({}, { x: W.x }); w.play('Jump_ToIdle', { loop: false }); setTimeout(() => { if (!W.busy && W.y <= 0) w.play('Idle'); }, 350); FX.dust(new THREE.Vector3(W.x, 0.1, 0)); }
   }
   W.x = clamp(W.x, ARENA.min, ARENA.max);
-  if (!S.special) { w.root.position.x = W.x; w.root.position.y = W.y; }
+  if (!S.special && !S.cutscene) {
+    w.root.position.x = W.x; w.root.position.y = W.y;
+    if (!W.busy && !w._cxBusy) w.root.position.z += (0 - w.root.position.z) * Math.min(1, dt * 2.5);   // back to the lane (separation pushes him beside P4)
+  }   // kohtauksissa Weed liikkuu kohtausaskelin
   if (!W.busy && W.y <= 0 && !S.special) w.face(Math.sign(B.x - W.x) || 1);
   if (W.inv > 0) { W.inv -= dt; w.model.visible = W.inv > 0.9 || Math.floor(W.inv * 14) % 2 === 0 || W.inv <= 0; }
   else w.model.visible = true;
@@ -679,29 +700,32 @@ function cutEnd() {
   E.camRoll = 0; stopVoice();
 }
 
-const ctx = { cast, S, makeRock, E, FX, sfx, ARENA, bossHalf, restoreLight: () => restoreLight() };
+const ctx = { cast, S, makeRock, E, FX, sfx, ARENA, bossHalf, contact: C, restoreLight: () => restoreLight() };
 
 async function introCutscene() {
   await cutStart();
-  const steps = SC.intro(ctx);
-  preloadLines(SC.linesOf(steps));
+  const steps = SC.intro(ctx), night = SC.smith(ctx);
+  preloadLines(SC.linesOf(steps).concat(SC.linesOf(night)));
   await runScene(steps, ctx);
-  cutEnd();
-  setupArena(1);
-}
-
-async function smithSacrifice() {
-  await cutStart();
-  const steps = SC.smith(ctx);
-  preloadLines(SC.linesOf(steps));
-  await runScene(steps, ctx);
+  E.skipping = false;
+  // canon: yöllä Gajōn sisällä North kaatuu ja Smith uhrautuu kivisortumassa; aamulla P4 nousee raunioista
+  await runScene(night, ctx);
   cutEnd();
   for (const r of ctx.fallingRocks || []) E.scene.remove(r);
   cast.smith.root.visible = false;
-  setupArena(2);
-  S.W.x = -3;
-  UI.toast('Smith – in our memories', 2);
-  beginPhase(2);
+  setupArena(1);
+  UI.toast('Smith & North – in our memories', 2.2);
+}
+
+async function lockScene() {
+  await cutStart();
+  const steps = SC.lock(ctx);
+  preloadLines(SC.linesOf(steps));
+  await runScene(steps, ctx);
+  cutEnd();
+  setupArena(3);
+  S.W.x = -3; S.B.x = 3.5;
+  beginPhase(3);
 }
 
 async function fourArrows() {
@@ -713,7 +737,7 @@ async function fourArrows() {
   for (const id of MEN) cast[id].root.visible = false;
   cast.jerome.root.position.set(-5.6, 0, -2.6);
   S.W.x = -3; S.B.x = 3.5;
-  beginPhase(3);
+  beginPhase(2);
 }
 
 async function finale() {
@@ -721,7 +745,7 @@ async function finale() {
   S.W.henki = 0; UI.setHenki(0);
   const fin = SC.finale(ctx);
   preloadLines(SC.linesOf(fin).concat(SC.linesOf(SC.post(ctx))));
-  await runScene(fin, ctx);
+  await runScene(fin, ctx, { keepPins: true });
   S.B.hp = 0; UI.setBossHP(0);
   E.skipping = false;
   await runScene(SC.post(ctx), ctx);
@@ -748,12 +772,44 @@ function showResult(names) {
 // test hooks (Playwright)
 export const debug = {
   S,
-  smith: () => { S.B.hp = 60; checkThresholds(); },
-  sacrifice: () => useCard('smith'),
-  arrows: () => { if (S.phase === 2) { S.B.hp = 20; checkThresholds(); } },
+  arrows: () => { if (S.phase === 1) { S.B.hp = 40; checkThresholds(); } },
+  lockReady: () => { if (S.phase === 2) { S.B.hp = 20; checkThresholds(); } },
+  lock: () => useCard('lock'),
   finale: () => { if (S.phase === 3) finale(); },
   fillHenki: () => addHenki(1),
   readyCards: () => S.cards.forEach(c => { if (c.state === 'cooldown') c.cool = 0; }),
   card: id => useCard(id),
   bite, dodge, jump, battoga,
+  // contact-check (tools/contact-check.cjs): aja yksittäinen kohtaus; S.sceneDone = true kun valmis
+  scene: async (name) => {
+    S.sceneDone = false; C.LOG.scene = name;
+    try {
+      if (name === 'smith') {
+        S.active = false;                       // kuten pelissä: yökohtaus ajetaan ennen taistelun alkua
+        await cutStart(); setupArena(1);
+        const st = SC.smith(ctx); preloadLines(SC.linesOf(st));
+        await runScene(st, ctx); cutEnd();
+        for (const r of ctx.fallingRocks || []) E.scene.remove(r);
+        cast.smith.root.visible = false; setupArena(1); beginPhase(1);
+      } else if (name === 'arrows') { S.phase = 1; S.pending = 'arrows'; await fourArrows(); }
+      else if (name === 'lock') { S.phase = 2; await lockScene(); }
+      else if (name === 'finale') { S.phase = 3; await finale(); }
+      else if (name === 'twinfang' || name === 'jerome') {
+        S.cards.forEach(c => { c.state = 'ready'; c.cool = 0; });
+        useCard(name === 'twinfang' ? 'kenkage' : 'jerome');
+        while (S.special) await wait(0.1, true);
+      } else if (name === 'bite') {
+        S.B.token++; S.B.x = 3.5; S.W.x = -1.5; await wait(0.3, true); await bite(); await wait(0.6, true);
+        // P4's own attacks: charge (head-butt) and pounce (bite) on Weed
+        const alive = () => S.active && !S.cutscene; S.W.inv = 0; S.W.hp = 99; S.W.x = -1.5; S.B.x = 3.5;
+        await atkCharge(alive); await wait(1.2, true);
+        S.W.inv = 0; S.W.hp = 99; S.W.y = 0; S.W.vy = 0; S.W.x = S.B.x + (S.W.x < S.B.x ? -3.2 : 3.2);
+        await atkPounce(alive); await wait(1.2, true);
+        // in-battle Battōga (phase 1–2): spinning fang to the shoulder
+        S.B.token++; S.W.busy = false; S.W.henki = 1; S.W.y = 0; S.W.vy = 0; S.W.x = clamp(S.B.x - 3.6, ARENA.min, ARENA.max); await wait(0.4, true);
+        await battoga(); await wait(0.8, true);
+      }
+    } catch (e) { console.error(e); }
+    S.sceneDone = true;
+  },
 };

@@ -178,6 +178,14 @@ export const CHARACTERS = {
     marks: ['belly', 'mask:#2d2925'],
     extras: [{ type: 'metalLegs' }, { type: 'collar', color: '#4a2a22' }],
   },
+  mel: {
+    name: 'Mel', jp: 'メル', kind: 'factory', height: 1.02,
+    role: 'A golden retriever who joins Weed on the road. Always comes back for his friends.',
+    gait: 'light', speed: 1.1, wag: 0.8,
+    p: { leg: 1.0, body: 1.05, neck: 1.02, ear: 1.15, earTilt: 1.15, tail: 'straight', tailLen: 1.2, muzzle: 1.15 },
+    c: { coat: '#d9a75e', under: '#efd3a0', head: '#dcaa62', ear: '#c48f48', tail: '#d3a05a', muzzle: '#e9c88e', eye: '#5a3a22' },
+    marks: ['belly', 'muzzleLight'],
+  },
   akame: {
     name: 'Akame', jp: '赤目', kind: 'factory', height: 1.02,
     role: 'Kishu, Gin\'s contemporary and former leader of the Iga ninja dogs. Messenger and strategist.',
@@ -243,9 +251,9 @@ export const CHARACTERS = {
 };
 
 // Pelissä käytetyt (taso 2) ja galleriassa näytettävät
-export const LEVEL2_CAST = ['weed', 'kaibutsu', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'north', 'gin'];
+export const LEVEL2_CAST = ['weed', 'kaibutsu', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'north', 'gin', 'gb', 'mel'];
 export const ROSTER = ['weed', 'gin', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'north', 'kaibutsu',
-  'rocket', 'tobee', 'kurotora', 'moss', 'tesshin', 'kite', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
+  'rocket', 'tobee', 'kurotora', 'moss', 'tesshin', 'kite', 'akame', 'john', 'ben', 'gb', 'mel', 'lector', 'thunder', 'hogen', 'genba'];
 
 // ---------------- ulkonäkövariantit (src/data/looks.js) ----------------
 // Tehdashahmot siirretään rigattujen pohjamallien päälle omalla tekstuurilla (look) ja luuskaalauksella (bones).
@@ -281,3 +289,16 @@ for (const [id, o] of Object.entries(LOOK_ARMY)) {
   ROSTER_EXTRA_IDS.push(id); if (!ROSTER.includes(id)) ROSTER.push(id);
 }
 export { GROUP_OF, GROUP_LABEL };
+
+// Prologue (level 1) side characters: model/look per character, ONE LINE EACH so the user's own models can be dropped in.
+// PLACEHOLDER: user model pending – generic dogs from existing models/looks only (no new textures, no character designs).
+// To swap: add the user's model to MODELS above (e.g. sakura_rigged) and change `model` (look/tint -> null) on its line.
+export const PROLOGUE_MODELS = {
+  sakura:  { model: 'gin_auto',     look: null,               tint: '#e6e2da', height: 1.1 },   // PLACEHOLDER: user model pending
+  sasuke:  { model: 'gin_auto',     look: 'spitz_red_cream',  tint: null,      height: 0.66 },  // PLACEHOLDER: user model pending
+  nero:    { model: 'generic_auto', look: 'mutt_black_white', tint: null,      height: 1.2 },   // PLACEHOLDER: user model pending
+  tosa:    { model: 'tobei_rigged', look: null,               tint: '#b8805a', height: 1.3 },   // PLACEHOLDER: user model pending (farm watchdog)
+  mel_pup: { model: 'smith_rigged', look: null,               tint: '#e2b46e', height: 0.62 },  // PLACEHOLDER: user model pending
+  hook:    { model: 'generic_auto', look: 'mutt_cream',       tint: null,      height: 1.08 },  // PLACEHOLDER: user model pending
+  blue:    { model: 'john_auto',    look: 'shepherd_black',   tint: null,      height: 1.22 },  // PLACEHOLDER: user model pending
+};

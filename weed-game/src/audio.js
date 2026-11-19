@@ -42,7 +42,7 @@ export function initAudio() {
   initSfxBuses();
   // esilataa ydintehosteet (isku/purenta/askel/UI) + valikon musiikki; boss/cine/ambienssi kun niitä tarvitaan
   preloadSfx('core');
-  load(MUSIC_FILES.intro);
+  primeMusic('intro');
   if (pendingMusic !== undefined) { const m = pendingMusic; pendingMusic = undefined; music(m); }
 }
 export function audioCtx() { return ctx; }
@@ -70,7 +70,8 @@ export function load(file, base = AUDIO_BASE()) {
     .catch(() => { buffers[file] = null; audioStats.failed.push(file); return null; });
   return loading[file];
 }
-export function preloadMusic(...names) { for (const n of names) if (MUSIC_FILES[n]) load(MUSIC_FILES[n]); }
+/** Musiikki suoratoistetaan (ei pureta muistiin): esilataus vain pyytää selainta puskuroimaan alun. */
+export function preloadMusic(...names) { for (const n of names) primeMusic(n); }
 
 // ---------------------------------------------------------------- ducking
 let duckUntil = 0;
@@ -85,13 +86,43 @@ export function duck(level = 0.35, secs = 1, attack = 0.08) {
   setTimeout(() => { if (ctx && Math.abs(until - duckUntil) < 1e-6) duckGain.gain.setTargetAtTime(1, ctx.currentTime, 0.35); }, secs * 1000);
 }
 
-// ---------------------------------------------------------------- musiikki
-let current = null;      // { name, src, gain }
+// ---------------------------------------------------------------- musiikki (SUORATOISTO)
+// Musiikkia EI pureta AudioBufferiksi (3 min stereo float32 ≈ 30+ MB → iPhone voi kaataa selaimen). Jokaisella raidalla on
+// yksi HTMLAudioElement (Range-pyynnöt, selain puskuroi pakattua dataa) → MediaElementAudioSourceNode → oma gain → musicBus,
+// joten ristiinhäivytys, ducking ja mute toimivat kuten ennen. Sama raita ei voi soida kahdesti (yksi elementti per raita).
+let current = null;      // { name, el, gain }
 let wantName = null;
 let pendingMusic;
 const ALIAS = { calm: 'intro' };
+const tracks = {};       // name -> { el, node, gain, stopTimer, failed }
+let pausedByHide = null;
 
-/** Vaihda musiikki ristiinhäivytyksellä. name: intro|battle|sad|dawn|null (hiljaisuus). */
+function track(name) {
+  if (tracks[name]) return tracks[name];
+  const file = MUSIC_FILES[name]; if (!file || !ctx || NO_FILES) return null;
+  const el = new Audio();
+  el.preload = 'none'; el.loop = !!MUSIC_LOOP[name]; el.crossOrigin = 'anonymous';
+  el.setAttribute('playsinline', ''); el.src = AUDIO_BASE() + file;
+  const t = { el, node: null, gain: null, stopTimer: null, failed: false };
+  try {
+    t.node = ctx.createMediaElementSource(el);
+    t.gain = ctx.createGain(); t.gain.gain.value = 0.0001;
+    t.node.connect(t.gain); t.gain.connect(musicBus);
+  } catch (e) { t.failed = true; }
+  el.addEventListener('canplay', () => { if (!audioStats.loaded.includes(file)) audioStats.loaded.push(file); }, { once: true });
+  el.addEventListener('error', () => {
+    t.failed = true; if (!audioStats.failed.includes(file)) audioStats.failed.push(file);
+    if (current && current.name === name) { current = null; synthStart(name); }
+  });
+  el.addEventListener('ended', () => { if (current && current.name === name && !el.loop) current = null; });
+  tracks[name] = t;
+  return t;
+}
+/** Testejä varten: mitkä musiikkielementit soivat. */
+export function musicState() { return Object.fromEntries(Object.entries(tracks).map(([k, t]) => [k, { paused: t.el.paused, gain: +t.gain?.gain.value.toFixed(3), ctx: ctx && ctx.state }])); }
+function primeMusic(name) { const t = track(name); if (t && t.el.preload === 'none') { t.el.preload = 'auto'; try { t.el.load(); } catch (_) {} } }
+
+/** Vaihda musiikki ristiinhäivytyksellä. name: intro|battle|sad|dawn|smith|smith2|null (hiljaisuus). */
 export function music(name, { fade = 1.6 } = {}) {
   name = ALIAS[name] || name;
   if (!ctx) { pendingMusic = name; return; }
@@ -100,25 +131,24 @@ export function music(name, { fade = 1.6 } = {}) {
   fadeOutCurrent(fade);
   stopSynth();
   if (!name) return;
-  const file = MUSIC_FILES[name];
-  load(file).then(buf => {
-    if (wantName !== name) return;
-    if (!buf) { synthStart(name); return; }
-    const src = ctx.createBufferSource(); src.buffer = buf; src.loop = MUSIC_LOOP[name];
-    const g = ctx.createGain(); g.gain.value = 0.0001;
-    src.connect(g); g.connect(musicBus);
-    const t = ctx.currentTime;
-    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(MUSIC_VOL[name], t + Math.max(0.05, fade));
-    src.start(t);
-    current = { name, src, gain: g };
-  });
+  const t = track(name);
+  if (!t || t.failed) { synthStart(name); return; }
+  clearTimeout(t.stopTimer);                                  // sama raita palaa häivytyksen aikana: ei toista kopiota
+  const now = ctx.currentTime, g = t.gain.gain;
+  g.cancelScheduledValues(now); g.setValueAtTime(Math.max(0.0001, g.value), now);
+  g.exponentialRampToValueAtTime(MUSIC_VOL[name], now + Math.max(0.05, fade));
+  if (t.el.paused) { try { t.el.currentTime = 0; } catch (_) {} }
+  const p = t.el.play();
+  if (p && p.catch) p.catch(() => { if (wantName === name && !document.hidden) { t.failed = true; current = null; synthStart(name); } });
+  current = { name, el: t.el, gain: t.gain, track: t };
 }
 function fadeOutCurrent(fade) {
   if (!current) return;
-  const { src, gain } = current; const t = ctx.currentTime;
-  gain.gain.cancelScheduledValues(t); gain.gain.setValueAtTime(gain.gain.value, t);
-  gain.gain.linearRampToValueAtTime(0.0001, t + Math.max(0.05, fade));
-  try { src.stop(t + fade + 0.05); } catch (_) {}
+  const t = current.track, g = t.gain.gain, now = ctx.currentTime;
+  g.cancelScheduledValues(now); g.setValueAtTime(Math.max(0.0001, g.value), now);
+  g.linearRampToValueAtTime(0.0001, now + Math.max(0.05, fade));
+  clearTimeout(t.stopTimer);
+  t.stopTimer = setTimeout(() => { if (!current || current.track !== t) t.el.pause(); }, (fade + 0.1) * 1000);
   current = null;
 }
 export function currentMusic() { return current ? current.name : (synthMode ? 'synth:' + synthMode : null); }
@@ -415,10 +445,16 @@ function synthStart(name) {
 if (typeof document !== 'undefined') {
   const syncAudioWithVisibility = () => {
     if (!ctx) return;
-    if (document.hidden) { try { ctx.suspend(); } catch (_) {} }
-    else if (ctx.state === 'suspended') { try { ctx.resume(); } catch (_) {} }
+    if (document.hidden) {
+      try { ctx.suspend(); } catch (_) {}
+      if (current && !current.el.paused) { pausedByHide = current.el; current.el.pause(); }
+    } else {
+      if (ctx.state === 'suspended') { try { ctx.resume(); } catch (_) {} }
+      if (pausedByHide && current && current.el === pausedByHide) { const p = pausedByHide.play(); if (p && p.catch) p.catch(() => {}); }
+      pausedByHide = null;
+    }
   };
   document.addEventListener('visibilitychange', syncAudioWithVisibility);
-  window.addEventListener('pagehide', () => { if (ctx) { try { ctx.suspend(); } catch (_) {} } });
+  window.addEventListener('pagehide', () => { if (ctx) { try { ctx.suspend(); } catch (_) {} } if (current) current.el.pause(); });
   window.addEventListener('pageshow', syncAudioWithVisibility);
 }
