@@ -70,7 +70,7 @@ export function initEngine(canvas) {
   initPost(renderer);
 
   E.scene = new THREE.Scene();
-  E.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 400);
+  E.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.2, 400);   // near 0.2: 2x depth precision (ground decals/shadows flickered far away)
   let baseFov = 40;
 
   const applyQuality = () => {
