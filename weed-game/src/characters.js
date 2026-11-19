@@ -20,6 +20,9 @@ export const MODELS = {
   weed_rigged:     { file: 'weed_rigged.glb',     rotY: 0, rigged: true },
   john_auto:       { file: 'john_auto.glb',       rotY: 0, rigged: true },   // john.glb (wolf) auto-rig
   tesshin_auto:    { file: 'tesshin_auto.glb',    rotY: 0, rigged: true },   // tesshin.glb auto-rig
+  ken_auto:        { file: 'ken_auto.glb',        rotY: 0, rigged: true },   // Ken (user model) auto-rig
+  akame_auto:      { file: 'akame_auto.glb',      rotY: 0, rigged: true },   // Akame (user model, white wolf) auto-rig
+  generic_auto:    { file: 'generic_auto.glb',    rotY: 0, rigged: true },   // generic lean brown dog (user model) auto-rig: base for generic dogs
   gin_auto:        { file: 'gin_auto.glb',        rotY: 0, rigged: true },   // gin_rigged.glb (Tripo) uudelleenrigattu rig_dog_standalone.py:llä -> 9 klippiä
   kagetora_rigged: { file: 'kagetora_rigged.glb', rotY: 0, rigged: true },
   smith_rigged: { file: 'smith_rigged.glb', rotY: 0, rigged: true },
@@ -184,7 +187,7 @@ export const CHARACTERS = {
     marks: ['belly', 'muzzleLight', 'scar'],
   },
   john: {
-    name: 'John', jp: 'ジョン', kind: 'rigged', model: 'john_auto', height: 1.22,
+    name: 'John', jp: 'ジョン', kind: 'rigged', model: 'john_auto', tint: '#5a534d', height: 1.22,
     role: 'Ōu\'s strongest warrior. His last stand against fifty of Hōgen\'s men becomes a legend that frightens even Hōgen.',
     gait: 'trot', speed: 1.05, wag: 0.3,
     outline: 0.008,
@@ -243,6 +246,19 @@ export const CHARACTERS = {
 export const LEVEL2_CAST = ['weed', 'kaibutsu', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'north', 'gin'];
 export const ROSTER = ['weed', 'gin', 'smith', 'jerome', 'ken', 'kagetora', 'robert', 'rocker', 'heuler', 'north', 'kaibutsu',
   'rocket', 'tobee', 'kurotora', 'moss', 'tesshin', 'kite', 'akame', 'john', 'ben', 'gb', 'lector', 'thunder', 'hogen', 'genba'];
+
+// ---------------- ulkonäkövariantit (src/data/looks.js) ----------------
+// Tehdashahmot siirretään rigattujen pohjamallien päälle omalla tekstuurilla (look) ja luuskaalauksella (bones).
+// ?factory=1 palauttaa vanhat tehdasversiot vertailua varten.
+import { LOOK_CAST } from './data/looks.js';
+if (!MODELS.kagetora_true_auto) MODELS.kagetora_true_auto = { file: 'kagetora_true_auto.glb', rotY: 0, rigged: true };
+if (!(typeof location !== 'undefined' && new URLSearchParams(location.search).has('factory'))) {
+  for (const [id, o] of Object.entries(LOOK_CAST)) {
+    const c = CHARACTERS[id]; if (!c || !MODELS[o.model]) continue;
+    Object.assign(c, { kind: 'rigged' }, o);
+    if (o.tint === null) delete c.tint;
+  }
+}
 
 // ---------------- geneeriset joukkovariantit (src/data/roster_specs.js) ----------------
 // Ei ylikirjoita yllä olevia hahmoja; lisätyt id:t ROSTER_EXTRA_IDS, galleriaryhmät GROUP_OF.
