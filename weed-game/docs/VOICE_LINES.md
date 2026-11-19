@@ -6,7 +6,7 @@ Drop recorded / TTS files into `public/audio/voice/` using the exact file names 
 
 Format: mp3 (mono, 44.1 kHz, 64–96 kbps), trimmed tight (the game adds the pre/post silences itself).
 
-Status: **61 / 65** lines have audio.
+Status: **61 / 69** lines have audio.
 
 ## Voice profiles
 
@@ -21,6 +21,8 @@ Status: **61 / 65** lines have audio.
 | Rocker (`rocker`) | ロッカ | Adult male (≈28). Wry, raspy, fearless; hides fear behind a smirk. |
 | Heuler (`heuler`) | ホイラー | Adult male (≈30). Warm, gentle tenor-baritone; the heart of the squad, protective of Robert. |
 | Kaibutsu (`kaibutsu`) | 怪物 | Huge, guttural lion-like roars and growls; speaks only a few words (canon: P4 talks) in a deep, rasping, distorted voice. Its final whimper (own interpretation) is small and broken — the dog it once was. |
+| Mel (`mel`) | メル | Young male golden retriever. Bright, kind, brave; a friend who always comes back for you. |
+| GB (`gb`) | ジービー | Middle-aged male English setter. Lazy, boastful, warm-hearted; a bit nasal and theatrical. |
 | Narrator (`narrator`) | ナレーション | Mature narrator (any gender). Calm, low, measured, like an anime episode narrator; slight reverb. |
 
 ## Lines (in story order)
@@ -55,10 +57,10 @@ Status: **61 / 65** lines have audio.
 | 26 | `ken_sync_call.mp3` | Ken | 合わせろ、カゲトラ！ | Keep up, Kagetora! | fierce, competitive | 4 | 0/0 | Shouted while running, grin in the voice. | ✔ |
 | 27 | `kagetora_sync_reply.mp3` | Kagetora | 誰に言ってる！ | Who do you think you're talking to! | fierce pride | 4 | 0/0.1 | Snapped back instantly, mid-leap. Effort on the last syllable. | ✔ |
 | 28 | `weed_battoga.mp3` | Weed | 抜刀牙ッ！ | BATTŌGA! | battle cry | 5 | 0/0 | Explosive, from the gut; short intake of breath before. Not too long. | ✔ |
-| 29 | `kaibutsu_roar_armor.mp3` | Kaibutsu | ガアアアアッ！！ | [Roars — its hide hardens like stone] | berserk fury | 5 | 0/0.2 | Harsher and higher than the first roar, with rasp. Shakes the ground. | – |
+| 29 | `kaibutsu_roar_armor.mp3` | Kaibutsu | ガアアアアッ！！ | [A furious roar – its hide is too tough to bite through] | berserk fury | 5 | 0/0.2 | Harsher and higher than the first roar, with rasp. Shakes the ground. | – |
 | 30 | `smith_card_ready.mp3` | Smith | わしの出番じゃな。 | Looks like my turn has come. | calm acceptance | 3 | 0/0.2 | Quiet, almost to himself. A small smile. No fear. | ✔ |
 | 31 | `narrator_north_fell.mp3` | Narrator | 牙城の中…ノースは奇襲に倒れた。 | Inside Gajō… North fell to the ambush. | hushed grief | 3 | 0.2/0.6 | Quiet, matter-of-fact, a beat of silence after. | ✔ |
-| 32 | `smith_sac_cliff.mp3` | Smith | ウィード…上の崖が見えるか。…わしに任せろ。 | Weed… do you see the cliff above? …Leave this to me. | gentle resolve | 4 | 0.4/0.4 | Soft and unhurried, as if comforting a child. Pause after the question; the last line is warm and final. | ✔ |
+| 32 | `smith_sac_cliff.mp3` | Smith | ウィード…上の岩天井が見えるか。…わしに任せろ。 | Weed… do you see the rock ceiling above? …Leave this to me. | gentle resolve | 4 | 0.4/0.4 | Soft and unhurried, as if comforting a child. Pause after the question; the last line is warm and final. | ✔ |
 | 33 | `weed_sac_wait.mp3` | Weed | スミス、待って！ | Smith, wait! | sudden fear | 4 | 0/0.2 | Voice cracks with alarm; reaching out. Breath in before. | ✔ |
 | 34 | `smith_sac_live.mp3` | Smith | 生きろ、ウィード。生きて…皆を導け！ | Live, Weed. Live… and lead them! | strained, loving | 5 | 0/0.3 | Through gritted teeth while holding the monster; strained breath between phrases, then the last words pushed out with all he has — almost a smile. | ✔ |
 | 35 | `weed_sac_scream.mp3` | Weed | スミスーーーッ！！ | SMITH!! | anguished scream | 5 | 0/1.2 | Raw, breaking scream; voice tears at the end. Followed by silence. | ✔ |
@@ -75,23 +77,27 @@ Status: **61 / 65** lines have audio.
 | 46 | `heuler_arrows_fall_heuler.mp3` | Heuler | ロバート…一緒、だぞ… | Robert… we're together… | gentle, dying | 5 | 0.3/1 | Barely above a whisper, reaching for his friend. Long exhale after. | ✔ |
 | 47 | `jerome_arrows_fourth.mp3` | Jerome | 四本目は…俺だあああッ！ | And the fourth… is ME! | grief turned to fury | 5 | 0/0.1 | Starts low and shaking, explodes into a roar. The only time he truly shouts. | ✔ |
 | 48 | `jerome_arrows_thanks.mp3` | Jerome | ……ありがとう、戦友たち。 | …Thank you, my comrades. | broken, quiet | 5 | 0.8/1 | Very quiet, voice catching. Long breath before. Do not cry openly — he holds it in. | ✔ |
-| 49 | `jerome_arrows_now.mp3` | Jerome | ウィード！奴がよろめいた…今だ！ | Weed! It's staggering… now! | urgent resolve | 4 | 0/0.2 | Pulls himself together: strong and fast. A breath between sentences. | ✔ |
-| 50 | `weed_finale_cry.mp3` | Weed | これで終わりだ…抜刀牙ーーッ！ | This ends now… BATTŌGA! | ultimate resolve | 5 | 0/0 | First half low and steady, almost calm; then the battle cry tears out at full power. | ✔ |
-| 51 | `ken_fall_hold.mp3` | Ken | ウィード！離すな！ | Weed! Don't let go! | desperate | 5 | 0/0 | Shouted through clenched teeth (biting on), strained. | ✔ |
-| 52 | `kagetora_fall_with.mp3` | Kagetora | 俺たちも行くぞ！ | We're going with you! | reckless loyalty | 5 | 0/0.2 | Shouted, fearless, a wild edge. | ✔ |
-| 53 | `narrator_fall_wind.mp3` | Narrator | 谷底から吹き上げる風が、ウィードを宙へ押し上げた。 | A wind rising from the gorge tore Weed free. | awe | 3 | 0.2/0.4 | Measured, building slightly; let the wind sound carry it. | ✔ |
-| 54 | `narrator_fall_mist.mp3` | Narrator | 滝の霧が、すべてを呑み込んだ。 | The mist of the falls swallowed everything. | hushed | 2 | 0.4/0.8 | Quiet, slow. Let silence follow. | ✔ |
-| 55 | `ken_post_alive_ken.mp3` | Ken | しっかりしろ、カゲトラ。…岸までもう少しだ。 | Hang on, Kagetora. …Almost to the shore. | exhausted care | 3 | 0.4/0.2 | Panting, carrying weight; gruff but gentle. | ✔ |
-| 56 | `kagetora_post_alive_kage.mp3` | Kagetora | …うるせえ。落とすなよ。 | …Shut up. Just don't drop me. | hurt pride | 3 | 0/0.4 | Weak, breathless, a pained half-laugh. He can barely move. | ✔ |
-| 57 | `kaibutsu_whimper.mp3` | Kaibutsu | クゥ…ン…… | [A faint whimper] | the dog it once was | 3 | 0.4/1.2 | Tiny, fragile, almost a puppy's whimper. Fades into breath. Heartbreaking, not scary. | – |
-| 58 | `weed_post_human.mp3` | Weed | 人間が、こいつを怪物にした…こいつが選んだわけじゃない。 | Humans made it a monster… it never chose this. | sorrowful compassion | 4 | 0.4/0.6 | Soft, sad, looking down at it. Pause in the middle. No anger — grief. | ✔ |
-| 59 | `jerome_post_guilt.mp3` | Jerome | 放してくれ、ウィード。…部下のところへ、行かせてくれ。 | Let me go, Weed. …Let me go to my men. | hollow despair | 5 | 0.6/0.8 | Clinging to the rock in the current, exhausted. Flat and quiet, each word costs him. | ✔ |
-| 60 | `weed_post_carry.mp3` | Weed | だめだ！死ぬのはずるい。…生き残った者には、生きる意味があるんだ。 | No! Dying is unfair. …Those who survive have a reason to live. | fierce compassion | 5 | 0.2/0.6 | Through clenched teeth (he is holding Jerome's leg); then softer, certain. | ✔ |
-| 61 | `jerome_post_follow.mp3` | Jerome | ……ウィード。 | …Weed. | silent tears | 5 | 0.8/1 | Barely a whisper; a breath that breaks. He is crying without sound. | ✔ |
-| 62 | `jerome_post_stay.mp3` | Jerome | 俺は戻らない。ここ、奥羽に残る。…もう誰の道具でもない。 | I'm not going back. I'm staying here, in Ōu. …I'm no one's tool anymore. | calm defiance | 4 | 0.3/0.6 | Barked toward the humans at the helicopter: firm, steady, free. | ✔ |
-| 63 | `narrator_memorial.mp3` | Narrator | スミス。ノース。ロバート。ロッカ。ホイラー。その名は、奥羽の風に刻まれた。 | Smith. North. Robert. Rocker. Heuler. Their names are carved into the wind of Ōu. | reverent | 4 | 0.6/1 | Each name slow and separate, with a beat of silence. Final sentence warm. | ✔ |
-| 64 | `weed_post_father.mp3` | Weed | 父さん…どこにいるの。僕、もっと強くなるよ。 | Father… where are you? I'll become stronger. | hopeful longing | 4 | 0.5/0.6 | Looking at the last light of dusk; soft, a little shaky, ending with a small brave smile. | ✔ |
-| 65 | `smith_spirit_echo.mp3` | Smith | …それでいい、坊主。 | …That's the way, boy. | peaceful, from beyond | 3 | 0.6/1.2 | Whispered, warm, with reverb/echo. Like wind. | ✔ |
+| 49 | `jerome_arrows_now.mp3` | Jerome | まだ終わっていない。ウィード…皆で行くぞ！ | It's not over. Weed… we finish this together! | urgent resolve | 4 | 0/0.2 | Pulls himself together: strong and fast. A breath between sentences. | ✔ |
+| 50 | `weed_lock_call.mp3` | Weed | ケン！カゲトラ！押さえ込め！ | Ken! Kagetora! Pin it down! | desperate command | 5 | 0/0.1 | Shouted mid-leap, voice cracking with effort. Fast. | – |
+| 51 | `jerome_lock_artery.mp3` | Jerome | …届け…！ | …Reach…! | straining, all-in | 5 | 0/0.3 | Through clenched teeth, jaws locked on the wound. A strained growl more than a word. | – |
+| 52 | `kagetora_lock_hurt.mp3` | Kagetora | ぐっ…まだだ…！ | Ngh… not yet…! | pain and defiance | 4 | 0/0.3 | Bitten at the neck: a choked cry, then stubborn words. No screaming. | – |
+| 53 | `weed_finale_cry.mp3` | Weed | これで終わりだ…抜刀牙ーーッ！ | This ends now… BATTŌGA! | ultimate resolve | 5 | 0/0 | First half low and steady, almost calm; then the battle cry tears out at full power. | ✔ |
+| 54 | `ken_fall_hold.mp3` | Ken | ウィード！離すな！ | Weed! Don't let go! | desperate | 5 | 0/0 | Shouted through clenched teeth (biting on), strained. | ✔ |
+| 55 | `kagetora_fall_with.mp3` | Kagetora | 俺たちも行くぞ！ | We're going with you! | reckless loyalty | 5 | 0/0.2 | Shouted, fearless, a wild edge. | ✔ |
+| 56 | `narrator_fall_wind.mp3` | Narrator | 谷底から吹き上げる風が、ウィードを宙へ押し上げた。 | A wind rising from the gorge tore Weed free. | awe | 3 | 0.2/0.4 | Measured, building slightly; let the wind sound carry it. | ✔ |
+| 57 | `narrator_fall_mist.mp3` | Narrator | 滝の霧が、すべてを呑み込んだ。 | The mist of the falls swallowed everything. | hushed | 2 | 0.4/0.8 | Quiet, slow. Let silence follow. | ✔ |
+| 58 | `ken_post_alive_ken.mp3` | Ken | しっかりしろ、カゲトラ。…岸までもう少しだ。 | Hang on, Kagetora. …Almost to the shore. | exhausted care | 3 | 0.4/0.2 | Panting, carrying weight; gruff but gentle. | ✔ |
+| 59 | `kagetora_post_alive_kage.mp3` | Kagetora | …うるせえ。落とすなよ。 | …Shut up. Just don't drop me. | hurt pride | 3 | 0/0.4 | Weak, breathless, a pained half-laugh. He can barely move. | ✔ |
+| 60 | `kaibutsu_whimper.mp3` | Kaibutsu | クゥ…ン…… | [A faint whimper] | the dog it once was | 3 | 0.4/1.2 | Tiny, fragile, almost a puppy's whimper. Fades into breath. Heartbreaking, not scary. | – |
+| 61 | `weed_post_human.mp3` | Weed | 人間が、こいつを怪物にした…こいつが選んだわけじゃない。 | Humans made it a monster… it never chose this. | sorrowful compassion | 4 | 0.4/0.6 | Soft, sad, looking down at it. Pause in the middle. No anger — grief. | ✔ |
+| 62 | `jerome_post_guilt.mp3` | Jerome | 放してくれ、ウィード。…部下のところへ、行かせてくれ。 | Let me go, Weed. …Let me go to my men. | hollow despair | 5 | 0.6/0.8 | Clinging to the rock in the current, exhausted. Flat and quiet, each word costs him. | ✔ |
+| 63 | `weed_post_carry.mp3` | Weed | だめだ！死ぬのはずるい。…生き残った者には、生きる意味があるんだ。 | No! Dying is unfair. …Those who survive have a reason to live. | fierce compassion | 5 | 0.2/0.6 | Through clenched teeth (he is holding Jerome's leg); then softer, certain. | ✔ |
+| 64 | `jerome_post_follow.mp3` | Jerome | ……ウィード。 | …Weed. | silent tears | 5 | 0.8/1 | Barely a whisper; a breath that breaks. He is crying without sound. | ✔ |
+| 65 | `mel_help.mp3` | Mel | ウィード！ジェロム！こっちだ、つかまれ！ | Weed! Jerome! Over here – grab on! | urgent kindness | 4 | 0/0.3 | Shouted over the roar of the river, warm and brave. | – |
+| 66 | `jerome_post_stay.mp3` | Jerome | 俺は戻らない。ここ、奥羽に残る。…もう誰の道具でもない。 | I'm not going back. I'm staying here, in Ōu. …I'm no one's tool anymore. | calm defiance | 4 | 0.3/0.6 | Barked toward the humans at the helicopter: firm, steady, free. | ✔ |
+| 67 | `narrator_memorial.mp3` | Narrator | スミス。ノース。ロバート。ロッカ。ホイラー。その名は、奥羽の風に刻まれた。 | Smith. North. Robert. Rocker. Heuler. Their names are carved into the wind of Ōu. | reverent | 4 | 0.6/1 | Each name slow and separate, with a beat of silence. Final sentence warm. | ✔ |
+| 68 | `weed_post_father.mp3` | Weed | 父さん…どこにいるの。僕、もっと強くなるよ。 | Father… where are you? I'll become stronger. | hopeful longing | 4 | 0.5/0.6 | Looking at the last light of dusk; soft, a little shaky, ending with a small brave smile. | ✔ |
+| 69 | `smith_spirit_echo.mp3` | Smith | …それでいい、坊主。 | …That's the way, boy. | peaceful, from beyond | 3 | 0.6/1.2 | Whispered, warm, with reverb/echo. Like wind. | ✔ |
 
 ## Tips for ElevenLabs (Japanese TTS)
 

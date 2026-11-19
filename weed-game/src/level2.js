@@ -16,7 +16,7 @@ import { onGesture, setInputEnabled } from './input.js';
 import * as SC from './data/scenes_level2.js';
 
 const ARENA = { min: -5.6, max: 5.6 };
-const PHASE_HP = { 1: 100, 2: 45, 3: 8 };
+const PHASE_HP = { 1: 100, 2: 45, 3: 8 };   // 1: taistelu -> Neljä nuolta (45)  2: taistelu -> lukitus (20)  3: Battōga
 const MEN = ['robert', 'rocker', 'heuler'];
 
 export const cast = {};
@@ -87,7 +87,7 @@ function cardDefs() {
   return [
     { id: 'jerome', name: 'Jerome', desc: 'Weak-spot analysis', color: '#a9733a', color2: '#e0b070', cooldown: 15, cool: 4, state: 'cooldown' },
     { id: 'kenkage', name: 'Ken & Kagetora', desc: 'Twin Fang', color: '#585c66', color2: '#d8d2c4', cooldown: 20, cool: 9, state: 'cooldown' },
-    { id: 'smith', name: 'Smith', desc: 'Waits for his moment', color: '#3a3a3e', color2: '#e8e4dc', cooldown: 1, cool: 0, state: 'locked' },
+    { id: 'lock', name: 'Weed, Ken & Kagetora', desc: 'Pin it down', color: '#4a5a72', color2: '#e6ecf4', cooldown: 1, cool: 0, state: 'locked' },   // canon: kolmikko lukitsee P4:n, Jerome puree valtimoon
   ];
 }
 
@@ -95,7 +95,7 @@ function useCard(id) {
   if (!S.active || S.cutscene || S.special || S.paused) return;
   const c = S.cards.find(k => k.id === id);
   if (!c) return;
-  if (c.state === 'sacrifice') { c.state = 'fallen'; UI.updateCard(c); sfx.sacrifice(); smithSacrifice(); return; }
+  if (c.state === 'sacrifice') { c.state = 'fallen'; UI.updateCard(c); sfx.sacrifice(); lockScene(); return; }
   if (c.state !== 'ready') { sfx.denied(); return; }
   if (S.phase === 3) { UI.toast('This is Weed\'s moment!'); return; }
   sfx.card();
@@ -118,7 +118,7 @@ async function special(fn) {
 async function jeromeReveal() {
   const j = cast.jerome, B = S.B, boss = cast.kaibutsu;
   const home = { x: j.x, z: j.root.position.z };
-  UI.cutin({ name: 'JEROME', move: 'Weak-Spot Analysis', jp: '弱点看破', color: '#a9733a', color2: '#ffd27a' });
+  UI.cutin({ name: 'JEROME', move: 'Weak-Spot Analysis', color: '#a9733a', color2: '#ffd27a' });
   sfx.cutin(); duck(0.4, 1.2);
   E.timeScale = 0.12;
   await wait(0.75, true);
@@ -158,7 +158,7 @@ async function jeromeReveal() {
 async function kenKageStrike() {
   const k = cast.ken, g = cast.kagetora, B = S.B, boss = cast.kaibutsu;
   const homes = [[k.x, k.root.position.z], [g.x, g.root.position.z]];
-  UI.cutin({ name: 'KEN & KAGETORA', move: 'Twin Fang', jp: '双牙', color: '#585c66', color2: '#f2eadc' });
+  UI.cutin({ name: 'KEN & KAGETORA', move: 'Twin Fang', color: '#585c66', color2: '#f2eadc' });
   sfx.cutin(); duck(0.4, 1.4);
   E.timeScale = 0.12;
   await wait(0.7, true);
@@ -210,7 +210,7 @@ export async function startLevel({ phase = 1, intro = true, onExit } = {}) {
   S.defeats = 0;
   S.cards = cardDefs();
   UI.buildCards(S.cards, useCard);
-  if (phase >= 2) { const sm = S.cards.find(c => c.id === 'smith'); sm.state = 'fallen'; }
+  if (phase >= 3) { const lk = S.cards.find(c => c.id === 'lock'); lk.state = 'fallen'; }
   preloadMusic('battle', 'sad', 'dawn', 'smith', 'smith2');
   setupArena(phase);
   preloadSfx('boss', 'cine');     // boss- ja kohtausäänet ennen intro-kohtausta
@@ -229,9 +229,8 @@ function setupArena(phase) {
   place('jerome', -5.6, -2.6, 1);
   place('ken', -7.2, -3.0, 1);
   place('kagetora', -4.2, -2.3, 1);
-  if (phase === 1) place('smith', -8.2, -3.6, 1, 'Idle_2');
-  if (phase <= 2) MEN.forEach((id, i) => place(id, -9.4 - i * 1.2, -4.4 + (i % 2) * 0.5, 1, 'Idle'));
-  if (phase === 1) place('north', -13.0, -4.0, 1, 'Idle');
+  // Smith ja North kaatuivat yöllä Gajōn sisällä (intro); Jeromen miehet ovat mukana Neljään nuoleen asti
+  if (phase === 1) MEN.forEach((id, i) => place(id, -9.4 - i * 1.2, -4.4 + (i % 2) * 0.5, 1, 'Idle'));
   E.camPos.set(0, 2.4, 9); E.camLook.set(0, 1.4, 0);
 }
 
@@ -404,15 +403,16 @@ function damageBoss(amount, pos, o = {}) {
 
 function checkThresholds() {
   const B = S.B;
-  if (S.phase === 1 && B.hp <= 60 && !B.armored) {
-    B.hp = 60; B.armored = true; UI.setBossHP(B.hp / B.max, true);
-    const sm = S.cards.find(c => c.id === 'smith'); sm.state = 'sacrifice'; UI.updateCard(sm);
-    sfx.roar(); sfx.armor(); shake(0.4); say('roar_armor', { noWait: true });
-    UI.hint('Rage has hardened its hide! <b>Tap Smith\'s card.</b>');
-    cast.smith.play('Idle'); cast.smith.earPerk = 1;
-    setTimeout(() => say('card_ready', { noWait: true }), 1800);
+  if (S.phase === 1 && B.hp <= PHASE_HP[2] && !S.pending) { S.pending = 'arrows'; fourArrows(); }
+  if (S.phase === 2 && B.hp <= 20) {
+    B.hp = Math.max(B.hp, 20); UI.setBossHP(B.hp / B.max);
+    const lk = S.cards.find(c => c.id === 'lock');
+    if (lk.state === 'locked') {
+      lk.state = 'sacrifice'; UI.updateCard(lk);
+      sfx.roar(); shake(0.4); say('roar_armor', { noWait: true });
+      UI.hint('Its hide is too tough to finish it! <b>Tap the card – pin it down for Jerome.</b>');
+    }
   }
-  if (S.phase === 2 && B.hp <= 22 && !S.pending) { S.pending = 'arrows'; fourArrows(); }
 }
 
 function hurtWeed(fromX) {
@@ -683,25 +683,28 @@ const ctx = { cast, S, makeRock, E, FX, sfx, ARENA, bossHalf, restoreLight: () =
 
 async function introCutscene() {
   await cutStart();
-  const steps = SC.intro(ctx);
-  preloadLines(SC.linesOf(steps));
+  const steps = SC.intro(ctx), night = SC.smith(ctx);
+  preloadLines(SC.linesOf(steps).concat(SC.linesOf(night)));
   await runScene(steps, ctx);
-  cutEnd();
-  setupArena(1);
-}
-
-async function smithSacrifice() {
-  await cutStart();
-  const steps = SC.smith(ctx);
-  preloadLines(SC.linesOf(steps));
-  await runScene(steps, ctx);
+  E.skipping = false;
+  // canon: yöllä Gajōn sisällä North kaatuu ja Smith uhrautuu kivisortumassa; aamulla P4 nousee raunioista
+  await runScene(night, ctx);
   cutEnd();
   for (const r of ctx.fallingRocks || []) E.scene.remove(r);
   cast.smith.root.visible = false;
-  setupArena(2);
-  S.W.x = -3;
-  UI.toast('Smith – in our memories', 2);
-  beginPhase(2);
+  setupArena(1);
+  UI.toast('Smith & North – in our memories', 2.2);
+}
+
+async function lockScene() {
+  await cutStart();
+  const steps = SC.lock(ctx);
+  preloadLines(SC.linesOf(steps));
+  await runScene(steps, ctx);
+  cutEnd();
+  setupArena(3);
+  S.W.x = -3; S.B.x = 3.5;
+  beginPhase(3);
 }
 
 async function fourArrows() {
@@ -713,7 +716,7 @@ async function fourArrows() {
   for (const id of MEN) cast[id].root.visible = false;
   cast.jerome.root.position.set(-5.6, 0, -2.6);
   S.W.x = -3; S.B.x = 3.5;
-  beginPhase(3);
+  beginPhase(2);
 }
 
 async function finale() {
@@ -748,9 +751,9 @@ function showResult(names) {
 // test hooks (Playwright)
 export const debug = {
   S,
-  smith: () => { S.B.hp = 60; checkThresholds(); },
-  sacrifice: () => useCard('smith'),
-  arrows: () => { if (S.phase === 2) { S.B.hp = 20; checkThresholds(); } },
+  arrows: () => { if (S.phase === 1) { S.B.hp = 40; checkThresholds(); } },
+  lockReady: () => { if (S.phase === 2) { S.B.hp = 20; checkThresholds(); } },
+  lock: () => useCard('lock'),
   finale: () => { if (S.phase === 3) finale(); },
   fillHenki: () => addHenki(1),
   readyCards: () => S.cards.forEach(c => { if (c.state === 'cooldown') c.cool = 0; }),

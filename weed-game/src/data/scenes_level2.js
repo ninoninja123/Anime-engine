@@ -74,25 +74,35 @@ export const intro = ({ cast }) => [
   { expr: 'heuler', name: 'happy' },
   { say: 'intro_follow' },
   { expr: 'heuler', name: null }, { expr: 'jerome', name: null },
-  // the ground shakes – Kaibutsu
-  { music: null, fade: 0.8 },
-  { shake: 0.35 }, { sfx: 'rumble', arg: 2 }, { wait: 0.9 },
-  { place: 'kaibutsu', x: 13, z: 0, face: -1, anim: 'Walk', ts: 0.7 },
-  { cam: [5.2, 0.35, 6.2], look: [8.5, 2.8, 0] },                        // very low angle
-  { amb: 'boss' },                                                      // sub-drone joins as it approaches
-  { move: 'kaibutsu', x: 3.6, t: 3.4, anim: 'Walk', ts: 0.7, ease: 'out', faceMove: false, after: 'Idle' },
-  { sfx: 'bossAppear' },
-  { anim: 'kaibutsu', name: 'Howl' }, { bark: 'roar_intro' }, { sfx: 'roar' }, { shake: 0.7 },
-  { fx: 'ring', at: 'kaibutsu', color: 0xffa060, r: 6, t: 0.9 }, { fx: 'flash', color: '#ff9060', peak: 0.3 },
-  { cam: [3.0, 2.2, 4.4], look: [5.6, 2.5, 0], t: 1.8, ease: 'out' },     // push in on the face
-  { anim: 'kaibutsu', name: 'Idle' },
-  { music: 'battle' },
+  // canon: the gorge before Gajō is crossed at night – Weed first, Smith with Ken and Kagetora at his sides
+  { caption: '<b>The gorge before Gajō</b>Night', t: 2.6, wait: false },
+  { cam: [-1.0, 1.4, 6.8], look: [-2.0, 0.6, 0] },
+  { move: 'weed', x: -3.6, t: 0.5, anim: 'Gallop', ts: 1.3, ease: 'in' },
+  { anim: 'weed', name: 'Gallop_Jump', loop: false }, { sfx: 'whoosh' },
+  { move: 'weed', x: 0.6, y: 1.1, t: 0.4, ease: 'out', real: true },
+  { move: 'weed', x: 1.8, y: 0, t: 0.35, ease: 'in', after: 'Idle' }, { fx: 'dust', at: [1.8, 0.1, 0] },
+  { par: [
+    { move: 'smith', x: -3.4, z: 0, t: 1.0, anim: 'Gallop', ts: 1.1 },
+    { move: 'ken', x: -3.4, z: 0.7, t: 1.0, anim: 'Gallop', ts: 1.1 },
+    { move: 'kagetora', x: -3.4, z: -0.7, t: 1.0, anim: 'Gallop', ts: 1.1 },
+  ] },
+  { anim: 'smith', name: 'Gallop_Jump', loop: false }, { anim: 'ken', name: 'Gallop_Jump', loop: false }, { anim: 'kagetora', name: 'Gallop_Jump', loop: false },
+  { par: [
+    { move: 'smith', x: 0.4, y: 1.0, t: 0.45, ease: 'out' },
+    { move: 'ken', x: 0.6, y: 1.1, z: 0.7, t: 0.45, ease: 'out' },
+    { move: 'kagetora', x: 0.6, y: 1.1, z: -0.7, t: 0.45, ease: 'out' },
+  ] },
+  { par: [
+    { move: 'smith', x: 1.0, y: 0, t: 0.35, ease: 'in', after: 'Idle' },
+    { move: 'ken', x: 1.3, y: 0, z: 0.7, t: 0.35, ease: 'in', after: 'Idle' },
+    { move: 'kagetora', x: 1.3, y: 0, z: -0.7, t: 0.35, ease: 'in', after: 'Idle' },
+  ] },
+  { fx: 'dust', at: [1.0, 0.1, 0] },
   { cam: [-6.9, 1.3, 3.8], look: [-8.6, 0.9, -1.6] },
   { say: 'intro_weak' },
   { dolly: 'weed', dist: 1.5, side: -0.7, t: 0.4 },
   { anim: 'weed', name: 'Bark', loop: false },
   { say: 'intro_go' },
-  { cam: GAME_CAM.cam, look: GAME_CAM.look, t: 1.2 },
 ];
 
 // ------------------------------------------------------------------------------------------------
@@ -111,9 +121,21 @@ export const smith = (ctx) => {
     { place: 'kaibutsu', x: 4.4, z: 0, face: -1, anim: 'Idle_2_HeadLow' },
     { place: 'smith', x: -5.6, z: -0.4, face: 1, anim: 'Idle' },
     { place: 'jerome', x: -7.8, z: -2.6, face: 1, anim: 'Idle' },
-    { hide: 'north' },
+    { hide: 'north' }, { hide: 'kaibutsu' },
+    ...['robert', 'rocker', 'heuler'].map(id => ({ hide: id })),
+    { light: { rim: 0.45, exposure: 0.72, fog: 0x14121c, t: 0.1 } },          // night, inside Gajō
+    { caption: '<b>Inside Gajō</b>Night', t: 2.6, wait: false },
     { cam: [-1.0, 1.6, 6.5], look: [-3.0, 0.8, 0] },
     { say: 'north_fell' },
+    // the monster comes out of the dark passage
+    { place: 'kaibutsu', x: 10, z: 0, face: -1, anim: 'Walk', ts: 0.7 },
+    { cam: [2.8, 0.4, 5.2], look: [7, 2.4, 0] },
+    { amb: 'boss' },
+    { move: 'kaibutsu', x: 4.4, t: 2.6, anim: 'Walk', ts: 0.7, ease: 'out', faceMove: false, after: 'Idle_2_HeadLow' },
+    { sfx: 'bossAppear' },
+    { anim: 'kaibutsu', name: 'Howl' }, { bark: 'roar_intro' }, { sfx: 'roar' }, { shake: 0.7 },
+    { fx: 'flash', color: '#ff9060', peak: 0.3 },
+    { anim: 'kaibutsu', name: 'Idle_2_HeadLow' },
     // Smith steps forward; quiet close-up
     { cam: [-3.4, 0.8, 2.4], look: [-4.9, 0.7, -0.4] },
     { move: 'smith', x: -4.6, t: 1.2, anim: 'Walk', after: 'Idle' },
@@ -280,18 +302,17 @@ export const arrows = (ctx) => {
     { move: 'jerome', x: B.x - half - 1.3, t: 0.5, anim: 'Gallop', ts: 1.5, ease: 'in' },
     { cam: [B.x - half - 2.2, 0.4, 2.6], look: [B.x, 1.8, 0] },
     { slow: 0.22 }, { fx: 'speed', v: 1 },
-    { anim: 'jerome', name: 'Gallop_Jump', loop: false },      // canon: Jerome puree valtimoon (ei Battōgaa)
-    { move: 'jerome', x: B.x - half * 0.3, y: boss.height * 0.48, t: 0.3, ease: 'out', real: false },
-    { anim: 'jerome', name: 'Attack', loop: true, ts: 0.6 },                 // puree ja pitää kiinni
-    { fn: () => {
-      const hp = boss.weak.getWorldPosition(new THREE.Vector3());
-      FX.impact(hp, true); FX.flash('#ffffff', 0.5, 0.9); sfx.bite(); sfx.hit(); sfx.crit();
-      FX.burst(hp, { color: 0xffd090, count: 40, speed: 8 }); FX.ring(hp, 0xffffff, 7, 0.7);
-      B.hp = 8;
-    } },
-    { shake: 0.8 }, { freeze: 0.8 },
+    { anim: 'jerome', name: 'Gallop_Jump', loop: false },      // canon: P4 väistää Jeromen neljännen iskun
+    { par: [
+      { move: 'jerome', x: B.x - half * 0.3, y: boss.height * 0.4, t: 0.3, ease: 'out', real: false },
+      { fn: () => tween(B, { x: B.x + 1.8 }, 0.25, { onUpdate: () => { boss.root.position.x = B.x; } }) },
+      { anim: 'kaibutsu', name: 'Gallop_Jump', loop: false },
+    ] },
+    { fx: 'dust', at: 'kaibutsu', big: true }, { sfx: 'whoosh' },
     { slow: 1 }, { fx: 'speed', v: 0 },
-    { anim: 'kaibutsu', name: 'Idle_2_HeadLow', ts: 0.6 },
+    { move: 'jerome', y: 0, t: 0.35, ease: 'in', after: 'Idle_HitReact1', faceMove: false },
+    { shake: 0.4 },
+    { anim: 'kaibutsu', name: 'Idle', ts: 0.8 },
     { anim: 'jerome', name: 'Gallop_Jump', loop: false },
     { move: 'jerome', x: B.x - half - 1.8, y: 0, t: 0.5, ease: 'out', faceMove: false, after: 'Idle' },
     { wait: 0.6 },
@@ -317,6 +338,60 @@ export const arrows = (ctx) => {
     { cam: GAME_CAM.cam, look: GAME_CAM.look, t: 0.8 },
   );
   return steps;
+};
+
+// ------------------------------------------------------------------------------------------------
+// THE LOCK (canon): Weed, Ken and Kagetora pin P4 down, Jerome bites the artery and digs toward the heart;
+// P4 bites Kagetora and tears Jerome loose. The monster is left staggering -> Battōga.
+export const lock = (ctx) => {
+  const { cast, S, FX, sfx } = ctx;
+  const boss = cast.kaibutsu, B = S.B, half = ctx.bossHalf(), H = boss.height;
+  return [
+    { fn: () => { B.x = 3.4; } },
+    { place: 'kaibutsu', x: 3.4, z: 0, face: -1, anim: 'Idle_HitReact1', loop: false },
+    { place: 'weed', x: -1.4, z: 0.6, face: 1, anim: 'Gallop', ts: 1.4 },
+    { place: 'ken', x: -2.6, z: -0.8, face: 1, anim: 'Gallop', ts: 1.4 },
+    { place: 'kagetora', x: -2.2, z: 1.2, face: 1, anim: 'Gallop', ts: 1.4 },
+    { place: 'jerome', x: -5.0, z: 0, face: 1, anim: 'Idle' },
+    { music: 'battle' },
+    { cam: [-0.6, 0.7, 5.2], look: [2.4, 1.2, 0] },
+    { bark: 'lock_call' },
+    { par: [
+      { move: 'weed', x: B.x - 0.6, y: H * 0.55, z: 0.5, t: 0.5, anim: 'Gallop_Jump', ease: 'out' },
+      { move: 'ken', x: B.x + 0.4, y: H * 0.62, z: -0.4, t: 0.55, anim: 'Gallop_Jump', ease: 'out' },
+      { move: 'kagetora', x: B.x - 0.1, y: H * 0.7, z: 0.2, t: 0.6, anim: 'Gallop_Jump', ease: 'out' },
+    ] },
+    { anim: 'weed', name: 'Attack', ts: 0.7 }, { anim: 'ken', name: 'Attack', ts: 0.7 }, { anim: 'kagetora', name: 'Attack', ts: 0.7 },
+    { sfx: 'bite' }, { sfx: 'hit' }, { shake: 0.5 },
+    { anim: 'kaibutsu', name: 'Idle_HitReact2', loop: false },
+    { freeze: 0.5 },
+    // Jerome goes for the artery
+    { cam: [B.x - half - 2.2, 0.5, 2.8], look: [B.x, H * 0.45, 0] },
+    { move: 'jerome', x: B.x - half - 0.9, t: 0.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
+    { anim: 'jerome', name: 'Gallop_Jump', loop: false },
+    { move: 'jerome', x: B.x - half * 0.3, y: H * 0.42, t: 0.25, ease: 'out' },
+    { anim: 'jerome', name: 'Attack', ts: 0.6 },
+    { fn: () => { const hp = boss.weak.getWorldPosition(new THREE.Vector3()); FX.impact(hp, true); FX.burst(hp, { color: 0xffd090, count: 30, speed: 7 }); sfx.bite(); boss.weakReveal = 1; } },
+    { expr: 'jerome', name: 'angry' },
+    { say: 'lock_artery' },
+    // P4 bites Kagetora and tears Jerome loose
+    { anim: 'kaibutsu', name: 'Attack', loop: false }, { sfx: 'roar' }, { shake: 0.8 },
+    { anim: 'kagetora', name: 'Idle_HitReact2', loop: false }, { sfx: 'hurt' },
+    { dolly: 'kagetora', dist: 1.6, side: 0.6, t: 0.3 },
+    { say: 'lock_hurt' },
+    { cam: [0.5, 1.6, 8.5], look: [2.0, 1.2, 0], t: 0.3 },
+    { par: [
+      { move: 'jerome', x: -3.0, y: 0, z: -0.6, t: 0.6, ease: 'out', anim: 'Idle_HitReact2', faceMove: false },
+      { move: 'weed', x: -0.6, y: 0, z: 0.4, t: 0.5, ease: 'out', anim: 'Jump_ToIdle', faceMove: false },
+      { move: 'ken', x: 6.2, y: 0, z: -0.6, t: 0.55, ease: 'out', anim: 'Jump_ToIdle', faceMove: false },
+      { move: 'kagetora', x: 5.6, y: 0, z: 1.0, t: 0.6, ease: 'out', anim: 'Idle_HitReact1', faceMove: false },
+    ] },
+    { fx: 'dust', at: [2, 0.1, 0], big: true }, { expr: 'jerome', name: null },
+    { fn: () => { B.hp = 8; } },
+    { anim: 'kaibutsu', name: 'Idle_2_HeadLow', ts: 0.6 },
+    { say: 'arrows_now' },
+    { cam: GAME_CAM.cam, look: GAME_CAM.look, t: 0.8 },
+  ];
 };
 
 // ------------------------------------------------------------------------------------------------
@@ -430,6 +505,16 @@ export const post = (ctx) => {
     { expr: 'jerome', name: 'closed' },
     { say: 'post_follow' },
     { expr: 'jerome', name: null },
+    // canon: Mel comes to help them out of the river, GB is with him
+    { place: 'mel', x: -3.5, z: -0.6, face: 1, anim: 'Gallop', ts: 1.2 },
+    { place: 'gb', x: -4.6, z: -1.2, face: 1, anim: 'Walk' },
+    { cam: [0.4, 1.0, 4.2], look: [0.2, 0.7, -0.4] },
+    { par: [
+      { move: 'mel', x: 0.8, z: -0.3, t: 1.6, anim: 'Gallop', ts: 1.2, after: 'Bark', ease: 'out' },
+      { move: 'gb', x: -1.6, z: -1.0, t: 2.0, anim: 'Walk', after: 'Idle' },
+    ] },
+    { say: 'help' },
+    { anim: 'mel', name: 'Idle' },
     // the quiet moment with the fallen monster (the whimper is our own interpretation)
     { anim: 'weed', name: 'Walk', ts: 0.6 },
     { move: 'weed', x: 4.6, z: -0.6, t: 2.0, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' },

@@ -17,6 +17,8 @@ export const VOICES = {
   rocker:   { name: 'Rocker', jp: 'ロッカ', profile: 'Adult male (≈28). Wry, raspy, fearless; hides fear behind a smirk.' },
   heuler:   { name: 'Heuler', jp: 'ホイラー', profile: 'Adult male (≈30). Warm, gentle tenor-baritone; the heart of the squad, protective of Robert.' },
   kaibutsu: { name: 'Kaibutsu', jp: '怪物', profile: 'Huge, guttural lion-like roars and growls; speaks only a few words (canon: P4 talks) in a deep, rasping, distorted voice. Its final whimper (own interpretation) is small and broken — the dog it once was.' },
+  mel:      { name: 'Mel', jp: 'メル', profile: 'Young male golden retriever. Bright, kind, brave; a friend who always comes back for you.' },
+  gb:       { name: 'GB', jp: 'ジービー', profile: 'Middle-aged male English setter. Lazy, boastful, warm-hearted; a bit nasal and theatrical.' },
   narrator: { name: '', jp: 'ナレーション', profile: 'Mature narrator (any gender). Calm, low, measured, like an anime episode narrator; slight reverb.' },
 };
 
@@ -86,7 +88,7 @@ export const LINES = Object.fromEntries([
     'fierce pride', 'Snapped back instantly, mid-leap. Effort on the last syllable.', 4, 0, 0.1),
   L('weed', 'battoga', '抜刀牙ッ！', 'BATTŌGA!',
     'battle cry', 'Explosive, from the gut; short intake of breath before. Not too long.', 5, 0, 0),
-  L('kaibutsu', 'roar_armor', 'ガアアアアッ！！', '[Roars — its hide hardens like stone]',
+  L('kaibutsu', 'roar_armor', 'ガアアアアッ！！', '[A furious roar – its hide is too tough to bite through]',
     'berserk fury', 'Harsher and higher than the first roar, with rasp. Shakes the ground.', 5, 0, 0.2),
   L('smith', 'card_ready', 'わしの出番じゃな。', 'Looks like my turn has come.',
     'calm acceptance', 'Quiet, almost to himself. A small smile. No fear.', 3, 0, 0.2),
@@ -94,7 +96,7 @@ export const LINES = Object.fromEntries([
   // ------------------------------------------------------------ SMITH'S SACRIFICE
   L('narrator', 'north_fell', '牙城の中…ノースは奇襲に倒れた。', 'Inside Gajō… North fell to the ambush.',
     'hushed grief', 'Quiet, matter-of-fact, a beat of silence after.', 3, 0.2, 0.6),
-  L('smith', 'sac_cliff', 'ウィード…上の崖が見えるか。…わしに任せろ。', 'Weed… do you see the cliff above? …Leave this to me.',
+  L('smith', 'sac_cliff', 'ウィード…上の岩天井が見えるか。…わしに任せろ。', 'Weed… do you see the rock ceiling above? …Leave this to me.',
     'gentle resolve', 'Soft and unhurried, as if comforting a child. Pause after the question; the last line is warm and final.', 4, 0.4, 0.4),
   L('weed', 'sac_wait', 'スミス、待って！', 'Smith, wait!',
     'sudden fear', 'Voice cracks with alarm; reaching out. Breath in before.', 4, 0, 0.2),
@@ -130,8 +132,16 @@ export const LINES = Object.fromEntries([
     'grief turned to fury', 'Starts low and shaking, explodes into a roar. The only time he truly shouts.', 5, 0, 0.1),
   L('jerome', 'arrows_thanks', '……ありがとう、戦友たち。', '…Thank you, my comrades.',
     'broken, quiet', 'Very quiet, voice catching. Long breath before. Do not cry openly — he holds it in.', 5, 0.8, 1.0),
-  L('jerome', 'arrows_now', 'ウィード！奴がよろめいた…今だ！', 'Weed! It\'s staggering… now!',
+  L('jerome', 'arrows_now', 'まだ終わっていない。ウィード…皆で行くぞ！', 'It\'s not over. Weed… we finish this together!',
     'urgent resolve', 'Pulls himself together: strong and fast. A breath between sentences.', 4, 0, 0.2),
+
+  // ------------------------------------------------------------ THE LOCK (canon: Weed, Ken and Kagetora pin P4, Jerome bites the artery)
+  L('weed', 'lock_call', 'ケン！カゲトラ！押さえ込め！', 'Ken! Kagetora! Pin it down!',
+    'desperate command', 'Shouted mid-leap, voice cracking with effort. Fast.', 5, 0, 0.1),
+  L('jerome', 'lock_artery', '…届け…！', '…Reach…!',
+    'straining, all-in', 'Through clenched teeth, jaws locked on the wound. A strained growl more than a word.', 5, 0, 0.3),
+  L('kagetora', 'lock_hurt', 'ぐっ…まだだ…！', 'Ngh… not yet…!',
+    'pain and defiance', 'Bitten at the neck: a choked cry, then stubborn words. No screaming.', 4, 0, 0.3),
 
   // ------------------------------------------------------------ FINALE
   L('weed', 'finale_cry', 'これで終わりだ…抜刀牙ーーッ！', 'This ends now… BATTŌGA!',
@@ -160,6 +170,8 @@ export const LINES = Object.fromEntries([
     'fierce compassion', 'Through clenched teeth (he is holding Jerome\'s leg); then softer, certain.', 5, 0.2, 0.6),
   L('jerome', 'post_follow', '……ウィード。', '…Weed.',
     'silent tears', 'Barely a whisper; a breath that breaks. He is crying without sound.', 5, 0.8, 1.0),
+  L('mel', 'help', 'ウィード！ジェロム！こっちだ、つかまれ！', 'Weed! Jerome! Over here – grab on!',
+    'urgent kindness', 'Shouted over the roar of the river, warm and brave.', 4, 0, 0.3),
   L('jerome', 'post_stay', '俺は戻らない。ここ、奥羽に残る。…もう誰の道具でもない。', 'I\'m not going back. I\'m staying here, in Ōu. …I\'m no one\'s tool anymore.',
     'calm defiance', 'Barked toward the humans at the helicopter: firm, steady, free.', 4, 0.3, 0.6),
   L('narrator', 'memorial', 'スミス。ノース。ロバート。ロッカ。ホイラー。その名は、奥羽の風に刻まれた。', 'Smith. North. Robert. Rocker. Heuler. Their names are carved into the wind of Ōu.',
