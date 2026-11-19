@@ -67,7 +67,57 @@ export const LOOKS = {
   dane_blue: { base: 'ken_auto', grade: { gradient: ['#25272c', '#5f6570'], chroma: 0.15 }, marks: [
     { type: 'chest', color: '#c9ccd2', w: 0.25, opacity: 0.8 }] },
   dane_brindle: { base: 'ken_auto', grade: { gradient: ['#1a1410', '#a07a4c'] }, marks: [
-    { type: 'stripes', color: '#2a1f17', blend: 'multiply', freq: 46, thick: 0.4, opacity: 0.85, head: 0.2 }] },
+    { type: 'stripes', color: '#2a1f17', blend: 'multiply', freq: 58, thick: 0.22, warp: 4.5, breakup: 0.45, opacity: 0.65, head: 0.2 }] },
+
+  // ======== geneeriset sotilaat: kukin eri pohjasta ja eri värityksellä ========
+  // liittolaiset (japanilaiset pystykorvat ja sekarotuiset)
+  spitz_red_cream: { base: 'gin_auto', grade: { gradient: ['#9c4a26', '#f0e0c6'] } },
+  spitz_black_tan: { base: 'tesshin_auto', grade: { gradient: ['#141211', '#b07a45'] } },
+  kai_red_brindle: { base: 'striped_b_rigged', grade: { gradient: ['#2a1a12', '#9a6a42'] } },
+  spitz_sesame: { base: 'weed_rigged', grade: { gradient: ['#5a4535', '#ece0cd'] } },
+  mutt_cream: { base: 'generic_auto', grade: { gradient: ['#6e5a45', '#e3d6c0'], chroma: 0.3 }, marks: [
+    { type: 'ears', color: '#b08458' }, { type: 'under', color: '#f2ebdf', opacity: 0.8 }] },
+  sighthound_grey: { base: 'rocket_rigged', grade: { gradient: ['#5a5c62', '#ebe8e2'], chroma: 0.3 } },
+  wolf_dark: { base: 'akame_auto', grade: { gradient: ['#1e1d1d', '#545150'], chroma: 0.3 }, marks: [
+    { type: 'under', color: '#8e8a84', opacity: 0.7 }] },
+  spaniel_liver: { base: 'smith_rigged', grade: { gradient: ['#4e2c19', '#f2ece2'] } },
+  // vihollisarmeija (punainen panta lisätään hahmossa)
+  mastiff_dark_brindle: { base: 'tobei_rigged', grade: { gradient: ['#120e0c', '#4e3d2e'] }, marks: [
+    { type: 'stripes', color: '#2a1f17', blend: 'multiply', freq: 52, thick: 0.24, warp: 4.5, breakup: 0.45, opacity: 0.6, head: 0.3 }] },
+  dane_merle: { base: 'hogen_rigged', grade: { gradient: ['#25272d', '#a4a8b0'], chroma: 0.25 }, marks: [
+    { type: 'patches', color: '#6a6e78', blend: 'multiply', scale: 6, r: 0.6, opacity: 0.9 }] },
+  shepherd_black: { base: 'john_auto', grade: { gradient: ['#0e0d0d', '#1f1d1c'] } },
+  mutt_black_white: { base: 'generic_auto', grade: { gradient: ['#121111', '#221f1e'] }, marks: [
+    { type: 'chest', color: '#ebe6dc', w: 0.45 }, { type: 'socks', color: '#ebe6dc', height: 0.12 },
+    { type: 'blaze', color: '#ebe6dc', width: 0.09, from: 0.2 }] },
+  lurcher_red: { base: 'rocket_rigged', grade: { gradient: ['#4a2a18', '#8e5c3c'] } },
+  spitz_dun_spotted: { base: 'tesshin_auto', grade: { gradient: ['#3a3530', '#b8ab98'], chroma: 0.4 } },
+  kai_black_brindle: { base: 'striped_b_rigged', grade: { gradient: ['#121212', '#5c5e60'], chroma: 0.2 } },
+};
+
+// Geneeriset joukkohahmot rigatuilla pohjilla (characters.js lisää nämä uusina hahmoina, galleriaryhmä group).
+const ENEMY_COLLAR = { type: 'collar', color: '#8a1d17' };
+const ally = (model, look, height, breed, bones, x = {}) => ({ name: 'Ōu warrior', kind: 'rigged', model, look, height, bones, breed, group: 'allies',
+  role: 'A warrior of the Ōu pack.', gait: 'trot', speed: 1.05, wag: 0.35, ...x });
+const enemy = (model, look, height, breed, bones, x = {}) => ({ name: 'Army soldier', kind: 'rigged', model, look, height, bones, breed, group: 'enemies',
+  role: 'A soldier of the great army, marked by a red collar.', gait: 'trot', speed: 1.0, wag: 0.05, extras: [ENEMY_COLLAR], ...x });
+export const LOOK_ARMY = {
+  ou_soldier_a: ally('gin_auto', 'spitz_red_cream', 1.05, 'Red Japanese spitz-type'),
+  ou_soldier_b: ally('tesshin_auto', 'spitz_black_tan', 0.98, 'Black-and-tan spitz-type'),
+  ou_soldier_c: ally('striped_b_rigged', 'kai_red_brindle', 1.0, 'Red brindle Kai-type'),
+  ou_soldier_d: ally('weed_rigged', 'spitz_sesame', 0.9, 'Sesame spitz-type', { head: 0.92, legs: 1.08 }),
+  ou_soldier_e: ally('generic_auto', 'mutt_cream', 1.08, 'Cream mixed breed'),
+  ou_soldier_f: ally('rocket_rigged', 'sighthound_grey', 1.15, 'Grey sighthound mix', { head: 0.95 }),
+  ou_soldier_g: ally('akame_auto', 'wolf_dark', 1.12, 'Dark wolf-type', { head: 1.05 }),
+  ou_soldier_h: ally('smith_rigged', 'spaniel_liver', 0.98, 'Liver-and-white spaniel mix'),
+  army_soldier_a: enemy('tobei_rigged', 'mastiff_dark_brindle', 1.3, 'Brindle mastiff-type', undefined, { gait: 'heavy', speed: 0.92 }),
+  army_soldier_b: enemy('hogen_rigged', 'dane_merle', 1.4, 'Merle Great Dane-type', { head: 0.95 }, { gait: 'heavy' }),
+  army_soldier_c: enemy('john_auto', 'shepherd_black', 1.15, 'Black shepherd-type'),
+  army_soldier_d: enemy('ken_auto', 'dane_brindle', 1.3, 'Brindle Dane mix'),
+  army_soldier_e: enemy('generic_auto', 'mutt_black_white', 1.05, 'Black-and-white mixed breed'),
+  army_soldier_f: enemy('rocket_rigged', 'lurcher_red', 1.18, 'Red lurcher-type', { head: 0.95 }, { gait: 'light', speed: 1.15 }),
+  army_soldier_g: enemy('tesshin_auto', 'spitz_dun_spotted', 1.0, 'Spotted dun spitz-type'),
+  army_soldier_h: enemy('striped_b_rigged', 'kai_black_brindle', 1.05, 'Black brindle Kai-type'),
 };
 
 // Hahmot, jotka käyttävät lookia rigatun pohjamallin päällä (aiemmin koiratehtaan hahmoja).

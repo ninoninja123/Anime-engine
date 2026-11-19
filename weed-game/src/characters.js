@@ -273,4 +273,11 @@ export const ROSTER_EXTRA_IDS = [];
     if (!ROSTER.includes(id)) ROSTER.push(id);
   }
 }
+// rigatut joukkovariantit (looks.js LOOK_ARMY): eri pohjamallit ja värimuunnokset
+import { LOOK_ARMY } from './data/looks.js';
+for (const [id, o] of Object.entries(LOOK_ARMY)) {
+  if (CHARACTERS[id] || !MODELS[o.model]) continue;
+  CHARACTERS[id] = { ...o }; GROUP_OF[id] = o.group;
+  ROSTER_EXTRA_IDS.push(id); if (!ROSTER.includes(id)) ROSTER.push(id);
+}
 export { GROUP_OF, GROUP_LABEL };
