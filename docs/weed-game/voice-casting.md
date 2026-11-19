@@ -24,7 +24,7 @@ ElevenLabs flow with every take: "GDW voices" (`3wWrxUuLnB016Km9TduO`).
 | Robert (`robert`) | REI (library) | `A8vsSyy1xmJQkBgZacW0` | Calm, quiet young anime male – soft-spoken soldier. |
 | Rocker (`rocker`) | Shimura – Husky voice (library) | `3U6tYxUqUpcplL5Qep78` | Slightly hoarse/raspy – wry, fearless. |
 | Heuler (`heuler`) | Akira – Charismatic Japanese Male (library) | `DOL4zlUH4vnnX1hByxsw` | Warm, approachable tenor-baritone – the heart of the squad. |
-| Narrator (`narrator`) | Kuro – Mature Anime Gentleman (library) | `UUpoAQhpz37lNIWNVLoF` | Calm, mature, warm low voice made for narration and emotional scenes. |
+| Narrator (`narrator`) | Satoru – Deep, Composed Japanese Voice (library; trailer/film narrator) | `kOPshPH6L1cDKhcEL9ro` | Recast after user feedback (Kuro was too flat and got lost under the music). Tested 3 voices on one dramatic line (Satoru, Kuro `UUpoAQhpz37lNIWNVLoF`, Akio `eRD4wLHoHH7P30TZIexm`): Satoru had the widest dynamic range (LRA 9.2 vs 8.3 / 4.4) and the most epic delivery. All 23 narrator lines regenerated with 2 takes each; the more dynamic take (higher LRA) is used. Processing: 90 Hz high-pass, light compression (2.5:1), +2.5 dB at 3 kHz, tempo 1.2, 150 ms tail, about -15…-17 LUFS, true peak at most -1.3 dB. |
 | Kaibutsu / P4 (`kaibutsu`) | Papazon – Japanese Villain (library) + pitch-down | `2UGDsJpBJAiAlF0jQQ7x` | Only the spoken line `kaibutsu_speak` (deep, rasping; processed ~2.6 semitones down, slower, low-passed). Roars and the whimper stay as sound effects (`sfx.roar`), no TTS. |
 
 ## Names
@@ -33,7 +33,7 @@ Robert, Rocker, Heuler, North, Gin, GB, Sakura, Blue, Nero, Sasuke, Hook, Mel, �
 `lines.js` keeps the kana (subtitles unchanged).
 
 ## Processing (tools script, scratchpad)
-Tempo: atempo 1.2 for everyone, narrator 1.3, Smith 1.15 (user feedback: too slow). Trim -45 dB, 40 ms kept.
+Tempo: atempo 1.2 for everyone (narrator too, since the recast), Smith 1.15 (user feedback: too slow). Trim -45 dB, 40 ms kept.
 Mono 44.1 kHz 80 kbps mp3; silence trimmed at both ends (-50 dB), 20 ms fades, gain to ≈ -16 LUFS integrated with a
 -1.5 dBTP limiter (quiet whisper lines end up ≈ -18…-20 LUFS because of the peak limit – natural dynamics).
 Critical intensity 4–5 lines were generated as 2 takes; take A used except `weed_sac_scream`, `jerome_arrows_fourth`,
