@@ -731,7 +731,7 @@ export const post = (ctx) => {
       const all = [boss, w, cast.ken, cast.kagetora];
       const p0 = boss.root.position.clone();
       await tween({ k: 0 }, { k: 1 }, 1.0, { real: true, ease: 'in', onUpdate: k => { boss.root.position.set(p0.x + k * 2.2, p0.y + Math.sin(k * Math.PI) * 0.5 - k * k * 1.2, p0.z); } });
-      ctx.contact.releaseAll();
+      ctx.contact.releaseAll(false);   // fangs let go mid-air (no snapping back onto the ground)
       all.forEach(d => { d.fade(1); });
     } },
     { music: null, fade: 0.6 }, { amb: 'gorge' }, { sfx: 'whoosh' },

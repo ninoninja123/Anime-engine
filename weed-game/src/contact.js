@@ -369,10 +369,11 @@ function solveBody(c, P, extraPitch = 0, allowAir = true) {
 const SKIP_PIN = ['head', 'neck', 'spine_03'];
 function pushOut(c, P, extra) {
   let k = bodyOverlap(c.a, c.tg, SKIP_PIN).k;
-  for (let i = 0; i < 6 && k < 0.6; i++) {
+  c.pitchAdj = c.pitchAdj || 0;
+  for (let i = 0; i < 10 && k < 0.62; i++) {
     let best = 0;
-    for (const [key, dr] of [['roll', 0.08], ['roll', -0.08], ['yaw', 0.1], ['yaw', -0.1]]) {
-      c[key] += dr; solveBody(c, P, extra, true);
+    for (const [key, dr] of [['roll', 0.08], ['roll', -0.08], ['yaw', 0.1], ['yaw', -0.1], ['pitchAdj', 0.1], ['pitchAdj', -0.1]]) {
+      c[key] += dr; solveBody(c, P, extra + c.pitchAdj, true);
       const k2 = bodyOverlap(c.a, c.tg, SKIP_PIN).k;
       c[key] -= dr;
       if (k2 > k + 1e-3) { k = k2; best = [key, dr]; }
@@ -380,7 +381,7 @@ function pushOut(c, P, extra) {
     if (!best) break;
     c[best[0]] = clamp(c[best[0]] + best[1], -1.3, 1.3);
   }
-  solveBody(c, P, extra, true);
+  solveBody(c, P, extra + c.pitchAdj, true);
 }
 
 /**
@@ -461,7 +462,7 @@ export function release(o) {
 export function cancel(dog) { const d = dogOf(dog); for (const c of [...active]) if (c.a === d) endCtrl(c, true); }
 
 /** Hampaat irti heti ilman animaatiota (ohitus / kohtauksen loppu). */
-export function releaseAll() { for (const c of [...active]) endCtrl(c, true); }
+export function releaseAll(snap = true) { for (const c of [...active]) { endCtrl(c, snap); if (!snap) c.a.pose.rotation.set(0, 0, 0); } }
 
 function endCtrl(c, snap) {
   active.delete(c); if (pins[c.a.id] === c) delete pins[c.a.id];
