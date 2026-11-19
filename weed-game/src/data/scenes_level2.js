@@ -1,7 +1,7 @@
 // Level 2 scene scripts (data). Step format: see src/scenes.js. Lines: src/data/lines.js.
 // Each export is a function (ctx) -> steps, so positions can depend on the current fight state.
 import * as THREE from 'three';
-import { tween, wait } from '../engine.js';
+import { tween, wait, shake } from '../engine.js';
 import { rotBoneWorld } from '../contact.js';
 import { A, Nod, Shiver, act, resetActing } from '../shared/acting.js';
 import { Mark, From, Drift, Mood, GradeNow, Grade, drift, grade } from '../shared/cine.js';
@@ -221,14 +221,27 @@ export const smith = (ctx) => {
     { caption: '<b>Inside Gajō</b>Night', t: 2.6, wait: false },
     { cam: [-1.0, 1.6, 6.5], look: [-3.0, 0.8, 0] },
     { say: 'north_fell' },
-    // the monster comes out of the dark passage
-    { place: 'kaibutsu', x: 10, z: 0, face: -1, anim: 'Walk', ts: 0.7 },
-    { cam: [2.8, 0.4, 5.2], look: [7, 2.4, 0] },
-    { amb: 'boss' },
-    { move: 'kaibutsu', x: 4.4, t: 2.6, anim: 'Walk', ts: 0.7, ease: 'out', faceMove: false, after: 'Idle_2_HeadLow' },
+    // the monster comes out of the dark passage: first only its eyes in the black, then the heavy steps, then the shape
+    { place: 'kaibutsu', x: 10.5, z: -0.4, face: -1, anim: 'Idle_2_HeadLow', ts: 0.6 },
+    { fn: () => { boss.eyes.scale.setScalar(1.3); boss.fade(0.15); } },
+    { amb: 'boss' }, { sfx: 'boss_drone' },
+    { cam: [3.6, 1.2, 4.2], look: [9.0, 2.2, -0.3] },
+    { cam: [4.4, 1.25, 3.8], look: [9.0, 2.2, -0.3], t: 1.6 },                       // slow push into the dark: two eyes
+    { par: [
+      { fn: async () => { for (let i = 0; i < 5; i++) { sfx.bossStep({}, { x: boss.root.position.x }); shake(0.12); await wait(0.5, true); } } },
+      { fn: () => tween({ v: 0.15 }, { v: 1 }, 2.4, { real: true, onUpdate: e => boss.fade(0.15 + 0.85 * e) }) },
+      { move: 'kaibutsu', x: 4.4, z: 0, t: 2.6, anim: 'Walk', ts: 0.7, ease: 'out', faceMove: false, after: 'Idle_2_HeadLow' },
+      { cam: [1.6, 0.35, 5.0], look: [5.6, 2.2, 0], t: 2.6 },                          // low angle: it towers over them
+    ] },
+    { fn: () => boss.eyes.scale.setScalar(0.75) },
     { sfx: 'bossAppear' },
+    // extreme close-up: the jaws open, the roar
+    { fn: () => { const n = ctx.contact.mouthWorld('kaibutsu'); E.camPos.set(n.x - 0.9, n.y + 0.1, n.z + 1.2); E.camLook.copy(n); tween(E.camPos, { z: n.z + 0.9 }, 1.2, { real: true }); } },
     { anim: 'kaibutsu', name: 'Howl' }, { bark: 'roar_intro' }, { sfx: 'roar' }, { shake: 0.7 },
-    { fx: 'flash', color: '#ff9060', peak: 0.3 },
+    { fx: 'flash', color: '#ff9060', peak: 0.2 },
+    { wait: 0.8 },
+    // reaction shots: Weed, Smith
+    { dolly: 'weed', dist: 1.2, side: 0.6, t: 0.3 },
     { anim: 'kaibutsu', name: 'Idle_2_HeadLow' },
     // Smith steps forward; quiet close-up
     { cam: [-3.4, 0.8, 2.4], look: [-4.9, 0.7, -0.4] },
@@ -336,10 +349,16 @@ export const smith = (ctx) => {
     // the next morning they mourn him – and the monster rises from the rubble
     { caption: '<b>The next morning</b>', t: 2.4, wait: false },
     { mood: 'storm', t: 3 },                                                  // cold gold morning, red threat
-    // it rises from under the rocks
-    { sfx: 'rumble', arg: 1.5 }, { shake: 0.5 }, { wait: 0.9 },
+    // the mourning: a quiet wide on the rock pile in the cold morning light, then the ground trembles
+    { cam: [2.0, 1.0, 8.5], look: [6.5, 1.0, 0] },
+    { cam: [2.6, 0.9, 7.6], look: [6.5, 1.0, 0], t: 2.2 },
+    { sfx: 'rumble', arg: 1.5 }, { shake: 0.5 }, { sfx: 'strain' },
+    { fn: () => { FX.dust(new THREE.Vector3(6.5, 0.4, 0), true); FX.debrisBurst && FX.debrisBurst(new THREE.Vector3(6.5, 0.6, 0.2), 6); } },
+    { wait: 0.9 },
+    // it rises from under the rocks – low camera, rocks thrown aside
+    { cam: [3.6, 0.25, 4.4], look: [6.4, 1.8, 0] },
     { fn: () => {
-      boss.root.visible = true; B.x = 6.5; boss.root.position.set(6.5, -2, 0); boss.face(-1, true);
+      boss.root.visible = true; boss.fade(1); B.x = 6.5; boss.root.position.set(6.5, -2, 0); boss.face(-1, true);
       boss.play('Howl'); boss.eyes.material.color.set(0xff3010); boss.eyes.scale.setScalar(0.75);
       tween(boss.root.position, { y: 0 }, 0.6, { ease: 'out', real: true });
       for (const r of ctx.fallingRocks) {
@@ -348,17 +367,18 @@ export const smith = (ctx) => {
           .then(() => tween(r.scale, { x: 0.01, y: 0.01, z: 0.01 }, 0.6, { real: true }));
       }
     } },
-    { bark: 'roar_rise' }, { sfx: 'roar' }, { shake: 0.9 }, { fx: 'flash', color: '#ff8050', t: 0.4, peak: 0.4 },
+    { bark: 'roar_rise' }, { sfx: 'roar' }, { sfx: 'debris' }, { shake: 0.9 }, { fx: 'flash', color: '#ff8050', t: 0.3, peak: 0.25 },
     { fx: 'dust', at: [6.5, 0.5, 0], big: true },
-    { wait: 1.3 },
+    { cam: [3.0, 0.3, 4.8], look: [6.2, 2.2, 0], t: 1.3 },
+    // its eye opens in close-up – then it speaks
     { anim: 'kaibutsu', name: 'Idle' },
-    { cam: [3.2, 1.2, 4.6], look: [6.0, 2.4, 0], t: 0.6 },
-    { say: 'speak' },
-    { dolly: 'jerome', dist: 1.5, side: 0.7, t: 0.4 },
+    { fn: () => { const h = boss.bones.head.getWorldPosition(new THREE.Vector3()), n = ctx.contact.mouthWorld('kaibutsu'); const eye = h.lerp(n, 0.45).add(new THREE.Vector3(0, 0.12, 0.2)); E.camPos.set(eye.x + 0.15, eye.y + 0.05, eye.z + 1.1); E.camLook.copy(eye); tween(E.camPos, { z: eye.z + 0.9 }, 1.0, { real: true }); } },
+    { wait: 0.7 },
+    { par: [{ say: 'speak' }, { cam: [3.2, 1.2, 4.6], look: [6.0, 2.4, 0], t: 3.0 }] },
     { expr: 'jerome', name: 'sad' },
-    { say: 'p4_answer' },
+    { par: [{ say: 'p4_answer' }, { track: 'jerome', from: [1.3, 0.3, 1.4], to: [0.95, 0.28, 1.05], look: [0.3, 0.25, 0], t: 3.0 }] },
     { expr: 'jerome', name: null },
-    { say: 'sac_rises' },
+    { par: [{ say: 'sac_rises' }, { cam: [1.0, 1.0, 6.0], look: [4.0, 1.4, 0], t: 3.0 }] },
     { dolly: 'weed', dist: 1.2, side: -0.5, t: 0.6 },
     { say: 'sac_nod' },
     { fn: () => ctx.restoreLight && ctx.restoreLight() },
@@ -666,8 +686,10 @@ export const finale = (ctx) => {
     { shake: 1.0 }, { freeze: 0.9 },
     { slow: 1 }, { fx: 'speed', v: 0 },
     { fn: () => { const n = ctx.contact.mouthWorld('weed'); E.camPos.set(n.x - 1.6, n.y + 0.2, n.z + 2.4); E.camLook.set(n.x + 0.3, n.y - 0.1, n.z); } },
-    { sfx: 'roar' }, { thrash: 'kaibutsu', t: 0.9, amp: 0.3, freq: 2.4 },
-    { wait: 0.6 },
+    { sfx: 'roarPain' }, { thrash: 'kaibutsu', t: 0.9, amp: 0.3, freq: 2.4 },
+    { wait: 0.4 },
+    { fn: () => { const h = boss.bones.head.getWorldPosition(new THREE.Vector3()), n = ctx.contact.mouthWorld('kaibutsu'); const eye = h.lerp(n, 0.45).add(new THREE.Vector3(0, 0.12, 0.2)); E.camPos.set(eye.x + 0.15, eye.y + 0.05, eye.z + 1.05); E.camLook.copy(eye); tween(E.camPos, { z: eye.z + 0.85 }, 0.8, { real: true }); } },   // P4's eye dims
+    { wait: 0.8 },
   ];
 };
 

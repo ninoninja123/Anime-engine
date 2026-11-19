@@ -176,11 +176,11 @@ async function kenKageStrike() {
   say('sync_reply', { noWait: true });
   // two spinning fangs at once: Ken's jaws close on the shoulder, Kagetora's on the haunch (both real contacts)
   FX.vortex(g.root, dir, g.height * 0.8, 0.6);
-  E.timeScale = 0.3; FX.speedLines(0.8);
+  E.timeScale = 0.3; FX.speedLines(1); sfx.rushWhoosh && sfx.rushWhoosh();
   tween(E.camPos, { x: B.x - dir * 2.4, y: 1.6, z: 5.6 }, 0.9, { real: true, ease: 'out' });
   tween(E.camLook, { x: B.x - dir * 0.4, y: 1.7, z: 0.4 }, 0.9, { real: true, ease: 'out' });
   const fang = (who, point, arc) => C.strike({ who, target: 'kaibutsu', point, side: 'near', wind: 0.12, t: 0.3, arc, anim: 'Battoga', ts: 1.8, hitAt: 0.4,
-    pin: 0.45, then: 'drop', react: 'none', fx: 'impact', strong: true, sfx: [], hitstop: 0, maxPitch: 1.0, tug: 0.25 });
+    pin: 0.45, then: 'drop', react: 'none', fx: 'impact', strong: true, sfx: [], depth: 0.5, fleshSfx: false, hitstop: 0, maxPitch: 1.0, tug: 0.25 });
   await Promise.all([fang('ken', 'shoulder', 0.8), fang('kagetora', 'hip', 0.6)]);
   const pk = C.mouthWorld('ken'), pg = C.mouthWorld('kagetora'), mid = pk.clone().lerp(pg, 0.5);
   FX.slashArc(mid, 0xd8e6ff, 1.5, 0.5, 0.8);
