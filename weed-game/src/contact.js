@@ -240,7 +240,7 @@ export function react(target, kind = 'flinch', dirX = 1, o = {}) {
     setTimeoutReal(0.7, () => tg.currentName === 'Idle_HitReact2' && tg.play(back));
     return;
   }
-  if (kind === 'roar') { flinch(tg, dirX, 0.3, 0.4); tg.play('Howl', { fade: 0.08 }); sfx.roar(); setTimeoutReal(o.secs || 1.2, () => tg.currentName === 'Howl' && tg.play(back)); return; }
+  if (kind === 'roar') { flinch(tg, dirX, o.amp || 0.3, 0.4 + (o.amp || 0.3) * 0.3); tg.play('Howl', { fade: 0.08 }); sfx.roar(); setTimeoutReal(o.secs || 1.2, () => tg.currentName === 'Howl' && tg.play(back)); return; }
   if (kind === 'fall') { tg.play('Death', { loop: false, fade: 0.05 }); return; }
 }
 function setTimeoutReal(s, fn) { let t = 0; const u = (dt, dtr) => { t += dt; if (t >= s) { E.updaters.delete(u); fn(); } }; E.updaters.add(u); }
@@ -333,7 +333,8 @@ export function strike(o) {
   if (!a || !tg) return Promise.resolve();
   if (pins[a.id]) endCtrl(pins[a.id], true);
   a.root.visible = true; a.fade(1);
-  const ref = targetRef(tg, o.point || 'neck', o.side || 'near', o.sink ?? 0.03 * a.height);
+  // depth 0..1: kuinka syvälle hampaat uppoavat (Neljä nuolta: 0.3 -> 0.6 -> 0.9); kuono painuu pinnan sisään
+  const ref = targetRef(tg, o.point || 'neck', o.side || 'near', o.sink ?? (0.03 + (o.depth || 0) * 0.2) * a.height);
   const c = {
     kind: 'strike', o, a, tg, ref, id: ++LOG.n, part: o.part || 'jaw', pawSide: o.pawSide,
     phase: 'lunge', el: 0, T: Math.max(0.05, o.t ?? 0.45), R0: a.root.position.clone(), arc: o.arc ?? 0,
@@ -372,6 +373,7 @@ function lungeStart(c) {
   a.play(o.anim || (c.arc > 0.2 ? 'Gallop_Jump' : 'Gallop'), { loop: !(c.arc > 0.2), timeScale: o.ts || 1.3, fade: 0.06 });
   if (c.T <= c.biteLead) { a.play(o.biteAnim || 'Attack', { loop: false, timeScale: c.biteLead / c.T, fade: 0.06 }); c.bitePlayed = true; }
   if (!o.whiffSilent) { sfx.whoosh({}, { x: a.root.position.x }); if (c.arc > 0.2) sfx.jump({}, { x: a.root.position.x }); }
+  if (o.cry) playAny([].concat(o.cry), { x: a.root.position.x, rate: o.cryRate || 0.9 });     // taistelukiljahdus syöksyssä
 }
 
 /** Irrota purenta. mode: 'drop' (putoaa alas) | 'throw' (kohde heittää: to [x,z], arc, t, spin) | 'back' (perääntyy). */
@@ -424,6 +426,20 @@ function hitFx(c, P) {
     FX.burst(P, { color: 0xffb070, count: 26, speed: 6 }); FX.ring(P, 0xffe0b0, 4, 0.5); FX.flash('#fff2d0', 0.25, 0.55);
   } else if (kind === 'impact') FX.impact(P, strong);
   if (kind !== 'none' && P.y < 0.9) FX.dust(P.clone().setY(0.1));
+  const dep = o.depth || 0;
+  if (dep > 0 && kind !== 'none') {
+    // hampaat uppoavat: turkki murskautuu (tumma varjo, ei verta), kipinät ja pölyrengas kasvavat syvyyden mukaan
+    FX.burst(P, { color: 0x2a1c16, count: Math.round(8 + 22 * dep), additive: false, speed: 1.6 + 3 * dep, size: 0.2 + 0.25 * dep, gravity: -6, spread: 0.7 });
+    FX.burst(P, { color: 0xffe2b0, count: Math.round(6 + 18 * dep), speed: 4 + 5 * dep, size: 0.25 });
+    FX.ring(P, 0xcbbd9e, 1.6 + 2.6 * dep, 0.4 + 0.2 * dep);
+    if (dep > 0.75) { FX.slashArc(P, 0xfff0d8, 0.6 + 0.5 * dep, 0.35, Math.random() * 6); FX.flash('#ffffff', 0.18, 0.4 + 0.3 * dep); }
+    const tier = dep < 0.45 ? 'shallow' : dep < 0.75 ? 'mid' : 'deep';
+    playAny([`bite_flesh_${tier}`, `bite_flesh_${tier}_1`, `bite_flesh_${tier}_2`], { x: P.x });
+    if (dep >= 0.45) playAny(['tear', 'tear_1', 'tear_wet', 'tear_2'], { x: P.x, delay: 0.06 });
+    if (dep >= 0.75) playAny(['crunch', 'crunch_1', 'crunch_2'], { x: P.x, delay: 0.03 });
+    shake(0.25 * dep);
+  }
+  if (o.grunt) playAny([].concat(o.grunt), { x: P.x, delay: 0.08 });                     // ähkäisy/vingahdus osumassa
   for (const s of [].concat(o.sfx ?? (c.part === 'paw' ? ['hit'] : ['bite']))) if (s && sfx[s]) sfx[s]({}, { x: P.x });
   if (strong && kind !== 'none') sfx.play('hit_heavy', { vol: 0.45, rate: 0.75, x: P.x });     // matala tömähdys
   shake(o.shake ?? (strong ? 0.55 : 0.3));
@@ -431,6 +447,11 @@ function hitFx(c, P) {
   const hs = o.hitstop ?? (strong ? 0.12 : 0.07);
   if (hs > 0 && !LOG.hold) { const prev = E.timeScale; E.timeScale = Math.min(prev, 0.06); setTimeoutRealS(hs, () => { if (E.timeScale <= 0.06) E.timeScale = prev; }); }
   if (navigator.vibrate) try { navigator.vibrate(strong ? 50 : 20); } catch (_) {}
+}
+/** Soita ensimmäinen olemassa oleva ääni/tapahtuma listasta (uudet sfx_map-avaimet otetaan käyttöön kun ne ilmestyvät). */
+function playAny(names, opts = {}) {
+  for (const n of names) if (n in sfx) { sfx.play(n, opts); return n; }
+  return null;
 }
 function setTimeoutRealS(s, fn) { let t = 0; const u = (dt, dtr) => { t += dtr; if (t >= s) { E.updaters.delete(u); fn(); } }; E.updaters.add(u); }
 
@@ -445,7 +466,7 @@ function contact(c) {
   LOG.strikes.push(rec);
   hitFx(c, P);
   const dirX = Math.sign(tg.root.position.x - a.root.position.x) || 1;
-  if (c.o.react !== 'none') react(tg, c.o.react || 'flinch', dirX, c.o.reactOpts || {});
+  if (c.o.react !== 'none') react(tg, c.o.react || 'flinch', dirX, { amp: 0.3 + 0.5 * (c.o.depth || 0), ...(c.o.reactOpts || {}) });
   if (c.o.onHit) try { c.o.onHit(P, c); } catch (e) { console.error(e); }
   // pin: leuka kiinni (klippi pysähtyy purentahetkeen) + riuhtova pää
   if (c.o.pin) {
