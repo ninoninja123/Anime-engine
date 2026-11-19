@@ -28,8 +28,8 @@ export const ACTORS = {
   john: 'john', gin: 'gin', akame: 'akame', hogen: 'hogen', weed: 'weed', gb: 'gb', jerome: 'jerome', hook: 'hook',
   reika: 'reika', hiro: 'hiro', lefty: 'lefty', tommy: 'tommy', rossi: 'rossi', matsu: 'matsu', missile: 'missile',
 };
-// soldier pool (recycled): Hōgen's army, generic looks (LOOK_ARMY)
-export const SOLDIER_IDS = ['army_soldier_c', 'army_soldier_e', 'army_soldier_g', 'army_soldier_h', 'army_soldier_f', 'army_soldier_a', 'army_soldier_d', 'army_soldier_b'];
+// soldier pool (recycled): Hōgen's army, generic looks (LOOK_ARMY). The merle Dane look is left out: it reads as Hōgen.
+export const SOLDIER_IDS = ['army_soldier_c', 'army_soldier_e', 'army_soldier_g', 'army_soldier_h', 'army_soldier_f', 'army_soldier_a', 'army_soldier_d', 'army_soldier_a'];
 SOLDIER_IDS.forEach((id, i) => { ACTORS['s' + (i + 1)] = id; });
 
 // ---------------------------------------------------------------- Hold the Line
@@ -43,8 +43,8 @@ export const JOHN = {
 };
 // soldier types: hp, approach speed, telegraph (s), damage (hearts)
 export const FOES = {
-  soldier: { hp: 2, speed: 1.6, tell: 0.7, dmg: 1, reach: 1.9 },
-  brute:   { hp: 4, speed: 1.05, tell: 1.0, dmg: 2, reach: 2.1, ids: ['army_soldier_a', 'army_soldier_b', 'army_soldier_d'] },
+  soldier: { hp: 2, speed: 2.3, tell: 0.7, dmg: 1, reach: 1.9 },
+  brute:   { hp: 4, speed: 1.5, tell: 1.0, dmg: 2, reach: 2.1, ids: ['army_soldier_a', 'army_soldier_d'] },
   runner:  { hp: 1, speed: 3.6, tell: 0, dmg: 1, ids: ['army_soldier_f', 'army_soldier_g', 'army_soldier_e'] },
 };
 // sequence letters: s = soldier, b = brute, r = runner

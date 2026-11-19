@@ -43,8 +43,8 @@ export const trap = ({ cast, P, E }) => [
     { say: 'l3_nar_1' },
   ] },
   // 2. low tracking beside the three old friends
-  cut([-0.4, 0.45, 2.6], [-2.6, 0.7, -0.4]),
-  { say: 'l3_nar_2' },
+  cut([2.6, 0.45, 3.4], [-1.2, 0.75, -0.4]),
+  { par: [pan([1.6, 0.6, 3.0], [-1.6, 0.8, -0.4], 3.5), { say: 'l3_nar_2' }] },
   { fn: () => { for (const k of ['reika', 'gin', 'john', 'akame']) cast[k].play('Idle'); } },
   // 3. over Gin's shoulder: the warm window
   cut([-1.0, 1.15, 1.6], [3.8, 1.0, -3.2]),
@@ -57,19 +57,19 @@ export const trap = ({ cast, P, E }) => [
   { sfx: 'growl' }, { wait: 0.6 },
   { fn: () => cast.akame.face(1) },
   // 5. the army: red collars in an arc
-  ...soldiers([['s1', 6.2, -2.6], ['s2', 6.8, -0.8], ['s3', 6.4, 1.1], ['s4', 8.0, -3.4], ['s5', 8.3, 0.2], ['s6', 8.6, 2.0], ['s7', 9.6, -1.6], ['s8', 9.8, 1.2]]),
+  ...soldiers([['s1', 6.2, -2.6], ['s2', 6.6, -1.4], ['s3', 6.4, 1.7], ['s4', 8.0, -3.0], ['s5', 8.6, -1.6], ['s6', 8.6, 2.3], ['s7', 9.8, -2.6], ['s8', 9.8, 1.9]]),
   cut([0.8, 0.9, 4.6], [7.4, 0.9, -0.4]),
   { sfx: 'braam' }, { shake: 0.15 },
   { say: 'l3_akame_eyes' },
   { fn: () => { for (const k of ['gin', 'john', 'reika']) cast[k].face(1); } },
-  { mood: 'storm', t: 3 }, { music: 'battle', fade: 2 },
+  { mood: 'storm', t: 3 }, GradeNow({ exposure: 1.15, t: 2 }), { music: 'battle', fade: 2 },
   // 6. Hōgen walks through the line (low, ground level)
   { place: 'hogen', x: 12.5, z: 0.2, face: -1, anim: 'Walk' },
-  cut([5.6, 0.25, 2.6], [9.5, 1.1, 0.0]),
+  cut([4.0, 0.35, 3.8], [9.5, 1.2, 0.2]),
   { sfx: 'bossAppear' },
-  { par: [{ move: 'hogen', x: 6.4, t: 3.4, anim: 'Walk', ts: 0.7, after: 'Idle', ease: 'linear' }, pan([4.6, 0.3, 2.9], [6.4, 1.4, 0.2], 3.4)] },
+  { par: [{ move: 'hogen', x: 6.4, t: 3.4, anim: 'Walk', ts: 0.7, after: 'Idle', ease: 'linear' }, pan([3.4, 0.4, 3.4], [6.4, 1.4, 0.2], 3.4)] },
   // 7. ECU Hōgen's eye → John → Hōgen
-  cut([5.2, 1.65, 0.9], [6.3, 1.55, 0.2]),
+  cut([3.9, 1.55, 1.1], [5.2, 1.55, 0.2]),
   { say: 'l3_hogen_intro' },
   { place: 'john', x: 1.6, z: 0.3, face: 1, anim: 'Bark', loop: false },
   cut([2.9, 0.75, 1.3], [1.7, 0.85, 0.3]), roll(0.06),
@@ -93,7 +93,7 @@ export const trap = ({ cast, P, E }) => [
 // ================================================================================================
 // 1b. after "Cover Akame!": the hostage – Missile brings Reika, Gin and John surrender (ep. 6 end)
 export const hostage = ({ cast, P }) => [
-  Mood('storm', 0.1), { amb: 'gorge' },
+  Mood('storm', 0.1), { amb: 'gorge' }, GradeNow({ exposure: 1.15, t: 0 }),
   { fn: () => { P.show('cabin', 4.4, -3.8); } },
   { place: 'john', x: -0.5, z: 0.2, face: 1, anim: 'Idle_2_HeadLow' },
   { place: 'gin', x: -1.6, z: 0.0, face: -1, anim: 'Idle' },
@@ -108,14 +108,14 @@ export const hostage = ({ cast, P }) => [
   // 3. a voice from the right: Missile with Reika
   { place: 'missile', x: 7.0, z: -0.6, face: -1, anim: 'Walk' },
   { place: 'reika', x: 6.2, z: -0.4, face: -1, anim: 'Walk' },
-  { place: 'hogen', x: 7.4, z: 1.4, face: -1, anim: 'Idle' },
+  { place: 'hogen', x: 8.8, z: -2.2, face: -1, anim: 'Idle' },
   cut([3.0, 0.6, 2.8], [6.2, 0.8, -0.4]),
   { par: [{ move: 'missile', x: 4.2, t: 1.8, anim: 'Walk', after: 'Idle' }, { move: 'reika', x: 3.4, t: 1.8, anim: 'Walk', after: 'Idle_2_HeadLow' }] },
   { say: 'l3_missile_hostage' },
   // 4. Reika → Hōgen (low)
   cut([2.6, 0.75, 1.1], [3.5, 0.7, -0.4]),
   { say: 'l3_reika_no' },
-  cut([5.3, 0.3, 3.2], [7.4, 1.5, 1.4]),
+  cut([5.6, 0.35, 0.6], [8.4, 1.5, -2.2]),
   { say: 'l3_hogen_surrender' },
   // 5. Gin closes his eyes; John's teeth
   cut([-2.6, 1.1, 1.4], [-1.6, 1.0, 0.0]), A('gin', { head: 0.45, ears: 0.6 }),
@@ -322,7 +322,7 @@ export const rossiFall = fall('rossi', 'l3_rossi_fall', 'l3_john_rossi');
 //    Matsu stops Hōgen; the army withdraws. Wounding blows are never shown (PEGI 12).
 const WX = -34;           // the other place on the mountain path (Weed's group)
 export const hogenScene = ({ cast, P }) => [
-  { music: null, fade: 1.2 }, Mood('grief', 0.1), { amb: 'sad' },
+  { music: null, fade: 1.2 }, Mood('grief', 0.1), { amb: 'sad' }, GradeNow({ exposure: 1.18, t: 0 }),
   { fn: () => { P.show('tree', -3.9, -1.5); } },
   { place: 'john', x: 0.0, z: 0.0, face: 1, anim: 'Idle_2_HeadLow' },
   { place: 'tommy', x: 2.2, z: -1.3, face: 1, anim: 'Death', loop: false },
@@ -333,7 +333,7 @@ export const hogenScene = ({ cast, P }) => [
   { place: 'hogen', x: 13, z: 0.0, face: -1, anim: 'Walk' },
   // 1. Hōgen walks through the opened ranks (low tracking); John panting
   cut([0.6, 0.85, 1.2], [0.0, 0.8, 0.0]), A('john', { breath: 1, head: 0.25, tremble: 0.4 }), { sfx: 'tired' }, { wait: 0.8 },
-  cut([7.0, 0.3, 4.4], [11, 1.2, 0]), { sfx: 'bossAppear' }, { mood: 'storm', t: 4 },
+  cut([7.0, 0.3, 4.4], [11, 1.2, 0]), { sfx: 'bossAppear' },
   { par: [{ move: 'hogen', x: 3.0, z: -0.5, t: 4.0, anim: 'Walk', ts: 0.6, after: 'Idle', ease: 'linear' }, pan([3.4, 0.35, 3.6], [3.0, 1.3, -0.5], 4.0)] },
   // 2. beside fallen Tommy, the taunt
   cut([3.0, 1.9, 2.4], [2.4, 0.6, -1.0]), A('hogen', { head: 0.3, look: 'tommy' }),
@@ -363,7 +363,7 @@ export const hogenScene = ({ cast, P }) => [
   { place: 'reika', x: WX - 6.6, z: -0.5, face: 1, anim: 'Walk' },
   cut([WX - 1.0, 1.4, 4.4], [WX - 3.4, 0.7, 0]),
   { par: [{ move: 'hiro', x: WX - 2.2, t: 1.6, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' }, { move: 'reika', x: WX - 3.2, t: 1.6, anim: 'Walk', after: 'Idle' }] },
-  cut([WX - 2.4, 0.7, 1.2], [WX - 3.2, 0.7, -0.4]),
+  cut([WX - 4.6, 0.8, 1.4], [WX - 3.2, 0.7, -0.5]),
   { say: 'l3_reika_gin' },
   { anim: 'hiro', name: 'LieDown', loop: false }, { sfx: 'bodyfall' },
   cut([WX - 1.6, 0.45, 1.5], [WX - 2.2, 0.6, 0.2]),
@@ -398,6 +398,7 @@ export const hogenScene = ({ cast, P }) => [
   { fx: 'speed', v: 0 }, { sfx: 'thudDeep' }, { sfx: 'rock' }, { shake: 0.8 }, { fx: 'flash', color: '#ffffff', t: 0.25, peak: 1 },
   { freeze: 0.14 },
   { place: 'john', x: -3.35, z: -1.35, face: 1, anim: 'Idle_HitReact2', loop: false },
+  { place: 'hogen', x: -0.3, z: 0.9, face: -1, anim: 'Idle_2_HeadLow' },
   { fn: ({ P }) => P.treeShake() },
   ...flashCut([-2.0, 4.5, 2.6], [-3.6, 0.4, -1.4], 0.4),
   { anim: 'john', name: 'Death', loop: false }, { fn: ({ P }) => P.showBranch(true) },
@@ -435,13 +436,14 @@ export const hogenScene = ({ cast, P }) => [
     ...['s1', 's2', 's3', 's4', 's5', 's6'].map((s, i) => ({ move: s, x: 15 + i, t: 4, anim: 'Walk' })),
     pan([-5.2, 0.4, 3.0], [-2.0, 0.2, -1.0], 4),
   ] },
+  GradeNow(null),
   ...hideAll(['hogen', 'matsu', 's1', 's2', 's3', 's4', 's5', 's6']),
 ];
 
 // ================================================================================================
 // 5. FAREWELL (ep. 9 end + ep. 10 start): Weed finds John; GB pretends to be Akame; John dies. Night: four graves, the howl.
 export const farewell = ({ cast, P }) => [
-  Mood('memorial', 0.1), { amb: 'sad' }, { music: null },
+  Mood('dawn', 0.1), { amb: 'sad' }, { music: null }, GradeNow({ exposure: 0.86, bloom: -0.25, sat: 0.85, t: 0 }),
   { fn: () => { P.show('tree', -3.9, -1.5); } },
   { place: 'john', x: -3.0, z: -1.0, face: 1, anim: 'Death', loop: false },
   { place: 'hook', x: -1.9, z: -0.6, face: -1, anim: 'Idle_2_HeadLow' },
@@ -457,7 +459,7 @@ export const farewell = ({ cast, P }) => [
   // 2. Weed / John
   cut([-3.2, 0.5, 0.4], [-3.9, 0.5, -0.4]), A('weed', { head: 0.4, ears: 0.5, look: 'john' }),
   { say: 'l3_weed_john' },
-  cut([-2.7, 0.35, -0.3], [-3.0, 0.3, -1.0]), { sfx: 'breath' },
+  cut([-1.9, 0.6, 0.7], [-3.0, 0.35, -1.0]), { sfx: 'breath' },
   { say: 'l3_john_weed' },
   // 3. the others arrive; Hiro whispers to GB (over the shoulder)
   { place: 'hiro', x: -9.5, z: 1.0, face: 1, anim: 'Walk' },
@@ -474,13 +476,13 @@ export const farewell = ({ cast, P }) => [
   // 4. GB as "Akame": the kind lie
   cut([-2.2, 0.6, 1.0], [-3.0, 0.65, 0.0]), A('gb', { head: 0.35, ears: 0.6, look: 'john' }),
   { say: 'l3_gb_lie' },
-  cut([-2.6, 0.3, -0.5], [-3.0, 0.32, -1.0]),
+  cut([-2.0, 0.45, 0.2], [-3.1, 0.35, -1.0]),
   { say: 'l3_john_good' },
   // 5. the last words; silence; the spirit rises
-  cut([-2.3, 0.45, -0.1], [-3.0, 0.32, -1.0]),
+  cut([-1.7, 0.75, 0.9], [-3.0, 0.4, -1.0]),
   { say: 'l3_john_last' },
   { sfx: 'heartbeat' }, { wait: 1.2 }, Hush(0.05, 5),
-  GradeNow({ exposure: 0.92, sat: 0.7, vig: 0.2, bloom: 0.25, t: 3 }),
+  GradeNow({ exposure: 0.8, sat: 0.6, vig: 0.2, bloom: -0.1, t: 3 }),
   cut([-3.0, 5.5, 2.5], [-3.0, 0.2, -1.0]),
   { fn: ({ FX, E, sfx }) => { FX.spiritLight(cast.john.root.position.clone().add(new E.V3(0, 0.3, 0)), 0xdfe8ff, 6); FX.spiritGhost(cast.john, 0xcfe0ff, 4); sfx.spirit(); } },
   pan([-3.0, 7.5, 3.5], [-3.0, 0.6, -1.0], 3.5),
