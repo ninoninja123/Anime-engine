@@ -244,7 +244,7 @@ export function slashArc(center, color = 0xbfe4ff, radius = 1.6, dur = 0.55, rot
 
 /** Valopilari maasta taivaaseen. */
 export function lightPillar(pos, color = 0xbfe0ff, dur = 3, height = 12, width = 1.3) {
-  const q = quad(2, _v2.set(pos.x, pos.y + height / 2, pos.z), color, { s0: 1, s1: 1, life: dur, alpha: 0.75, fadeIn: Math.min(0.6, dur * 0.3), real: true, billboard: false });
+  const q = quad(2, _v2.set(pos.x, pos.y + height / 2, pos.z), color, { s0: 1, s1: 1, life: dur, alpha: 0.75 * (mood.cur.sun > 0.5 && mood.cur.stars < 0.3 ? 0.35 : 1), fadeIn: Math.min(0.6, dur * 0.3), real: true, billboard: false });
   if (q) { q.sx = width; q.sy = height / 2; q.m.scale.set(width, height / 2, 1); }
   return q ? q.m : null;
 }
