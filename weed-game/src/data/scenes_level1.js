@@ -9,6 +9,7 @@
 // Not in the anime (left out): Mel's mother Lenny. Dialogue is original. PEGI 12: no blood, impacts are cut / implied.
 // Each export: (ctx) -> steps. ctx = { cast, P (props), E, FX, sfx, setMood, ... } from src/level1.js.
 
+import * as THREE from 'three';
 import { tween } from '../engine.js';
 import { A, Nod, Shiver } from '../shared/acting.js';
 import { Mark, From, Hush, Grade, GradeNow, Mood, glare } from '../shared/cine.js';
@@ -713,38 +714,59 @@ export const blueDeath = ({ cast, P, E, FX, sfx }) => [
 // ------------------------------------------------------------------------------------------------
 // 8. ENDING: Mel follows; the long walk toward Ōu at dusk
 export const ending = ({ cast, P }) => [
+  From(['end_walk']),
   { fn: () => P.hideAll() },
-  { mood: 'memorial', t: 2 },
+  Mood('memorial', 2), GradeNow({ exposure: 1.0, sat: 1.0, vig: 0.15, bloom: 0.15, t: 0 }),
   { amb: 'dusk' },
-  { music: 'dawn', fade: 3 },
+  { surface: 'step' },
   { place: 'weed', x: -1, z: 0.3, face: 1, anim: 'Walk', ts: 0.8 },
   { place: 'smith', x: -2.6, z: -0.4, face: 1, anim: 'Walk', ts: 0.7 },
   { place: 'gb', x: -3.6, z: 0.6, face: 1, anim: 'Walk', ts: 0.8 },
-  { place: 'mel', x: -8, z: 0.4, face: 1, anim: 'Gallop' },
-  { cam: [-3.0, 0.9, 4.2], look: [-1.8, 0.5, 0] },
+  { place: 'mel', x: -9, z: 0.4, face: 1, anim: 'Gallop' },
+  A('weed', { head: 0.35, ears: 0.6, tail: 0.6, t: 0.05 }), A('smith', { head: 0.3, t: 0.05 }), A('gb', { head: 0.25, t: 0.05 }),
+  // 1. LOW, sunset behind: three small shapes walking away from the road, heads low – no music yet
+  { cam: [-3.4, 0.35, 3.6], look: [-1.6, 0.7, -0.6] },
   { par: [
-    { move: 'weed', x: 0.4, t: 2.2, anim: 'Walk', ts: 0.8, after: 'Idle' },
-    { move: 'smith', x: -1.2, t: 2.2, anim: 'Walk', ts: 0.7, after: 'Idle' },
-    { move: 'gb', x: -2.2, t: 2.2, anim: 'Walk', ts: 0.8, after: 'Idle' },
-    { move: 'mel', x: -3.4, t: 2.2, anim: 'Gallop', after: 'Idle' },
+    { move: 'weed', x: 0.4, t: 2.6, anim: 'Walk', ts: 0.7, after: 'Idle' },
+    { move: 'smith', x: -1.2, t: 2.6, anim: 'Walk', ts: 0.6, after: 'Idle' },
+    { move: 'gb', x: -2.2, t: 2.6, anim: 'Walk', ts: 0.7, after: 'Idle' },
+    { cam: [-2.4, 0.4, 3.2], look: [-0.6, 0.6, -0.4], t: 2.6, ease: 'inOut' },
   ] },
+  // 2. footsteps behind them: Mel has followed (CU Weed's ear turns first)
+  { move: 'mel', x: -4.2, t: 1.8, anim: 'Gallop', ts: 0.9, after: 'Idle' },
+  { cam: [1.3, 0.42, 1.5], look: [0.3, 0.42, 0.2] },
+  A('weed', { head: 0.0, ears: 0, look: 'mel', t: 0.3 }),
   { fn: () => cast.weed.face(-1) },
-  { dolly: 'mel', dist: 1.6, side: 0.6, t: 0.5 },
-  { anim: 'mel', name: 'Idle_2_HeadLow' },
+  { wait: 0.4 },
+  { cam: [-2.6, 0.45, 2.0], look: [-4.1, 0.4, 0.3] },
+  A('mel', { head: 0.4, ears: 0.6, tail: 0.5, look: 'weed', t: 0.4 }),
   { say: 'p_mel_follow' },
   { dolly: 'weed', dist: 1.6, side: -0.6, t: 0.4 },
-  { expr: 'weed', name: 'happy' },
+  A('weed', { head: -0.1, ears: 0, tail: 0, look: 'mel', t: 0.4 }), A('mel', { head: 0, tail: 0, t: 0.6 }),
   { say: 'p_weed_yes' },
-  { expr: 'weed', name: null },
+  Nod('weed', 0.25),
+  { music: 'dawn', fade: 3 },
+  A('smith', { head: 0, look: 'weed', t: 0.6 }), A('gb', { head: 0, look: 'mel', t: 0.6 }),
+  Mark('end_walk'),
+  // 3. one look back at the road where Blue lies (OTS), then north
+  { cam: [1.4, 1.5, 1.9], look: [-8, 0.3, -3] },
+  A('weed', { head: 0.2, look: new THREE.Vector3(-12, 0.4, -4), t: 0.6 }),
+  { wait: 1.4 },
+  A('weed', { head: -0.15, look: null, t: 0.5 }), A('smith', { look: null, t: 0.5 }), A('gb', { look: null, t: 0.5 }), A('mel', { look: null, t: 0.5 }),
   { fn: () => cast.weed.face(1) },
+  { cam: [-1.5, 0.9, 6.2], look: [1, 0.8, 0] },
+  // 4. the long walk toward Ōu: crane up and away, the four of them small against the mountains
   { par: [
-    { move: 'weed', x: 14, t: 9, anim: 'Walk', ts: 0.8, ease: 'linear' },
-    { move: 'mel', x: 13, z: 0.9, t: 9, anim: 'Walk', ts: 0.8, ease: 'linear' },
-    { move: 'smith', x: 12.2, t: 9, anim: 'Walk', ts: 0.7, ease: 'linear' },
-    { move: 'gb', x: 11.4, t: 9, anim: 'Walk', ts: 0.8, ease: 'linear' },
-    { cam: [2, 1.6, 9], look: [10, 3, -40], t: 9, ease: 'inOut' },
+    { move: 'weed', x: 14, t: 10, anim: 'Walk', ts: 0.8, ease: 'linear' },
+    { move: 'mel', x: 13, z: 0.9, t: 10, anim: 'Walk', ts: 0.8, ease: 'linear' },
+    { move: 'smith', x: 12.2, t: 10, anim: 'Walk', ts: 0.7, ease: 'linear' },
+    { move: 'gb', x: 11.4, t: 10, anim: 'Walk', ts: 0.8, ease: 'linear' },
+    { cam: [2, 2.4, 9.5], look: [10, 3.5, -40], t: 10, ease: 'inOut' },
     { fn: async ({ say }) => { await say('p_end_1'); } },
   ] },
   { say: 'p_end_2' },
-  { fx: 'flash', color: '#000000', t: 2, peak: 1 },
+  { caption: '<b>Ōu</b>is waiting', t: 3, wait: false },
+  { wait: 1.5 },
+  { fx: 'flash', color: '#000000', t: 2.4, peak: 1 },
+  { wait: 1.2 },
 ];
