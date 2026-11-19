@@ -9,6 +9,10 @@
 // Not in the anime (left out): Mel's mother Lenny. Dialogue is original. PEGI 12: no blood, impacts are cut / implied.
 // Each export: (ctx) -> steps. ctx = { cast, P (props), E, FX, sfx, setMood, ... } from src/level1.js.
 
+import { tween } from '../engine.js';
+import { A, Nod, Shiver } from '../shared/acting.js';
+import { Mark, From, Hush, Grade, GradeNow, Mood } from '../shared/cine.js';
+
 export function linesOf(steps, out = []) {
   for (const s of steps) { if (s.say) out.push(s.say); if (s.bark) out.push(s.bark); if (s.par) linesOf(s.par, out); }
   return out;
@@ -202,90 +206,194 @@ export const tosaEnd = ({ cast, E, FX, sfx }) => [
 
 // ------------------------------------------------------------------------------------------------
 // 4. SAKURA: the den under the roots; she entrusts her son to Smith and dies. Morning: GB names him Weed.
-export const sakura = ({ cast, P, E, FX }) => [
+export const sakura = ({ cast, P, E, FX, sfx }) => {
+  const SK = [0.45, -1.95];                         // Sakura lies in the mouth of the den (den at 0.4, -2.2)
+  const beam = () => P.objs.moonbeam && P.objs.moonbeam.userData.beam;
+  return [
+  From(['sk_find', 'sk_entrust', 'sk_nose', 'sk_live', 'sk_spirit', 'sk_morning', 'sk_name', 'sk_leave']),
   { music: null, fade: 1.5 },
-  { mood: 'grief', t: 0.1 },
-  { amb: 'sad' },
-  { fn: () => { P.hideAll(); P.show('den', 0.8, -2.6); P.show('weedPlant', -1.3, 0.9); } },
-  { place: 'sakura', x: 0.6, z: -0.7, face: -1, anim: 'LieDown' },
-  { place: 'weed', x: -2.6, z: 0.3, face: 1, anim: 'Walk' },
-  { place: 'smith', x: -4.4, z: -0.4, face: 1, anim: 'Walk' },
-  { place: 'gb', x: -5.6, z: 0.5, face: 1, anim: 'Walk' },
-  { caption: '<b>That night</b>', t: 2.6, wait: false },
-  { cam: [-1.0, 3.0, 7.5], look: [0.6, 1.0, -1.6] },
-  { cam: [-0.4, 1.6, 5.2], look: [0.4, 0.6, -0.8], t: 4.5, ease: 'inOut' },
+  Mood('grief', 0.1), GradeNow({ exposure: 0.92, sat: 0.85, vig: 0.12, t: 0 }),
+  { amb: 'night' },
+  { surface: 'step' },
+  { fn: () => { P.hideAll(); P.show('rootDen', 0.4, -2.2); P.show('weedPlant', 1.05, -0.5); P.show('moonbeam', 0.75, -2.0); const b = beam(); if (b) b.userData.setI(1); } },
+  { place: 'sakura', x: SK[0], z: SK[1], face: -1, anim: 'Idle', ts: 0.35 },
+  A('sakura', { lie: 1, head: 0.55, ears: 0.6, tail: 0.6, breath: 0.9, t: 0.05 }),
+  { place: 'weed', x: -4.8, z: -0.7, face: 1, anim: 'Walk', ts: 0.8 },
+  { place: 'smith', x: -6.4, z: -1.1, face: 1, anim: 'Walk', ts: 0.7 },
+  { place: 'gb', x: -7.2, z: -0.2, face: 1, anim: 'Walk', ts: 0.7 },
+  // 1. ESTABLISHING – moonlit wood, the old tree; crane down through falling leaves
+  { cam: [-3.6, 4.4, 6.8], look: [0.3, 1.6, -2.2] },
+  { caption: '<b>That night</b>', t: 3.2, wait: false },
   { par: [
-    { move: 'weed', x: -0.3, z: 0, t: 2.0, anim: 'Walk', after: 'Idle' },
-    { move: 'smith', x: -2.0, z: -0.3, t: 2.4, anim: 'Walk', ts: 0.8, after: 'Idle' },
-    { move: 'gb', x: -3.2, z: 0.6, t: 2.4, anim: 'Walk', ts: 0.8, after: 'Idle_2_HeadLow' },
+    { cam: [-2.4, 1.3, 3.6], look: [0.1, 0.55, -1.9], t: 6.0, ease: 'inOut' },
+    { move: 'weed', x: -3.4, z: -0.95, t: 6.0, anim: 'Walk', ts: 0.8, ease: 'linear' },
+    { move: 'smith', x: -5.1, z: -1.2, t: 6.0, anim: 'Walk', ts: 0.7, ease: 'linear' },
+    { move: 'gb', x: -5.9, z: -0.3, t: 6.0, anim: 'Walk', ts: 0.7, ease: 'linear' },
   ] },
-  { music: 'sad', fade: 3 },
-  // Smith recognises her
-  { dolly: 'smith', dist: 1.3, side: 0.5, t: 1.2, ease: 'inOut' },
+  Mark('sk_find'),
+  // 2. LOW TRACKING at the pup's height: he has caught a scent
+  { cam: [-4.3, 0.34, 0.6], look: [-2.6, 0.32, -1.3] },
+  A('weed', { head: 0.35, ears: 0, t: 0.4 }),
+  { par: [
+    { move: 'weed', x: -1.75, z: -1.45, t: 3.0, anim: 'Walk', ts: 0.75, after: 'Idle' },
+    { cam: [-2.8, 0.3, 0.2], look: [-0.6, 0.34, -1.75], t: 3.0, ease: 'inOut' },
+    { move: 'smith', x: -3.6, z: -1.3, t: 3.0, anim: 'Walk', ts: 0.6, after: 'Idle' },
+    { move: 'gb', x: -4.3, z: -0.45, t: 3.0, anim: 'Walk', ts: 0.6, after: 'Idle' },
+  ] },
+  A('weed', { head: -0.1, ears: 0, look: 'sakura', t: 0.5 }),
+  // 3. INSERT – inside the hollow: her eye opens, a thin breath (moonlight on her face)
+  { cam: [-0.75, 0.42, -0.85], look: [0.05, 0.32, -1.95] },
+  { sfx: 'breath' },
+  A('sakura', { head: 0.2, look: 'weed', t: 1.6 }),
+  { wait: 1.6 },
+  // 4. SMITH – he knows her before he can believe it
+  { dolly: 'smith', dist: 1.25, side: 0.55, t: 1.4, ease: 'inOut', h: -0.05 },
+  A('smith', { head: 0.1, ears: 0.0, look: 'sakura', t: 0.6 }),
   { say: 'p_smith_sakura' },
-  { cam: [1.6, 0.55, 1.4], look: [0.5, 0.35, -0.7], t: 1.4 },
+  { music: 'sad', fade: 5 },
+  // 5. over Smith's shoulder: Sakura answers, too weak to rise
+  { cam: [-4.6, 0.85, -0.4], look: [0.2, 0.36, -1.9] },
+  A('sakura', { look: 'smith', t: 1 }),
   { say: 'p_sakura_smith' },
-  { move: 'smith', x: -0.9, z: -0.25, t: 1.4, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' },
+  // 6. he limps to her (three legs), head low – guilt
+  A('smith', { head: 0.45, ears: 0.8, tail: 0.8, t: 1.2 }),
+  { par: [
+    { move: 'smith', x: -1.55, z: -0.95, t: 2.6, anim: 'Walk', ts: 0.45, after: 'Idle' },
+    { cam: [-0.6, 0.55, 0.9], look: [-1.7, 0.6, -1.0], t: 2.6, ease: 'inOut' },
+  ] },
   { say: 'p_smith_sorry' },
+  { cam: [-0.35, 0.38, -1.05], look: [0.05, 0.3, -1.95], t: 0.9, ease: 'out' },
   { say: 'p_sakura_hush' },
-  { cam: [0.2, 0.7, 2.4], look: [-0.2, 0.4, -0.5], t: 1.6 },
+  Mark('sk_entrust'),
+  // 7. ENTRUST – low two-shot: mother, pup, the old soldier
+  { cam: [-0.4, 0.22, 1.25], look: [-0.7, 0.42, -1.55] },
+  A('sakura', { look: 'weed', t: 1.2 }),
+  A('weed', { head: 0.05, look: 'sakura', t: 0.8 }),
   { say: 'p_sakura_entrust' },
-  { dolly: 'smith', dist: 1.2, side: -0.5, t: 0.8 },
+  { dolly: 'smith', dist: 1.05, side: -0.5, t: 1.6, ease: 'inOut', h: -0.1 },
+  A('smith', { head: 0.15, ears: 0.3, look: 'sakura', t: 0.8 }),
   { say: 'p_smith_promise' },
-  // nose to nose: mother and son
-  { move: 'weed', x: 0.0, z: -0.45, t: 1.2, anim: 'Walk', ts: 0.7, after: 'Idle_2_HeadLow' },
-  { fn: () => { cast.weed.lookTarget = cast.sakura; cast.sakura.lookTarget = cast.weed; } },
-  { cam: [0.3, 0.32, 0.9], look: [0.25, 0.3, -0.6], t: 1.8, ease: 'inOut' },
-  { say: 'p_sakura_pup', hold: 0.4 },
-  { say: 'p_sakura_last' },
-  { fn: () => { cast.sakura.lookTarget = null; } },
-  { light: { exposure: 0.75, t: 2 } },
+  Nod('smith', 0.3),
   { wait: 0.8 },
-  { expr: 'weed', name: 'sad' },
+  Mark('sk_nose'),
+  // 8. NOSE TO NOSE – the pup creeps in under the roots; macro profile
+  { par: [
+    { move: 'weed', x: -0.72, z: -1.72, t: 2.2, anim: 'Walk', ts: 0.45, after: 'Idle' },
+    { cam: [-0.45, 0.33, -0.7], look: [-0.25, 0.3, -1.85], t: 2.2, ease: 'inOut' },
+  ] },
+  { sfx: 'fur' },
+  A('weed', { head: 0.12, ears: 0.4, look: 'sakura', t: 0.6 }),
+  Hush(0.45, 9),
+  { say: 'p_sakura_pup', hold: 0.6 },
+  Mark('sk_live'),
+  // 9. "…Live." – extreme close; then her head sinks and the breath stops. Silence.
+  { cam: [-0.62, 0.66, -1.2], look: [-0.02, 0.6, -1.95], t: 1.4, ease: 'inOut' },
+  { say: 'p_sakura_last' },
+  { music: null, fade: 3 },
+  A('sakura', { head: 0.95, ears: 0.9, breath: 0, look: null, t: 3.2 }),
+  { par: [
+    { cam: [-0.66, 0.5, -1.15], look: [0.0, 0.36, -1.95], t: 3.2, ease: 'inOut' },
+    Grade({ exposure: 0.7, sat: 0.6, vig: 0.3, t: 3 }),
+    { fn: () => { const b = beam(); if (b) { const o = { v: 1 }; return tween(o, { v: 0.45 }, 3, { real: true, onUpdate: () => b.userData.setI(o.v) }); } } },
+  ] },
+  { sfx: 'heartbeat' },
+  { wait: 1.6 },
+  // 10. WEED – does not understand yet; nudges her
+  { cam: [-1.55, 0.32, -0.95], look: [-0.7, 0.32, -1.75] },
+  A('weed', { head: 0.0, ears: 0.0, look: 'sakura', t: 0.4 }),
+  { move: 'weed', x: -0.6, z: -1.78, t: 0.35, faceMove: false, ease: 'out' },
+  { sfx: 'fur' },
+  { move: 'weed', x: -0.72, z: -1.72, t: 0.5, faceMove: false },
   { say: 'p_weed_mama' },
-  { fn: () => FX.spiritLight(cast.sakura.root.position.clone().add(new E.V3(0, 0.4, 0)), 0xffd6e8, 6) },
-  { cam: [0.4, 1.6, 4.6], look: [0.6, 1.8, -0.8], t: 5, ease: 'inOut' },
-  { wait: 1.5 },
-  { light: { exposure: 1.0, t: 0.1 } },
-  { fn: () => { cast.weed.lookTarget = null; } },
-  { fx: 'flash', color: '#000000', t: 1.6, peak: 1 },
-  { wait: 1.2 },
-  // MORNING
-  { mood: 'night', t: 0.1 },          // autumn base = cold golden morning
-  { amb: 'dawn' },
-  { hide: 'sakura' },
-  { place: 'weed', x: 0.2, z: -0.2, face: -1, anim: 'LieDown' },
-  { place: 'smith', x: -2.2, z: -1.2, face: 1, anim: 'Idle_2_HeadLow' },
-  { place: 'gb', x: -2.8, z: 0.6, face: 1, anim: 'Idle' },
-  { caption: '<b>Morning</b>', t: 2.4, wait: false },
-  { cam: [2.6, 1.6, 5.0], look: [0.0, 0.6, -0.6] },
-  { cam: [1.6, 0.9, 3.4], look: [-0.4, 0.4, -0.2], t: 4 },
+  A('weed', { head: 0.6, ears: 1, tail: 1, breath: 1.1, look: null, t: 0.9 }),
+  Shiver('weed', 2.5),
   { sfx: 'whimper' },
-  { move: 'gb', x: -0.7, z: 0.25, t: 2.0, anim: 'Walk', ts: 0.7, after: 'Idle_2_HeadLow' },
+  // 11. REACTIONS – GB turns his head away; Smith lowers his head
+  { cam: [-2.2, 0.75, 0.9], look: [-3.4, 0.6, -0.8] },
+  { expr: 'gb', name: 'sad' },
+  A('gb', { head: 0.5, ears: 0.8, tail: 0.8, yaw: 0.5, t: 1.2 }),
+  A('smith', { head: 0.7, ears: 1, look: null, t: 1.6 }),
+  { wait: 2.0 },
+  Mark('sk_spirit'),
+  // 12. HIGH ANGLE (loss): her light rises through the moonbeam; the camera lifts with it
+  { cam: [0.3, 2.4, 1.6], look: [0.1, 0.4, -1.9] },
+  { music: 'smith2', fade: 3 },
+  { fn: () => { FX.spiritLight(cast.sakura.root.position.clone().add(new E.V3(0, 0.35, 0)), 0xffd6e8, 7); sfx.spirit(); } },
+  { fn: () => { const b = beam(); if (b) b.userData.setI(1.6); } }, GradeNow({ exposure: 0.9, sat: 0.85, vig: 0.2, bloom: 0.25, t: 3 }),
+  { cam: [0.6, 4.6, 3.4], look: [0.4, 3.0, -2.0], t: 6.5, ease: 'inOut' },
+  { wait: 0.6 },
+  { fx: 'flash', color: '#000000', t: 2.4, peak: 1 },
+  { wait: 1.6 },
+  Mark('sk_morning'),
+  // MORNING: gold light through the trees; the pup has slept against her
+  Mood('night', 0.1),                // autumn base = cold golden morning
+  { amb: 'dawn' },
+  GradeNow({ exposure: 1.0, sat: 1.0, vig: 0.08, bloom: 0.15, t: 0 }),
+  { fn: () => { P.hide('moonbeam'); P.show('sunbeam', -0.2, -1.6); } },
+  A('sakura', { lie: 1, head: 0.95, ears: 0.9, breath: 0, look: null, t: 0.05 }),
+  A('smith', { head: 0.4, ears: 0.6, look: null, t: 0.05 }),
+  A('gb', null),
+  { expr: 'gb', name: null },
+  { place: 'weed', x: -0.55, z: -1.45, face: 1, anim: 'Idle', ts: 0.4 },
+  A('weed', { lie: 1, head: 0.55, ears: 0.8, tail: 1, breath: 0.6, look: null, t: 0.05 }),
+  { place: 'smith', x: -2.5, z: -2.1, face: 1, anim: 'Idle' },
+  { place: 'gb', x: -3.6, z: 0.4, face: 1, anim: 'Idle' },
+  { caption: '<b>Morning</b>', t: 2.6, wait: false },
+  { cam: [3.0, 1.25, 2.2], look: [-0.3, 0.4, -1.6] },
+  { cam: [2.1, 0.8, 1.2], look: [-0.4, 0.35, -1.6], t: 4.5, ease: 'inOut' },
+  { sfx: 'whimper' },
+  Shiver('weed', 1.2),
+  // GB comes over, sits by him
+  { par: [
+    { move: 'gb', x: -1.45, z: -0.85, t: 2.6, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' },
+    { cam: [-0.2, 0.55, 0.9], look: [-1.0, 0.45, -1.2], t: 2.6, ease: 'inOut' },
+  ] },
+  { expr: 'gb', name: 'sad' },
+  A('gb', { head: 0.3, look: 'weed', t: 0.8 }),
   { say: 'p_gb_comfort' },
-  { anim: 'weed', name: 'Idle_2_HeadLow' },
   { say: 'p_gb_noname' },
-  { cam: [-1.0, 0.45, 2.2], look: [-1.3, 0.25, 0.9], t: 1.6, ease: 'inOut' },     // the little plant in the stone
+  // the pup lifts his head, shakes it: no name
+  A('weed', { head: 0.0, ears: 0.5, look: 'gb', t: 0.6 }),
+  { wait: 0.5 },
+  A('weed', { yaw: 0.35, t: 0.2 }), { wait: 0.25 }, A('weed', { yaw: -0.35, t: 0.2 }), { wait: 0.25 }, A('weed', { yaw: 0, t: 0.3 }),
+  Mark('sk_name'),
+  // INSERT – the little weed in the crack of the stone, the sunbeam on it
+  { expr: 'gb', name: null },
+  A('gb', { head: 0.15, look: null, yaw: 0.4, t: 0.6 }),
+  { cam: [1.75, 0.24, 0.35], look: [1.05, 0.2, -0.5] },
+  { cam: [1.5, 0.18, 0.05], look: [1.05, 0.24, -0.5], t: 3.0, ease: 'inOut' },
   { say: 'p_gb_weed' },
-  { music: 'dawn', fade: 2.5 },
-  { dolly: 'gb', dist: 1.3, side: 0.6, t: 0.8 },
+  { music: 'dawn', fade: 3 },
+  { cam: [-0.35, 0.72, 0.15], look: [-1.1, 0.72, -0.85], t: 0.9, ease: 'out' },
+  A('gb', { head: 0, look: 'weed', yaw: 0, t: 0.6 }),
   { expr: 'gb', name: 'happy' },
   { say: 'p_gb_name' },
-  { expr: 'gb', name: null },
-  { anim: 'weed', name: 'Idle' },
-  { cam: [0.9, 0.38, 1.2], look: [0.15, 0.32, -0.2], t: 1.4 },
-  { expr: 'weed', name: 'determined' },
+  // the pup stands up: chin up, ears up
+  { fn: () => cast.weed.play('Idle', { fade: 0.9 }) },
+  A('weed', { lie: 0, head: -0.25, ears: 0, tail: 0, breath: 0.4, look: 'gb', t: 1.0 }),
+  { cam: [-0.05, 0.3, -0.55], look: [-0.6, 0.38, -1.45], t: 1.2, ease: 'out' },
   { say: 'p_weed_name' },
-  { caption: '<b>WEED</b>Small, but never uprooted.', t: 3.2, wait: false },
-  { cam: [0.2, 1.4, 4.4], look: [-0.6, 0.5, -0.4], t: 2.4 },
-  { move: 'smith', x: -0.9, z: -0.8, t: 1.2, anim: 'Walk', ts: 0.7, after: 'Idle' },
+  { caption: '<b>WEED</b>Small, but never uprooted.', t: 3.4, wait: false },
+  { cam: [0.6, 1.3, 3.4], look: [-0.9, 0.5, -1.2], t: 2.6 },
+  { expr: 'gb', name: null },
+  Mark('sk_leave'),
+  A('smith', { head: 0.0, ears: 0, look: 'weed', t: 0.8 }),
+  { move: 'smith', x: -1.6, z: -1.6, t: 1.6, anim: 'Walk', ts: 0.6, after: 'Idle' },
   { say: 'p_smith_go' },
-  { expr: 'weed', name: null },
+  // they set off; at the edge of the wood the pup stops and looks back at her one last time
+  A('weed', { head: 0, look: null, t: 0.5 }),
   { par: [
-    { move: 'weed', x: 6, z: 0.2, t: 4, anim: 'Walk' },
-    { move: 'smith', x: 4.6, z: -0.6, t: 4, anim: 'Walk', ts: 0.8 },
-    { fn: async ({ wait }) => { await wait(1.4, true); } },
+    { move: 'weed', x: 2.6, z: -0.6, t: 3.0, anim: 'Walk', ts: 0.8, after: 'Idle' },
+    { move: 'smith', x: 1.8, z: -1.2, t: 3.4, anim: 'Walk', ts: 0.7, after: 'Idle' },
+    { cam: [4.6, 0.55, 0.6], look: [1.8, 0.4, -1.0], t: 3.0, ease: 'inOut' },
   ] },
+  { face: 'weed', dir: -1 },
+  A('weed', { head: 0.15, ears: 0.6, look: 'sakura', t: 0.6 }),
+  { cam: [3.5, 0.38, -0.3], look: [0.4, 0.35, -1.9] },
+  { wait: 2.0 },
+  A('weed', { head: -0.1, ears: 0, look: null, t: 0.5 }),
+  { face: 'weed', dir: 1 },
+  { move: 'weed', x: 6.5, z: -0.3, t: 2.2, anim: 'Gallop', ts: 0.9 },
   { anim: 'gb', name: 'Bark', loop: false },
   { say: 'p_gb_coming' },
   { place: 'sasuke', x: -6, z: -2, face: 1, anim: 'Idle' },
@@ -293,7 +401,8 @@ export const sakura = ({ cast, P, E, FX }) => [
   { say: 'p_sasuke_bye' },
   { move: 'sasuke', x: -12, t: 1.6, anim: 'Gallop' },
   { hide: 'sasuke' },
-];
+  ];
+};
 
 // ------------------------------------------------------------------------------------------------
 // 5. THE ROAD → JŌSHŪ: a human chases a golden pup (leads into the second run)

@@ -15,6 +15,9 @@ import { setMood } from './gfx/mood.js';
 import * as UI from './ui.js';
 import { onGesture, setInputEnabled } from './input.js';
 import * as PR from './shared/props.js';
+import * as SETS from './shared/sets.js';
+import { drift, grade } from './shared/cine.js';
+import { resetActing } from './shared/acting.js';
 import { ACTORS, RUNS, FIGHTS } from './data/level1_config.js';
 import * as SC from './data/scenes_level1.js';
 import { cast as cast2 } from './level2.js';
@@ -39,6 +42,9 @@ const P = {
       case 'kennel': o = PR.kennel(); break;
       case 'pond': o = PR.pond(1.5); break;
       case 'den': o = PR.den(); break;
+      case 'rootDen': o = SETS.rootDen(); break;
+      case 'moonbeam': o = new THREE.Group(); { const b = SETS.beam({ h: 8, r0: 0.35, r1: 1.6, color: 0xb8ccff, alpha: 0.3 }); b.position.y = 8; b.rotation.z = 0.22; o.add(b); o.userData.beam = b; } break;
+      case 'sunbeam': o = new THREE.Group(); { const b = SETS.beam({ h: 9, r0: 0.5, r1: 1.9, color: 0xffd7a0, alpha: 0.26 }); b.position.y = 9; b.rotation.z = -0.38; o.add(b); o.userData.beam = b; } break;
       case 'weedPlant': o = PR.weedPlant(); break;
       case 'road': o = PR.road(140, 2.6); break;
       case 'netFence': o = PR.netFence(60, 1.0); break;
@@ -170,7 +176,9 @@ async function scene(steps, tok) {
   UI.cine(true); UI.show('hud', false); UI.hint(''); setInputEnabled(false);
   S1.mode = 'scene';
   preloadLines(SC.linesOf(steps));
+  drift({ push: 0.035, truck: 0.018 });            // the camera keeps creeping on every hold (src/shared/cine.js)
   await runScene(steps, ctx);
+  drift(null); resetActing(cast1); grade({ t: 0 });
   E.skipping = false; E.timeScale = 1; FX.speedLines(0); stopVoice();
   check(tok);
 }
