@@ -139,7 +139,7 @@ function drawGrain() {
   const g = grainCv.getContext('2d'); g.clearRect(0, 0, 200, 100); g.drawImage(tiles[ART.boil], 0, 0);
 }
 function resize() {
-  const dpr = Math.min(1.5, window.devicePixelRatio || 1);
+  const dpr = Math.min(1.25, window.devicePixelRatio || 1);   // phone: cap the fill cost
   player.resize(window.innerWidth, window.innerHeight, E.params.has('fixedres') ? 1 : dpr);
 }
 

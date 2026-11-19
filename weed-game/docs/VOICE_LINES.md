@@ -6,7 +6,7 @@ Drop recorded / TTS files into `public/audio/voice/` using the exact file names 
 
 Format: mp3 (mono, 44.1 kHz, 64–96 kbps), trimmed tight (the game adds the pre/post silences itself).
 
-Status: **145 / 149** lines have audio.
+Status: **145 / 222** lines have audio.
 
 ## Voice profiles
 
@@ -30,6 +30,17 @@ Status: **145 / 149** lines have audio.
 | Hook (`hook`) | フック | Adult male Labrador (≈35). Steady, warm baritone with old grief underneath; plain-spoken. |
 | Blue (`blue`) | ブルー | Adult male Beauceron (≈40). Rough, sneering baritone, a thief-boss swagger; at the end quiet, tired and honest. |
 | Tosa (`tosa`) | 土佐犬 | Huge male farm watchdog. Deep, slow, contemptuous voice; mostly growls. |
+| John (`john`) | ジョン | Old male German shepherd (≈60s feel), Gin's sworn friend and Ōu's top officer. Rough, gravelly, short-tempered, foul-mouthed (Kanto tough-guy rhythm); underneath, deep loyalty. Breath ragged from wounds in his last scenes. |
+| Gin (`gin`) | 銀 | Mature male Akita (≈45 feel), legendary leader. Calm, low, warm authority; never shouts unless he must. |
+| Akame (`akame`) | 赤目 | Older male Kishu ninja dog (≈55 feel). Quiet, precise, dry baritone; a strategist who weighs every word. |
+| Hōgen (`hogen`) | 法玄 | Adult male Great Dane warlord (≈40). Smooth, cold, mocking baritone; amused contempt that turns into rage. Never hurried. |
+| Reika (`reika`) | 麗華 | Young adult female Akita (≈20). Gentle, clear, polite; brave when frightened. |
+| Hiro (`hiro`) | ヒロ | Young adult male giant (≈22), lone wanderer from Okayama. Big, rough, loud Okayama dialect ("washi", "~ja"); hot-blooded, honest, tender underneath. |
+| Lefty (`lefty`) | レフティ | Adult male Ōu soldier (≈30). Plain, steady, brave; a soldier's few words. |
+| Tommy (`tommy`) | トミー | Young adult male Ōu soldier (≈24). Eager, a little higher, loyal to the end. |
+| Rossi (`rossi`) | ロッシ | Adult male Ōu soldier (≈35). Low, quiet, weary humour. |
+| Matsu (`matsu`) | マツ | Adult male pursuit leader in Hōgen's army (≈40). Gruff barking orders; shaken and quiet at the end. |
+| Missile (`missile`) | ミサイル | Young male borzoi (≈22). Smug, sly, slightly nasal. |
 
 ## Lines (in story order)
 
@@ -184,6 +195,79 @@ Status: **145 / 149** lines have audio.
 | 147 | `weed_p_weed_bark.mp3` | Weed | ワン！ | [Bark!] | tiny fierce bark | 2 | 0/0 | A pup's high bark. | ✔ |
 | 148 | `tosa_p_tosa_growl.mp3` | Tosa | グルルル… | [Growl] | menace | 3 | 0/0 | Low rumbling growl. | ✔ |
 | 149 | `blue_p_blue_growl.mp3` | Blue | グルル… | [Growl] | menace | 3 | 0/0 | Low growl, teeth bared. | ✔ |
+| 150 | `narrator_l3_nar_1.mp3` | Narrator | 怪物が倒れて数週間。北アルプスに、冬が来ていた。 | A few weeks after the monster fell, winter came to the northern Alps. | calm, cold | 2 | 0.6/0.5 | Slow and low over the blizzard; a new chapter begins. | – |
+| 151 | `narrator_l3_nar_2.mp3` | Narrator | Gin、John、Akame。長い旅を終え、三匹は奥羽へ帰る途中だった。 | Gin, John and Akame were on their way home to Ōu after a long journey. | calm | 2 | 0.2/0.5 | Warm under the cold; three old friends. | – |
+| 152 | `reika_l3_reika_shelter.mp3` | Reika | どうぞ、今夜はここで休んでください。父もきっと、そう望んだはずです。 | Please, rest here tonight. My father would have wanted it. | gentle, shy | 2 | 0.3/0.4 | Soft and polite, a little nervous in front of the legendary Gin. | – |
+| 153 | `gin_l3_gin_thanks.mp3` | Gin | すまない、Reika。お前の父は、いい戦友だった。 | Thank you, Reika. Your father was a fine comrade. | warm | 2 | 0.2/0.4 | Low and kind; a memory behind it. | – |
+| 154 | `akame_l3_akame_eyes.mp3` | Akame | Gin…囲まれている。とんでもない数だ。 | Gin… we're surrounded. A whole army. | tense whisper | 3 | 0.4/0.3 | Quiet, ears up, every word measured. | – |
+| 155 | `hogen_l3_hogen_intro.mp3` | Hōgen | ほう。これが奥羽の総大将、Ginか。噂ほど大きくはないな。 | So this is Gin, the great leader of Ōu. Smaller than the stories. | mocking | 3 | 0.3/0.4 | Slow, amused contempt; he enjoys this. | – |
+| 156 | `john_l3_john_name.mp3` | John | 誰に口きいてやがる！人に聞く前に、てめえが名乗れ、このボンクラが！ | Who do you think you're talking to? Give your own name first, you lout! | furious | 5 | 0.1/0.3 | Explodes; gravelly bark of an old soldier. | – |
+| 157 | `hogen_l3_hogen_name.mp3` | Hōgen | 法玄。…Hōgenだ。覚えておけ。奥羽の時代は、今夜終わる。 | Hōgen. Remember it. The age of Ōu ends tonight. | cold | 4 | 0.3/0.5 | Quiet and certain, almost a smile. | – |
+| 158 | `gin_l3_gin_akame.mp3` | Gin | Akame、奥羽へ走れ。皆に知らせろ。…そして、息子を頼む。 | Akame, run to Ōu. Warn them. …And watch over my son. | grave, decisive | 4 | 0.2/0.3 | Low and fast, no time; the last words softer. | – |
+| 159 | `akame_l3_akame_but.mp3` | Akame | Gin、しかし…！ | Gin, but—! | torn | 4 | 0/0.2 | A single breath of protest. | – |
+| 160 | `john_l3_john_cover.mp3` | John | 行け、Akame！道は俺が開ける！ | Go, Akame! I'll open the way! | fierce | 5 | 0/0.2 | Shouted, already moving. | – |
+| 161 | `john_l3_john_come.mp3` | John | 来いよ！次はどいつだ！ | Come on! Who's next?! | battle fury | 4 | 0/0 | Short shout. | – |
+| 162 | `john_l3_john_fang.mp3` | John | これが奥羽の牙だ！ | This is the fang of Ōu! | roaring | 5 | 0/0 | Full-throated battle cry. | – |
+| 163 | `john_l3_john_hurt.mp3` | John | ぐっ…まだだ！ | Ngh… not yet! | pain, defiance | 4 | 0/0 | Through clenched teeth. | – |
+| 164 | `akame_l3_akame_away.mp3` | Akame | John…すまん！ | John… forgive me! | anguish | 4 | 0/0 | Shouted back over his shoulder as he runs. | – |
+| 165 | `missile_l3_missile_hostage.mp3` | Missile | おい、Gin！こいつを見な。 | Hey, Gin! Look who I found. | smug | 3 | 0.2/0.3 | Sly, pleased with himself. | – |
+| 166 | `reika_l3_reika_no.mp3` | Reika | だめです！私のことは構わないで…！ | Don't! Don't mind me…! | frightened, brave | 4 | 0.1/0.3 | Breathless, trying to be strong. | – |
+| 167 | `hogen_l3_hogen_surrender.mp3` | Hōgen | 牙を収めろ。さもなくば、この娘がどうなるか。 | Put away your fangs. Or this girl pays for it. | cold threat | 4 | 0.3/0.4 | Quiet; the quieter, the worse. | – |
+| 168 | `gin_l3_gin_stop.mp3` | Gin | John…もういい。 | John… enough. | heavy | 4 | 0.6/0.4 | Low, eyes closed; a leader's hardest order. | – |
+| 169 | `john_l3_john_damn.mp3` | John | ちくしょう…！ | Damn it…! | bitter rage | 5 | 0.2/0.6 | Teeth clenched, nearly a sob. | – |
+| 170 | `narrator_l3_nar_3.mp3` | Narrator | その夜、Akameは傷だらけで二子峠にたどり着いた。 | That night, Akame reached Futago Pass, covered in wounds. | urgent | 3 | 0.4/0.4 | Measured but with weight. | – |
+| 171 | `akame_l3_akame_report.mp3` | Akame | Weed…お前の父、Ginが…Hōgenに捕らえられた。 | Weed… your father, Gin… has been captured by Hōgen. | exhausted | 4 | 0.3/0.5 | Panting, each word costs him. | – |
+| 172 | `weed_l3_weed_go.mp3` | Weed | なら、僕が行きます。父さんを、必ず連れて帰る！ | Then I'll go. I'll bring my father home! | determined | 4 | 0.3/0.5 | Clear and firm; no hesitation. | – |
+| 173 | `narrator_l3_nar_4.mp3` | Narrator | 南アルプス、Hōgenの陣。Hookは兵に紛れ込み、捕らわれの二匹のもとへ通った。 | At Hōgen's camp in the southern Alps, Hook slipped in among the soldiers to reach the two captives. | calm | 2 | 0.4/0.4 | Hushed, like a secret. | – |
+| 174 | `hook_l3_hook_snow.mp3` | Hook | これしか持って来られなかった。雪だ、少しでも口に入れてくれ。 | This is all I could bring. Snow — get a little in your mouths. | whisper | 3 | 0.1/0.4 | Fast low whisper, glancing at the guards. | – |
+| 175 | `hiro_l3_hiro_coward.mp3` | Hiro | 勝負ならタイマンでやらんかい！この卑怯者が！ | If you want a fight, face me one-on-one, you coward! | roaring anger | 5 | 0.1/0.3 | Huge voice, Okayama roughness. | – |
+| 176 | `hogen_l3_hogen_throat.mp3` | Hōgen | あと一歩でも動けば、この娘の喉は俺のものだ。 | One more step and this girl's throat is mine. | icy | 4 | 0.2/0.5 | Very quiet, almost bored. | – |
+| 177 | `gin_l3_gin_john.mp3` | Gin | John、Reikaを連れて行け。俺の脚では、もう歩けん。人の善意を軽く見るな。…命に代えても、守れ。 | John, take Reika and go. My legs won't carry me. Never take someone's kindness lightly. …Protect her, even with your life. | calm resolve | 4 | 0.5/0.6 | Slow and steady, lying wounded; the last line an order from the heart. | – |
+| 178 | `john_l3_john_harder.mp3` | John | あんたを置いていくのは…死ぬより辛えぜ…！ | Leaving you behind… is harder than dying…! | tears | 5 | 0.3/0.6 | Rough voice breaking; he hates to cry. | – |
+| 179 | `hiro_l3_hiro_join.mp3` | Hiro | 群れるのは好かんが…あんたのような男の頼みなら、聞いちゃる。 | I don't like packs… but for a man like you, I'll do it. | gruff respect | 3 | 0.3/0.4 | Grumbles, then means it. | – |
+| 180 | `hogen_l3_hogen_path.mp3` | Hōgen | 沢沿いではない。吹雪が足跡を消す山道だ。追え、Matsu！ | Not the stream. They'll take the ridge path, where the storm hides tracks. After them, Matsu! | cunning | 3 | 0.2/0.3 | Calm deduction, then a whip-crack order. | – |
+| 181 | `matsu_l3_matsu_go.mp3` | Matsu | へい！野郎ども、行くぞ！ | Yes, boss! Move out, you lot! | barking | 4 | 0/0.3 | Loud and quick. | – |
+| 182 | `john_l3_john_west.mp3` | John | 風が止んだ…匂いを辿られる。Hiro、Reikaを連れて西へ行け。奴らはここで俺が止める。 | The wind's dying… they'll follow our scent. Hiro, take Reika west. I'll stop them here. | grim calm | 4 | 0.4/0.4 | Low, already decided. | – |
+| 183 | `hiro_l3_hiro_die.mp3` | Hiro | いけん！わしも残る！あんた、死ぬ気じゃろうが！ | No! I'm staying too! You mean to die, don't you! | desperate anger | 5 | 0.1/0.3 | Shouts, body tense. | – |
+| 184 | `john_l3_john_promise.mp3` | John | 俺はGinに誓った。そしてお前にも誓う。俺は死なねえ。…だから行け！ | I swore to Gin. And I swear to you: I won't die. …So go! | fierce warmth | 5 | 0.3/0.4 | Steady, eye to eye; the last word a bark. | – |
+| 185 | `hiro_l3_hiro_swear.mp3` | Hiro | …分かった。わしも誓う。この子は、わしが必ず守る。 | …All right. Then I swear too. I'll protect her, no matter what. | solemn | 4 | 0.4/0.5 | Quiet, heavy. | – |
+| 186 | `lefty_l3_lefty_stay.mp3` | Lefty | 俺たちも残ります、Johnさん。奥羽の戦士として死ねるなら本望だ。 | We're staying too, John. To die as warriors of Ōu is all we ask. | resolute | 4 | 0.2/0.4 | Plain, steady. | – |
+| 187 | `john_l3_john_giveup.mp3` | John | 馬鹿野郎。ここじゃ誰も諦めねえ。いいな！ | Idiots. Nobody here gives up. Got it?! | gruff pride | 4 | 0.2/0.4 | Grumbles, then a fierce grin. | – |
+| 188 | `matsu_l3_matsu_order.mp3` | Matsu | 囲め！相手は老いぼれ一匹だ！ | Surround him! It's just one old dog! | barking orders | 4 | 0/0 | Shouted from the back. | – |
+| 189 | `lefty_l3_lefty_fall.mp3` | Lefty | 先に…行きます…John…さん… | I'll go… on ahead… John… | fading | 4 | 0.3/0.6 | A last breath, almost a smile. | – |
+| 190 | `john_l3_john_lefty.mp3` | John | Lefty！！ | Lefty!! | anguish | 5 | 0/0.4 | Raw shout. | – |
+| 191 | `tommy_l3_tommy_fall.mp3` | Tommy | 奥羽…ばんざい… | Long live… Ōu… | fading pride | 4 | 0.3/0.6 | Whispered, proud. | – |
+| 192 | `john_l3_john_tommy.mp3` | John | Tommy…！ちくしょう！ | Tommy…! Damn you all! | grief into rage | 5 | 0/0.4 | Breaks, then roars. | – |
+| 193 | `rossi_l3_rossi_fall.mp3` | Rossi | すまねえ…ここまで…みたいだ… | Sorry… looks like… this is as far as I go… | weary | 4 | 0.3/0.6 | Quiet, a tired half-laugh. | – |
+| 194 | `john_l3_john_rossi.mp3` | John | …いいさ。よく戦った。 | …It's all right. You fought well. | tender | 4 | 0.2/0.5 | Low, almost gentle; then he turns back to the enemy. | – |
+| 195 | `hogen_l3_hogen_arrive.mp3` | Hōgen | 老いぼれ一匹に、ずいぶん手こずったものだな。 | All this trouble over one old dog. | contempt | 3 | 0.4/0.4 | Unhurried, looking at the fallen. | – |
+| 196 | `john_l3_john_spit.mp3` | John | 降りて来いよ、腰抜け。てめえで来い。 | Come down here yourself, coward. | defiant | 4 | 0.3/0.4 | Panting, but every word lands. | – |
+| 197 | `hogen_l3_hogen_slow.mp3` | Hōgen | ゆっくり可愛がってやれ。 | Take your time with him. | cruel | 4 | 0.3/0.3 | Quiet and cold. | – |
+| 198 | `john_l3_john_entrust.mp3` | John | この魂…誰かに託さねば…死にきれん…誰かに…！ | This soul… I must leave it to someone… I can't die until… someone…! | inner cry | 5 | 0.4/0.5 | Half thought, half prayer; breath ragged. | – |
+| 199 | `weed_l3_weed_voice.mp3` | Weed | …？今、誰かが呼んだ…？ | …? Did someone just call me…? | puzzled | 2 | 0.3/0.3 | Ears up, quiet. | – |
+| 200 | `reika_l3_reika_gin.mp3` | Reika | Ginさんが残った…？先に行ったって、言ったじゃないですか…！ | Gin stayed behind…? You told me he had gone on ahead…! | shock | 4 | 0.2/0.3 | Voice rising into tears. | – |
+| 201 | `hiro_l3_hiro_john.mp3` | Hiro | Johnさんが…ひとりで…追っ手を… | John is… holding them off… alone… | exhausted | 4 | 0.2/0.4 | Collapsing, barely words. | – |
+| 202 | `hook_l3_hook_john.mp3` | Hook | John！ | John! | alarm | 4 | 0/0.2 | Shout from the slope. | – |
+| 203 | `john_l3_john_back.mp3` | John | 来るな！誰も近づくんじゃねえ！若え命を、無駄にするな！ | Stay back! Nobody comes near! Don't throw away a young life! | commanding | 5 | 0.1/0.5 | With the last of his strength; an order, not a plea. | – |
+| 204 | `hogen_l3_hogen_beg.mp3` | Hōgen | 命乞いをしろ。一度でいい。 | Beg for your life. Just once. | cold | 4 | 0.3/0.4 | Very close, very quiet. | – |
+| 205 | `john_l3_john_never.mp3` | John | …断る。 | …No. | unbroken | 5 | 0.6/0.6 | A single calm word. | – |
+| 206 | `matsu_l3_matsu_stop.mp3` | Matsu | お頭！もう…もう死んでます！ | Boss! Stop… he's already dead! | shaken | 4 | 0.2/0.4 | Afraid, pleading. | – |
+| 207 | `hogen_l3_hogen_leave.mp3` | Hōgen | …娘など、もういい。引き上げるぞ。 | …Forget the girl. We're going back. | unsettled | 4 | 0.6/0.6 | Quiet; something has shaken him. | – |
+| 208 | `hook_l3_hook_call.mp3` | Hook | John！目を開けてくれ、John！ | John! Open your eyes, John! | grief | 4 | 0.2/0.4 | Shaking, close. | – |
+| 209 | `weed_l3_weed_john.mp3` | Weed | Johnさん！ | John! | anguish | 5 | 0/0.3 | Running in, voice cracking. | – |
+| 210 | `john_l3_john_weed.mp3` | John | その声…Ginの…せがれか… | That voice… Gin's… boy…? | faint | 3 | 0.5/0.6 | A whisper; he can barely see. | – |
+| 211 | `gb_l3_gb_lie.mp3` | GB | John、俺だ、Akameだ。奥羽から千の援軍が来た。Ginも無事に助け出したぞ。 | John, it's me, Akame. A thousand dogs have come from Ōu. Gin is safe — we got him out. | pretending, holding back tears | 4 | 0.4/0.5 | Lower than his own voice, trying to sound like Akame; trembles once. | – |
+| 212 | `john_l3_john_good.mp3` | John | そうか…千匹か…なら、もう安心だ… | Is that so… a thousand… then I can rest… | relief | 3 | 0.6/0.6 | A tiny smile in the voice. | – |
+| 213 | `john_l3_john_last.mp3` | John | Weed…Hiro…あとは…頼んだ…ぜ… | Weed… Hiro… the rest… is yours… | last breath | 5 | 0.6/1.2 | Fading out on the last word. | – |
+| 214 | `weed_l3_weed_cry.mp3` | Weed | Johnさーん！！ | John!!! | devastated | 5 | 0.4/0.8 | A long cry, breaking. | – |
+| 215 | `hiro_l3_hiro_liar.mp3` | Hiro | 死なんと…誓うたじゃろうが… | You swore… you wouldn't die… | broken | 5 | 0.4/0.8 | Big voice gone small. | – |
+| 216 | `narrator_l3_nar_5.mp3` | Narrator | その夜、凍った大地に、四つの墓が掘られた。 | That night, four graves were dug in the frozen ground. | solemn | 3 | 0.6/0.5 | Slow, quiet. | – |
+| 217 | `reika_l3_reika_blame.mp3` | Reika | 私のせいです…私さえいなければ… | It's my fault… if it weren't for me… | guilt, tears | 4 | 0.2/0.4 | Quiet sobbing. | – |
+| 218 | `hiro_l3_hiro_dig.mp3` | Hiro | そんなこと言うても、Johnさんは浮かばれん。…掘るんじゃ。 | Saying that won't give John any peace. …Dig. | gentle firmness | 4 | 0.3/0.5 | Low; he starts digging. | – |
+| 219 | `hook_l3_hook_fang.mp3` | Hook | Johnの牙は、俺が奥羽へ届ける。あいつの故郷へ。 | I'll carry John's fang to Ōu. Back to his home. | quiet vow | 3 | 0.3/0.5 | Steady, grieving. | – |
+| 220 | `weed_l3_weed_vow.mp3` | Weed | 父さん、待っていてください。Johnさんの名にかけて…必ず行きます。 | Father, wait for me. On John's name… I will come. | vow | 4 | 0.5/0.6 | Quiet, then firm; looking at the stars. | – |
+| 221 | `narrator_l3_nar_6.mp3` | Narrator | ただ一匹で立ち続けた老兵の最期は、Hōgenの兵たちの間でさえ、語り草となった。 | The last stand of the old warrior who stood alone became a legend — even among Hōgen's soldiers. | reverent | 3 | 0.6/1 | Slow, proud and sad. | – |
+| 222 | `narrator_l3_nar_hogen_camp.mp3` | Narrator | …その夜、Hōgenの陣は騒がしかった。 | That night, Hōgen's camp was in uproar. | hushed | 2 | 0.3/0.3 | Low; something is happening offscreen. | – |
 
 ## Tips for ElevenLabs (Japanese TTS)
 
