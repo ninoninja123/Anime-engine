@@ -61,7 +61,9 @@ function showMenu() {
   $('l3note').textContent = l3open ? (safeGet('weed.l3done') === '1' ? ' ✓' : '') : ' · after Level 2';
   const done = safeGet('weed.p1done') === '1';
   $('l2note').textContent = done ? '' : ' · Prologue first';
-  $('prologueBtn').textContent = done ? '▶ Prologue: Weed and GB ✓' : '▶ Prologue: Weed and GB';
+  const cleared2 = !!safeGet('weed.cleared2');
+  $('prologueBtn').textContent = !done ? '▶ Play' : (cleared2 ? '▶ Continue: Level 3' : '▶ Continue: Level 2');
+  $('l2note').textContent = '';
   const mem = JSON.parse(safeGet('weed.memorial') || '[]');
   if (mem.length) { $('memorial').innerHTML = `Memorial stone: <b>${mem.join(' · ')}</b> ✦`; UI.show('memorial', true); }
   music('intro');
@@ -265,7 +267,12 @@ function wireUI() {
   const UI_SND = { startBtn: 'start', settingsBtn: 'uiOpen', pauseSettingsBtn: 'uiOpen', settingsClose: 'uiBack', castBack: 'uiBack', quitBtn: 'uiBack', defeatQuit: 'uiBack', resultBtn: 'uiBack', helpClose: 'uiBack', skipBtn: 'skip', pauseBtn: null, resumeBtn: null, retryBtn: 'uiConfirm' };
   const tap = (id, fn) => { const el = $(id); if (!el) return; el.addEventListener('click', e => { e.stopPropagation(); initAudio(); const s = id in UI_SND ? UI_SND[id] : 'ui'; if (s) sfx.play(s); fn(); }); };
   tap('startBtn', () => startGame(1, true));
-  tap('prologueBtn', () => startChapter(0, true));
+  // one big Play button: starts from the very beginning (story -> Prologue -> Level 2 -> Level 3), later continues where you are
+  tap('prologueBtn', () => {
+    if (safeGet('weed.p1done') !== '1') startChapter(0, true);
+    else if (safeGet('weed.cleared2')) startLevel3Flow(0);
+    else startGame(1, true);
+  });
   tap('nextBtn', () => { UI.show('result1', false); startGame(1, true); });
   tap('result1Menu', () => { UI.show('result1', false); showMenu(); });
   tap('level3Btn', () => { if ($('level3Btn').classList.contains('locked')) { UI.toast('Clear Level 2 first', 1.4); return; } startLevel3Flow(0); });

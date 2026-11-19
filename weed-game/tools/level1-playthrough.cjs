@@ -23,6 +23,7 @@ const SEL = args.find(a => !a.startsWith('--')) || 'all';
 const BOT = opt('bot') || 'good';
 const FPS = +(opt('fps') || 30);
 const SHOTS = !!opt('shots');
+const PERF = !!opt('perf'); const perf = {};
 const REPEAT = +(opt('repeat') || 1), SEED = +(opt('seed') || 12345), NOTUT = !!opt('notut');
 const OUT = path.join(__dirname, '..', 'screenshots', 'level1_playthrough');
 if (SHOTS) fs.mkdirSync(OUT, { recursive: true });
@@ -167,6 +168,11 @@ async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {})
     await adv(p, 0.25);
     const s = await st(p);
     const key = `${s.sec}:${s.mode}` + (s.mode === 'scene' || s.mode === 'fightCut' ? '#' + s.sceneN : '');
+    if (PERF && (s.mode === 'run' || s.mode === 'fight') && Math.floor(s.t * 2) % 3 === 0) {   // render one frame, read draw calls
+      await p.evaluate(() => { window.__render = true; }); await adv(p, 2 / FPS);
+      const k = await p.evaluate(() => { window.__render = false; const st = window.__game.E.stats || {}; return [st.calls || 0, st.tris || 0]; });
+      const pk = perf[key] || (perf[key] = { n: 0, calls: 0, max: 0, tris: 0 }); pk.n++; pk.calls += k[0]; pk.max = Math.max(pk.max, k[0]); pk.tris = Math.max(pk.tris, k[1]);
+    }
     if ((s.mode === 'run' || s.mode === 'fight') && s.hp != null) { hpLog[key] = Math.min(hpLog[key] ?? 99, s.hp); }
     if (key !== last && last && last.endsWith(':fight')) { const h = await p.evaluate(() => window.__game.debug1.F && window.__game.debug1.F.hits); if (h && h.length) console.log('     fight hits: ' + JSON.stringify(h)); }
     if (key !== last && last && last.endsWith(':run')) { const h = await p.evaluate(() => window.__game.debug1.R && window.__game.debug1.R.hits); if (h && h.length) console.log('     run hits: ' + JSON.stringify(h)); }
@@ -198,7 +204,7 @@ async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {})
   for (const sec of list.flatMap(x => Array(REPEAT).fill(x))) {
     const p = await newPage(ctx, errs, 's' + sec);
     const tStart = Date.now();
-    if (!(await boot(p, `?level=1&section=${sec}&fixedres&lowfx${NOTUT ? '&notut' : ''}`, sec))) { fail(SECTIONS[sec], 'did not start'); await p.close(); continue; }
+    if (!(await boot(p, `?level=1&section=${sec}&fixedres${PERF ? "&q=med" : "&lowfx"}${NOTUT ? "&notut" : ""}`, sec))) { fail(SECTIONS[sec], 'did not start'); await p.close(); continue; }
     await p.evaluate(b => window.__bot.setProfile(b), BOT);
     let retries = 0, r;
     for (;;) {
@@ -237,7 +243,7 @@ async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {})
     // 2) defeat -> retry (run and fight): idle bot loses, Retry, good bot wins
     for (const sec of [1, 2]) {
       const p = await newPage(ctx, errs, 'retry' + sec);
-      await boot(p, `?level=1&section=${sec}&fixedres&lowfx${NOTUT ? '&notut' : ''}`, sec);
+      await boot(p, `?level=1&section=${sec}&fixedres${PERF ? "&q=med" : "&lowfx"}${NOTUT ? "&notut" : ""}`, sec);
       await p.evaluate(() => window.__bot.setProfile('idle'));
       let r = await drive(p, 'retry_' + SECTIONS[sec], s => s.defeat || s.sec !== sec);
       if (!r.s.defeat) { fail('retry_' + SECTIONS[sec], 'idle bot did not lose'); await p.close(); continue; }
@@ -269,11 +275,14 @@ async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {})
       const q = await st(p);
       !q.active && q.menu && !q.cine ? pass('quit', 'Main menu from pause returns to the menu') : fail('quit', JSON.stringify(q));
       // menu -> Prologue -> continue from the checkpoint (townRun)
+      // first play-through state: chapter not finished (once weed.p1done is set, the menu's Play button continues to
+      // Level 2 instead); "The story so far" plays first and is skipped
+      await p.evaluate(() => { localStorage.removeItem('weed.prologue'); localStorage.removeItem('weed.p1done'); });
       await click(p, 'prologueBtn');
-      let off = false; for (let i = 0; i < 400; i++) {
+      let off = false; for (let i = 0; i < 1200; i++) {
         await adv(p, 0.1);
         off = await p.evaluate(() => { const b = document.getElementById('l1cont'); return !!b && !b.closest('.hidden'); }); if (off) break;
-        if (i % 20 === 10) await p.evaluate(() => { for (const b of document.querySelectorAll('button')) if (/^skip/i.test(b.textContent.trim()) && b.offsetParent) { b.click(); break; } });   // "The story so far" may play first
+        if (i % 20 === 10) await p.evaluate(() => { for (const b of document.querySelectorAll('button')) if (/^skip/i.test(b.textContent.trim()) && b.getClientRects().length && getComputedStyle(b).visibility !== "hidden") { b.click(); break; } });   // "The story so far" may play first
       }
       if (!off) console.log('     state: ' + await p.evaluate(() => JSON.stringify({ l1ck: !!document.getElementById('l1ck'), cls: document.body.className, S1: { a: window.__S1.active, m: window.__S1.mode, s: window.__S1.section }, saved: localStorage.getItem('weed.p1.section'), screens: [...document.querySelectorAll('.screen')].filter(e => !e.classList.contains('hidden')).map(e => e.id) })));
       if (!off) fail('checkpoint', 'no "Continue from checkpoint" offer after quitting at townRun');
@@ -296,6 +305,7 @@ async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {})
     }
   }
   await browser.close();
+  if (PERF) for (const [k, v] of Object.entries(perf)) console.log(`  perf ${k}: draw calls avg ${(v.calls / v.n).toFixed(0)}, max ${v.max}, max tris ${v.tris}`);
   if (REPEAT > 1 || BOT !== 'good') for (const [k, v] of Object.entries(tally)) console.log(`  ${SECTIONS[k]}: first-try wins ${v.firstTry}/${v.runs}, retries total ${v.retries}`);
   console.log(`\n${results.filter(r => r.ok).length} passed, ${results.filter(r => !r.ok).length} failed, ${((Date.now() - T0) / 1000).toFixed(0)} s`);
   console.log(errs.length ? 'CONSOLE ERRORS:\n' + [...new Set(errs)].slice(0, 30).join('\n') : 'no console errors');
