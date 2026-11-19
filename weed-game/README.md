@@ -15,6 +15,15 @@ ending; `&story` = Story So Far ensin), `?level=2`. Tiedostot: `src/level1.js` (
 rekka, verkkoaita, koppi, puunrungot…). Repliikit `p_*` lines.js:ssä. Testi: `URL=http://localhost:4187/ node tools/shots-level1.cjs fast`
 → `screenshots/prologue_level/`. Sivuhahmot (sakura, sasuke, nero, tosa, mel_pup, hook, blue) ovat PLACEHOLDER-koiria olemassa olevilla malleilla (characters.js `PROLOGUE_MODELS`, yksi rivi per hahmo): käyttäjän omat mallit vaihdetaan niihin. `tools/smoke-level1.cjs` = nopea savutesti kaikille osioille.
 
+## Taso 3 "The Alps Trap – John's Last Stand"
+Animen jaksot 6–10 (tutkimus `../docs/weed-game/level3-research.md`, suunnitelma `level3-design.md`). Valikko: **Level 3** avautuu, kun
+taso 2 on läpäisty (`localStorage weed.cleared2`), loppu tallentaa `weed.l3done`. Suora käynnistys `?level=3&section=0..7` (tai nimi:
+trap, cover, hostage, captive, oath, stand, hogen, farewell), `&wave=0..3` stand-osion aallolle. Tiedostot: `src/level3.js` (kulku +
+"Hold the Line" -taistelu Johnina), `src/data/scenes_level3.js`, `src/data/level3_config.js` (aallot, arvot, placeholderit;
+mallit `characters.js` `LEVEL3_MODELS`, yksi rivi per hahmo). Repliikit `l3_*` lines.js:ssä (ääniä ei vielä). Testi:
+`URL=http://localhost:4187/ node tools/shots-level3.cjs smoke` (kaikki osiot), `watch <osio>` (kontaktiarkki), `fight`, `menu`
+→ `screenshots/level3/`.
+
 ## Ajaminen
 
 ```bash

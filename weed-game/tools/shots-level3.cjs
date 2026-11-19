@@ -142,7 +142,7 @@ async function watch() {
   page.on('pageerror', e => IGNORE.test(e.message) || errs.push(e.message));
   page.on('console', m => m.type() === 'error' && !IGNORE.test(m.text()) && errs.push(m.text()));
   await page.goto(BASE + `?level=3&section=${sec}&fixedres`);
-  await page.waitForFunction(() => window.__S3 && window.__S3.mode === 'scene', null, { timeout: 240000 });
+  await page.waitForFunction(() => window.__S3 && (window.__S3.mode === 'scene' || window.__S3.mode === 'fight'), null, { timeout: 240000 });
   let n = 0; const t0 = Date.now(); const startSec = await page.evaluate(() => window.__S3.section);
   while (Date.now() - t0 < +(process.env.MAXS || 400) * 1000) {
     const st = await page.evaluate(() => ({ m: window.__S3.mode, d: window.__S3.sceneDone, s: window.__S3.section, a: window.__S3.active }));
@@ -158,4 +158,17 @@ async function watch() {
   process.exit(errs.length ? 1 : 0);
 }
 
-({ smoke, frames, fight, watch }[MODE] || smoke)().catch(e => { console.error(e); process.exit(1); });
+async function menu() {
+  const browser = await chromium.launch({ args: ARGS });
+  const page = await browser.newPage({ viewport: { width: 844, height: 390 } });
+  await page.goto(BASE);
+  await page.waitForFunction(() => document.getElementById('loading').classList.contains('hidden'), null, { timeout: 240000 });
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: path.join(OUT, 'menu_locked.png') });
+  await page.evaluate(() => { localStorage.setItem('weed.cleared2', '3'); window.__game.showMenu(); });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: path.join(OUT, 'menu_open.png') });
+  await browser.close();
+}
+
+({ smoke, frames, fight, watch, menu }[MODE] || smoke)().catch(e => { console.error(e); process.exit(1); });

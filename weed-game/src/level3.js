@@ -304,6 +304,10 @@ function holdLine(cfg, kind, tok) {
   H.cards = (cfg.allies || []).map(id => ({ id, ...ALLY_CARDS[id], cool: 4, state: 'cooldown' }));
   // fallen comrades of earlier waves keep their cards "In memory"
   if (isStand) for (const id of ['lefty', 'tommy', 'rossi']) if (!(cfg.allies || []).includes(id)) H.cards.push({ id, ...ALLY_CARDS[id], cool: 0, state: 'fallen' });
+  // ...and still lie where they fell
+  if (isStand) for (const id of ['lefty', 'tommy', 'rossi']) if (!(cfg.allies || []).includes(id)) {
+    const d = cast3[id]; d.root.visible = true; d.fade(1); d.root.position.set(ALLY_POS[id][0], 0, ALLY_POS[id][1]); d.face(1, true); d.play('Death', { loop: false, timeScale: 4 });
+  }
   UI.buildCards(H.cards, id => useCard(id));
   E.camPos.set(1.0, 1.5, 6.6); E.camLook.set(1.4, 0.8, 0);
   UI.$('bossbox').querySelector('.nm').innerHTML = `HŌGEN'S MEN <span class="sub" id="l3left"></span>`;

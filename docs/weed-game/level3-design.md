@@ -157,3 +157,24 @@ hogen, reika, hiro, lefty, tommy, rossi, matsu, missile.
   `src/data/scenes_level3.js` (kohtaukset), pienet kutsukohdat `main.js`, `index.html`, `characters.js`, `lines.js`.
 - Talvimaailma: `E.setSeason('winter')` tason alussa, `autumn` takaisin poistuttaessa.
 - Testi: `tools/shots-level3.cjs` (Playwright, virtuaalikello, osiot, kuvat `screenshots/level3/`, kontaktiarkit, konsolivirheet, Skip).
+
+## 8. Äänikattavuus (tapahtuma → avain, `sfx_map.js`)
+| Tapahtuma | Avain |
+|---|---|
+| tason alku, otsikko | `levelStart`, `caption` |
+| armeija ilmestyy / Hōgen saapuu | `braam`, `bossAppear`, `growl` |
+| haukku, käsky | `bark`, `battleCry` |
+| purenta / vastaisku (pelattava) | `lunge` → `bite` (+ iskutähti; vastaisku vahva `impact`) |
+| sotilaan varoitus, syöksy | `tell`, `whoosh` |
+| väistö / täydellinen väistö | `dodge` / `perfect` |
+| Johniin osuu | `hurt` |
+| sotilas kaatuu, toveri kaatuu | `bodyfall`; toveri: `hitHeavy`, `yelpPain`, `heartbeat`, `spirit` |
+| Ōu Fang | `cutin`, `hitHeavy`, `shockwave` |
+| toverikortti | `card`, `battleCry`, `hitHeavy`, `cardReady` |
+| juoksija ohittaa | `gallopIn` |
+| isku puuhun | `thudDeep`, `rock`, `freeze` (+ lumi putoaa oksilta) |
+| John nousee, heittää oksan | `heartbeat`, `strain`, `whoosh`, osuma `hitLight` |
+| Hōgenin syöksy siluettina | `dust` |
+| Johnin kuolema | `breath`, `heartbeat`, `spirit` (musiikki ja ambienssi vaiennettu `Hush`) |
+| ulvonta tähdille | `howl` |
+| ambienssi | `gorge` (myrsky), `sad` (tyyni vuori), `night` (hautajaiset) |
