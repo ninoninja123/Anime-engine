@@ -3,12 +3,13 @@
 //   const s = vehicleSound(truckGroup); ... s.stop()      horn(0.9)
 // Respects the global mute; quiet when there is no AudioContext (headless / before the first tap).
 import { E } from '../engine.js';
-import { audioCtx, muted } from '../audio.js';
+import { audioCtx, sfxOut } from '../audio.js';
 
 let out = null;
 function bus() {
   const ctx = audioCtx(); if (!ctx) return null;
-  if (!out) { out = ctx.createGain(); out.gain.value = 0.8; out.connect(ctx.destination); E.updaters.add(() => { if (out) out.gain.value = muted ? 0 : 0.8; }); }
+  // via the env effects bus: Effects slider, mute and the master limiter apply
+  if (!out) { out = ctx.createGain(); out.gain.value = 1.2; out.connect(sfxOut() || ctx.destination); }
   return out;
 }
 let noiseBuf = null;
