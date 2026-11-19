@@ -353,7 +353,8 @@ export const LINES = Object.fromEntries([
 ]);
 
 // Prologue narration runs over the music the whole time: duck gently so the score keeps carrying the emotion.
-for (const l of Object.values(LINES)) if (l.id.startsWith('story_')) l.duck = 0.62;
+// Story So Far narration: the music must get out of the way so the narrator is always clear (user: "hardly audible under the music")
+for (const l of Object.values(LINES)) if (l.id.startsWith('story_')) { l.duck = 0.16; l.gain = 1.45; }
 
 /** Arvioi repliikin kesto (s), kun äänitiedostoa ei ole. */
 export function estimateDuration(line) {

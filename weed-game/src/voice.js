@@ -82,7 +82,7 @@ export async function say(id, opts = {}) {
   let src = null, dur = estimateDuration(line), t0 = performance.now();
   const start = buf => {
     if (current !== token || E.skipping) return;
-    src = ctx.createBufferSource(); src.buffer = buf; src.connect(voiceOut()); src.start();
+    src = ctx.createBufferSource(); src.buffer = buf; (() => { const gn = ctx.createGain(); gn.gain.value = line.gain ?? 1; src.connect(gn); gn.connect(voiceOut()); })(); src.start();
     speakSrc = src; src.onended = () => { if (speakSrc === src) speakSrc = null; };
     dur = (performance.now() - t0) / 1000 + buf.duration;
     duck(line.duck ?? (line.who === 'kaibutsu' ? 0.55 : 0.32), buf.duration + 0.2);
