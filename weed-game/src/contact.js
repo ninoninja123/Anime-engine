@@ -498,7 +498,7 @@ function hitFx(c, P) {
     FX.burst(P, { color: 0x2a1c16, count: Math.round(8 + 22 * dep), additive: false, speed: 1.6 + 3 * dep, size: 0.2 + 0.25 * dep, gravity: -6, spread: 0.7 });
     FX.burst(P, { color: 0xffe2b0, count: Math.round(6 + 18 * dep), speed: 4 + 5 * dep, size: 0.25 });
     FX.ring(P, 0xcbbd9e, 1.6 + 2.6 * dep, 0.4 + 0.2 * dep);
-    if (dep > 0.75) { FX.slashArc(P, 0xfff0d8, 0.6 + 0.5 * dep, 0.35, Math.random() * 6); FX.flash('#ffffff', 0.18, 0.4 + 0.3 * dep); }
+    FX.slashArc(P, 0xfff0d8, 0.5 + 0.6 * dep, 0.3, Math.random() * 6);   // kova viiltotehoste osumassa (ei täysruutuvalkoista)
     const tier = dep < 0.45 ? 'shallow' : dep < 0.75 ? 'mid' : 'deep';
     if (!layered) {
       playAny([`bite_flesh_${tier}`, `bite_flesh_${tier}_1`, `bite_flesh_${tier}_2`], { x: P.x });

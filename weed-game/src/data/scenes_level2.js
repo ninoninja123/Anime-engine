@@ -307,15 +307,20 @@ export const arrows = (ctx) => {
     { par: MEN.map((id, i) => ({ move: id, x: -6.4 + i * 0.95, t: 1.4 + i * 0.15, anim: 'Gallop', ts: 1.2, after: 'Idle', ease: 'out' })) },
     { caption: '<b>FOUR ARROWS</b>', t: 2.4, wait: false },
     { wait: 1.6 },
-    { dolly: 'jerome', dist: 1.4, side: 0.6, t: 0.5 },
     { expr: 'jerome', name: 'sad' },
-    { say: 'arrows_order' },
+    // the order: the camera keeps moving – Jerome's face, a low wide of the three, back to his eyes
+    { par: [
+      { say: 'arrows_order' },
+      { fn: async () => {
+        await ctx.runSteps([{ track: 'jerome', from: [1.2, 0.35, 1.3], to: [0.9, 0.3, 1.0], look: [0.3, 0.3, 0], t: 1.2 }]);
+        await ctx.runSteps([{ cam: [-5.4, 0.35, 3.2], look: [-5.0, 0.8, -0.4] }, { cam: [-4.6, 0.4, 3.0], look: [-5.0, 0.8, -0.4], t: 1.0 }]);
+        await ctx.runSteps([{ track: 'jerome', from: [0.75, 0.32, 0.8], to: [0.6, 0.3, 0.65], look: [0.35, 0.3, 0], t: 1.2 }]);
+      } },
+    ] },
     { expr: 'jerome', name: 'determined' }, { expr: 'robert', name: 'determined' }, { expr: 'rocker', name: 'determined' },
-    { dolly: 'robert', dist: 1.5, side: 0.6, t: 0.4 },
-    { say: 'arrows_ack' },
-    { dolly: 'heuler', dist: 1.5, side: -0.6, t: 0.4 },
+    { par: [{ say: 'arrows_ack' }, { track: 'robert', from: [1.3, 0.3, 1.5], to: [1.0, 0.25, 1.2], look: [0.2, 0.25, 0], t: 1.6 }] },
     { expr: 'heuler', name: 'happy' },
-    { say: 'arrows_together' },
+    { par: [{ say: 'arrows_together' }, { track: 'heuler', from: [-1.4, 0.25, 1.4], to: [-1.1, 0.25, 1.1], look: [0.2, 0.25, 0], t: 1.6 }] },
     { expr: 'heuler', name: 'determined' },
     { fn: () => { boss.weakReveal = 1; } },
   ];
@@ -387,6 +392,11 @@ export const arrows = (ctx) => {
       { fn: () => { fallen.push(m.root.position.clone()); FX.dust(m.root.position.clone().setY(0.1), true); } },
       { sfx: 'whimper' },
       { anim: 'kaibutsu', name: 'Idle_2_HeadLow', ts: 0.8 },
+      // the death is shown: time slows, silence, his eye, a faint spirit light beside him
+      { slow: 0.5 }, { sfx: 'strain' },
+      { track: id, from: [0.7, 0.3, 0.75], to: [0.55, 0.26, 0.6], look: [0.3, 0.25, 0], t: 1.0 },
+      { fn: () => FX.spiritLight(m.root.position.clone().add(new THREE.Vector3(-0.6, 0.6, 0.4)), 0xcfe4ff, 3) },
+      { slow: 1 },
       // the camera comes to rest on him; his last words
       { par: [
         { track: id, from: [1.5, 0.35, 2.2], to: [1.0, 0.25, 1.5], look: [0, -0.25, 0], t: 3.0 },
