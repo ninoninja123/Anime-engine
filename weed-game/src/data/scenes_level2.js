@@ -473,7 +473,7 @@ export const arrows = (ctx) => {
       // the death is shown: time slows, silence, his eye, a faint spirit light beside him
       { slow: 0.5 }, { sfx: 'strain' },
       { track: id, from: [0.7, 0.3, 0.75], to: [0.55, 0.26, 0.6], look: [0.3, 0.25, 0], t: 1.0 },
-      { fn: () => FX.spiritLight(m.root.position.clone().add(new THREE.Vector3(-0.6, 0.6, 0.4)), 0xcfe4ff, 3) },
+      { fn: () => { FX.spiritGhost(m, 0xcfe4ff, 3); FX.burst(m.root.position.clone().add(new THREE.Vector3(0, 0.5, 0.3)), { color: 0xcfe4ff, count: 10, speed: 1.2, size: 0.18, gravity: 1.5 }); } },   // soft spirit, no white-out
       { slow: 1 },
       // the camera comes to rest on him; his last words
       { par: [
@@ -524,7 +524,7 @@ export const arrows = (ctx) => {
     { expr: 'jerome', name: 'sad' },
     { say: 'arrows_thanks' },
     { fn: async () => {
-      for (const p of fallen) { FX.spiritLight(p.clone().add(new THREE.Vector3(0, 0.5, 0)), 0xcfe4ff, 5); }
+      MEN.forEach((id, k) => setTimeout(() => { FX.spiritGhost(cast[id], 0xcfe4ff, 4); FX.burst(fallen[k] ? fallen[k].clone().add(new THREE.Vector3(0, 0.6, 0)) : cast[id].root.position.clone(), { color: 0xdfeeff, count: 12, speed: 1.4, size: 0.2, gravity: 1.8 }); }, k * 350));   // the three rise as soft silhouettes (the deaths stay visible)
       sfx.spirit();
       await Promise.all(MEN.map(id => tween({ v: 1 }, { v: 0 }, 2.6, { real: true, onUpdate: e => cast[id].fade(1 - e) })));
       MEN.forEach(id => { cast[id].root.visible = false; });
@@ -559,7 +559,7 @@ export const lock = (ctx) => {
     { cam: [-0.6, 0.9, 6.2], look: [2.4, 1.2, 0.4] },
     { bark: 'lock_call' },
     { wait: 0.6 },
-    { bark: 'lock_shout_weed' },
+    { bark: 'lock_shout_weed' }, { fx: 'speed', v: 1 }, { sfx: 'rushWhoosh' },
     // three of them lock the monster down: Kagetora hangs from its throat (far side), Weed hangs off its flank,
     // Ken clamps its haunch from behind-side. Each bite is a real contact; P4's legs stop.
     { par: [
@@ -568,7 +568,11 @@ export const lock = (ctx) => {
       { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', wind: 0.3, t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
       { cam: [0.6, 1.4, 7.4], look: [3.0, 1.2, 0.3], t: 1.0, ease: 'out' },
     ] },
+    { fx: 'speed', v: 0 },
     { sfx: 'roar' }, { shake: 0.6 },
+    // extreme close-ups: Weed's fangs in the flank, Ken's in the haunch
+    { track: 'mouth:weed', from: [-0.6, 0.1, 0.8], to: [-0.5, 0.08, 0.65], look: [0.05, -0.05, 0], t: 0.6 },
+    { track: 'mouth:ken', from: [-0.8, 0.15, 1.0], to: [-0.65, 0.1, 0.85], look: [0.05, -0.05, 0], t: 0.6 },
     // P4 strains against them: legs locked, body shudders
     { fn: () => {
       boss.play('Idle_HitReact2', { loop: false, timeScale: 0.4 });
@@ -585,12 +589,14 @@ export const lock = (ctx) => {
     ] },
     { cam: [B.x - half - 2.6, 0.7, 4.2], look: [B.x - half * 0.55, H * 0.42, 0.5], t: 0.6, ease: 'out' },
     { slow: 0.4 },
-    { fx: 'speed', v: 1 },
+    { fx: 'speed', v: 1 }, { sfx: 'rushWhoosh' },
     { strike: 'jerome', target: 'kaibutsu', point: 'chest_weak', side: 'near', depth: 0.9, grunt: ['breath'], fleshSfx: false, wind: 0.25, t: 0.34, arc: 0.4, anim: 'Gallop_Jump', hitAt: 0.5,
       pin: true, react: 'roar', fx: 'crit', strong: true, sfx: ['arrow_bite_3'], hitstop: 0.14, shake: 0.7, tug: 0.3,
       onHit: () => { boss.weakReveal = 1; } },
-    { slow: 1 },
+    { slow: 1 }, { fx: 'speed', v: 0 },
     { freeze: 0.35 },
+    { fn: () => { const h = boss.bones.head.getWorldPosition(new THREE.Vector3()), n = ctx.contact.mouthWorld('kaibutsu'); const eye = h.lerp(n, 0.45).add(new THREE.Vector3(0, 0.12, 0.2)); E.camPos.set(eye.x + 0.15, eye.y + 0.05, eye.z + 1.05); E.camLook.copy(eye); tween(E.camPos, { z: eye.z + 0.85 }, 0.6, { real: true }); } },   // P4's eye
+    { sfx: 'roarPain' }, { wait: 0.5 },
     { fn: () => { const n = ctx.contact.mouthWorld('jerome'); E.camPos.set(n.x - 1.4, n.y + 0.1, n.z + 1.9); E.camLook.set(n.x, n.y - 0.2, n.z); } },
     { expr: 'jerome', name: 'angry' },
     { thrash: 'kaibutsu', t: 1.2, amp: 0.12, freq: 3.6 },

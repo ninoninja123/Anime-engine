@@ -295,7 +295,7 @@ function applyMotion(m, dt) {
     if (!m.impact) {
       m.impact = true;
       const g = d.root.position.clone().setY(0.1);
-      FX.dust(g, true); FX.dust(g.clone().add(new THREE.Vector3(d.facing * L * 0.3, 0, 0)), true); FX.ring(g.clone().setY(0.08), 0xd9ccb0, 7, 0.6);
+      FX.dust(g, true); FX.dust(g.clone().add(new THREE.Vector3(d.facing * L * 0.3, 0, 0)), true); FX.ring(g.clone().setY(0.08), 0xd9ccb0, 5.5, 0.6);
       shake(1.0); playAny(['knockdown'], { x: g.x }); playAny(['thud_deep', 'thud_deep_1'], { x: g.x });
       if (o.onImpact) o.onImpact();
     }
