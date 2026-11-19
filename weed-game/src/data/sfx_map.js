@@ -93,6 +93,28 @@ export const SOUNDS = {
   victory:     { files: ['sfx2_victory.mp3'], vol: 0.55, pitch: [1, 1], cat: 'ui', max: 1, group: 'cine' },
 };
 
+// ------------------------------------------------------------------ flesh-paketti (Neljä nuolta, sfx3_*.mp3)
+// Ryhmäavaimet (variantit arvotaan) + yksittäiset avaimet <ryhmä>_<N> (esim. bite_flesh_deep_2) suoraan soitettaviksi.
+const v3 = (base, n) => Array.from({ length: n }, (_, i) => `sfx3_${base}_${i + 1}.mp3`);
+const FLESH = {
+  bite_flesh_shallow: { files: v3('bite_flesh_shallow', 4), vol: 0.6, pitch: [0.95, 1.12], gain: [-2, 0], cat: 'combat', max: 2, group: 'cine' },
+  bite_flesh_mid:     { files: v3('bite_flesh_mid', 3), vol: 0.75, pitch: [0.9, 1.05], gain: [-2, 0], cat: 'combat', max: 2, group: 'cine' },
+  bite_flesh_deep:    { files: v3('bite_flesh_deep', 4), vol: 0.85, pitch: [0.82, 0.95], gain: [-1, 0], cat: 'combat', max: 2, group: 'cine' },
+  tear:               { files: v3('tear', 4), vol: 0.6, pitch: [0.85, 1.05], gain: [-2, 0], cat: 'combat', max: 2, group: 'cine' },
+  crunch:             { files: v3('crunch', 3), vol: 0.5, pitch: [0.8, 0.95], gain: [-3, 0], cat: 'combat', max: 2, group: 'cine' },
+  battlecry_dog:      { files: v3('battlecry_dog', 3), vol: 0.7, pitch: [0.92, 1.08], cat: 'combat', max: 2, group: 'cine' },
+  yelp_pain:          { files: [...v3('yelp_pain', 2), 'sfx2_yelp_1.mp3', 'sfx2_yelp_2.mp3', 'sfx2_yelp_3.mp3'], vol: 0.7, pitch: [0.95, 1.1], gain: [-2, 0], cat: 'combat', max: 1, group: 'cine' },
+  roar_pain:          { files: v3('roar_pain', 4), vol: 0.85, pitch: [0.72, 0.88], gain: [-1, 0], cat: 'boss', max: 1, group: 'cine' },
+  thud_deep:          { files: v3('thud_deep', 3), vol: 0.8, pitch: [0.85, 1.0], cat: 'combat', max: 2, group: 'cine' },
+  rush_whoosh:        { files: v3('rush_whoosh', 4), vol: 0.6, pitch: [0.9, 1.12], gain: [-2, 0], cat: 'combat', max: 3, group: 'cine' },
+  hide_stretch:       { files: ['sfx3_hide_stretch.mp3'], vol: 0.45, pitch: [0.55, 0.7], cat: 'combat', max: 1, group: 'cine' },
+};
+for (const [k, s] of Object.entries(FLESH)) {
+  SOUNDS[k] = s;
+  if (k === 'hide_stretch') continue;
+  s.files.filter(f => f.startsWith('sfx3_')).forEach((f, i) => { SOUNDS[`${k}_${i + 1}`] = { ...s, files: [f] }; });
+}
+
 /** Tapahtumat. Vanhat nimet (bite, hit, roar, rock, rumble, boom, bark, spirit, whoosh, hurt, tell, card, cutin, perfect,
  *  battoga, howl) säilyvät, jotta olemassa olevat kutsut ja kohtausdatan { sfx: '…' } toimivat ennallaan. */
 export const EVENTS = {
@@ -144,8 +166,22 @@ export const EVENTS = {
   lockOn:    { cat: 'cine', layers: [{ s: 'lock_on' }, { s: 'perfect', d: 0.02, vol: 0.35, rate: 1.5 }] },
   sacrifice: { cat: 'cine', layers: [{ s: 'heartbeat' }, { s: 'boss_drone', vol: 0.5 }, { s: 'perfect', d: 0.4, vol: 0.3, rate: 0.75 }], duck: [0.5, 2] },
 
+  // --- Neljä nuolta: jokainen purenta syvemmälle (kerrokset: rush-whoosh → hampaiden transientti → liha → matala
+  //     tömähdys → huuto/vinkaisu). Soita ~0,07 s ennen osumaa (whoosh johtaa), tai osumahetkellä.
+  arrowRush:   { cat: 'combat', layers: [{ s: 'rush_whoosh' }, { s: 'battlecry_dog', d: 0.02, vol: 0.8 }] },
+  arrow_bite_1: { cat: 'combat', layers: [{ s: 'rush_whoosh', vol: 0.6 }, { s: 'bite_snap', d: 0.07 }, { s: 'bite_flesh_shallow', d: 0.075 }, { s: 'hide_stretch', d: 0.1, vol: 0.6 }, { s: 'thud_deep', d: 0.08, vol: 0.45 }, { s: 'roar_pain', d: 0.25, vol: 0.6 }], duck: [0.5, 1.0, 0.02], ambDuck: [0.5, 1.0] },
+  arrow_bite_2: { cat: 'combat', layers: [{ s: 'rush_whoosh', vol: 0.7 }, { s: 'bite_snap', d: 0.07 }, { s: 'bite_flesh_mid', d: 0.075 }, { s: 'tear', d: 0.16, vol: 0.7 }, { s: 'thud_deep', d: 0.08, vol: 0.7 }, { s: 'hit_heavy', d: 0.075, vol: 0.6 }, { s: 'roar_pain', d: 0.22, vol: 0.8 }], duck: [0.35, 1.3, 0.02], ambDuck: [0.4, 1.3] },
+  arrow_bite_3: { cat: 'combat', layers: [{ s: 'rush_whoosh', vol: 0.8 }, { s: 'bite_snap', d: 0.07 }, { s: 'bite_flesh_deep', d: 0.075 }, { s: 'crunch', d: 0.12, vol: 0.6 }, { s: 'tear', d: 0.3, vol: 0.8 }, { s: 'thud_deep', d: 0.075 }, { s: 'crit', d: 0.08, vol: 0.6 }, { s: 'roar_pain', d: 0.2 }, { s: 'yelp_pain', d: 0.9, vol: 0.6, p: 0.5 }], duck: [0.2, 2.0, 0.02], ambDuck: [0.25, 2.0] },
+  fleshBite:   { cat: 'combat', layers: [{ s: 'bite_snap' }, { s: 'bite_flesh_mid', d: 0.005 }, { s: 'thud_deep', d: 0.01, vol: 0.5 }] },
+  battleCry:   { cat: 'combat', layers: [{ s: 'battlecry_dog' }] },
+  yelpPain:    { cat: 'combat', layers: [{ s: 'yelp_pain' }, { s: 'thud_deep', vol: 0.4 }], duck: [0.5, 0.8] },
+  roarPain:    { cat: 'boss', layers: [{ s: 'roar_pain' }], duck: [0.45, 1.6], ambDuck: [0.5, 1.6] },
+  thudDeep:    { cat: 'combat', layers: [{ s: 'thud_deep' }] },
+  rushWhoosh:  { cat: 'combat', layers: [{ s: 'rush_whoosh' }] },
+  strain:      { cat: 'cine', layers: [{ s: 'breath', rate: 0.9 }, { s: 'heartbeat', d: 0.1, vol: 0.8 }] },
+
   // --- Kaibutsu
-  roar:      { cat: 'boss', syn: 'roar', layers: [{ s: 'roar' }, { s: 'boss_growl', d: 0.9, vol: 0.5, p: 0.5 }], duck: [0.45, 1.6], ambDuck: [0.5, 1.6] },
+  roar:    { cat: 'boss', syn: 'roar', layers: [{ s: 'roar' }, { s: 'boss_growl', d: 0.9, vol: 0.5, p: 0.5 }], duck: [0.45, 1.6], ambDuck: [0.5, 1.6] },
   growl:     { cat: 'boss', layers: [{ s: 'boss_growl' }] },
   tell:      { cat: 'boss', syn: 'tell', layers: [{ s: 'boss_growl', vol: 0.8 }, { s: 'rev_cymbal', vol: 0.8 }] },
   bossStep:  { cat: 'boss', layers: [{ s: 'boss_step' }, { s: 'step_leaf', d: 0.02, vol: 0.9, rate: 0.75, p: 0.6 }, { s: 'dust', d: 0.05, vol: 0.6, p: 0.25 }] },
