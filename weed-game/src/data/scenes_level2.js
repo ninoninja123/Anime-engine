@@ -322,9 +322,9 @@ export const arrows = (ctx) => {
   // Each arrow: gallop in the near lane, leap, jaws close on the bare skin of the LEFT CHEST (real contact),
   // P4 roars and flinches, then rears and flings the dog away; he crashes down and falls.
   const ARROW = [
-    { pin: 0.55, land: [-0.9, 1.9], arc: 1.5, t: 0.75, cam: 'side' },    // Robert opens the wound
-    { pin: 0.8, land: [B.x - half - 0.9, 2.3], arc: 0.6, t: 0.45, cam: 'low' },   // Rocker drives deeper – slammed down
-    { pin: 1.2, land: [-2.4, 2.6], arc: 1.8, t: 0.85, cam: 'side' },     // Heuler pushes his muzzle into the wound
+    { pin: 0.55, land: [-0.9, 1.9], arc: 1.5, t: 0.75, cam: 'side', depth: 0.3, cry: 0.95 },    // Robert opens the wound (surface)
+    { pin: 0.8, land: [B.x - half - 0.9, 2.3], arc: 0.6, t: 0.45, cam: 'low', depth: 0.6, cry: 1.1 },   // Rocker drives deeper – slammed down
+    { pin: 1.2, land: [-2.4, 2.6], arc: 1.8, t: 0.85, cam: 'side', depth: 0.9, cry: 0.85 },     // Heuler pushes his muzzle deep into the wound
   ];
   const dmg = (n) => () => { B.hp = Math.max(9, B.hp - n); };
   MEN.forEach((id, i) => {
@@ -335,21 +335,28 @@ export const arrows = (ctx) => {
       { track: id, from: [1.3, 0.25, 1.4], to: [1.0, 0.2, 1.1], look: [0.2, 0.25, 0], t: 1.1 },
       { sfx: 'bark' },
       // the run: the camera runs with him
+      { fx: 'speed', v: 1 },
       { par: [
         { move: id, x: B.x - half - 2.0, z: 1.0, t: 0.75, anim: 'Gallop', ts: 1.4, ease: 'in' },
         { track: id, from: [-1.2, 0.1, 2.8], to: [-0.4, 0.3, 3.2], look: [1.0, 0.3, 0], t: 0.75, ease: 'in' },
         { sfx: 'gallopIn' },
       ] },
-      { slow: 0.3 }, { fx: 'speed', v: 0.6 },
-      // anticipation -> leap -> jaws in the bare skin of the LEFT CHEST
+      { slow: 0.3 }, { fx: 'speed', v: 1 },
+      // anticipation -> leap (battle cry) -> jaws in the bare skin of the LEFT CHEST, each one deeper than the last
       { par: [
         { strike: id, target: 'kaibutsu', point: 'chest_weak', side: 'near', wind: 0.25, t: 0.34, arc: 0.45, anim: 'Gallop_Jump', hitAt: 0.5,
-          pin: true, react: 'roar', fx: 'crit', strong: true, sfx: ['bite', 'crit'], hitstop: 0.12, shake: 0.6, tug: 0.2, onHit: dmg(4) },
+          depth: A.depth, cry: ['bark'], cryRate: A.cry, grunt: ['breath'], tug: 0.12 + 0.25 * A.depth,
+          pin: true, react: 'roar', fx: 'crit', strong: true, sfx: ['bite', 'crit'], hitstop: 0.1 + 0.08 * A.depth, shake: 0.4 + 0.5 * A.depth, onHit: dmg(4) },
         A.cam === 'low' ? { cam: [B.x - half - 3.2, 0.5, 4.2], look: [B.x - half * 0.6, 1.5, 0.6], t: 1.6, ease: 'out' }
           : { cam: [B.x - half - 1.2, 1.2, 4.6], look: [B.x - half * 0.7, 1.3, 0.6], t: 1.6, ease: 'out' },
       ] },
       { freeze: 0.4 },
       { slow: 1 }, { fx: 'speed', v: 0 },
+      // extreme close-up: the teeth sunk in the wound, then P4's eye
+      { track: 'mouth:' + id, from: [-0.75, 0.12, 0.95], to: [-0.6, 0.08, 0.8], look: [0.05, -0.05, 0], t: 0.7 },
+      { fn: () => { const h = boss.bones.head.getWorldPosition(new THREE.Vector3()), n = ctx.contact.mouthWorld('kaibutsu'); const eye = h.lerp(n, 0.45).add(new THREE.Vector3(0, 0.12, 0.2)); E.camPos.set(eye.x + 0.15, eye.y + 0.05, eye.z + 1.05); E.camLook.copy(eye); tween(E.camPos, { z: eye.z + 0.85 }, 0.6, { real: true }); } },   // P4's eye
+      { sfx: 'roar' }, { shake: 0.3 + 0.4 * A.depth },
+      { wait: 0.5 },
       // follow-through: his jaws stay in the wound while P4 roars
       { par: [
         { track: 'mouth:' + id, from: [-2.1, 0.3, 2.9], to: [-1.6, 0.2, 2.3], look: [0.1, -0.3, 0], t: 0.6 + A.pin },
@@ -450,9 +457,9 @@ export const lock = (ctx) => {
     // three of them lock the monster down: Kagetora hangs from its throat (far side), Weed hangs off its flank,
     // Ken clamps its haunch from behind-side. Each bite is a real contact; P4's legs stop.
     { par: [
-      { strike: 'kagetora', target: 'kaibutsu', point: 'throat', side: 'far', wind: 0.2, t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
-      { strike: 'weed', target: 'kaibutsu', point: 'flank', side: 'near', wind: 0.25, t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
-      { strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', wind: 0.3, t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
+      { depth: 0.45, cry: ['bark'], grunt: ['breath'], strike: 'kagetora', target: 'kaibutsu', point: 'throat', side: 'far', wind: 0.2, t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
+      { depth: 0.45, cry: ['bark'], grunt: ['breath'], strike: 'weed', target: 'kaibutsu', point: 'flank', side: 'near', wind: 0.25, t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
+      { depth: 0.45, cry: ['bark'], grunt: ['breath'], strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', wind: 0.3, t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
       { cam: [0.6, 1.4, 7.4], look: [3.0, 1.2, 0.3], t: 1.0, ease: 'out' },
     ] },
     { sfx: 'roar' }, { shake: 0.6 },
@@ -472,7 +479,8 @@ export const lock = (ctx) => {
     ] },
     { cam: [B.x - half - 2.6, 0.7, 4.2], look: [B.x - half * 0.55, H * 0.42, 0.5], t: 0.6, ease: 'out' },
     { slow: 0.4 },
-    { strike: 'jerome', target: 'kaibutsu', point: 'chest_weak', side: 'near', wind: 0.25, t: 0.34, arc: 0.4, anim: 'Gallop_Jump', hitAt: 0.5,
+    { fx: 'speed', v: 1 },
+    { strike: 'jerome', target: 'kaibutsu', point: 'chest_weak', side: 'near', depth: 0.9, cry: ['bark'], cryRate: 0.85, grunt: ['breath'], wind: 0.25, t: 0.34, arc: 0.4, anim: 'Gallop_Jump', hitAt: 0.5,
       pin: true, react: 'roar', fx: 'crit', strong: true, sfx: ['bite', 'crit'], hitstop: 0.14, shake: 0.7, tug: 0.3,
       onHit: () => { boss.weakReveal = 1; } },
     { slow: 1 },
@@ -523,7 +531,7 @@ export const finale = (ctx) => {
     { slow: 0.18 },
     // the spinning fang: Weed corkscrews in and his jaws close on the bare skin of the left chest (real contact, held)
     { par: [
-      { strike: 'weed', target: 'kaibutsu', point: 'chest_weak', side: 'near', wind: 0.12, t: 0.46, arc: 0.9, anim: 'Battoga', ts: 2.2, hitAt: 0.45,
+      { strike: 'weed', target: 'kaibutsu', point: 'chest_weak', side: 'near', depth: 1.0, grunt: ['breath'], wind: 0.12, t: 0.46, arc: 0.9, anim: 'Battoga', ts: 2.2, hitAt: 0.45,
         pin: true, react: 'stagger', reactOpts: { push: 0.25, onMove: x => { B.x = x; } }, fx: 'crit', strong: true, sfx: ['boom', 'bite'], hitstop: 0, shake: 1.0, tug: 0.3, maxPitch: 1.0,
         onHit: (hp) => {
           FX.flash('#ffffff', 1.4, 1);
