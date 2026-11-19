@@ -138,6 +138,35 @@ Linkki: `https://www.epidemicsound.com/sound-effects/tracks/<ID>/`.
 | `game_over` | Musical, Stinger, Flute, Oneshot, Reverb, Low | `3c09c23b-8489-414b-8a3f-82417cf8c067` |
 | `victory` | Musical, Sample, Victory, Achievement, Positive, Orchestra, Video Game 01 | `daeb0db9-5c22-401a-861d-d0d2c59d2135` |
 
+### Flesh-paketti `sfx3_*.mp3` (Neljä nuolta; 35 tiedostoa, ~0,4 MB, Epidemic Sound)
+Käsitelty kuten yllä. Tapahtumat `arrow_bite_1/2/3` (syvyys kasvaa), `arrowRush`, `roarPain`, `yelpPain`, `battleCry` (`src/data/sfx_map.js`).
+
+| sfx3-tiedostot | Epidemic-tehoste | ID |
+|---|---|---|
+| `bite_flesh_shallow_1,2,4`, `bite_flesh_mid_1–2` | Creatures, Monster, Gore, Bloody Bite, Chew, Meat, Bone, Teeth, Drip 01 | `b4e06bd0-fa0d-48df-acc0-87ff40a6d4ff` |
+| `bite_flesh_shallow_3`, `bite_flesh_mid_3` | Creatures, Monster, Gore, Bloody Bite, Chew, Meat, Bone, Teeth, Drip, Rip | `11fd848c-e013-48ab-a339-a5064e85bd60` |
+| `bite_flesh_deep_1` | Creatures, Humanoid, Zombie, Male, Eating Body, Single Bite | `cd17939b-71d3-42e4-963f-61943393fb2a` |
+| `bite_flesh_deep_2` | Impact, Flesh, Heavy, Loose, Wet 23 | `599b133d-9e20-4912-aa37-086f121eebcd` |
+| `bite_flesh_deep_3` | Impact, Flesh, Heavy, Loose, Wet 07 | `95053b64-041a-40cb-8b8d-d0bd5801b913` |
+| `bite_flesh_deep_4` | Gore, Flesh, Drop, Impact, Hit, Short, Bloody, Wet 02 | `0e9cc53a-aacf-46fe-b346-cce1fc779b0f` |
+| `tear_1–2` | Gore, Flesh, Flesh Tear Bloody | `51d52af8-eb1b-4f02-b6f6-3fb226ed7bb1` |
+| `tear_3` | Gore, Misc, Body Part, Tear, Rip, Dislocate | `7c420302-0fec-44f2-af95-87b68d062c58` |
+| `tear_4` | Gore, Flesh, Tearing, Wet, Bones 03 | `a7120fb1-e60a-46ce-a387-ffba9118cb1f` |
+| `crunch_1` / `crunch_2` / `crunch_3` | Gore, Bone, Crush, Crunch / Break, Crush / Crunch | `a2632461-482b-438b-84fb-479336d5930c`, `98849284-7bd6-4013-b427-b1f170571bd0`, `86c33737-ddb5-45d7-ba7e-04dcff157cb1` |
+| `battlecry_dog_1` | Animals, Dog, Greenlandic, Aggressive Barking, Intimidating Another | `cacd8f5b-a509-41d1-b687-362d6b205347` |
+| `battlecry_dog_2–3` | Animals, Dog, Labrador, Barking And Growling, Internal | `7c718775-9e80-4219-87d6-cf24dc7550b3` |
+| `yelp_pain_1–2` (+ sfx2_yelp_1–3) | Animals, Dog, Corgi Cardigan, Whining, Crying Barking 01 | `7b88d7ed-99eb-4cf9-a15a-82f44461763b` |
+| `roar_pain_1–2` | Creatures, Humanoid, Ogre, In Pain, Light Growl, Short, Variations | `70afd14e-a5ce-4ce7-81cc-196da5997abc` |
+| `roar_pain_3` | Creatures, Monster, Evil Beast, Growl, Groan | `9da83b89-0607-4954-bd79-177e33579ac5` |
+| `roar_pain_4` | Creatures, Monster, Ill Or Dying, Moan | `181cb08e-16ad-468f-a530-eb6065c5855d` |
+| `thud_deep_1` | Designed, Boom, Impact, Thud, Deep Hit, Heavy, Reverb | `f7f74cf9-dbd8-465d-85fa-aed5b4e3ad1e` |
+| `thud_deep_2` | Designed, Boom, Bass, Boom, Low, Thump | `8b884170-f07c-4bc7-96a5-c03b7e7286b5` |
+| `thud_deep_3` | Designed, Boom, Impact, Thud, Deep, Heavy, Realistic, Distant | `4969f8ba-0853-49d3-8d5f-9787371deb54` |
+| `rush_whoosh_1–2` | Swooshes, Swish, Cane, Whoosh Through Air, Whip, Fast | `3f1dd139-e30d-4d23-b7af-446f763a33f4` |
+| `rush_whoosh_3` | Designed, Whoosh, Air, Passby, Fast | `558b9994-34c0-4026-8e1f-20914ff21106` |
+| `rush_whoosh_4` | Swooshes, Whoosh, Designed, Generic, Air | `c406a00b-d4b3-42e9-ba76-707ba5174543` |
+| `hide_stretch` | Leather, Creak, Seat Cover, Squeak, Rub, Hand Movement 04 (pitch alas: nahan venyminen) | `3a23ddc6-412f-4065-8df8-0a06986858d7` |
+
 Kuuntelu: `?soundtest` (kaikki tapahtumat, atomiäänet ja ambienssipresetit napeista). Testi: `node tools/sfx-test.cjs`.
 
 Varalla: jos tiedosto puuttuu tai ei lataudu, `src/audio.js` syntetisoi vastaavan äänen WebAudiolla (myös musiikki).

@@ -700,7 +700,7 @@ function cutEnd() {
   E.camRoll = 0; stopVoice();
 }
 
-const ctx = { cast, S, makeRock, E, FX, sfx, ARENA, bossHalf, contact: C, restoreLight: () => restoreLight() };
+const ctx = { cast, S, makeRock, E, FX, sfx, ARENA, bossHalf, contact: C, say, restoreLight: () => restoreLight() };
 
 async function introCutscene() {
   await cutStart();

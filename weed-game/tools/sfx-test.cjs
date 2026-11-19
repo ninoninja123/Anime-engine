@@ -18,7 +18,7 @@ const BASE = process.env.URL || 'http://localhost:4173/';
   const nBtn = await page.$$eval('#soundtest button[data-ev]', b => b.length);
   await page.click('#soundtest button[data-ev="bite"]');
   await sleep(2500);
-  for (const ev of ['hit', 'boom', 'roar', 'step', 'cutin', 'spirit', 'ui', 'heli', 'rumble']) { await page.click(`#soundtest button[data-ev="${ev}"]`); await sleep(150); }
+  for (const ev of ['hit', 'boom', 'roar', 'step', 'cutin', 'spirit', 'ui', 'heli', 'rumble', 'arrow_bite_1', 'arrow_bite_2', 'arrow_bite_3', 'arrowRush']) { await page.click(`#soundtest button[data-ev="${ev}"]`); await sleep(150); }
   await page.click('#soundtest button[data-amb="battle"]'); await sleep(1500);
   await page.click('#soundtest button#stLoadAll'); await sleep(8000);
   const st1 = await page.evaluate(() => { const a = window.__soundtest.audioStats; return { loaded: a.loaded.length, failed: a.failed, missing: a.missing, ev: Object.keys(a.events).length, mem: window.__soundtest.mem() }; });
