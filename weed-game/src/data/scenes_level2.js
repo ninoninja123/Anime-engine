@@ -450,9 +450,9 @@ export const lock = (ctx) => {
     // three of them lock the monster down: Kagetora hangs from its throat (far side), Weed hangs off its flank,
     // Ken clamps its haunch from behind-side. Each bite is a real contact; P4's legs stop.
     { par: [
-      { strike: 'kagetora', target: 'kaibutsu', point: 'throat', side: 'far', t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
-      { strike: 'weed', target: 'kaibutsu', point: 'flank', side: 'near', t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
-      { strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
+      { strike: 'kagetora', target: 'kaibutsu', point: 'throat', side: 'far', wind: 0.2, t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
+      { strike: 'weed', target: 'kaibutsu', point: 'flank', side: 'near', wind: 0.25, t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
+      { strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', wind: 0.3, t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
       { cam: [0.6, 1.4, 7.4], look: [3.0, 1.2, 0.3], t: 1.0, ease: 'out' },
     ] },
     { sfx: 'roar' }, { shake: 0.6 },
@@ -465,10 +465,14 @@ export const lock = (ctx) => {
     { thrash: 'kaibutsu', t: 1.2, amp: 0.18, freq: 3.2 },
     { freeze: 0.45 },
     // Jerome goes for the artery in the bare left chest
-    { cam: [B.x - half - 2.6, 0.7, 4.2], look: [B.x - half * 0.55, H * 0.42, 0.5] },
-    { move: 'jerome', x: B.x - half - 2.1, z: 1.1, t: 0.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
+    { par: [
+      { move: 'jerome', x: B.x - half - 2.1, z: 1.1, t: 0.7, anim: 'Gallop', ts: 1.5, ease: 'in' },
+      { track: 'jerome', from: [-1.3, 0.1, 2.8], to: [-0.5, 0.35, 3.3], look: [1.1, 0.3, 0], t: 0.7, ease: 'in' },
+      { sfx: 'gallopIn' },
+    ] },
+    { cam: [B.x - half - 2.6, 0.7, 4.2], look: [B.x - half * 0.55, H * 0.42, 0.5], t: 0.6, ease: 'out' },
     { slow: 0.4 },
-    { strike: 'jerome', target: 'kaibutsu', point: 'chest_weak', side: 'near', t: 0.34, arc: 0.4, anim: 'Gallop_Jump', hitAt: 0.5,
+    { strike: 'jerome', target: 'kaibutsu', point: 'chest_weak', side: 'near', wind: 0.25, t: 0.34, arc: 0.4, anim: 'Gallop_Jump', hitAt: 0.5,
       pin: true, react: 'roar', fx: 'crit', strong: true, sfx: ['bite', 'crit'], hitstop: 0.14, shake: 0.7, tug: 0.3,
       onHit: () => { boss.weakReveal = 1; } },
     { slow: 1 },
@@ -519,7 +523,7 @@ export const finale = (ctx) => {
     { slow: 0.18 },
     // the spinning fang: Weed corkscrews in and his jaws close on the bare skin of the left chest (real contact, held)
     { par: [
-      { strike: 'weed', target: 'kaibutsu', point: 'chest_weak', side: 'near', t: 0.46, arc: 0.9, anim: 'Battoga', ts: 2.2, hitAt: 0.45,
+      { strike: 'weed', target: 'kaibutsu', point: 'chest_weak', side: 'near', wind: 0.12, t: 0.46, arc: 0.9, anim: 'Battoga', ts: 2.2, hitAt: 0.45,
         pin: true, react: 'stagger', reactOpts: { push: 0.25, onMove: x => { B.x = x; } }, fx: 'crit', strong: true, sfx: ['boom', 'bite'], hitstop: 0, shake: 1.0, tug: 0.3, maxPitch: 1.0,
         onHit: (hp) => {
           FX.flash('#ffffff', 1.4, 1);

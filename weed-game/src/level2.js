@@ -179,7 +179,7 @@ async function kenKageStrike() {
   E.timeScale = 0.3; FX.speedLines(0.8);
   tween(E.camPos, { x: B.x - dir * 2.4, y: 1.6, z: 5.6 }, 0.9, { real: true, ease: 'out' });
   tween(E.camLook, { x: B.x - dir * 0.4, y: 1.7, z: 0.4 }, 0.9, { real: true, ease: 'out' });
-  const fang = (who, point, arc) => C.strike({ who, target: 'kaibutsu', point, side: 'near', t: 0.3, arc, anim: 'Battoga', ts: 1.8, hitAt: 0.4,
+  const fang = (who, point, arc) => C.strike({ who, target: 'kaibutsu', point, side: 'near', wind: 0.12, t: 0.3, arc, anim: 'Battoga', ts: 1.8, hitAt: 0.4,
     pin: 0.45, then: 'drop', react: 'none', fx: 'impact', strong: true, sfx: [], hitstop: 0, maxPitch: 1.0, tug: 0.25 });
   await Promise.all([fang('ken', 'shoulder', 0.8), fang('kagetora', 'hip', 0.6)]);
   const pk = C.mouthWorld('ken'), pg = C.mouthWorld('kagetora'), mid = pk.clone().lerp(pg, 0.5);
@@ -293,7 +293,7 @@ async function bite() {
   // real contact: Weed's jaws close on the near foreleg (he is small – the leg is what he can reach)
   w.root.position.x = W.x; w.root.position.y = 0;
   const dist = Math.abs(B.x - W.x);
-  await C.strike({ who: 'weed', target: 'kaibutsu', point: 'foreleg', side: 'near', t: clamp(dist / 10, 0.14, 0.4), anim: 'Gallop', ts: 1.6, hitAt: 0.35,
+  await C.strike({ who: 'weed', target: 'kaibutsu', point: 'leg', side: 'near', t: clamp(dist / 10, 0.14, 0.4), anim: 'Gallop', ts: 1.6, hitAt: 0.35,
     react: B.attacking ? 'none' : 'flinch', fx: B.armored ? 'none' : undefined, sfx: [], recoil: { dist: 1.8, t: 0.26, arc: 0.2 }, after: 'Idle', wait: 'end',
     onHit: (P) => { if (seq !== W.seq) return; sfx.bite(); damageBoss(4, P); addHenki(0.1); } });
   if (seq !== W.seq) return;
@@ -518,30 +518,32 @@ async function atkCharge(alive) {
   boss.play('Gallop', { timeScale: 1.1 });
   sfx.roar();
   const speed = 12 * B.speed;
-  let hit = false;
+  let hit = false, reaching = null;
+  C.SEP.skip.add('weed');                         // stays in the lane: the charge either connects or he must dodge/jump
   while (alive() && Math.sign(endX - B.x) === dir) {
     const step = speed * Math.min(E.timeScale > 0 ? 1 / 60 : 0, 1);
     B.x += dir * step;
     const ahead = (W.x - B.x) * dir;
     B.threatT = ahead > 0 ? ahead / speed : -1;
-    // body slam: P4's driving foreleg meets Weed's body (real contact) and he is thrown ahead of the charge
-    if (!hit && W.y < 0.9 && W.inv <= 0 && Math.abs(cast.weed.root.position.z) < 0.9) {
-      boss.root.updateMatrixWorld(true);
-      const chest = C.targetRef('kaibutsu', 'foreleg', 'near', 0).world(new THREE.Vector3());
-      if ((W.x - chest.x) * dir < 0.22 && (W.x - B.x) * dir > 0) {
-        hit = true;
-        C.touch('kaibutsu', 'foreleg', 'weed', { sfx: ['hitHeavy'] });
-        hurtWeed(B.x, { dir, dist: 3.2, toss: 7 });
-        sfx.roar();
-        break;
-      }
+    // close enough: P4 plants its forelegs and drives its jaws down into Weed (real contact, below)
+    if (W.y < 0.9 && W.inv <= 0 && Math.abs(cast.weed.root.position.z) < 0.9) {
+      const gap = (W.x - C.pawWorld('kaibutsu').x) * dir;
+      if (gap > 0.2 && gap < 1.0) { reaching = gap; break; }
     }
     if (Math.random() < 0.3) FX.dust(new THREE.Vector3(B.x - dir, 0.1, 0));
     await wait(1 / 60);
   }
   showWarn(0, 1, false); B.threatT = -1;
+  C.SEP.skip.delete('weed');
   if (!alive()) return;
-  if (hit) {                                   // skids to a stop after the blow
+  if (reaching !== null) {
+    tween(B, { x: B.x + dir * clamp(reaching - 0.5, 0, 0.5) }, 0.14, { ease: 'out' });     // last step in
+    boss.play('Jump_ToIdle', { loop: false }); FX.dust(new THREE.Vector3(B.x + dir, 0.1, 0), true); sfx.slide({}, { x: B.x });
+    // the forepaw comes down on him (a small dog is struck with the paw, not swallowed by the jaws)
+    await C.reach({ who: 'kaibutsu', target: 'weed', point: 'back', side: 'near', part: 'paw', t: 0.16, hold: 0.12, back: 0.35, fx: 'impact', strong: true, sfx: ['hitHeavy', 'bodyfall'], react: 'none',
+      onHit: () => { if (S.W.y < 0.9 && S.W.inv <= 0) { hit = true; hurtWeed(B.x, { dir, dist: 3.2, toss: 7 }); sfx.roar(); } } });
+  }
+  if (hit && reaching === null) {                      // skids to a stop after the blow
     const v0 = speed * 0.6; let v = v0;
     while (alive() && v > 0.3) { B.x = clamp(B.x + dir * v / 60, ARENA.min - 0.3, ARENA.max + 0.3); v *= 0.88; if (Math.random() < 0.4) FX.dust(new THREE.Vector3(B.x + dir, 0.1, 0)); await wait(1 / 60); }
     boss.play('Idle_HitReact1', { loop: false });
@@ -593,7 +595,7 @@ async function atkPounce(alive) {
   const tell = (S.phase === 3 ? 1.4 : 0.6) / B.speed;
   // land so that the jaws come down on Weed (mouth is ~bossHalf*0.85 ahead of the body centre), max leap 3.4
   const mOff = dir * Math.abs(C.mouthWorld('kaibutsu').x - B.x);          // jaws ahead of the body centre
-  const want = W.x - mOff + dir * 0.25;
+  const want = W.x - mOff * 0.55;   // lands with its forepaws over him
   const landX = clamp(B.x + dir * clamp((want - B.x) * dir, 1.2, 3.6), ARENA.min, ARENA.max);
   showWarn(landX + mOff, 2.4);
   await telegraph(alive, tell);
@@ -611,10 +613,10 @@ async function atkPounce(alive) {
   if (!alive()) return;
   boss.play('Jump_ToIdle', { loop: false });
   shake(0.35); sfx.bossLand({}, { x: landX }); FX.dust(new THREE.Vector3(landX, 0.1, 0), true);
-  const mouth = C.mouthWorld('kaibutsu');
-  if (Math.abs(W.x - mouth.x) < 1.3 && W.y < 0.8 && W.inv <= 0) {
-    // jaws come down on the scruff of Weed's neck (real contact), then he is flung aside
-    await C.reach({ who: 'kaibutsu', target: 'weed', point: 'nape', side: 'near', t: 0.12, hold: 0.12, back: 0.35, fx: 'impact', strong: true, sfx: ['bite', 'hitHeavy'], react: 'none' });
+  const mouth = C.pawWorld('kaibutsu');
+  if (Math.abs(W.x - mouth.x) < 1.4 && W.y < 0.8 && W.inv <= 0) {
+    // the forepaw slams down on Weed's back (real contact), then he is flung aside
+    await C.reach({ who: 'kaibutsu', target: 'weed', point: 'back', side: 'near', part: 'paw', t: 0.14, hold: 0.12, back: 0.35, fx: 'impact', strong: true, sfx: ['hitHeavy', 'bodyfall'], react: 'none' });
     hurtWeed(landX, { dir, dist: 2.6, toss: 6 });
   }
   await recover(alive, (S.phase === 3 ? 2.5 : 1.2) / B.speed);
