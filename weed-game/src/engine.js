@@ -55,6 +55,7 @@ export function wait(s, real = false) {
 }
 
 export function shake(a) {
+  a *= E.shakeScale ?? 1;          // Settings: Reduce flashing -> 0.3
   E.shakeAmt = Math.max(E.shakeAmt, a);
   E.fovKick = Math.max(E.fovKick, Math.min(3.5, a * 4));
   post.ca = Math.max(post.ca, Math.min(0.02, a * 0.016));
