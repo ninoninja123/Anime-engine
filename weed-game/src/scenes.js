@@ -48,7 +48,7 @@ const camTo = (pos, look, t, ease = 'inOut') => t <= 0 ? (E.camPos.copy(pos), E.
 async function step(s, ctx) {
   if (E.skipping && !s.always) {
     // ohitus: aja vain tilaa muuttavat askeleet heti (sijainnit, piilotus, musiikki), ohita odotukset
-    if (s.place) return step({ ...s, fade: undefined }, { ...ctx });
+    if (s.place) { doPlace({ ...s, fade: undefined }); return; }   // suoraan: ei rekursiota (ohitus pysyy päällä)
     if (s.release || s.strike || s.thrash || s.reach) { C.releaseAll(); return; }
     if (!(s.move || s.hide || s.music !== undefined || s.amb !== undefined || s.surface !== undefined || s.fn || s.par || s.face || s.anim || s.expr)) return;
   }
@@ -80,14 +80,7 @@ async function step(s, ctx) {
     const pos = new THREE.Vector3(look.x + (s.side || 0.6) * h, look.y + (s.h ?? 0.05) * h, look.z + (s.dist || 1.4) * h);
     await camTo(pos, look, s.t ?? 0.35, s.ease || 'out'); return;
   }
-  if (s.place) {
-    const d = castRef[s.place]; d.root.visible = true; d.fade(s.fade ?? 1);
-    d.root.position.set(s.x ?? d.root.position.x, s.y ?? 0, s.z ?? d.root.position.z);
-    if (s.face) d.face(s.face, true);
-    d.spin.rotation.set(0, 0, 0);
-    if (s.anim) d.play(s.anim, { timeScale: s.ts || 1, loop: s.loop ?? true });
-    return;
-  }
+  if (s.place) { doPlace(s); return; }
   if (s.move) {
     const d = castRef[s.move];
     if (s.anim) d.play(s.anim, { timeScale: s.ts || 1 });
@@ -118,6 +111,14 @@ async function step(s, ctx) {
   if (s.fx) { doFx(s); return; }
   if (s.light) { await light(s.light); return; }
   if (s.fn) { await s.fn(ctx); return; }
+}
+
+function doPlace(s) {
+  const d = castRef[s.place]; d.root.visible = true; d.fade(s.fade ?? 1);
+  d.root.position.set(s.x ?? d.root.position.x, s.y ?? 0, s.z ?? d.root.position.z);
+  if (s.face) d.face(s.face, true);
+  d.spin.rotation.order = 'XYZ'; d.spin.rotation.set(0, 0, 0);
+  if (s.anim) d.play(s.anim, { timeScale: s.ts || 1, loop: s.loop ?? true });
 }
 
 function doFx(s) {

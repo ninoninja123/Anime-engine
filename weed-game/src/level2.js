@@ -335,27 +335,29 @@ async function battoga() {
   W.busy = true; const seq = ++W.seq; W.inv = 2;
   const dir = Math.sign(B.x - W.x) || 1; w.face(dir);
   say('battoga', { noWait: true }); sfx.battoga(); setSlow(0.3, 1.0); FX.speedLines(1);
+  const startX = W.x;
   w.play('Jump_ToIdle', { loop: false });               // crouch
   await wait(0.12);
-  w.play('Battoga', { loop: false });
-  const startX = W.x;
-  FX.vortex(w.root, dir, w.height * 0.9, 0.7);
-  if (!w.hasClip || !w.hasClip('Battoga')) tween(w.spin.rotation, { z: -dir * Math.PI * 4, x: Math.PI * 2 }, 0.55, { ease: 'inOut' });   // rigatulla mallilla klippi hoitaa kierteen
-  const trail = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, w.height * 0.5, 0.3)), 0xbfe4ff, 0.7, 0.35, Math.random() * 6), 70);
-  await tween(W, { x: B.x - dir * bossHalf() * 0.5, y: 1.8 }, 0.5, { ease: 'inOut' });
-  clearInterval(trail);
-  if (seq !== W.seq) { w.spin.rotation.set(0, 0, 0); return; }
-  FX.speedLines(0);
-  const p = new THREE.Vector3(B.x - dir * 0.3, 1.5, 0.5);
-  FX.flash('#dff0ff', 0.3, 0.8); sfx.boom();
-  FX.ring(p, 0xbfe4ff, 5, 0.5);
-  damageBoss(16, p, { strong: true, stagger: 1.2, battoga: true });
-  w.spin.rotation.set(0, 0, 0);
-  w.play('Gallop_Jump', { loop: false });
-  await tween(W, { x: clamp(startX, ARENA.min, ARENA.max), y: 0 }, 0.45, { ease: 'out' });
   if (seq !== W.seq) return;
-  w.play('Jump_ToIdle', { loop: false });
-  setTimeout(() => { if (!W.busy) w.play('Idle'); }, 400);
+  FX.vortex(w.root, dir, w.height * 0.9, 0.7);
+  const trail = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, w.height * 0.5, 0.3)), 0xbfe4ff, 0.7, 0.35, Math.random() * 6), 70);
+  // the spinning fang closes on P4's shoulder (real contact), holds for a beat, then Weed drops off
+  w.root.position.set(W.x, 0, w.root.position.z);
+  await C.strike({ who: 'weed', target: 'kaibutsu', point: 'shoulder', side: 'near', t: 0.5, arc: 0.9, anim: 'Battoga', ts: 1.6, hitAt: 0.4,
+    pin: 0.2, then: 'drop', releaseOpts: { land: 'Jump_ToIdle', after: 'Idle' }, react: 'none', fx: 'none', sfx: ['bite'], hitstop: 0, maxPitch: 1.0, tug: 0.3,
+    onHit: (p) => {
+      clearInterval(trail); FX.speedLines(0);
+      FX.flash('#dff0ff', 0.3, 0.8); sfx.boom(); FX.ring(p, 0xbfe4ff, 5, 0.5);
+      if (seq === W.seq) damageBoss(16, p, { strong: true, stagger: 1.2, battoga: true });
+    } });
+  clearInterval(trail); FX.speedLines(0);
+  while (w._cxBusy && seq === W.seq) await wait(0.05);
+  if (seq !== W.seq) return;
+  W.x = clamp(w.root.position.x, ARENA.min, ARENA.max); W.y = 0;
+  w.play('Gallop', { timeScale: 1.4 });
+  await tween(W, { x: clamp(startX, ARENA.min, ARENA.max) }, 0.4, { ease: 'out' });
+  if (seq !== W.seq) return;
+  w.play('Idle');
   W.busy = false;
 }
 
@@ -794,6 +796,9 @@ export const debug = {
         await atkCharge(alive); await wait(1.2, true);
         S.W.inv = 0; S.W.hp = 99; S.W.y = 0; S.W.vy = 0; S.W.x = S.B.x + (S.W.x < S.B.x ? -3.2 : 3.2);
         await atkPounce(alive); await wait(1.2, true);
+        // in-battle Battōga (phase 1–2): spinning fang to the shoulder
+        S.B.token++; S.W.busy = false; S.W.henki = 1; S.W.y = 0; S.W.vy = 0; S.W.x = clamp(S.B.x - 3.6, ARENA.min, ARENA.max); await wait(0.4, true);
+        await battoga(); await wait(0.8, true);
       }
     } catch (e) { console.error(e); }
     S.sceneDone = true;

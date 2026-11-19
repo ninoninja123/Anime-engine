@@ -12,7 +12,7 @@ const BASE = process.env.URL || 'http://localhost:4174/';
 const OUT = path.join(__dirname, '..', 'screenshots', 'contact');
 const ALL = ['smith', 'arrows', 'lock', 'finale', 'twinfang', 'bite'];
 const scenes = process.argv.slice(2).length ? process.argv.slice(2) : ALL;
-const MIN_STRIKES = { smith: 1, arrows: 3, lock: 4, finale: 1, twinfang: 2, bite: 1 };
+const MIN_STRIKES = { smith: 1, arrows: 3, lock: 5, finale: 3, twinfang: 2, bite: 4 };
 const RATIO = 0.25, BODY_K = 0.5;
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -43,7 +43,7 @@ fs.mkdirSync(OUT, { recursive: true });
       if (st.done) break;
       await page.waitForTimeout(150);
     }
-    const res = await page.evaluate(() => ({ strikes: window.__contact.strikes, violations: window.__contact.violations.map(({ key, ...v }) => v), done: window.__game.debug.S.sceneDone }));
+    const res = await page.evaluate(() => ({ strikes: window.__contact.strikes, whiffs: window.__contact.whiffs || [], violations: window.__contact.violations.map(({ key, ...v }) => v), done: window.__game.debug.S.sceneDone }));
     const fails = [];
     if (!res.done) fails.push('scene did not finish');
     if (res.strikes.length < (MIN_STRIKES[name] || 1)) fails.push(`only ${res.strikes.length} strikes (expected >= ${MIN_STRIKES[name]})`);
@@ -51,10 +51,13 @@ fs.mkdirSync(OUT, { recursive: true });
       if (!(s.ratio < RATIO)) fails.push(`strike ${s.who}->${s.target}.${s.point}: distance ${s.dist} = ${s.ratio} x height`);
       if (!(s.bodyK >= BODY_K)) fails.push(`strike ${s.who}->${s.target}.${s.point}: body inside target (k=${s.bodyK} ${s.pair})`);
     }
+    // väistöt (Jeromen neljäs nuoli): hampaiden pitää jäädä selvästi irti kohteesta
+    for (const w of res.whiffs) if (!(w.miss > 0.3)) fails.push(`whiff ${w.who}->${w.target}: jaws only ${w.miss} m from the target (the dodge must be visible)`);
+    if (name === 'arrows' && !res.whiffs.length) fails.push('Jerome\'s fourth arrow: no dodge recorded');
     for (const v of res.violations) fails.push(`${v.kind}: ${v.a} / ${v.b} (n=${v.n}${v.k !== undefined ? ', k=' + v.k : ''}${v.y !== undefined ? ', y=' + v.y : ''})`);
-    report.scenes[name] = { pass: !fails.length, secs: Math.round((Date.now() - t0) / 1000), strikes: res.strikes, violations: res.violations, fails, errors: errors.slice(0, 10) };
+    report.scenes[name] = { pass: !fails.length, secs: Math.round((Date.now() - t0) / 1000), strikes: res.strikes, whiffs: res.whiffs, violations: res.violations, fails, errors: errors.slice(0, 10) };
     if (fails.length) report.pass = false;
-    console.log(`${name}: ${fails.length ? 'FAIL' : 'ok'}  strikes=${res.strikes.length}  ${res.strikes.map(s => `${s.who}->${s.point} d=${s.dist} k=${s.bodyK}`).join(' | ')}`);
+    console.log(`${name}: ${fails.length ? 'FAIL' : 'ok'}  strikes=${res.strikes.length}  ${res.strikes.map(s => `${s.who}->${s.point} d=${s.dist} k=${s.bodyK}`).join(' | ')}${res.whiffs.length ? '  whiffs: ' + res.whiffs.map(w => `${w.who} miss=${w.miss}`).join(' ') : ''}`);
     for (const f of fails) console.log('   - ' + f);
     for (const e of errors.slice(0, 5)) console.log('   ! ' + e);
     await page.close();
