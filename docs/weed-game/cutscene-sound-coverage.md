@@ -33,15 +33,16 @@ kohtauksen `sfx`-lista ja vahvoissa iskuissa matala `hit_heavy` (rate 0.75), irr
 | Kohtauksen alku | music `sad`, amb `sad` |
 | Miehet saapuvat laukassa | askeläänet |
 | Jeromen käsky / vastaukset | voice `arrows_order`, `arrows_ack`, `arrows_together` |
-| Jokaisen nuolen lähtö | `bark`, `gallopIn` |
+| Nuolen lähtö (vauhtiviivat täysillä) | voice `arrows_cry_<id>` (taisteluhuuto), `rushWhoosh`, `gallopIn` |
 | Ennakointi | `bite_growl` |
-| Loikka | `whoosh`, `jump`, `speed` (nopeuslinjat) |
-| Hampaat vasempaan rintaan | `bite`, `crit`, matala `hit_heavy`; P4 `roar` (reaktio) |
-| Hampaat pysyvät haavassa | `bite_growl` |
-| P4 riuhtoo irti | `roar` |
-| Heitto | `hurt` (contact.js) |
-| Isku maahan | `bodyfall`, `whimper` |
-| Viimeiset sanat | voice `arrows_fall_<id>` (musiikki väistää puheen alla) |
+| Loikka | `whoosh`, `jump`, `speed` |
+| Hampaat vasempaan rintaan, syvenevä | `arrow_bite_1` (Robert, pinta) → `arrow_bite_2` (Rocker, repeämä) → `arrow_bite_3` (Heuler, murskaus + repeämä); P4 `roar` |
+| Purennan aikana | voice `arrows_pain_<id>` (Heulerilla pitkä huuto riuhtaisun aikana), `breath` |
+| Äärilähikuva: hampaat haavassa, P4:n silmä | `roar` |
+| Robert: P4 puree hänen päänsä | `bite`, `hitHeavy`, `hurt`, `yelp`; viskaus `hurt` + `bodyfall` |
+| Rocker: P4 nousee takajaloilleen | `roar`; huipulla hitstop; alastulo `thudDeep` + `bossLand`; Rocker heitetään `hurt` + `bodyfall` |
+| Heuler: P4 kaatuu selälleen | `roar`, `knockdown` + `thud_deep`, pölyaalto; nousu `bossStep` |
+| Kaatunut | `whimper`, voice `arrows_fall_<id>` |
 | Jeromen neljäs nuoli: karjahdus | voice `arrows_fourth`, music `battle` |
 | P4 loikkaa sivuun (väistö) | `whoosh`, `bossLand` |
 | Jeromen hampaat napsahtavat tyhjään | `bite_snap`, `whoosh` |
@@ -50,11 +51,11 @@ kohtauksen `sfx`-lista ja vahvoissa iskuissa matala `hit_heavy` (rate 0.75), irr
 ## Lukitus
 | Tapahtuma | Ääni |
 |---|---|
-| Weedin huuto | voice `lock_call` |
+| Weedin huuto | voice `lock_call`, `lock_shout_weed` |
 | Kolme purentaa (kurkku, kylki, lonkka) | `whoosh`/`jump`, `bite` (+ `hit` Kenillä) |
 | P4 ponnistelee lukossa | `roar` |
-| Jerome valtimoon | `bite`, `crit`, matala `hit_heavy`, P4 `roar`; voice `lock_artery` |
-| P4 puree Kagetoran kaulaa (reach) | `bite`, `hitHeavy`, `hurt`; voice `lock_hurt` |
+| Jerome valtimoon | `arrow_bite_3` (syvä), P4 `roar`; voice `lock_artery` |
+| P4 puree Kagetoran kaulaa (reach) | `bite`, `hitHeavy`, `hurt`, voice `lock_pain_kage`; voice `lock_hurt` |
 | Kaikki riuhtaistaan irti | `roar`, `hurt` × 3, `bodyfall`/`land` |
 
 ## Finaali (Battōga) ja jälkikohtaus
