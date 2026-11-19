@@ -75,6 +75,7 @@ export const intro = ({ cast }) => [
   { say: 'intro_follow' },
   { expr: 'heuler', name: null }, { expr: 'jerome', name: null },
   // canon: the gorge before Gajō is crossed at night – Weed first, Smith with Ken and Kagetora at his sides
+  { mood: 'autumn_night', t: 2.5 },
   { caption: '<b>The gorge before Gajō</b>Night', t: 2.6, wait: false },
   { cam: [-1.0, 1.4, 6.8], look: [-2.0, 0.6, 0] },
   { move: 'weed', x: -3.6, t: 0.5, anim: 'Gallop', ts: 1.3, ease: 'in' },
@@ -123,7 +124,7 @@ export const smith = (ctx) => {
     { place: 'jerome', x: -7.8, z: -2.6, face: 1, anim: 'Idle' },
     { hide: 'north' }, { hide: 'kaibutsu' },
     ...['robert', 'rocker', 'heuler'].map(id => ({ hide: id })),
-    { light: { rim: 0.45, exposure: 0.72, fog: 0x14121c, t: 0.1 } },          // night, inside Gajō
+    { mood: 'autumn_night', t: 0.1 },                                       // night, inside Gajō
     { caption: '<b>Inside Gajō</b>Night', t: 2.6, wait: false },
     { cam: [-1.0, 1.6, 6.5], look: [-3.0, 0.8, 0] },
     { say: 'north_fell' },
@@ -203,6 +204,9 @@ export const smith = (ctx) => {
     { fx: 'spirit', at: [6.6, 1.6, 0.6], t: 6 },
     { cam: [4.2, 1.6, 7.5], look: [6.5, 2.8, 0], t: 3.2 },
     { sfx: 'memory' }, { caption: 'Smith', t: 2.6 },
+    // the next morning they mourn him – and the monster rises from the rubble
+    { caption: '<b>The next morning</b>', t: 2.4, wait: false },
+    { mood: 'storm', t: 3 },                                                  // cold gold morning, red threat
     // it rises from under the rocks
     { sfx: 'rumble', arg: 1.5 }, { shake: 0.5 }, { wait: 0.9 },
     { fn: () => {

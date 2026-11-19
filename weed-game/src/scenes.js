@@ -16,6 +16,7 @@ import * as THREE from 'three';
 import { E, tween, wait, shake } from './engine.js';
 import * as FX from './fx.js';
 import { sfx, music, ambience } from './audio.js';
+import { setMood } from './gfx/mood.js';
 import { setSurface } from './footsteps.js';
 import { say } from './voice.js';
 import * as UI from './ui.js';
@@ -75,6 +76,7 @@ async function step(s, ctx) {
   }
   if (s.anim) { castRef[s.anim].play(s.name, { loop: s.loop ?? true, timeScale: s.ts || 1 }); return; }
   if (s.face) { castRef[s.face].face(s.dir); return; }
+  if (s.mood) { setMood(s.mood, s.t ?? 2); return; }   // tunnelma (gfx/mood.js): autumn_night, grief, storm, spirit, finale, dawn, memorial
   if (s.expr) { const d = castRef[s.expr]; if (d.expr) d.expr(s.name); return; }   // ilme (tehdaskoirat): neutral/determined/angry/sad/happy/closed/hurt/dead/surprised, null = auto
   if (s.hide) { castRef[s.hide].root.visible = false; return; }
   if (s.fadeOut) { const d = castRef[s.fadeOut]; await tween({ v: 1 }, { v: 0 }, s.t || 1.5, { real: true, onUpdate: e => d.fade(1 - e) }); d.root.visible = false; return; }
