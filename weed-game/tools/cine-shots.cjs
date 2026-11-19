@@ -30,8 +30,8 @@ fs.mkdirSync(OUT, { recursive: true });
   for (let i = 0; i < N; i++) {
     const f = path.join(OUT, `${name}_${i + 1}.png`);
     await page.screenshot({ path: f });
-    const info = await page.evaluate(() => ({ mark: window.__cineMark, t: window.__game && window.__game.E.realTime.toFixed(1), sub: (document.getElementById('sub') || {}).innerText }));
-    console.log(`frame ${i + 1}: mark=${info.mark} t=${info.t} sub=${(info.sub || '').replace(/\n/g, ' / ').slice(0, 80)}`);
+    const info = await page.evaluate(() => ({ cam: window.__game && window.__game.E.camPos.toArray().map(v => v.toFixed(1)).join(','), mode: window.__S1 && window.__S1.mode, mark: window.__cineMark, t: window.__game && window.__game.E.realTime.toFixed(1), sub: (document.getElementById('sub') || {}).innerText }));
+    console.log(`frame ${i + 1}: ${info.mode} cam=${info.cam} mark=${info.mark} t=${info.t} sub=${(info.sub || '').replace(/\n/g, ' / ').slice(0, 80)}`);
     files.push(f);
     if (i < N - 1) await page.waitForTimeout(IV);
   }

@@ -76,3 +76,49 @@ kohtauksen `sfx`-lista ja vahvoissa iskuissa matala `hit_heavy` (rate 0.75), irr
 | Battōga taistelussa | `battoga`, `bite`, `boom` |
 | P4:n rynnäkkö osuu (etujalka) | `hitHeavy`, `roar`, Weed `hurt` |
 | P4:n loikka + purenta niskaan | `bossLand`, `bite`, `hitHeavy`, Weed `hurt` |
+
+
+---
+# Ei-taistelu-cutscenet (prologi, tason 2 intro/jälkikohtaus, Story So Far)
+Askeleet tulevat automaattisesti liikkeestä (`src/footsteps.js`: pinta `step` = lehdet + multa, `stepRock` = kallio/asfaltti,
+`wade` = joki; kohtaus vaihtaa pinnan `{ surface }`-askeleella). Rekan moottori ja äänitorvi ovat synteettisiä
+(`src/shared/synth.js`: sahalaine + kohinan rengasääni, etäisyysvaimennus, panorointi, liioiteltu Doppler).
+
+## Prologi: Sakuran kuolema ja nimi (`sakura`)
+| Tapahtuma | Aika | Ääni |
+|---|---|---|
+| Kuutamometsä, tuuli lehdissä | 0 s | amb `night`, ei musiikkia |
+| Kolmikko kävelee, pentu haistaa | 0–9 s | askeleet `step` (lehdet) |
+| Sakura nostaa päänsä pesässä | 9 s | `breath` |
+| Smith tunnistaa Sakuran | 11 s | music `sad` (5 s häivytys) |
+| Smith ontuu lähemmäs | 18 s | askeleet (hidas, 3 jalkaa) |
+| Pentu painaa nenänsä äitiin | 30 s | `fur`; musiikki duckataan (`Hush`) puheen alle |
+| "…Live." – hengitys loppuu | 38–45 s | music pois (3 s), `heartbeat` |
+| Pentu tönäisee äitiä | 45 s | `fur` |
+| "Mother!" – vapina | 47 s | `whimper` |
+| Henkivalo nousee | 51 s | `spirit`, music `smith2` |
+| Aamu | 62 s | amb `dawn` (linnut, tuuli), `whimper` |
+| GB kävelee viereen | 66 s | askeleet |
+| Rikkaruoho-insertti, nimi | 82 s | music `dawn` |
+| Lähtö, GB haukahtaa | 100 s | askeleet, `bark` (anim) |
+
+## Prologi: rekka ja Bluen kuolema (`truckHit`, loikka, `truckSave`, `blueDeath`)
+| Tapahtuma | Aika | Ääni |
+|---|---|---|
+| Lauma juoksee aidalle | 0–2 s | laukka-askeleet, `tired` (huohotus), `claw` (jarrutus) |
+| Rekka tulee | 4 s | synth-moottori (lähestyy, Doppler), äänitorvi 1,1 s |
+| Blue jähmettyy valoon | 6 s | `heartbeat`, slow-mo |
+| Isku (valkoinen leikkaus) | 8 s | `cineBoom`, `bodyfall`, moottori loittonee; musiikki pois |
+| Hiljaisuus, tyhjä tie | 9–12 s | amb `dusk` (tuuli) |
+| Pennun kasvot | 12 s | `heartbeat` |
+| Loikka aidan yli | (pelaaja) | `jump`, `whoosh`, `land`, voice p_weed_blue |
+| Pentu vetää Bluea | +1 s | `claw` × 2, `fur`, askeleet asfaltilla (`stepRock`) |
+| Toinen rekka | +3 s | synth-moottori, äänitorvi 1,4 s |
+| Smith huutaa | +4 s | voice p_smith_no |
+| Blue heittää pennun | +6 s | `slowmo`, `whoosh` |
+| Rekka ohittaa | +7 s | `cineBoom`, `whoosh`, moottori loittonee |
+| Pentu laskeutuu | +7,5 s | `land`, `bodyfall`, pöly |
+| Pentu kävelee Bluen luo | +10 s | askeleet asfaltilla, amb `sad`, music `smith2` |
+| Bluen viimeinen henkäys | +14 s | `breath`, voice p_blue_last, musiikki pois, `heartbeat` |
+| "Why…" | +20 s | `whimper` |
+| Henki nousee | +22 s | `spirit`, music `smith2` |
