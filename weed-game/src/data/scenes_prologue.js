@@ -12,7 +12,7 @@
 //              b-<beat> to the panel → src/prologue.css animates the layer), { music }, { ambience }, { title }
 //   hold       extra seconds after the last step; xfade = transition into this panel (s); trans: 'fade' | 'cut' | 'iris'
 
-export const PROLOGUE_MUSIC = 'dawn';      // 'A New Horizon' (Epidemic) – the menu's intro song stays in the menu (user's wish); crisis panels switch to 'sad'
+export const PROLOGUE_MUSIC = 'story';      // 'A New Horizon' (Epidemic) – the menu's intro song stays in the menu (user's wish); crisis panels switch to 'sad'
 
 export const PANELS = [
   {
@@ -62,7 +62,7 @@ export const PANELS = [
     cam: { from: [1.04, 2, 0], to: [1.2, -4, -1] },
     fx: ['embers'],
     kicker: 'Now',
-    steps: [{ ambience: false }, { music: 'sad' }, { sfx: 'rumble', arg: 1.6 }, { say: 'story_09' }, { sfx: 'roar' }, { beat: 'roar' }, { shake: 0.6 }, { wait: 0.4 },
+    steps: [{ ambience: false }, { sfx: 'rumble', arg: 1.6 }, { say: 'story_09' }, { sfx: 'roar' }, { beat: 'roar' }, { shake: 0.6 }, { wait: 0.4 },
       { beat: 'hunt' }, { say: 'story_10' }, { beat: 'far' }, { say: 'story_11' }],
     hold: 0.4, xfade: 1.2,
   },
@@ -71,7 +71,7 @@ export const PANELS = [
     cam: { from: [1.05, 0, 0], to: [1.2, 3, -2] },
     fx: ['leaves', 'motes'],
     kicker: 'Weed',
-    steps: [{ ambience: false }, { music: 'dawn', fade: 2.4 }, { say: 'story_12' }, { say: 'story_vow' },
+    steps: [{ ambience: false }, { say: 'story_12' }, { say: 'story_vow' },
       { title: { kicker: 'A small dog with a great heart', main: 'WEED', sub: 'Ōu Saga' } }, { wait: 3.2 }],
     hold: 0.4, xfade: 1.8, trans: 'iris',
   },
