@@ -691,6 +691,7 @@ export function reach(o) {
   const T = Math.max(0.05, o.t ?? 0.3), hold = o.hold ?? 0.25, back = o.back ?? 0.35;
   const P = new THREE.Vector3(), M = new THREE.Vector3(), J = new THREE.Vector3(), v1 = new THREE.Vector3(), v2 = new THREE.Vector3(), ax = new THREE.Vector3();
   let t = 0, hit = false, done = false;
+  a._cxReach = tg;                               // valvonta: pään ja kohteen päällekkäisyys on purenta, ei läpileikkaus
   const rec = { id: ++LOG.n, kind: 'reach' };
   let resolveHit, resolveEnd;
   const pHit = new Promise(r => { resolveHit = r; }), pEnd = new Promise(r => { resolveEnd = r; });
@@ -722,7 +723,7 @@ export function reach(o) {
       if (LOG.hold) { LOG.pending = rec; rec.prevTS = E.timeScale; E.timeScale = 0; const u = () => { if (!LOG.pending || LOG.pending.id !== rec.id) { E.updaters.delete(u); E.timeScale = rec.prevTS || 1; resolveHit(); } }; E.updaters.add(u); }
       else resolveHit();
     }
-    if ((t >= T + hold + back || E.skipping) && !done) { done = true; off(); if (o.dip) a.pose.rotation.z = 0; if (!hit) resolveHit(); resolveEnd(); }
+    if ((t >= T + hold + back || E.skipping) && !done) { done = true; off(); a._cxReach = null; if (o.dip) a.pose.rotation.z = 0; if (!hit) resolveHit(); resolveEnd(); }
   });
   return o.wait === 'end' ? pEnd : pHit;
 }
@@ -776,7 +777,7 @@ function monitor(dtr) {
     if (!busyA && A.y > 0.25 && Math.abs(A.x - B.x) < fb.hl && Math.abs(A.z - B.z) < fb.hw + 0.1 && A.y > b.height * 0.3 && a.id !== b.id)
       add('on_top', a, b, { y: +A.y.toFixed(2) });
     // vartalot sisäkkäin (paitsi purennassa / loikassa)
-    if (a.id < b.id && !busyA && !b._cxBusy) {
+    if (a.id < b.id && !busyA && !b._cxBusy && a._cxReach !== b && b._cxReach !== a) {
       const ov = bodyOverlap(a, b);
       if (ov.k < 0.55) add('inside', a, b, { k: +ov.k.toFixed(2), pair: ov.pair });
     }
