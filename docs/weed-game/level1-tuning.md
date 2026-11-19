@@ -108,4 +108,6 @@ Triangles are unchanged (120–200 k, mostly the dogs and the world); headless f
 ## Not done / open
 - Real-phone check of the swipe threshold (34 px early swipe) and of the callout size on small phones.
 - The Story So Far still plays before the checkpoint offer when its "seen" flag is cleared (main.js order, out of scope).
+- The menu's single Play button (main.js) continues to Level 2 once `weed.p1done` is set, so the checkpoint offer is
+  reached only during the first play-through of the chapter (that is when it matters).
 - `tools/smoke-level1.cjs` (debug-hook smoke test, slow) is kept; `level1-playthrough.cjs` replaces it for normal use.

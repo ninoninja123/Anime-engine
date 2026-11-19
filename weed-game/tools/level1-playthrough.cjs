@@ -275,7 +275,9 @@ async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {})
       const q = await st(p);
       !q.active && q.menu && !q.cine ? pass('quit', 'Main menu from pause returns to the menu') : fail('quit', JSON.stringify(q));
       // menu -> Prologue -> continue from the checkpoint (townRun)
-      await p.evaluate(() => localStorage.removeItem('weed.prologue'));   // "The story so far" plays first and is skipped
+      // first play-through state: chapter not finished (once weed.p1done is set, the menu's Play button continues to
+      // Level 2 instead); "The story so far" plays first and is skipped
+      await p.evaluate(() => { localStorage.removeItem('weed.prologue'); localStorage.removeItem('weed.p1done'); });
       await click(p, 'prologueBtn');
       let off = false; for (let i = 0; i < 1200; i++) {
         await adv(p, 0.1);
