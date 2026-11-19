@@ -408,17 +408,17 @@ export const lock = (ctx) => {
     { place: 'kaibutsu', x: 3.4, z: 0, face: -1, anim: 'Idle_HitReact1', loop: false },
     { place: 'weed', x: -1.8, z: 1.7, face: 1, anim: 'Gallop', ts: 1.4 },
     { place: 'ken', x: -2.8, z: 2.3, face: 1, anim: 'Gallop', ts: 1.4 },
-    { place: 'kagetora', x: -2.4, z: -0.4, face: 1, anim: 'Gallop', ts: 1.4 },
+    { place: 'kagetora', x: -2.4, z: -0.6, face: 1, anim: 'Gallop', ts: 1.4 },
     { place: 'jerome', x: -5.0, z: 1.0, face: 1, anim: 'Idle' },
     { music: 'battle' },
     { cam: [-0.6, 0.9, 6.2], look: [2.4, 1.2, 0.4] },
     { bark: 'lock_call' },
-    // three of them lock the monster down: Kagetora takes the far foreleg from the front, Weed hangs off its flank,
-    // Ken clamps the near hind leg. Each bite is a real contact; P4's legs stop.
+    // three of them lock the monster down: Kagetora hangs from its throat (far side), Weed hangs off its flank,
+    // Ken clamps its haunch from behind-side. Each bite is a real contact; P4's legs stop.
     { par: [
-      { strike: 'kagetora', target: 'kaibutsu', point: 'foreleg', side: 'far', t: 0.75, arc: 0.15, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25 },
+      { strike: 'kagetora', target: 'kaibutsu', point: 'throat', side: 'far', t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
       { strike: 'weed', target: 'kaibutsu', point: 'flank', side: 'near', t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
-      { strike: 'ken', target: 'kaibutsu', point: 'hindleg', side: 'near', t: 1.0, arc: 0.2, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25 },
+      { strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
       { cam: [0.6, 1.4, 7.4], look: [3.0, 1.2, 0.3], t: 1.0, ease: 'out' },
     ] },
     { sfx: 'roar' }, { shake: 0.6 },
@@ -495,10 +495,10 @@ export const finale = (ctx) => {
       { fn: async () => {
         const arcs = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, w.height * 0.5, 0.2)), 0x9fd0ff, 0.9, 0.4, Math.random() * 6), E.lowFx ? 360 : 180);
         FX.vortex(w.root, 1, w.height * 1.1, 2.2, false);
-        const orbit = { a: -0.6 }; const p0 = new THREE.Vector3();
-        await tween(orbit, { a: 1.1 }, 2.4, { real: true, ease: 'inOut', onUpdate: () => {
+        const orbit = { a: -1.1 }; const p0 = new THREE.Vector3();
+        await tween(orbit, { a: -0.25 }, 2.4, { real: true, ease: 'inOut', onUpdate: () => {
           p0.copy(w.root.position).lerp(boss.weak.getWorldPosition(new THREE.Vector3()), 0.5);
-          E.camPos.set(p0.x + Math.sin(orbit.a) * 3.8, p0.y + 0.7, p0.z + Math.cos(orbit.a) * 3.8);
+          E.camPos.set(p0.x + Math.sin(orbit.a) * 4.3, p0.y + 0.5, p0.z + Math.cos(orbit.a) * 4.3);
           E.camLook.set(p0.x, p0.y + 0.2, p0.z);
         } });
         clearInterval(arcs);
@@ -534,8 +534,8 @@ export const post = (ctx) => {
     ] },
     { bark: 'fall_hold' },
     { par: [
-      { strike: 'ken', target: 'kaibutsu', point: 'hindleg', side: 'near', t: 0.35, arc: 0.2, hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'] },
-      { strike: 'kagetora', target: 'kaibutsu', point: 'hip', side: 'near', t: 0.4, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'none', fx: 'impact', sfx: ['bite'], maxPitch: 1.0 },
+      { strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', t: 0.35, arc: 0.3, hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 1.0 },
+      { strike: 'kagetora', target: 'kaibutsu', point: 'flank', side: 'near', t: 0.4, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'none', fx: 'impact', sfx: ['bite'], maxPitch: 1.0 },
     ] },
     { say: 'fall_with' },
     // over the edge: everyone plunges into the gorge (no gorge mesh yet -> white-out while falling)

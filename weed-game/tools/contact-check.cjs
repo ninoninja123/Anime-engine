@@ -62,8 +62,9 @@ fs.mkdirSync(OUT, { recursive: true });
     for (const e of errors.slice(0, 5)) console.log('   ! ' + e);
     await page.close();
   }
-  fs.writeFileSync(path.join(OUT, 'report.json'), JSON.stringify(report, null, 2));
-  console.log(report.pass ? 'ALL CONTACT CHECKS PASSED' : 'CONTACT CHECKS FAILED', '->', path.join(OUT, 'report.json'));
+  const RP = path.join(OUT, 'report' + (process.env.TAG ? '_' + process.env.TAG : '') + '.json');
+  fs.writeFileSync(RP, JSON.stringify(report, null, 2));
+  console.log(report.pass ? 'ALL CONTACT CHECKS PASSED' : 'CONTACT CHECKS FAILED', '->', RP);
   await browser.close();
   process.exit(report.pass ? 0 : 1);
 })();
