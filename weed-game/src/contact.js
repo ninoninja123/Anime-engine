@@ -34,8 +34,8 @@ export function analyze(dog) {
   const info = d._cx = { byBone: {}, radius: {}, nose: null, jaw: null };
   const m = d.skinned;
   if (!m || !d.bones) return info;
-  const keep = { rot: d.spin.rotation.clone(), order: d.spin.rotation.order };
-  d.spin.rotation.set(0, 0, 0);
+  const keep = { rot: d.pose.rotation.clone(), order: d.pose.rotation.order };
+  d.pose.rotation.set(0, 0, 0);
   d.root.updateMatrixWorld(true);
   const g = m.geometry, n = g.attributes.position.count, si = g.attributes.skinIndex, sw = g.attributes.skinWeight;
   const bones = m.skeleton.bones;
@@ -64,7 +64,7 @@ export function analyze(dog) {
     return best && { bone: name, p: best.clone() };
   };
   info.nose = tip('head'); info.jaw = tip('jaw');
-  d.spin.rotation.copy(keep.rot); d.spin.rotation.order = keep.order;
+  d.pose.rotation.copy(keep.rot); d.pose.rotation.order = keep.order;
   d.root.updateMatrixWorld(true);
   return info;
 }
@@ -255,11 +255,14 @@ function install() {
 }
 export function isBusy(d) { return !!(d && d._cxBusy); }
 
+// Vartalon kallistus tehdään pose-ryhmällä (sama nivelpiste kuin spin, mutta spin on varattu Battōga-pyörähdykselle
+// ja fx.js tulkitsee spinin kierron pyörähdykseksi -> jälkikuvat).
 function spinSet(d, roll, yaw, pitch) {
-  if (d.spin.rotation.order !== 'YZX') d.spin.rotation.order = 'YZX';
-  d.spin.rotation.set(roll, yaw, pitch);
+  const r = d.pose.rotation;
+  if (r.order !== 'YZX') r.order = 'YZX';
+  r.set(roll, yaw, pitch);
 }
-function spinReset(d) { d.spin.rotation.order = 'XYZ'; d.spin.rotation.set(0, 0, 0); }
+function spinReset(d) { d.pose.rotation.order = 'XYZ'; d.pose.rotation.set(0, 0, 0); }
 
 // osa, joka osuu: hampaat tai tassu
 function partWorld(c, out) { return c.part === 'paw' ? pawWorld(c.a, c.pawSide || 'near', out) : mouthWorld(c.a, out); }
@@ -306,14 +309,14 @@ function pushOut(c, P, extra) {
   let k = bodyOverlap(c.a, c.tg, SKIP_PIN).k;
   for (let i = 0; i < 6 && k < 0.6; i++) {
     let best = 0;
-    for (const dr of [0.08, -0.08]) {
-      c.roll += dr; solveBody(c, P, extra, true);
+    for (const [key, dr] of [['roll', 0.08], ['roll', -0.08], ['yaw', 0.1], ['yaw', -0.1]]) {
+      c[key] += dr; solveBody(c, P, extra, true);
       const k2 = bodyOverlap(c.a, c.tg, SKIP_PIN).k;
-      c.roll -= dr;
-      if (k2 > k + 1e-3) { k = k2; best = dr; }
+      c[key] -= dr;
+      if (k2 > k + 1e-3) { k = k2; best = [key, dr]; }
     }
     if (!best) break;
-    c.roll = clamp(c.roll + best, -1.1, 1.1);
+    c[best[0]] = clamp(c[best[0]] + best[1], -1.3, 1.3);
   }
   solveBody(c, P, extra, true);
 }
@@ -366,7 +369,7 @@ export function release(o) {
   c.phase = 'release'; c.el = 0;
   c.rel = { mode: o.mode || 'drop', from: a.root.position.clone(), to: o.to ? new THREE.Vector3(o.to[0], 0, o.to[1]) : null,
     t: o.t ?? (o.mode === 'throw' ? 0.7 : 0.45), arc: o.arc ?? (o.mode === 'throw' ? 1.2 : 0.2), spin: o.spin ?? (o.mode === 'throw' ? 1 : 0),
-    land: o.land || (o.mode === 'throw' ? 'Idle_HitReact2' : 'Jump_ToIdle'), after: o.after, pitch0: a.spin.rotation.z, yaw0: a.spin.rotation.y, roll0: a.spin.rotation.x,
+    land: o.land || (o.mode === 'throw' ? 'Idle_HitReact2' : 'Jump_ToIdle'), after: o.after, pitch0: a.pose.rotation.z, yaw0: a.pose.rotation.y, roll0: a.pose.rotation.x,
     sfx: o.sfx, dust: o.dust ?? true };
   if (c.rel.mode === 'throw') { a.play('Idle_HitReact2', { loop: false, fade: 0.05 }); sfx.hurt(); }
   else a.play('Gallop_Jump', { loop: false, fade: 0.08 });
@@ -439,7 +442,7 @@ function whiff(c) {
   sfx.play && sfx.play('bite_snap'); sfx.whoosh();
   c.phase = 'release'; c.el = 0;
   c.rel = { mode: 'drop', from: a.root.position.clone(), to: new THREE.Vector3(a.root.position.x + a.facing * 0.5, 0, a.root.position.z), t: 0.4, arc: 0.1, spin: 0,
-    land: 'Jump_ToIdle', after: 'Idle', pitch0: a.spin.rotation.z, yaw0: a.spin.rotation.y, roll0: a.spin.rotation.x, dust: true };
+    land: 'Jump_ToIdle', after: 'Idle', pitch0: a.pose.rotation.z, yaw0: a.pose.rotation.y, roll0: a.pose.rotation.x, dust: true };
   fireHit(c);
 }
 function fireHit(c) { const f = c.onHit; c.onHit = null; if (f) f(); }
@@ -462,7 +465,7 @@ function update(dt, dtr) {
       const kk = (c.o.ease ? ease[c.o.ease] : ease.in)(k);
       const pitchK = ease.inOut(Math.min(1, k * 1.4));
       solveBody(c, P, 0, true);
-      const Rc = R.clone(), thC = a.spin.rotation.z;
+      const Rc = R.clone(), thC = a.pose.rotation.z;
       R.copy(save);
       R.lerpVectors(c.R0, Rc, kk);
       R.y = c.R0.y + (Rc.y - c.R0.y) * kk + Math.sin(k * Math.PI) * c.arc;
@@ -496,7 +499,7 @@ function update(dt, dtr) {
       const R = a.root.position;
       R.x = c.recoilFrom.x - a.facing * back * ease.out(k);
       R.y = Math.max(0, c.recoilFrom.y * (1 - ease.in(k)) + Math.sin(k * Math.PI) * (r.arc ?? 0.15));
-      spinSet(a, 0, c.yaw * (1 - k), a.spin.rotation.z * (1 - k));
+      spinSet(a, 0, c.yaw * (1 - k), a.pose.rotation.z * (1 - k));
       if (k >= 1) { spinReset(a); R.y = 0; if (c.o.after) a.play(c.o.after); else a.play('Idle'); endCtrl(c, false); }
       continue;
     }
@@ -535,7 +538,7 @@ export function reach(o) {
   const a = dogOf(o.who), tg = dogOf(o.target);
   if (!a || !tg || !a.bones) return Promise.resolve();
   const ref = targetRef(tg, o.point || 'neck', o.side || 'near', o.sink ?? 0.02 * tg.height);
-  const joints = [['head', 1.1], ['neck', 1.2], ['spine_03', 0.5], ['spine_02', 0.25]].filter(([n]) => a.bones[n]);
+  const joints = [['head', 1.1], ['neck', 1.2], ['spine_03', 0.5], ['spine_02', 0.35], ['spine_01', 0.15]].filter(([n]) => a.bones[n]);
   const T = Math.max(0.05, o.t ?? 0.3), hold = o.hold ?? 0.25, back = o.back ?? 0.35;
   const P = new THREE.Vector3(), M = new THREE.Vector3(), J = new THREE.Vector3(), v1 = new THREE.Vector3(), v2 = new THREE.Vector3(), ax = new THREE.Vector3();
   let t = 0, hit = false, done = false;
@@ -561,7 +564,7 @@ export function reach(o) {
       hit = true; a.root.updateMatrixWorld(true); mouthWorld(a, M);
       const dist = M.distanceTo(P);
       Object.assign(rec, { scene: LOG.scene, who: a.id, target: tg.id, point: ref.name, part: 'jaw', dist: +dist.toFixed(4), th: tg.height, ratio: +(dist / tg.height).toFixed(4),
-        bodyK: +bodyOverlap(tg, a).k.toFixed(3), P: [P.x, P.y, P.z].map(v => +v.toFixed(3)), M: [M.x, M.y, M.z].map(v => +v.toFixed(3)), t: +E.time.toFixed(2) });
+        bodyK: +bodyOverlap(tg, a, ['head', 'neck', 'spine_03']).k.toFixed(3), P: [P.x, P.y, P.z].map(v => +v.toFixed(3)), M: [M.x, M.y, M.z].map(v => +v.toFixed(3)), t: +E.time.toFixed(2) });
       LOG.strikes.push(rec);
       hitFx({ o: { strong: o.strong, fx: o.fx, sfx: o.sfx ?? ['bite'], hitstop: o.hitstop, shake: o.shake }, part: 'jaw' }, P.clone());
       if (o.react !== 'none') react(tg, o.react || 'hurt', Math.sign(tg.root.position.x - a.root.position.x) || 1, o.reactOpts || {});
@@ -572,6 +575,21 @@ export function reach(o) {
     if ((t >= T + hold + back || E.skipping) && !done) { done = true; off(); if (!hit) resolveHit(); resolveEnd(); }
   });
   return o.wait === 'end' ? pEnd : pHit;
+}
+
+/** Kirjaa vartalokontakti (rynnäkkö/törmäys): hyökkääjän pinnan piste vs kohteen vartalopallo. Palauttaa etäisyyden pintaan. */
+export function touch(attacker, point, target, o = {}) {
+  const a = dogOf(attacker), tg = dogOf(target);
+  a.root.updateMatrixWorld(true); tg.root.updateMatrixWorld(true);
+  const P = targetRef(a, point, o.side || 'near', 0).world(new THREE.Vector3());
+  let best = 9, at = null;
+  for (const sp of bodySpheres(tg)) { const d = Math.max(0, sp.p.distanceTo(P) - sp.r); if (d < best) { best = d; at = sp.p; } }
+  const rec = { id: ++LOG.n, kind: 'touch', scene: LOG.scene, who: a.id, target: tg.id, point, part: 'body', dist: +best.toFixed(4), th: tg.height, ratio: +(best / tg.height).toFixed(4),
+    bodyK: 9, P: [P.x, P.y, P.z].map(v => +v.toFixed(3)), t: +E.time.toFixed(2) };
+  LOG.strikes.push(rec);
+  hitFx({ o: { strong: true, fx: o.fx, sfx: o.sfx ?? ['hitHeavy'], hitstop: o.hitstop, shake: o.shake }, part: 'paw' }, at ? at.clone().lerp(P, 0.5) : P);
+  if (LOG.hold) { LOG.pending = rec; rec.prevTS = E.timeScale; E.timeScale = 0; const u = () => { if (!LOG.pending || LOG.pending.id !== rec.id) { E.updaters.delete(u); E.timeScale = rec.prevTS || 1; } }; E.updaters.add(u); }
+  return best;
 }
 
 // ------------------------------------------------------------------ erottelu (ei sisäkkäisyyttä maassa)

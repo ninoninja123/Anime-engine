@@ -79,7 +79,7 @@ export async function createCast() {
 
 function place(id, x, z = 0, face = 1, anim = 'Idle') {
   const d = cast[id]; d.root.visible = true; d.fade(1);
-  d.root.position.set(x, 0, z); d.face(face, true); d.spin.rotation.set(0, 0, 0);
+  d.root.position.set(x, 0, z); d.face(face, true); d.spin.rotation.set(0, 0, 0); d.pose.rotation.set(0, 0, 0); d._cxBusy = null;
   d.play(anim); return d;
 }
 
@@ -524,14 +524,17 @@ async function atkCharge(alive) {
     B.x += dir * step;
     const ahead = (W.x - B.x) * dir;
     B.threatT = ahead > 0 ? ahead / speed : -1;
-    // the snout reaches Weed: P4's head swings into him (real contact) and he is thrown ahead of the charge
-    const front = B.x + dir * bossHalf() * 0.8;
-    if (!hit && (W.x - front) * dir < 0.3 && (W.x - B.x) * dir > -bossHalf() * 0.3 && W.y < 0.9 && W.inv <= 0) {
-      hit = true;
-      C.reach({ who: 'kaibutsu', target: 'weed', point: 'flank', side: 'near', t: 0.06, hold: 0.08, back: 0.3, fx: 'impact', strong: true, sfx: ['hitHeavy'], react: 'none', anim: 'Gallop', ts: 1.1 });
-      hurtWeed(B.x, { dir, dist: 3.2, toss: 7 });
-      sfx.roar();
-      break;
+    // body slam: P4's driving foreleg meets Weed's body (real contact) and he is thrown ahead of the charge
+    if (!hit && W.y < 0.9 && W.inv <= 0 && Math.abs(cast.weed.root.position.z) < 0.9) {
+      boss.root.updateMatrixWorld(true);
+      const chest = C.targetRef('kaibutsu', 'foreleg', 'near', 0).world(new THREE.Vector3());
+      if ((W.x - chest.x) * dir < 0.22 && (W.x - B.x) * dir > 0) {
+        hit = true;
+        C.touch('kaibutsu', 'foreleg', 'weed', { sfx: ['hitHeavy'] });
+        hurtWeed(B.x, { dir, dist: 3.2, toss: 7 });
+        sfx.roar();
+        break;
+      }
     }
     if (Math.random() < 0.3) FX.dust(new THREE.Vector3(B.x - dir, 0.1, 0));
     await wait(1 / 60);
@@ -589,9 +592,10 @@ async function atkPounce(alive) {
   boss.play('Idle_2_HeadLow', { timeScale: 2 });
   const tell = (S.phase === 3 ? 1.4 : 0.6) / B.speed;
   // land so that the jaws come down on Weed (mouth is ~bossHalf*0.85 ahead of the body centre), max leap 3.4
-  const want = W.x - dir * bossHalf() * 0.85;
-  const landX = clamp(B.x + dir * clamp((want - B.x) * dir, 1.2, 3.4), ARENA.min, ARENA.max);
-  showWarn(landX + dir * bossHalf() * 0.4, 3);
+  const mOff = dir * Math.abs(C.mouthWorld('kaibutsu').x - B.x);          // jaws ahead of the body centre
+  const want = W.x - mOff + dir * 0.25;
+  const landX = clamp(B.x + dir * clamp((want - B.x) * dir, 1.2, 3.6), ARENA.min, ARENA.max);
+  showWarn(landX + mOff, 2.4);
   await telegraph(alive, tell);
   if (!alive()) return;
   boss.play('Gallop_Jump', { loop: false, timeScale: 1.2 });
@@ -609,8 +613,8 @@ async function atkPounce(alive) {
   shake(0.35); sfx.bossLand({}, { x: landX }); FX.dust(new THREE.Vector3(landX, 0.1, 0), true);
   const mouth = C.mouthWorld('kaibutsu');
   if (Math.abs(W.x - mouth.x) < 1.3 && W.y < 0.8 && W.inv <= 0) {
-    // jaws come down on Weed's back (real contact), then he is flung aside
-    await C.reach({ who: 'kaibutsu', target: 'weed', point: 'back', side: 'near', t: 0.12, hold: 0.12, back: 0.35, fx: 'impact', strong: true, sfx: ['bite', 'hitHeavy'], react: 'none' });
+    // jaws come down on the scruff of Weed's neck (real contact), then he is flung aside
+    await C.reach({ who: 'kaibutsu', target: 'weed', point: 'nape', side: 'near', t: 0.12, hold: 0.12, back: 0.35, fx: 'impact', strong: true, sfx: ['bite', 'hitHeavy'], react: 'none' });
     hurtWeed(landX, { dir, dist: 2.6, toss: 6 });
   }
   await recover(alive, (S.phase === 3 ? 2.5 : 1.2) / B.speed);

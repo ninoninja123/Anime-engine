@@ -117,7 +117,7 @@ function doPlace(s) {
   const d = castRef[s.place]; d.root.visible = true; d.fade(s.fade ?? 1);
   d.root.position.set(s.x ?? d.root.position.x, s.y ?? 0, s.z ?? d.root.position.z);
   if (s.face) d.face(s.face, true);
-  d.spin.rotation.order = 'XYZ'; d.spin.rotation.set(0, 0, 0);
+  d.spin.rotation.set(0, 0, 0); d.pose.rotation.order = 'XYZ'; d.pose.rotation.set(0, 0, 0);
   if (s.anim) d.play(s.anim, { timeScale: s.ts || 1, loop: s.loop ?? true });
 }
 
