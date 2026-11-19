@@ -157,3 +157,54 @@ Askeleet tulevat automaattisesti liikkeestä (`src/footsteps.js`: pinta `step` =
 | Viisi henkeä nousee | 66 s | `spirit` × 5, `memory` |
 | Ulvonta | 78 s | `howl` × 2 |
 | Toivo | 85 s | music `dawn`, `spirit` |
+
+---
+# Prologi-luku (taso 1): muut kohtaukset
+Askeleet footsteps.js:stä (pinta + kävelytyyli, ks. alla). Repliikit `say` duckaavat musiikin ja ambienssin ('voice'-ryhmä).
+
+| Kohtaus | Tapahtuma | Ääni |
+|---|---|---|
+| `opening` | aamu → hämärä, otsikko | amb `dawn` → `dusk`, `levelStart`; GB:n haukahdus `bark`; yö amb `night` |
+| `farmIntro` | tila yöllä, jännite | music pois, amb `night`, `heartbeat` |
+| `tosaIntro` | Tosa haukkuu + maa tärisee | `growl`, voice p_tosa_growl, shake |
+| | Weed laukkaa väliin | laukka-askeleet (gallop) |
+| | Sasuke riuhtoo irti ja juoksee | **`fur`** (lisätty), laukka-askeleet |
+| `tosaThrow` | heitto kopin seinän läpi | `whoosh`, `hitHeavy` + `bodyfall` (kopin rikkoutuminen), **`dust`** (lisätty) Weedin laskeutumiseen |
+| | Weed nousee | `heartbeat` × 2, `riser`, music `battle` |
+| `tosaEnd` | Tosa kaatuu / raivo | `whimper`, `roar`, music `smith` |
+| `journey` | yömarssi, kaupunki | amb `battle` (metsä), askeleet (walk); Mel saapuu `bark` + shake |
+| | verkko heitetään | **`whoosh`** (lisätty) |
+| `hook` | Mel lähtee, Hook varoittaa | laukka-askeleet, music `sad` |
+| `blueIntro` / `blueMel` | Blue haastaa | `bark`, music `battle` |
+| `blueHook` | Hook & Smith saapuvat | laukka-askeleet, `bark` + shake |
+| | Blue loikkaa aidan yli tielle | `whoosh` + **`land`** (lisätty) |
+| `ending` | muistohetki, lähtö | amb `dusk` → `dawn`, askeleet |
+
+# Taso 2: täydennykset (tämä kierros)
+| Kohtaus | Tapahtuma | Lisätty ääni |
+|---|---|---|
+| intro | Jeromen joukko loikkaa railon yli (Gallop_Jump × 5) | `jump` (ennen ollut vain `land`) |
+| Smithin uhraus | P4 säpsähtää purennasta (HitReact) | `growl` |
+| Smithin uhraus | Weedin haukahdus hiljaisuudessa (Bark-anim) | `bark` |
+| Smithin uhraus | kivikasa peittää molemmat (valkoinen välähdys + shake 0.8) | `cineBoom` |
+| Neljä nuolta | Jerome luiskahtaa ohi ja loikkaa sivuun | `claw` (jarrutus), `jump` |
+| Lukitus | pölyaalto kun kaikki riuhtaistaan irti | `dust` |
+| Jälkikohtaus | Mel laukkaa rantaan ja haukahtaa (after: Bark) | `bark` 1,8 s kohdalla |
+| Prologi-luku: juoksu | este ylitetty hypyllä (rengas) | `tick` (level1.js) |
+
+# Askeleet (src/footsteps.js)
+| Kävelytyyli | Ehto (nopeus / korkeus) | Tiheys | Ääni |
+|---|---|---|---|
+| walk | < 2,4 | 1,6–3 / s | `<pinta>Soft` (stepSoft, stepLeafSoft, stepDirtSoft, stepRockSoft, stepSnowSoft, wade) |
+| trot | 2,4–5 | 3,2–4,4 / s | `<pinta>` (step, stepLeaf, stepDirt, stepRock, stepSnow, wade) |
+| gallop | > 5 | 2,3–3 iskua / s, 2 jalkaa / isku | `<pinta>` × 2 (55–70 ms väli) |
+| boss | Kaibutsu | 1,2–2,4 / s | `bossStep` |
+
+Pinnat: `step` (oletus, lehdet + multa), `leaves`, `dirt`, `rock`/`stepRock`, `water`/`wade`, `snow`; kohtaus `{ surface }`,
+hahmokohtainen `setSurface(s, id)`. Vaimennus 3 m:stä käänteisellä etäisyydellä, sivuhahmoille yhteinen budjetti 9 askelta/s.
+
+# Tarkistus
+`node weed-game/tools/sound-coverage.mjs` käy läpi scenes_level1/2/prologue, level1.js ja level2.js: jokainen näkyvä
+tapahtuma (fx impact/dust/ring/burst/flash/arc, shake, kertaluonteinen animaatio, strike/reach, FX.*-kutsu) ilman ääntä
+±2 rivin sisällä listataan, ja tuntemattomat sfx-avaimet ilmoitetaan. Tila tällä kierroksella: **141 tapahtumaa, 0 ilman ääntä**
+(8 käsin tarkistettua poikkeusta, joissa ääni on kauempana, on listattu skriptin `KNOWN`-taulukkoon perusteluineen).

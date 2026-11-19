@@ -110,7 +110,7 @@ const INIT = () => {
           return;
         }
         const M = F.mel;
-        if (M && M.tele) { plan('m' + M.tele, () => { const away = Math.sign(W.x - M.x) || -1, room = away > 0 ? 5.2 - W.x : W.x + 5.2; this.gesture(room > 1.3 ? (away > 0 ? 'right' : 'left') : 'up', now + ms(P.react)); }); return; }
+        if (M && M.tele) { plan('m' + M.tele, () => { if (r() < P.miss) return; const away = Math.sign(W.x - M.x) || -1, room = away > 0 ? 5.2 - W.x : W.x + 5.2, tm = F.cfg.teleMel || 0.6; this.gesture(room > 1.3 ? (away > 0 ? 'right' : 'left') : 'up', now + ms(room > 1.3 ? P.react : Math.max(P.react, tm - 0.3))); }); return; }
         const melNear = M && M.active && Math.abs(M.x - W.x) < Math.abs(Bo.x - W.x);
         if (!W.busy && !melNear && now - this.lastBite > 1000 / P.bite) { this.lastBite = now; this.gesture('tap', now); }
         // GB card when ready and the boss is not open
@@ -168,6 +168,7 @@ async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {})
     const s = await st(p);
     const key = `${s.sec}:${s.mode}` + (s.mode === 'scene' || s.mode === 'fightCut' ? '#' + s.sceneN : '');
     if ((s.mode === 'run' || s.mode === 'fight') && s.hp != null) { hpLog[key] = Math.min(hpLog[key] ?? 99, s.hp); }
+    if (key !== last && last && last.endsWith(':fight')) { const h = await p.evaluate(() => window.__game.debug1.F && window.__game.debug1.F.hits); if (h && h.length) console.log('     fight hits: ' + JSON.stringify(h)); }
     if (key !== last && last && last.endsWith(':run')) { const h = await p.evaluate(() => window.__game.debug1.R && window.__game.debug1.R.hits); if (h && h.length) console.log('     run hits: ' + JSON.stringify(h)); }
     if (key !== last) { last = key; since = s.t; trail.push(key); sceneN = s.sceneN; if (onMode) await onMode(s); await shot(p, `${tag}_${trail.length}_${s.sec}_${s.mode}`); }
     if (stop(s)) { if (Object.keys(hpLog).length) console.log('     min hearts left: ' + JSON.stringify(hpLog)); return { ok: true, trail, s }; }

@@ -157,6 +157,7 @@ export const intro = ({ cast }) => [
     { move: 'north', x: -4.4, z: -1.0, t: 1.0, anim: 'Gallop', ts: 1.2 },
   ] },
   { par: [
+    { sfx: 'jump' },
     { move: 'jerome', x: 2.4, y: 0, z: -1.6, t: 0.7, anim: 'Gallop_Jump', loop: false, ease: 'inOut', after: 'Idle' },
     { move: 'robert', x: 1.8, y: 0, z: -2.4, t: 0.75, anim: 'Gallop_Jump', ease: 'inOut', after: 'Idle' },
     { move: 'rocker', x: 2.9, y: 0, z: -1.2, t: 0.8, anim: 'Gallop_Jump', ease: 'inOut', after: 'Idle' },
@@ -282,14 +283,14 @@ export const smith = (ctx) => {
       { fn: async () => { for (let i = 0; i < 3; i++) { await wait(0.75, true); sfx.roar(); sfx.bossStep({}, { x: B.x }); FX.dust(new THREE.Vector3(B.x - 0.6, 0.1, 0.4), true); FX.debrisBurst && FX.debrisBurst(new THREE.Vector3(B.x - 1 + i, 4.5, 0.2), 4); } } },
       { cam: [3.0, 2.0, 9.4], look: [6.0, 2.0, -0.4], t: 2.4 },
     ] },
-    { anim: 'kaibutsu', name: 'Idle_HitReact1', loop: false },
+    { anim: 'kaibutsu', name: 'Idle_HitReact1', loop: false }, { sfx: 'growl' },
     { react: 'kaibutsu', kind: 'flinch', dir: 1 },
     // silence: the music drops away, time slows – Smith looks at Weed one last time
     { music: null, fade: 1.2 }, { slow: 0.5 }, { sfx: 'heartbeat' },
     { track: 'mouth:smith', from: [-1.0, 0.2, 1.7], to: [-0.75, 0.12, 1.25], look: [-0.1, -0.3, 0], t: 1.8 },
     { par: [
       { dolly: 'weed', dist: 1.5, side: 0.7, t: 1.4, ease: 'inOut' },
-      { anim: 'weed', name: 'Bark', loop: false },
+      { anim: 'weed', name: 'Bark', loop: false }, { sfx: 'bark' },
     ] },
     { music: 'smith', fade: 0.8 },
     { par: [
@@ -331,7 +332,7 @@ export const smith = (ctx) => {
       }
       await wait(0.8, true);
     } },
-    { fx: 'flash', color: '#e8eeff', t: 1.2, peak: 1 },
+    { sfx: 'cineBoom' }, { fx: 'flash', color: '#e8eeff', t: 1.2, peak: 1 },
     { fn: () => ctx.contact.releaseAll() },
     { hide: 'smith' }, { hide: 'kaibutsu' }, { shake: 0.8 },
     { wait: 1.4 },
@@ -531,9 +532,9 @@ export const arrows = (ctx) => {
     { slow: 1 }, { fx: 'speed', v: 0 },
     { shake: 0.4 },
     { anim: 'kaibutsu', name: 'Idle', ts: 0.8 },
-    { anim: 'jerome', name: 'Idle_HitReact1', loop: false },
+    { anim: 'jerome', name: 'Idle_HitReact1', loop: false }, { sfx: 'claw' },
     { wait: 0.4 },
-    { anim: 'jerome', name: 'Gallop_Jump', loop: false },
+    { anim: 'jerome', name: 'Gallop_Jump', loop: false }, { sfx: 'jump' },
     { move: 'jerome', x: B.x - half - 3.4, y: 0, z: 0.6, t: 0.5, ease: 'out', faceMove: false, after: 'Idle' },
     { fn: () => { boss.root.position.z = 0; } },
     { wait: 0.6 },
@@ -638,7 +639,7 @@ export const lock = (ctx) => {
       { release: 'weed', mode: 'throw', to: [-0.6, 1.9], arc: 1.0, t: 0.6, land: 'Jump_ToIdle', after: 'Idle' },
       { release: 'ken', mode: 'throw', to: [6.4, 1.6], arc: 0.8, t: 0.6, land: 'Jump_ToIdle', after: 'Idle' },
     ] },
-    { fx: 'dust', at: [2, 0.1, 0], big: true }, { expr: 'jerome', name: null },
+    { fx: 'dust', at: [2, 0.1, 0], big: true }, { sfx: 'dust' }, { expr: 'jerome', name: null },
     { fn: () => { B.hp = 8; } },
     { anim: 'kaibutsu', name: 'Idle_2_HeadLow', ts: 0.6 },
     { say: 'arrows_now' },
@@ -840,6 +841,7 @@ export const post = (ctx) => {
     { cam: [0.0, 1.0, 4.4], look: [0.6, 0.6, -0.2] },
     { par: [
       { move: 'mel', x: 1.0, z: -0.15, t: 1.8, anim: 'Gallop', ts: 1.2, after: 'Bark', ease: 'out' },
+      { fn: async () => { await wait(1.8, true); if (!E.skipping) sfx.bark(); } },
       { move: 'gb', x: -1.4, z: -1.0, t: 2.2, anim: 'Walk', after: 'Idle' },
     ] },
     A('mel', { look: 'weed', t: 0.3 }),

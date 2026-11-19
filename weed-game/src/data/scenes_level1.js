@@ -123,7 +123,7 @@ export const tosaIntro = ({ cast, P }) => [
   { music: 'battle', fade: 0.8 },
   // Sasuke wriggles free while the giant turns to the pup
   { par: [
-    { move: 'sasuke', x: -8, z: 1.5, t: 1.6, anim: 'Gallop', ts: 1.4 },
+    { move: 'sasuke', x: -8, z: 1.5, t: 1.6, anim: 'Gallop', ts: 1.4 }, { sfx: 'fur' },
     { fn: () => cast.tosa.face(-1) },
   ] },
   { hide: 'sasuke' },
@@ -146,7 +146,7 @@ export const tosaThrow = ({ cast, P, E, FX, sfx }) => [
   { fn: () => { P.breakKennel(); sfx.hitHeavy(); sfx.bodyfall(); } }, { shake: 0.7 }, { fx: 'flash', color: '#ffffff', peak: 0.6 },
   { move: 'weed', x: 3.6, y: 0, z: -1.5, t: 0.2, ease: 'in', real: true },
   { anim: 'weed', name: 'LieDown' },
-  { fx: 'dust', at: [3.6, 0.2, -1.5], big: true },
+  { fx: 'dust', at: [3.6, 0.2, -1.5], big: true }, { sfx: 'dust' },
   { wait: 0.8 },
   { anim: 'gb', name: 'Bark', loop: false },
   { say: 'p_gb_run' },
@@ -429,7 +429,7 @@ export const journey = ({ cast, P }) => [
   { cam: [-1.0, 0.7, 4.0], look: [2.6, 0.5, -1], t: 0 },
   { move: 'mel', x: 0.2, z: -0.4, t: 1.4, anim: 'Gallop', ts: 1.3, after: 'Idle' },
   { sfx: 'bark' }, { shake: 0.2 },
-  { fn: () => P.show('netThrow', 3.2, -0.4) },
+  { fn: () => P.show('netThrow', 3.2, -0.4) }, { sfx: 'whoosh' },
   { expr: 'weed', name: 'determined' },
   { dolly: 'weed', dist: 1.7, side: 0.5, t: 0.3 },
   { say: 'p_weed_follow_me' },
@@ -506,7 +506,7 @@ export const blueHook = ({ cast }) => [
   { move: 'blue', x: 6.5, z: -1.2, t: 0.8, anim: 'Gallop', ts: 1.4 },
   { anim: 'blue', name: 'Gallop_Jump', loop: false }, { sfx: 'whoosh' },
   { move: 'blue', x: 7.5, z: -3.0, y: 1.2, t: 0.35, ease: 'out' },
-  { move: 'blue', x: 8.0, z: -4.2, y: 0, t: 0.3, ease: 'in' },
+  { move: 'blue', x: 8.0, z: -4.2, y: 0, t: 0.3, ease: 'in' }, { sfx: 'land' },
   { anim: 'blue', name: 'Gallop', ts: 1.4 },
 ];
 
