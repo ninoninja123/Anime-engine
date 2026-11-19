@@ -130,6 +130,7 @@ export const post = {
   sunWorld: new THREE.Vector3(0, 30, -200),
   // hetkelliset tehosteet
   ca: 0, impactT: 0, bloomKick: 0, exposureKick: 0,
+  reduceFlash: false,          // saavutettavuus (Settings): impact-kehykset pois, bloom/valotus/CA-potkut 25–30 %
   speed: 0, fade: 0, iris: 2, tilt: 0, dof: 0, focus: 10, freeze: 0,
   center: new THREE.Vector2(0.5, 0.5),
   stats: { calls: 0, tris: 0 },
@@ -232,7 +233,8 @@ export function renderPost(scene, camera, dtReal, time) {
   c.uAspect.value = W / H; c.uTime.value = time % 1000;
   c.uBloom.value = b.bloom + post.bloomKick; c.uExposure.value = b.exposure * (1 + post.exposureKick);
   c.uSat.value = b.sat; c.uContrast.value = b.contrast; c.uVig.value = b.vig; c.uGrain.value = b.grain;
-  c.uCA.value = post.ca; c.uImpact.value = post.impactT > 0 ? 1 : 0;
+  c.uCA.value = post.ca; c.uImpact.value = post.impactT > 0 && !post.reduceFlash ? 1 : 0;
+  if (post.reduceFlash) { c.uBloom.value = b.bloom + post.bloomKick * 0.25; c.uExposure.value = b.exposure * (1 + post.exposureKick * 0.25); c.uCA.value = post.ca * 0.3; }   // Settings: Reduce flashing
   c.uTilt.value = post.tilt; c.uDof.value = post.dof; c.uFocus.value = post.focus;
   c.uNear.value = camera.near; c.uFar.value = camera.far;
   c.uFade.value = post.fade; c.uIris.value = post.iris; c.uSpeed.value = post.speed; c.uFreeze.value = post.freeze;

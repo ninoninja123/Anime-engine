@@ -2,6 +2,7 @@
 // Phases: 1) fight -> armor -> Smith's sacrifice (rockslide)  2) fight -> "Four Arrows"
 //         3) staggering monster -> Weed's Battōga finisher -> fall into the gorge -> river, helicopter, graves at dusk.
 // Pack cards = special moves with an anime cut-in, choreography, impact FX and a clean exit.
+import { makeTelegraph } from './gfx/telegraph.js';
 import * as THREE from 'three';
 import { E, tween, wait, shake } from './engine.js';
 import { makeDog, gradientMap, loadFor } from './dogs.js';
@@ -38,9 +39,8 @@ const bossHalf = () => cast.kaibutsu.length * 0.5;
 // ---------------------------------------------------------------- props
 let warnMat, warn, bang, reticle, rocks = [];
 function makeProps() {
-  warnMat = new THREE.MeshBasicMaterial({ color: 0xff3322, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
-  warn = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), warnMat);
-  warn.rotation.x = -Math.PI / 2; warn.position.y = 0.03; E.scene.add(warn);
+  // soft rounded danger zone (gfx/telegraph.js); fades out by itself if the attack is interrupted
+  warn = makeTelegraph({ guard: () => S.active && !S.cutscene && !S.special && S.B && S.B.attacking }); warnMat = warn.material; E.scene.add(warn);
   const c = document.createElement('canvas'); c.width = c.height = 64;
   const g = c.getContext('2d'); g.font = '900 56px sans-serif'; g.textAlign = 'center'; g.fillStyle = '#ff4030';
   g.strokeStyle = '#fff'; g.lineWidth = 5; g.strokeText('!', 32, 54); g.fillText('!', 32, 54);

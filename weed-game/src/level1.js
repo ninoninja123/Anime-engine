@@ -3,6 +3,7 @@
 //   → Sakura (scene: her death, the name) → Jōshū run (lead Mel away from the dog catcher) → Hook (scene)
 //   → Blue (2-phase fight, Mel is set on Weed) → the truck (scene + "leap the fence" action) → ending (scene).
 // Shares the engine, scene runner, voice/subtitles, gestures, FX and HUD with level 2 (no level2.js changes).
+import { makeTelegraph } from './gfx/telegraph.js';
 import * as THREE from 'three';
 import { E, tween, wait, shake } from './engine.js';
 import { loadFor, makeDog } from './dogs.js';
@@ -20,7 +21,7 @@ import { drift, grade } from './shared/cine.js';
 import { vehicleSound, horn } from './shared/synth.js';
 import { installResultFx } from './shared/resultfx.js';
 import { resetActing } from './shared/acting.js';
-import { ACTORS, RUNS, FIGHTS } from './data/level1_config.js';
+import { ACTORS, RUNS, FIGHTS, PLAYER, SECTION_TITLES } from './data/level1_config.js';
 import * as SC from './data/scenes_level1.js';
 import { cast as cast2 } from './level2.js';
 
@@ -29,10 +30,37 @@ installResultFx();                 // animated result / defeat screens (both lev
 export const SECTIONS = ['opening', 'farmRun', 'tosa', 'sakura', 'townRun', 'blue', 'truck', 'ending'];
 export const cast1 = {};
 const ABORT = new Error('level1-abort');
-const S1 = { active: false, paused: false, mode: null, token: 0, retry: null, onDone: null, section: 0 };
+const S1 = { active: false, paused: false, mode: null, token: 0, retry: null, onDone: null, section: 0, sceneN: 0 };
 window.__S1 = S1;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const save = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
+const load = k => { try { return localStorage.getItem(k); } catch (_) { return null; } };
+// first-time tutorials (short English hints, slow-mo on the first obstacle / attack of each kind); remembered per device
+const TUT = (() => { try { return new Set(JSON.parse(load('weed.l1.tut') || '[]')); } catch (_) { return new Set(); } })();
+const tutSeen = k => TUT.has(k) || E.params.has('notut');
+const tutMark = k => { TUT.add(k); save('weed.l1.tut', JSON.stringify([...TUT])); };
+// small DOM layer of the chapter (checkpoint offer, tutorial callout); no index.html changes
+let l1css = false;
+function l1Style() {
+  if (l1css) return; l1css = true;
+  const st = document.createElement('style');
+  st.textContent = `#l1ck{z-index:12}#l1ck .ckname{opacity:.85;margin:-4px 0 10px;font-size:14px}
+#l1tut{position:fixed;left:50%;bottom:22%;transform:translateX(-50%) scale(.9);z-index:7;pointer-events:none;opacity:0;transition:opacity .18s,transform .18s;
+ font:800 clamp(18px,4.4vw,30px)/1.15 var(--f-head,sans-serif);letter-spacing:.06em;text-transform:uppercase;color:#fff;text-align:center;
+ padding:8px 22px;border-radius:6px;background:rgba(8,12,28,.62);text-shadow:0 2px 8px rgba(0,0,0,.8);white-space:nowrap}
+#l1tut.on{opacity:1;transform:translateX(-50%) scale(1);animation:l1pulse .7s ease-in-out infinite alternate}
+#l1tut small{display:block;font-size:.5em;letter-spacing:.1em;opacity:.8;margin-top:2px}
+@keyframes l1pulse{to{box-shadow:0 0 0 3px rgba(255,214,120,.55),0 0 24px rgba(255,200,100,.4)}}
+@media (max-height:340px){#l1tut{bottom:16%}}`;
+  document.head.appendChild(st);
+}
+function callout(html) {
+  l1Style();
+  let el = document.getElementById('l1tut');
+  if (!el) { el = document.createElement('div'); el.id = 'l1tut'; document.body.appendChild(el); }
+  if (!html) { el.classList.remove('on'); return; }
+  el.innerHTML = html; el.classList.add('on');
+}
 
 // ---------------------------------------------------------------- props (one instance each, shown per scene)
 const P = {
@@ -123,6 +151,7 @@ function enter() {
   setWorldForPrologue(true);
   if (!updaterOn) { E.updaters.add(update); updaterOn = true; }
   if (!gestureOff) gestureOff = onGesture(handleGesture);
+  earlySwipeInput(); orientationWatch();
   const hk = UI.$('henki'); if (hk && !hk.dataset.l1) { hk.dataset.l1 = '1'; hk.addEventListener('pointerdown', e => { if (!S1.active || !F) return; e.stopPropagation(); if (F.W.henki >= 1) fightBattoga(); }); }
   for (const d of Object.values(cast2)) d.root.visible = false;
 }
@@ -138,15 +167,24 @@ function leave() {
   UI.$('cards').innerHTML = '';
   E.timeScale = 1; E.skipping = false; FX.speedLines(0); E.camRoll = 0;
   setSurface('step');
+  callout(null); defeatText(null);
 }
 
 // ---------------------------------------------------------------- chapter flow
 export async function startLevel1({ section = 0, onDone } = {}) {
   S1.onDone = onDone; S1.token++;
   const tok = S1.token;
+  // checkpoint: a chapter left midway (quit, closed tab, defeat -> menu) can be resumed from the menu's Prologue button
+  const savedSec = +(load('weed.p1.section') || 0);
+  const fromUrl = !startLevel1.used && E.params.get('level') === '1' && E.params.has('section'); startLevel1.used = true;
+  if (section === 0 && !fromUrl && savedSec > 0 && savedSec < SECTIONS.length) {
+    section = await checkpointPrompt(savedSec);
+    if (tok !== S1.token) return;
+  }
   UI.show('loading', true); UI.$('loadingText').textContent = 'Following a small pup…';
   await loadCast1();
   UI.show('loading', false);
+  if (tok !== S1.token) return;
   enter();
   preloadMusic('sad', 'dawn', 'battle', 'smith', 'smith2');
   preloadSfx('boss', 'cine');
@@ -161,6 +199,24 @@ export async function startLevel1({ section = 0, onDone } = {}) {
   save('weed.p1done', '1'); save('weed.p1.section', '0');
   leave();
   if (S1.onDone) S1.onDone();
+}
+function checkpointPrompt(sec) {
+  l1Style();
+  let el = document.getElementById('l1ck');
+  if (!el) {
+    el = document.createElement('div'); el.id = 'l1ck'; el.className = 'screen hidden';
+    el.innerHTML = '<div class="kicker">Prologue</div><h2>Checkpoint</h2><div class="ckname"></div>'
+      + '<button id="l1cont" class="big"></button><button id="l1restart">Start from the beginning</button>';
+    document.body.appendChild(el);
+  }
+  el.querySelector('.ckname').textContent = SECTION_TITLES[sec] || '';
+  el.querySelector('#l1cont').textContent = `▶ Continue (${sec + 1}/${SECTIONS.length})`;
+  el.classList.remove('hidden');
+  return new Promise(res => {
+    const done = v => e => { e.stopPropagation(); el.classList.add('hidden'); sfx.play && sfx.play(v ? 'uiConfirm' : 'ui'); res(v); };
+    el.querySelector('#l1cont').onclick = done(sec);
+    el.querySelector('#l1restart').onclick = done(0);
+  });
 }
 function check(tok) { if (tok !== S1.token || !S1.active) throw ABORT; }
 
@@ -181,7 +237,7 @@ async function scene(steps, tok) {
   check(tok);
   steps = safeSteps(steps);
   UI.cine(true); UI.show('hud', false); UI.hint(''); setInputEnabled(false);
-  S1.mode = 'scene';
+  S1.mode = 'scene'; S1.sceneN++;
   preloadLines(SC.linesOf(steps));
   drift({ push: 0.035, truck: 0.018 });            // the camera keeps creeping on every hold (src/shared/cine.js)
   await runScene(steps, ctx);
@@ -221,28 +277,52 @@ const SECTION_FNS = {
   ending: async tok => { hideCast(); P.hideAll(); await scene(SC.ending(ctx), tok); },
 };
 
+let lastTip = '';
 async function loopUntilWin(play, tok, reset) {
   for (;;) {
     check(tok);
     const ok = await play();
     check(tok);
     if (ok) return;
-    const choice = await defeatPrompt();
+    const choice = await defeatPrompt(lastTip);
     if (choice !== 'retry') throw ABORT;
     if (reset) await reset();
   }
 }
-function defeatPrompt() {
+let defeatOrig = null;
+function defeatText(tip) {
+  const d = UI.$('defeat'); if (!d) return;
+  const p = d.querySelector('p'), b = UI.$('retryBtn');
+  if (!defeatOrig) defeatOrig = { p: p ? p.innerHTML : '', b: b ? b.textContent : '' };
+  if (tip === null) { if (p) p.innerHTML = defeatOrig.p; if (b) b.textContent = defeatOrig.b; return; }
+  if (p) p.innerHTML = tip; if (b) b.textContent = 'Retry from checkpoint';
+}
+function defeatPrompt(tip) {
   return new Promise(res => {
     S1.retry = res;
+    callout(null); UI.hint('');
+    defeatText(tip || 'The pack is waiting. Rise once more.');
     UI.show('hud', false); UI.show('defeat', true);
   });
 }
 export function retry1() { UI.show('defeat', false); if (S1.retry) { const r = S1.retry; S1.retry = null; r('retry'); } }
 
 // ---------------------------------------------------------------- input
+// Runner: a swipe is acted on as soon as the finger has travelled far enough (input.js only reports it on release, which
+// adds ~0.1 s of lag that matters when jumping logs). The release that follows is then swallowed.
+let early = null;
+function earlySwipeInput() {
+  const el = UI.$('touch'); if (!el || el.dataset.l1early) return; el.dataset.l1early = '1';
+  el.addEventListener('pointerdown', e => { early = { x: e.clientX, y: e.clientY, id: e.pointerId, fired: false }; });
+  el.addEventListener('pointermove', e => {
+    if (!early || early.fired || early.id !== e.pointerId || !S1.active || S1.paused || S1.mode !== 'run') return;
+    const dx = e.clientX - early.x, dy = e.clientY - early.y;
+    if (Math.abs(dy) > 34 && Math.abs(dy) > Math.abs(dx) * 1.2) { early.fired = true; handleGesture({ type: 'swipe', dir: dy < 0 ? 'up' : 'down', early: true }); }
+  });
+}
 function handleGesture(g) {
   if (!S1.active || S1.paused) return;
+  if (!g.early && early && early.fired) { early = null; return; }   // the release of a swipe already handled
   if (S1.mode === 'run') return runGesture(g);
   if (S1.mode === 'fight') return fightGesture(g);
   if (S1.mode === 'leap' && g.type === 'swipe' && g.dir === 'up' && leapRes) leapRes();
@@ -263,24 +343,34 @@ function buildGBCard(desc) {
 function useCard(id) {
   const c = cards.find(k => k.id === id); if (!c || !S1.active || S1.paused) return;
   if (c.state !== 'ready') { sfx.denied(); return; }
-  c.state = 'cooldown'; c.cool = c.cooldown; sfx.card();
+  c.state = 'cooldown'; c.cool = c.cooldown; sfx.card(); tutMark('card');
   if (S1.mode === 'run') runDecoy(); else if (S1.mode === 'fight') fightDecoy();
 }
 function tickCards(dt) {
   for (const c of cards) {
-    if (c.state === 'cooldown') { c.cool -= dt; if (c.cool <= 0) { c.state = 'ready'; c.cool = 0; sfx.cardReady(); } }
+    if (c.state === 'cooldown') {
+      c.cool -= dt;
+      if (c.cool <= 0) {
+        c.state = 'ready'; c.cool = 0; sfx.cardReady();
+        if (!tutSeen('card') && !(R && R.tut) && !(F && F.tut)) { tutMark('card'); UI.hint('<b>GB is ready!</b> Tap the GB card (bottom right) for help', 4); }
+      }
+    }
     UI.updateCard(c);
   }
 }
 
 // ---------------------------------------------------------------- warning icon sprites
+const iconTex = new Map();
 function iconSprite(text, color) {
+  const key = text + color;
+  if (iconTex.has(key)) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: iconTex.get(key), transparent: true, depthTest: false })); s.scale.setScalar(0.55); s.renderOrder = 10; s.userData.noGfx = true; return s; }
   const c = document.createElement('canvas'); c.width = 128; c.height = 128;
   const g = c.getContext('2d');
   g.fillStyle = 'rgba(10,12,24,0.55)'; g.beginPath(); g.arc(64, 64, 54, 0, Math.PI * 2); g.fill();
   g.strokeStyle = color; g.lineWidth = 7; g.stroke();
   g.fillStyle = color; g.font = `900 ${text.length > 1 ? 40 : 70}px sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, 64, 68);
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false }));
+  const tex = new THREE.CanvasTexture(c); iconTex.set(key, tex);      // one texture per icon kind, shared by all sprites
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
   s.scale.setScalar(0.55); s.renderOrder = 10; s.userData.noGfx = true; return s;
 }
 let ICONS = null;
@@ -291,32 +381,44 @@ const icon = k => { if (!ICONS) ICONS = { up: ['↑', '#9fe0ff'], down: ['↓', 
 // =====================================================================================
 const KIND = { log: 'up', fence: 'up', hay: 'up', crate: 'up', beam: 'down', net: 'down', geese: 'tap' };
 let R = null;
+// The course is the hand-made list in level1_config.js (RUNS[key].obstacles: [distance, type]) so every attempt is the
+// same and can be learned; the old seeded generator is only a fallback for a run without a list.
 function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
 function genObstacles(cfg, key) {
+  if (cfg.obstacles && cfg.obstacles.length) return cfg.obstacles;
   const r = rng(key === 'farm' ? 7 : 19), out = [];
-  const pool = key === 'farm' ? ['log', 'log', 'beam', 'geese', 'fence', 'hay', 'beam', 'crate'] : ['crate', 'net', 'net', 'fence', 'geese', 'crate', 'net', 'beam'];
-  let d = 16, last = '';
-  while (d < cfg.length - 10) {
-    let t = pool[Math.floor(r() * pool.length)];
-    if (t === last && (t === 'geese' || r() < 0.6)) t = pool[(pool.indexOf(t) + 1) % pool.length];
-    out.push([d, t]); last = t;
-    const k = d / cfg.length;
-    d += (9.5 - k * 3.2) + r() * 3;
-  }
+  const pool = ['log', 'beam', 'geese', 'fence', 'crate'];
+  let d = 16;
+  while (d < cfg.length - 10) { out.push([d, pool[Math.floor(r() * pool.length)]]); d += 9 + r() * 3; }
   return out;
 }
+// Obstacles are pooled per type (a retry or the second run reuses the meshes instead of rebuilding them).
+const obsPool = {};
 function makeObstacle(type) {
+  const pool = obsPool[type] || (obsPool[type] = []);
+  if (pool.length) { const o = pool.pop(); E.scene.add(o); return o; }
+  let o;
   switch (type) {
-    case 'log': return PR.log(1.6, 0.17);
-    case 'fence': { const f = PR.fence(1.6, 0.5); f.rotation.y = 0; return f; }
-    case 'hay': return PR.hay(0.27);
-    case 'crate': return PR.crate(0.4);
-    case 'beam': return PR.beam(0.36, 1.7);
-    case 'net': return PR.hangingNet(0.36);
-    case 'geese': return PR.geese(3);
+    case 'log': o = PR.log(1.6, 0.17); break;
+    case 'fence': o = PR.fence(1.6, 0.5); break;
+    case 'hay': o = PR.hay(0.27); break;
+    case 'crate': o = PR.crate(0.4); break;
+    case 'beam': o = PR.beam(0.36, 1.7); break;
+    case 'net': o = PR.hangingNet(0.36); break;
+    case 'geese': o = PR.geese(3); break;
   }
+  o.userData.type = type;
+  for (const b of o.userData.birds || []) b.userData.home = { p: b.position.clone(), r: b.rotation.clone() };
+  E.scene.add(o); return o;
 }
-function clearRunObjs() { if (R) { for (const o of R.obs) { PR.dispose(o.obj); if (o.icon) { E.scene.remove(o.icon); o.icon.material.map.dispose(); } } R.obs = []; } }
+function releaseObstacle(o) {
+  if (!o) return;
+  E.scene.remove(o);
+  o.position.set(0, 0, 0); o.rotation.set(0, 0, 0); o.visible = true;
+  for (const b of o.userData.birds || []) { b.position.copy(b.userData.home.p); b.rotation.copy(b.userData.home.r); }
+  (obsPool[o.userData.type] || (obsPool[o.userData.type] = [])).push(o);
+}
+function clearRunObjs() { if (R) { for (const o of R.obs) { releaseObstacle(o.obj); if (o.icon) { E.scene.remove(o.icon); o.icon.material.dispose(); } } R.obs = []; } }
 
 function runRun(key, tok) {
   check(tok);
@@ -327,9 +429,9 @@ function runRun(key, tok) {
   const w = cast1.weed; w.root.visible = true; w.fade(1); w.face(1, true); w.play('Gallop', { timeScale: 1.25 });
   const followers = key === 'farm' ? [['gb', -3.2, -0.9]] : [['mel', -1.5, 0.75], ['gb', -3.4, -0.9], ['smith', -4.6, -0.3]];
   for (const [id, , z] of followers) { const d = cast1[id]; d.root.visible = true; d.fade(1); d.face(1, true); d.play('Gallop', { timeScale: 1.2 }); d.root.position.z = z; }
-  R = { key, cfg, d: 0, wx: -30, y: 0, vy: 0, slideT: 0, inv: 0, hp: cfg.hearts, obs: [], followers, calls: cfg.calls.map(c => ({ d: c[0], id: c[1], done: false })), wrapFx: 0, stumble: 0 };
+  R = { key, cfg, d: 0, wx: -30, y: 0, vy: 0, slideT: 0, inv: 0, hp: cfg.hearts, obs: [], followers, tut: null, calls: cfg.calls.map(c => ({ d: c[0], id: c[1], done: false })), wrapFx: 0, stumble: 0, hits: [] };
   for (const [d, type] of genObstacles(cfg, key)) {
-    const obj = makeObstacle(type); E.scene.add(obj);
+    const obj = makeObstacle(type);
     const ic = icon(KIND[type]); ic.visible = false; E.scene.add(ic);
     R.obs.push({ d, type, kind: KIND[type], obj, icon: ic, passed: false, cleared: false, h: obj.userData.h || 0.4 });
   }
@@ -342,6 +444,7 @@ function runRun(key, tok) {
   ambience(key === 'farm' ? 'night' : 'battle');
   setMood(key === 'farm' ? 'autumn_night' : 'night', 1);
   UI.hint(cfg.hint, 6);
+  lastTip = `Tip: the icon over each obstacle tells you what to do: <b>↑</b> swipe up, <b>↓</b> swipe down, <b>TAP</b> bark. The GB card clears one obstacle.`;
   S1.mode = 'run';
   sfx.levelStart();
   return new Promise(res => { R.done = res; });
@@ -350,18 +453,35 @@ function runRun(key, tok) {
 function runGesture(g) {
   if (!R || R.over) return;
   const w = cast1.weed;
+  const PL = PLAYER.run;
   if (g.type === 'swipe' && g.dir === 'up') {
     if (R.y > 0.02) return;
-    R.vy = 7.6; R.y = 0.01; R.slideT = 0; sfx.jump(); w.play('Gallop_Jump', { loop: false, timeScale: 1.2 });
+    tutDone('up');
+    R.vy = PL.jumpV; R.y = 0.01; R.slideT = 0; sfx.jump(); w.play('Gallop_Jump', { loop: false, timeScale: 1.2 });
   } else if (g.type === 'swipe' && g.dir === 'down') {
+    tutDone('down');
     if (R.y > 0.3) { R.vy = Math.min(R.vy, -6); }
-    R.slideT = 0.7; sfx.dodge ? sfx.dodge() : sfx.whoosh(); FX.dust(new THREE.Vector3(R.wx, 0.05, 0.1));
+    R.slideT = PL.duckT; sfx.dodge ? sfx.dodge() : sfx.whoosh(); FX.dust(new THREE.Vector3(R.wx, 0.05, 0.1));
   } else if (g.type === 'tap' || g.type === 'arc' || (g.type === 'swipe' && (g.dir === 'right' || g.dir === 'left'))) {
-    // bark: scatters birds ahead
+    // bark: scatters birds ahead (range = as far as their TAP icon is shown, so a bark at first sight always works)
+    tutDone('tap');
     sfx.bark(); w.play('Bark', { loop: false }); setTimeout(() => { if (R && !R.over && R.y <= 0.02) w.play('Gallop', { timeScale: 1.25 }); }, 260);
     FX.ring(w.root.position.clone().add(new THREE.Vector3(0.3, 0.3, 0)), 0xffe0a0, 1.6, 0.35);
-    for (const o of R.obs) { const ahead = o.d - R.d; if (o.kind === 'tap' && !o.cleared && ahead > -0.2 && ahead < 7.5) scatter(o); }
+    for (const o of R.obs) { const ahead = o.d - R.d; if (o.kind === 'tap' && !o.cleared && !o.passed && ahead > -0.35 && ahead < PL.iconAt + 0.5) scatter(o); }
   }
+}
+// first-time tutorial in the runner: the first obstacle of each kind freezes into slow motion with a big callout until
+// the player does the move (or 3.5 s pass); later obstacles of that kind are normal.
+const TUT_RUN = { up: ['Swipe <b>↑</b> to jump', 'logs, fences, hay, crates'], down: ['Swipe <b>↓</b> to duck', 'beams and nets'], tap: ['<b>Tap</b> to bark', 'scare the birds away'] };
+function tutStart(o) {
+  R.tut = { kind: o.kind, t0: E.realTime }; E.timeScale = PLAYER.run.tutSlow;
+  const [a, b] = TUT_RUN[o.kind]; callout(`${a}<small>${b}</small>`);
+}
+function tutDone(kind) {
+  if (!R || !R.tut) return;
+  if (kind && R.tut.kind !== kind) return;
+  if (kind) tutMark('run_' + R.tut.kind);
+  R.tut = null; callout(null); if (!S1.paused) E.timeScale = 1;
 }
 function scatter(o) {
   o.cleared = true; o.icon.visible = false; sfx.whoosh();
@@ -372,7 +492,7 @@ function scatter(o) {
 }
 function runDecoy() {
   const next = R.obs.find(o => !o.passed && !o.cleared && o.d - R.d > 1.2 && o.d - R.d < 16);
-  say('p_gb_decoy', { noWait: true });
+  say('p_gb_decoy', { noWait: true }); tutDone(null);
   const gb = cast1.gb; gb.play('Gallop', { timeScale: 1.6 });
   if (!next) return;
   next.cleared = true; next.icon.visible = false;
@@ -383,8 +503,8 @@ function runDecoy() {
 function runUpdate(dt, dtr) {
   const w = cast1.weed, cfg = R.cfg;
   if (R.over) return;
-  const v = cfg.speed * (R.stumble > 0 ? 0.55 : 1);
-  R.stumble = Math.max(0, R.stumble - dt);
+  const v = cfg.speed;
+  R.stumble = Math.max(0, R.stumble - dt);   // (a hit no longer slows the run: it made the next obstacle arrive late)
   R.d += v * dt; R.wx += v * dt;
   if (R.wx > 32) {                         // wrap the treadmill (hidden by a quick dip + speed lines)
     R.wx -= 64; E.camPos.x -= 64; E.camLook.x -= 64;
@@ -393,7 +513,7 @@ function runUpdate(dt, dtr) {
   if (R.wrapFx > 0) { R.wrapFx -= dtr; if (R.wrapFx <= 0) FX.speedLines(0); }
   // jump / slide
   if (R.y > 0 || R.vy > 0) {
-    R.vy -= 25 * dt; R.y += R.vy * dt;
+    R.vy -= PLAYER.run.gravity * dt; R.y += R.vy * dt;
     if (R.y <= 0) { R.y = 0; R.vy = 0; sfx.land({}, { x: R.wx }); FX.dust(new THREE.Vector3(R.wx, 0.05, 0)); if (!R.over) w.play('Gallop', { timeScale: 1.25 }); }
   }
   R.slideT = Math.max(0, R.slideT - dt);
@@ -406,6 +526,12 @@ function runUpdate(dt, dtr) {
     const d = cast1[id];
     d.root.position.set(R.wx + off + Math.sin(E.time * 1.3 + i) * 0.25, 0, z);
   });
+  // tutorial: first obstacle of each kind
+  if (R.tut && E.realTime - R.tut.t0 > 3.5) { R.tutMiss = (R.tutMiss || 0) + 1; if (R.tutMiss > 1) tutMark('run_' + R.tut.kind); tutDone(null); }
+  if (!R.tut) {
+    const nx = R.obs.find(o => !o.passed && !o.cleared);
+    if (nx && !tutSeen('run_' + nx.kind) && nx.d - R.d < (nx.kind === 'tap' ? 5 : PLAYER.run.tutAt) && !nx.tutDone) { nx.tutDone = true; tutStart(nx); }
+  }
   // obstacles
   for (const o of R.obs) {
     const ahead = o.d - R.d;
@@ -418,14 +544,15 @@ function runUpdate(dt, dtr) {
       if (o.gbDash <= 0.4 && !o.knocked) { o.knocked = true; sfx.hit(); FX.dust(new THREE.Vector3(x, 0.2, 0), true); tween(o.obj.position, { z: -2.2 }, 0.35, { ease: 'out' }); tween(o.obj.rotation, { y: 1.2 }, 0.35); }
       if (o.gbDash <= 0) { o.gbDash = 0; gb.root.position.z = -0.9; }
     }
-    o.icon.visible = !o.passed && !o.cleared && ahead > 0.4 && ahead < 10;
-    if (o.icon.visible) { o.icon.position.set(x, 1.15 + Math.sin(E.time * 6) * 0.05, 0.3); const k = clamp(1 - (ahead - 2) / 8, 0.35, 1); o.icon.scale.setScalar(0.38 + 0.25 * k); o.icon.material.opacity = 0.4 + 0.6 * k; }
+    const iconAt = PLAYER.run.iconAt;
+    o.icon.visible = !o.passed && !o.cleared && ahead > 0.4 && ahead < iconAt;
+    if (o.icon.visible) { o.icon.position.set(x, 1.15 + Math.sin(E.time * 6) * 0.05, 0.3); const k = clamp(1 - (ahead - 2) / (iconAt - 2), 0.35, 1); o.icon.scale.setScalar((0.38 + 0.25 * k) * (R.tut && R.tut.kind === o.kind ? 1.5 : 1)); o.icon.material.opacity = 0.4 + 0.6 * k; }
     if (!o.passed && ahead < 0.15) {
       o.passed = true;
       let safe = o.cleared;
-      if (!safe) safe = o.kind === 'up' ? R.y > o.h * 0.75 : o.kind === 'down' ? R.slideT > 0 : false;
+      if (!safe) safe = o.kind === 'up' ? R.y > o.h * PLAYER.run.clearFrac : o.kind === 'down' ? R.slideT > 0 : false;
       if (!safe && R.inv <= 0) runHit(o);
-      else if (!o.cleared && !o.knocked) { if (o.kind === 'up') FX.ring(new THREE.Vector3(x, 0.3, 0), 0x9fe0ff, 0.9, 0.3); }
+      else if (!o.cleared && !o.knocked) { if (o.kind === 'up') { FX.ring(new THREE.Vector3(x, 0.3, 0), 0x9fe0ff, 0.9, 0.3); sfx.tick(); } }
     }
   }
   // voice calls
@@ -439,7 +566,9 @@ function runUpdate(dt, dtr) {
 }
 function runHit(o) {
   const w = cast1.weed;
-  R.hp--; R.inv = 1.3; R.stumble = 0.5;
+  tutDone(null);
+  R.hp--; R.inv = PLAYER.run.invT; R.stumble = 0.5;
+  R.hits.push({ type: o.type, d: Math.round(o.d), y: +R.y.toFixed(2), slide: +R.slideT.toFixed(2) });   // read by the test
   UI.setHearts(R.hp, R.cfg.hearts);
   sfx.hurt(); shake(0.3); FX.flash('#ff2040', 0.3, 0.3);
   if (navigator.vibrate) try { navigator.vibrate(90); } catch (_) {}
@@ -451,7 +580,7 @@ function runHit(o) {
 }
 async function endRun(ok) {
   S1.mode = 'runEnd';
-  setInputEnabled(false);
+  setInputEnabled(false); tutDone(null); E.timeScale = 1;
   const w = cast1.weed; w.model.scale.y = w.height; w.model.visible = true;
   if (!ok) { w.play('Death', { loop: false }); sfx.die(); music(null); await wait(1.2, true); clearRunObjs(); R.done(false); return; }
   UI.hint(''); sfx.victory && sfx.victory();
@@ -467,12 +596,13 @@ async function endRun(ok) {
 // =====================================================================================
 const ARENA = { min: -5.2, max: 5.2 };
 let F = null;
-let warnMesh = null, bangSprite = null;
+let warnMesh = null, bangSprite = null, melBang = null, teleId = 0;
 function fightProps() {
   if (warnMesh) return;
-  warnMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0xff3322, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
-  warnMesh.rotation.x = -Math.PI / 2; warnMesh.position.y = 0.03; warnMesh.userData.noGfx = true; E.scene.add(warnMesh);
+  // soft rounded danger zone (gfx/telegraph.js); fades out by itself if the attack is interrupted
+  warnMesh = makeTelegraph({ guard: () => S1.active && S1.mode === 'fight' && F && F.B && F.B.attacking }); E.scene.add(warnMesh);
   bangSprite = iconSprite('!', '#ff5040'); bangSprite.visible = false; E.scene.add(bangSprite);
+  melBang = iconSprite('!', '#ffc040'); melBang.visible = false; melBang.scale.setScalar(0.42); E.scene.add(melBang);
 }
 function showWarn(x, w, on = true) { warnMesh.position.x = x; warnMesh.scale.set(w, 1.4, 1); warnMesh.material.opacity = on ? 0.32 : 0; }
 
@@ -482,9 +612,9 @@ function runFight(key, tok) {
   const cfg = FIGHTS[key];
   const bossRole = key;
   F = { key, cfg, tok, boss: cast1[bossRole], phase: 1, over: false,
-    W: { x: -3, y: 0, vy: 0, hp: 4, max: 4, inv: 1, busy: false, seq: 0, henki: 0 },
+    W: { x: -3, y: 0, vy: 0, hp: cfg.hearts || PLAYER.fight.hearts, max: cfg.hearts || PLAYER.fight.hearts, inv: 1, busy: false, seq: 0, henki: 0 },
     B: { x: 2.6, hp: cfg.hp, max: cfg.hp, token: 0, open: false, attacking: false, threatT: -1, stun: 0 },
-    mel: null, refusedAt: -9, p2T: 0 };
+    mel: null, refusedAt: -9, p2T: 0, hits: [] };
   hideCast();
   const w = cast1.weed; w.root.visible = true; w.fade(1); w.root.position.set(F.W.x, 0, 0); w.face(1, true); w.play('Idle');
   const b = F.boss; b.root.visible = true; b.fade(1); b.root.position.set(F.B.x, 0, 0); b.face(-1, true); b.play('Idle');
@@ -501,6 +631,9 @@ function runFight(key, tok) {
   ambience('battle');
   setMood(key === 'tosa' ? 'autumn_night' : 'night', 1);
   UI.hint(key === 'tosa' ? 'Tap = bite &nbsp;•&nbsp; Swipe ←/→ = dodge &nbsp;•&nbsp; Swipe ↑ = jump' : 'Blue is fast and feints. Watch for the <b>!</b> and dodge.', 5);
+  lastTip = key === 'tosa'
+    ? 'Tip: when the Tosa lowers its head and the ground glows red it will <b>charge</b>: swipe <b>↑</b> to jump over it. Bite (tap) while it pants.'
+    : 'Tip: Blue <b>feints</b> — wait for the second <b>!</b>, then swipe away. Dodge Mel, never bite him. The GB card makes Blue turn away.';
   S1.mode = 'fight';
   F.B.token++; bossBrain(F.B.token);
   return new Promise(res => { F.done = res; });
@@ -527,9 +660,10 @@ function addHenki(v) {
   W.henki = Math.min(1, W.henki + v); UI.setHenki(W.henki);
   if (was < 1 && W.henki >= 1) { UI.hint('Spirit full! Draw a circle ⟳ (or tap the Spirit ring) = <b>Battōga</b>', 4); sfx.spirit(); }
 }
-function fightJump() { const W = F.W; if (W.y > 0.05) return; W.seq++; W.busy = false; checkPerfect(); W.vy = 8.4; W.y = 0.01; sfx.jump(); cast1.weed.play('Gallop_Jump', { loop: false, timeScale: 1.1 }); }
+function fightJump() { const W = F.W; if (W.y > 0.05) return; if (F.tut === 'charge') fightTutEnd(); W.seq++; W.busy = false; checkPerfect(); W.vy = 8.4; W.y = 0.01; sfx.jump(); cast1.weed.play('Gallop_Jump', { loop: false, timeScale: 1.1 }); }
 async function fightDodge(dir) {
   const W = F.W, w = cast1.weed; if (W.y > 0.05) return;
+  if (F.tut && F.tut !== 'charge' && !(F.tut === 'feint' && !F.B.feintDone)) fightTutEnd();
   W.seq++; W.busy = true; const seq = W.seq; checkPerfect();
   W.inv = Math.max(W.inv, 0.32); sfx.dodge ? sfx.dodge() : sfx.whoosh();
   w.play('Gallop', { timeScale: 1.8 }); FX.afterimage && FX.afterimage(w, 0x8fc8ff, 0.25, 0.35);
@@ -604,10 +738,12 @@ function thresholds() {
   if (F.phase === 1 && B.hp <= cfg.phase2At) phase2();
   else if (F.key === 'blue' && F.phase === 2 && B.hp <= cfg.endAt) finishFight();
 }
-function hurtWeed(fromX) {
+function hurtWeed(fromX, src) {
   const W = F.W, w = cast1.weed;
   if (W.inv > 0 || F.over || F.cut) return;
-  W.hp--; W.inv = 1.3; W.seq++; W.busy = false;
+  fightTutEnd();
+  F.hits.push(src || (F.B.tele && F.B.tele.kind) || '?');   // read by the test (what hit Weed)
+  W.hp--; W.inv = PLAYER.fight.invT; W.seq++; W.busy = false;
   UI.setHearts(W.hp, W.max);
   sfx.hurt(); shake(0.3); FX.flash('#ff2040', 0.3, 0.3);
   if (navigator.vibrate) try { navigator.vibrate(110); } catch (_) {}
@@ -618,7 +754,7 @@ function hurtWeed(fromX) {
   if (W.hp <= 0) loseFight();
 }
 async function loseFight() {
-  F.over = true; F.B.token++; endAttack();
+  F.over = true; F.B.token++; endAttack(); fightTutEnd(); E.timeScale = 1;
   setInputEnabled(false);
   cast1.weed.play('Death', { loop: false }); sfx.die(); music(null);
   await wait(1.3, true);
@@ -628,11 +764,29 @@ async function loseFight() {
 function endAttack() {
   if (warnMesh) showWarn(0, 1, false);
   if (bangSprite) bangSprite.visible = false;
+  if (melBang) melBang.visible = false;
   if (!F) return;
-  F.B.threatT = -1; F.B.attacking = false; F.B.open = false; F.boss.setTint(0, 0);
-  if (F.mel) F.mel.threatT = -1;
+  F.B.threatT = -1; F.B.attacking = false; F.B.open = false; F.B.tele = null; F.boss.setTint(0, 0);
+  if (F.mel) { F.mel.threatT = -1; F.mel.tele = 0; }
 }
 
+// one game frame; returns the game time that passed (frame-rate independent movement: phones often run at 30 fps)
+async function tick() { const t0 = E.time; await wait(1 / 60); return Math.min(0.1, E.time - t0); }
+// first-time fight tutorial: slow motion through the first wind-up of each attack + a callout saying what to do
+const TUT_FIGHT = {
+  charge: ['Swipe <b>↑</b> — jump the charge', 'jump when it is close'],
+  lunge: ['Swipe <b>← / →</b> — dodge', 'move away from the bite'],
+  feint: ['Wait for the 2nd <b>!</b> — then dodge', 'Blue fakes the first one'],
+  mel: ['Dodge Mel — don\'t bite him', 'swipe away from Mel'],
+};
+function fightTut(kind) {
+  if (!F || tutSeen('fight_' + kind)) return false;
+  tutMark('fight_' + kind);
+  F.tut = kind; E.timeScale = PLAYER.fight.tutSlow;
+  const [a, b] = TUT_FIGHT[kind]; callout(`${a}<small>${b}</small>`);
+  return true;
+}
+function fightTutEnd() { if (!F || !F.tut) return; F.tut = null; callout(null); if (!S1.paused) E.timeScale = 1; }
 async function telegraph(t, secs, who = F.boss, color = 0xff2a10) {
   sfx.tell(); bangSprite.visible = true;
   const t0 = E.time;
@@ -650,26 +804,29 @@ async function bossBrain(t) {
   while (alive(t)) {
     if (B.stun > 0) {               // GB decoy: the boss turns away, open for free bites
       b.face(-Math.sign(F.W.x - B.x) || 1); b.play('Bark', { loop: true, timeScale: 0.6 }); B.open = true;
-      while (alive(t) && B.stun > 0) { B.stun -= 1 / 60; await wait(1 / 60); }
+      while (alive(t) && B.stun > 0) { B.stun -= await tick(); }
       B.open = false; B.stun = 0;
       if (!alive(t)) return;
     }
     b.play('Walk', { timeScale: 0.9 });
     const t0 = E.time, keep = half() + 1.5;
     const spd = cfg.speed * (F.phase === 2 && F.key === 'tosa' ? 0.7 : 1);
+    let dtl = 1 / 60;
     while (alive(t) && B.stun <= 0 && E.time - t0 < 1.3 / spd) {
       const want = clamp(F.W.x + (B.x >= F.W.x ? keep : -keep), ARENA.min + 0.4, ARENA.max - 0.4);
       b.face(Math.sign(F.W.x - B.x) || -1);
-      B.x += clamp(want - B.x, -1, 1) * 1.5 * spd / 60;
-      await wait(1 / 60);
+      B.x += clamp(want - B.x, -1, 1) * 1.5 * spd * dtl;
+      dtl = await tick();
     }
     if (!alive(t) || B.stun > 0) continue;
+    while (alive(t) && F.mel && F.mel.tele) await tick();       // wait until Mel's lunge is over
+    if (!alive(t) || B.stun > 0) continue;
     const kind = cfg.attacks[i++ % cfg.attacks.length];
-    B.attacking = true;
+    B.attacking = true; B.tele = { kind, id: ++teleId };   // B.tele: what is winding up (read by the test bot)
     if (kind === 'charge') await atkCharge(t, spd);
     else await atkLunge(t, spd, kind === 'feint');
     if (!alive(t)) return;
-    B.attacking = false;
+    B.attacking = false; B.tele = null;
   }
 }
 async function atkCharge(t, spd) {
@@ -677,19 +834,26 @@ async function atkCharge(t, spd) {
   const dir = Math.sign(W.x - B.x) || -1; b.face(dir);
   b.play('Eating', { timeScale: 1.4 });
   const endX = dir > 0 ? ARENA.max + 0.2 : ARENA.min - 0.2;
-  showWarn((B.x + endX) / 2, Math.abs(endX - B.x) + 1.5);
-  await telegraph(t, 0.95 / spd);
+  // run-up: the dog backs off first so the charge is SEEN coming (it used to start 2.3 units away = 0.18 s to react)
+  const back = clamp(B.x - dir * Math.max(0, PLAYER.fight.chargeRunUp - Math.abs(W.x - B.x)), ARENA.min, ARENA.max);
+  tween(B, { x: back }, 0.45, { ease: 'out' });
+  showWarn((back + endX) / 2, Math.abs(endX - back) + 1.5);
+  const tut = fightTut('charge');
+  await telegraph(t, F.cfg.teleCharge / spd);
   if (!alive(t)) return;
   b.play('Gallop', { timeScale: 1.2 }); sfx.growl ? sfx.growl() : sfx.bark();
-  const speed = 9.5 * spd; let hit = false;
+  // never less than PLAYER.fight.chargeMinT seconds from the start of the run to Weed (short run-up near a wall = slower)
+  const gap = Math.max(0.3, Math.abs(W.x - B.x) - half() * 0.7);
+  const speed = Math.min(9.5 * spd, Math.max(3.5, gap / PLAYER.fight.chargeMinT)); let hit = false, dtc = 1 / 60;
   while (alive(t) && Math.sign(endX - B.x) === dir) {
-    B.x += dir * speed / 60;
+    B.x += dir * speed * dtc;
     const ahead = (W.x - B.x) * dir; B.threatT = ahead > 0 ? ahead / speed : -1;
-    if (!hit && Math.abs(W.x - B.x) < half() * 0.7 && W.y < 0.5 && W.inv <= 0) { hit = true; hurtWeed(B.x); }
+    if (!hit && Math.abs(W.x - B.x) < half() * 0.7 && W.y < PLAYER.fight.jumpClear && W.inv <= 0) { hit = true; hurtWeed(B.x); }
     if (Math.random() < 0.25) FX.dust(new THREE.Vector3(B.x - dir * 0.6, 0.1, 0));
-    await wait(1 / 60);
+    dtc = await tick();
   }
   showWarn(0, 1, false); B.threatT = -1;
+  if (tut) fightTutEnd();
   if (!alive(t)) return;
   B.x = clamp(B.x, ARENA.min, ARENA.max);
   await recover(t, 1.3 / spd);
@@ -699,12 +863,15 @@ async function atkLunge(t, spd, feint) {
   const dir = Math.sign(W.x - B.x) || -1; b.face(dir);
   const reach = 2.2;
   showWarn(B.x + dir * (half() + reach * 0.5), reach + 0.6);
+  const tut = fightTut(feint ? 'feint' : 'lunge');
   if (feint) {                       // a fake-out, then the real (quicker) lunge
-    b.play('Bark', { loop: false }); await telegraph(t, 0.35 / spd); if (!alive(t)) return;
+    B.feintDone = false;
+    b.play('Bark', { loop: false }); await telegraph(t, F.cfg.teleFake / spd); if (!alive(t)) return;
     b.play('Idle'); await wait(0.25); if (!alive(t)) return;
+    B.feintDone = true;
   }
   b.play('Bark', { loop: true, timeScale: 0.5 });
-  await telegraph(t, (feint ? 0.45 : 0.75) / spd);
+  await telegraph(t, (feint ? F.cfg.teleFeint : F.cfg.teleLunge) / spd);
   if (!alive(t)) return;
   b.play('Attack', { loop: false, timeScale: 1.2 }); sfx.whoosh();
   const x0 = B.x, x1 = clamp(B.x + dir * reach, ARENA.min, ARENA.max);
@@ -718,6 +885,7 @@ async function atkLunge(t, spd, feint) {
     await wait(1 / 60);
   }
   sfx.bite(); showWarn(0, 1, false); B.threatT = -1;
+  if (tut) fightTutEnd();
   if (!alive(t)) return;
   await recover(t, 1.0 / spd);
 }
@@ -728,28 +896,34 @@ async function melBrain(t) {
   const m = cast1.mel, M = F.mel, W = F.W;
   while (alive(t) && M.active) {
     m.play('Walk', { timeScale: 1.1 });
-    const t0 = E.time;
+    const t0 = E.time; let dtm = 1 / 60;
     while (alive(t) && E.time - t0 < 1.6) {
       const want = clamp(W.x + (M.x >= W.x ? 1.9 : -1.9), ARENA.min, ARENA.max);
       m.face(Math.sign(W.x - M.x) || 1);
-      M.x += clamp(want - M.x, -1, 1) * 2.2 / 60; m.root.position.x = M.x;
-      await wait(1 / 60);
+      M.x += clamp(want - M.x, -1, 1) * 2.2 * dtm; m.root.position.x = M.x;
+      dtm = await tick();
     }
-    if (!alive(t)) return;
+    // never at the same moment as Blue's attack: one threat at a time stays readable on a phone
+    while (alive(t) && M.active && (F.B.tele || F.B.stun > 0)) await tick();
+    if (!alive(t) || !M.active) return;
     const dir = Math.sign(W.x - M.x) || 1; m.face(dir);
-    m.setTint(0xffc040, 0.25); sfx.tell(); m.play('Bark', { loop: false });
-    await wait(0.6); m.setTint(0, 0);
+    m.setTint(0xffc040, 0.25); sfx.tell(); m.play('Bark', { loop: false }); M.tele = ++teleId;
+    const tut = fightTut('mel');
+    melBang.visible = true;
+    { const t0 = E.time; while (alive(t) && E.time - t0 < F.cfg.teleMel) { melBang.position.set(M.x, m.height + 0.4 + Math.sin((E.time - t0) * 20) * 0.04, 0.7); await tick(); } }
+    melBang.visible = false; m.setTint(0, 0);
     if (!alive(t)) return;
     m.play('Gallop', { timeScale: 1.5 }); sfx.whoosh();
-    const x0 = M.x, x1 = clamp(M.x + dir * 2.6, ARENA.min, ARENA.max), s0 = E.time, dur = 0.3;
+    const x0 = M.x, x1 = clamp(M.x + dir * F.cfg.melDash, ARENA.min, ARENA.max), s0 = E.time, dur = 0.3;
     let hit = false;
     while (alive(t) && E.time - s0 < dur) {
       M.x = x0 + (x1 - x0) * ((E.time - s0) / dur); m.root.position.x = M.x;
       M.threatT = Math.max(0.01, dur - (E.time - s0));
-      if (!hit && Math.abs(W.x - M.x) < 0.45 && W.y < 0.4 && W.inv <= 0) { hit = true; hurtWeed(M.x); }
+      if (!hit && Math.abs(W.x - M.x) < 0.45 && W.y < 0.4 && W.inv <= 0) { hit = true; hurtWeed(M.x, 'mel'); }
       await wait(1 / 60);
     }
-    M.threatT = -1; m.play('Idle');
+    M.threatT = -1; M.tele = 0; m.play('Idle');
+    if (tut) fightTutEnd();
     await wait(1.3);
   }
 }
@@ -767,12 +941,14 @@ function fightDecoy() {
 }
 
 async function phase2() {
-  F.phase = 2; F.cut = true; F.B.token++; endAttack();
+  F.phase = 2; F.cut = true; F.B.token++; endAttack(); fightTutEnd();
   setInputEnabled(false);
-  S1.mode = 'fightCut';
+  S1.mode = 'fightCut'; S1.sceneN++;
+  UI.cine(true); UI.show('hud', false); UI.hint('');     // cutscene: letterbox + Skip button (was missing: no way to skip)
+  drift({ push: 0.035, truck: 0.018 });
   if (F.key === 'tosa') {
     await runScene(safeSteps(SC.tosaThrow(ctx)), ctx);
-    E.skipping = false; E.timeScale = 1;
+    drift(null); resetActing(cast1); E.skipping = false; E.timeScale = 1; stopVoice();
     F.W.x = 3.0; cast1.weed.root.position.set(3.0, 0, 0); cast1.weed.root.position.z = 0; F.B.x = 0.6;
     F.boss.root.position.set(F.B.x, 0, 0); F.boss.face(1, true);
     F.W.henki = 0; addHenki(1);
@@ -780,7 +956,7 @@ async function phase2() {
   } else {
     preloadLines(SC.linesOf(SC.blueMel(ctx)));
     await runScene(safeSteps(SC.blueMel(ctx)), ctx);
-    E.skipping = false; E.timeScale = 1;
+    drift(null); resetActing(cast1); E.skipping = false; E.timeScale = 1; stopVoice();
     F.mel = { active: true, x: cast1.mel.root.position.x, threatT: -1 };
     cast1.mel.root.position.z = 0.6;
     UI.hint('Mel is forced to attack. <b>Dodge Mel</b> – bite only Blue!', 5);
@@ -794,7 +970,7 @@ async function phase2() {
 }
 async function finishFight() {
   if (F.over) return;
-  F.over = true; F.B.token++; endAttack();
+  F.over = true; F.B.token++; endAttack(); fightTutEnd(); E.timeScale = 1;
   setInputEnabled(false); UI.hint('');
   await wait(0.5, true);
   S1.mode = 'fightEnd';
@@ -836,10 +1012,10 @@ async function leapAction(tok) {
   UI.hint('<b>Swipe ↑</b> — leap the fence and save Blue!');
   const ic = icon('up'); E.scene.add(ic); ic.position.set(w.root.position.x + 0.3, 1.3, w.root.position.z); ic.scale.setScalar(0.6);
   await Promise.race([new Promise(r => { leapRes = r; }), wait(7, true)]);
-  leapRes = null; E.scene.remove(ic); ic.material.map.dispose();
+  leapRes = null; E.scene.remove(ic); ic.material.dispose();
   UI.hint(''); setInputEnabled(false); E.timeScale = 1;
   check(tok);
-  S1.mode = 'scene'; UI.cine(true);
+  S1.mode = 'scene'; S1.sceneN++; UI.cine(true);
   say('p_weed_blue', { noWait: true });
   w.play('Gallop_Jump', { loop: false }); sfx.jump(); sfx.whoosh();
   const p = w.root.position;
@@ -859,7 +1035,7 @@ function update(dt, dtr) {
 
 export function setPaused1(p) {
   if (!S1.active || !(S1.mode === 'run' || S1.mode === 'fight')) return false;
-  S1.paused = p; E.timeScale = p ? 0 : 1;
+  S1.paused = p; E.timeScale = p ? 0 : (R && R.tut && S1.mode === 'run') ? PLAYER.run.tutSlow : (F && F.tut && S1.mode === 'fight') ? PLAYER.fight.tutSlow : 1;
   UI.show('pause', p); sfx[p ? 'uiOpen' : 'uiBack']();
   return true;
 }
@@ -877,6 +1053,16 @@ export function quit1() {
   leave();
 }
 export const isLevel1Active = () => S1.active;
+
+// portrait phone: index.html shows the "turn your phone" prompt; a run/fight in progress pauses behind it
+function orientationWatch() {
+  if (orientationWatch.on) return; orientationWatch.on = true;
+  const mq = matchMedia('(orientation: portrait) and (max-width: 900px)');
+  const chk = () => { if (mq.matches && !document.body.classList.contains('ignorerotate') && S1.active && !S1.paused) setPaused1(true); };
+  if (mq.addEventListener) mq.addEventListener('change', chk); else if (mq.addListener) mq.addListener(chk);
+  window.addEventListener('resize', chk);
+  E.updaters.add(() => { if (S1.active && (S1.mode === 'run' || S1.mode === 'fight') && !S1.paused && mq.matches && !document.body.classList.contains('ignorerotate')) setPaused1(true); });
+}
 
 // test hooks (Playwright)
 export const debug1 = {

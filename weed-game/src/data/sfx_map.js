@@ -8,6 +8,49 @@
 //   ambienssille, syn: synteettinen varaääni (jos tiedostot puuttuvat), cool: minimiväli s (ettei spämmi).
 // AMBIENCE = kerrokselliset ympäristöpreset (tuuli + lehdet + korpit + vesiputous …), ristiinhäivytys preseteistä toiseen.
 
+import { AUDIO_LEVELS } from './audio_levels.js';
+
+// ------------------------------------------------------------------ MIKSAUSPOLITIIKKA (docs/weed-game/audio-audit.md)
+// Tasot mitattu: tools/audio-audit.py -> audio_levels.js. Tiedostoja ei muokata; koodi kompensoi:
+//  - musiikki: raitakohtainen trim tavoitteeseen target.music (LUFS, integrated) -> duck -> Music-liukusäädin
+//  - puhe: tiedostokohtainen normalisointi target.voice:hen -> kompressori -> Voice-liukusäädin (voice.js)
+//  - sfx: varianttien tasaus äänen sisällä (variantTrim) -> vol -> kategoria (cat) -> sfx-väylä -> Effects-liukusäädin
+//  - ambienssi: kerroskohtainen trim (ambTrim) -> ambDuck -> Effects-liukusäädin
+//  - master: limitteri (DynamicsCompressorNode) ettei summa leikkaa
+export const MIX = {
+  target: { music: -19, voice: -15 },
+  bus: { sfx: 0.9 },
+  // kategoriagainit: iskut (combat/boss) eturivissä, liike ja UI taustalla
+  cat: { move: 0.85, combat: 1.25, boss: 1.2, env: 0.9, cine: 0.95, ui: 0.9 },
+  ambBus: 1.5,
+  ambTrim: {},                 // täytetään alla mittauksista (tavoite -24 LUFS ennen preset-painoa)
+  duck: {
+    speech: 0.32, narrator: 0.16, roar: 0.55,         // musiikin taso puheen alla
+    speechAmb: 0.6, narratorAmb: 0.4,                 // ambienssin taso puheen alla
+  },
+  limiter: { threshold: -4, knee: 2, ratio: 20, attack: 0.002, release: 0.12 },
+  voiceComp: { threshold: -22, knee: 8, ratio: 3, attack: 0.004, release: 0.18, makeup: 1.25 },
+};
+/** Variantin tasaus: tiedoston taso äänen varianttien keskitasoon (±6 dB). Puuttuva mittaus = 1. */
+export function variantTrim(file, s) {
+  const L = AUDIO_LEVELS[file]; if (!L || !s || s.files.length < 2) return 1;
+  if (!s._ref) {
+    const ls = s.files.map(f => AUDIO_LEVELS[f]?.[0]).filter(x => x !== undefined).sort((a, b) => a - b);
+    s._ref = ls.length ? ls[ls.length >> 1] : L[0];
+  }
+  return Math.min(2, Math.max(0.5, Math.pow(10, (s._ref - L[0]) / 20)));
+}
+/** Musiikkiraidan trim tavoitetasoon (ei mittausta: 0.5). */
+export function musicTrim(file) {
+  const L = AUDIO_LEVELS[file]; if (!L) return 0.5;
+  return Math.min(1.6, Math.max(0.08, Math.pow(10, (MIX.target.music - L[0]) / 20)));
+}
+/** Puhetiedoston normalisointi (voice/<file>) tavoitetasoon, ±8 dB. */
+export function voiceTrim(file) {
+  const L = AUDIO_LEVELS['voice/' + file]; if (!L) return 1;
+  return Math.min(2.5, Math.max(0.4, Math.pow(10, (MIX.target.voice - L[0]) / 20)));
+}
+
 const v = (base, n) => Array.from({ length: n }, (_, i) => `sfx2_${base}_${i + 1}.mp3`);
 
 export const SOUNDS = {
@@ -15,7 +58,7 @@ export const SOUNDS = {
   step_dirt:   { files: v('step_dirt', 5), vol: 0.42, pitch: [0.9, 1.12], gain: [-3, 0], cat: 'move', max: 5, group: 'core' },
   step_leaf:   { files: v('step_leaf', 4), vol: 0.3, pitch: [0.92, 1.15], gain: [-4, 0], cat: 'move', max: 4, group: 'core' },
   step_claw:   { files: v('step_claw', 4), vol: 0.22, pitch: [0.95, 1.15], gain: [-4, 0], cat: 'move', max: 3, group: 'core' },
-  land:        { files: v('land', 3), vol: 0.6, pitch: [0.9, 1.08], gain: [-2, 0], cat: 'move', max: 2, group: 'core' },
+  land:        { files: v('land', 3), vol: 0.85, pitch: [0.9, 1.08], gain: [-2, 0], cat: 'move', max: 2, group: 'core' },
   scuff:       { files: ['sfx2_scuff.mp3'], vol: 0.45, pitch: [0.9, 1.15], cat: 'move', max: 2, group: 'core' },
   claw_scrape: { files: ['sfx2_claw_scrape.mp3'], vol: 0.45, pitch: [0.9, 1.1], cat: 'move', max: 2, group: 'core' },
   fur:         { files: ['sfx2_fur.mp3'], vol: 0.3, pitch: [0.85, 1.15], cat: 'move', max: 2, group: 'core' },
@@ -24,19 +67,19 @@ export const SOUNDS = {
   wade:        { files: v('wade', 3), vol: 0.5, pitch: [0.9, 1.1], cat: 'move', max: 2, group: 'cine' },
 
   // ------------------------------------------------------------------ taistelu
-  bite_snap:   { files: ['sfx2_bite_snap.mp3', 'sfx2_bite_snap_2.mp3'], vol: 0.9, pitch: [0.85, 1.2], gain: [-2, 0], cat: 'combat', max: 3, group: 'core' },
+  bite_snap:   { files: ['sfx2_bite_snap.mp3', 'sfx2_bite_snap_2.mp3'], vol: 1.2, pitch: [0.85, 1.2], gain: [-2, 0], cat: 'combat', max: 3, group: 'core' },
   bite_growl:  { files: ['sfx2_bite_growl_1.mp3', 'sfx2_bite_growl_2.mp3', 'sfx2_bite_growl_3.mp3', 'sfx_bite.mp3'], vol: 0.55, pitch: [0.92, 1.12], gain: [-3, 0], cat: 'combat', max: 2, group: 'core' },
-  hit_light:   { files: v('hit_light', 3), vol: 0.7, pitch: [0.9, 1.15], gain: [-2, 0], cat: 'combat', max: 3, group: 'core' },
-  hit_med:     { files: [...v('hit_med', 3), 'sfx_hit.mp3'], vol: 0.8, pitch: [0.88, 1.1], gain: [-2, 0], cat: 'combat', max: 3, group: 'core' },
-  hit_heavy:   { files: v('hit_heavy', 3), vol: 0.9, pitch: [0.8, 1.0], gain: [-1, 0], cat: 'combat', max: 2, group: 'core' },
-  whoosh:      { files: [...v('whoosh', 4), 'sfx_whoosh.mp3'], vol: 0.55, pitch: [0.88, 1.15], gain: [-2, 0], cat: 'combat', max: 3, group: 'core' },
+  hit_light:   { files: v('hit_light', 3), vol: 1.0, pitch: [0.9, 1.15], gain: [-2, 0], cat: 'combat', max: 3, group: 'core' },
+  hit_med:     { files: [...v('hit_med', 3), 'sfx_hit.mp3'], vol: 1.1, pitch: [0.88, 1.1], gain: [-2, 0], cat: 'combat', max: 3, group: 'core' },
+  hit_heavy:   { files: v('hit_heavy', 3), vol: 1.35, pitch: [0.8, 1.0], gain: [-1, 0], cat: 'combat', max: 2, group: 'core' },
+  whoosh:      { files: [...v('whoosh', 4), 'sfx_whoosh.mp3'], vol: 0.8, pitch: [0.88, 1.15], gain: [-2, 0], cat: 'combat', max: 3, group: 'core' },
   whoosh_big:  { files: ['sfx2_whoosh_big.mp3'], vol: 0.6, pitch: [0.85, 1.1], cat: 'combat', max: 2, group: 'core' },
   perfect:     { files: ['sfx2_perfect.mp3'], vol: 0.6, pitch: [0.98, 1.04], cat: 'combat', max: 1, group: 'core' },
   parry:       { files: ['sfx2_parry.mp3'], vol: 0.55, pitch: [0.9, 1.1], cat: 'combat', max: 2, group: 'core' },
   yelp:        { files: ['sfx2_yelp_1.mp3', 'sfx2_yelp_2.mp3', 'sfx2_yelp_3.mp3', 'sfx_hurt.mp3'], vol: 0.7, pitch: [0.95, 1.12], gain: [-2, 0], cat: 'combat', max: 1, group: 'core' },
   whimper:     { files: ['sfx2_whimper_1.mp3', 'sfx2_whimper_2.mp3', 'sfx2_whine.mp3'], vol: 0.55, pitch: [0.95, 1.05], cat: 'combat', max: 1, group: 'core' },
-  bodyfall:    { files: ['sfx2_bodyfall.mp3'], vol: 0.7, pitch: [0.85, 1.05], cat: 'combat', max: 2, group: 'core' },
-  dust:        { files: ['sfx2_dust.mp3'], vol: 0.4, pitch: [0.85, 1.2], gain: [-4, 0], cat: 'combat', max: 3, group: 'core' },
+  bodyfall:    { files: ['sfx2_bodyfall.mp3'], vol: 1.15, pitch: [0.85, 1.05], cat: 'combat', max: 2, group: 'core' },
+  dust:        { files: ['sfx2_dust.mp3'], vol: 0.55, pitch: [0.85, 1.2], gain: [-4, 0], cat: 'combat', max: 3, group: 'core' },
   crit:        { files: ['sfx2_crit.mp3'], vol: 0.75, pitch: [0.95, 1.05], cat: 'combat', max: 1, group: 'core' },
   shockwave:   { files: ['sfx2_shockwave.mp3'], vol: 0.65, pitch: [0.9, 1.1], cat: 'combat', max: 2, group: 'core' },
   sonic_boom:  { files: ['sfx2_sonic_boom.mp3'], vol: 0.85, pitch: [0.97, 1.03], cat: 'combat', max: 1, group: 'core' },
@@ -49,9 +92,9 @@ export const SOUNDS = {
   roar:        { files: ['sfx2_roar_1.mp3', 'sfx2_roar_2.mp3', 'sfx2_roar_3.mp3', 'sfx_roar.mp3'], vol: 0.85, pitch: [0.82, 0.98], gain: [-1, 0], cat: 'boss', max: 1, group: 'boss' },
   boss_growl:  { files: ['sfx2_boss_growl.mp3'], vol: 0.6, pitch: [0.7, 0.9], cat: 'boss', max: 1, group: 'boss' },
   boss_grunt:  { files: ['sfx2_boss_grunt.mp3'], vol: 0.6, pitch: [0.75, 0.95], cat: 'boss', max: 1, group: 'boss' },
-  boss_step:   { files: v('boss_step', 3), vol: 0.55, pitch: [0.85, 1.05], gain: [-3, 0], cat: 'boss', max: 3, group: 'boss' },
-  rock_lift:   { files: ['sfx2_rock_lift.mp3'], vol: 0.55, pitch: [0.9, 1.05], cat: 'boss', max: 1, group: 'boss' },
-  rock_crash:  { files: ['sfx2_rock_crash_1.mp3', 'sfx2_rock_crash_2.mp3', 'sfx_rock.mp3'], vol: 0.75, pitch: [0.85, 1.1], gain: [-3, 0], cat: 'boss', max: 4, group: 'boss' },
+  boss_step:   { files: v('boss_step', 3), vol: 0.8, pitch: [0.85, 1.05], gain: [-3, 0], cat: 'boss', max: 3, group: 'boss' },
+  rock_lift:   { files: ['sfx2_rock_lift.mp3'], vol: 0.8, pitch: [0.9, 1.05], cat: 'boss', max: 1, group: 'boss' },
+  rock_crash:  { files: ['sfx2_rock_crash_1.mp3', 'sfx2_rock_crash_2.mp3', 'sfx_rock.mp3'], vol: 1.25, pitch: [0.85, 1.1], gain: [-3, 0], cat: 'boss', max: 4, group: 'boss' },
   boss_land:   { files: ['sfx2_boss_land.mp3'], vol: 0.85, pitch: [0.9, 1.05], cat: 'boss', max: 1, group: 'boss' },
   quake:       { files: ['sfx2_quake.mp3'], vol: 0.8, pitch: [0.9, 1.05], cat: 'boss', max: 1, group: 'boss' },
   debris:      { files: ['sfx2_debris.mp3'], vol: 0.5, pitch: [0.9, 1.1], cat: 'boss', max: 2, group: 'boss' },
@@ -64,7 +107,7 @@ export const SOUNDS = {
   underwater:  { files: ['sfx2_underwater.mp3'], vol: 0.6, pitch: [0.9, 1.0], cat: 'env', max: 1, group: 'cine' },
 
   // ------------------------------------------------------------------ tunne / elokuvallinen
-  heartbeat:   { files: ['sfx2_heartbeat.mp3'], vol: 0.7, pitch: [0.95, 1.0], cat: 'cine', max: 1, group: 'cine' },
+  heartbeat:   { files: ['sfx2_heartbeat.mp3'], vol: 0.9, pitch: [0.95, 1.0], cat: 'cine', max: 1, group: 'cine' },
   spirit_rise: { files: ['sfx2_spirit_rise.mp3'], vol: 0.6, pitch: [0.97, 1.03], cat: 'cine', max: 2, group: 'core' },
   spirit_old:  { files: ['sfx_spirit.mp3'], vol: 0.55, pitch: [0.97, 1.03], cat: 'cine', max: 2, group: 'core' },
   memory:      { files: ['sfx2_memory.mp3'], vol: 0.55, pitch: [1, 1], cat: 'cine', max: 1, group: 'cine' },
@@ -73,7 +116,7 @@ export const SOUNDS = {
   riser_air:   { files: ['sfx2_riser_air.mp3'], vol: 0.65, pitch: [0.98, 1.02], cat: 'cine', max: 1, group: 'cine' },
   braam:       { files: ['sfx2_braam.mp3'], vol: 0.7, pitch: [0.98, 1.02], cat: 'cine', max: 1, group: 'cine' },
   cine_boom:   { files: ['sfx2_cine_boom.mp3'], vol: 0.7, pitch: [0.97, 1.03], cat: 'cine', max: 1, group: 'core' },
-  slowmo:      { files: ['sfx2_slowmo.mp3'], vol: 0.55, pitch: [0.95, 1.05], cat: 'cine', max: 1, group: 'core' },
+  slowmo:      { files: ['sfx2_slowmo.mp3'], vol: 0.7, pitch: [0.95, 1.05], cat: 'cine', max: 1, group: 'core' },
   rev_cymbal:  { files: ['sfx2_rev_cymbal.mp3'], vol: 0.45, pitch: [0.98, 1.05], cat: 'cine', max: 1, group: 'core' },
   speed_whoosh:{ files: ['sfx2_speed_whoosh.mp3'], vol: 0.5, pitch: [0.95, 1.1], cat: 'cine', max: 1, group: 'core' },
   up_sweep:    { files: ['sfx2_up_sweep.mp3'], vol: 0.55, pitch: [0.97, 1.05], cat: 'cine', max: 1, group: 'core' },
@@ -105,7 +148,7 @@ const FLESH = {
   battlecry_dog:      { files: v3('battlecry_dog', 3), vol: 0.7, pitch: [0.92, 1.08], cat: 'combat', max: 2, group: 'cine' },
   yelp_pain:          { files: [...v3('yelp_pain', 2), 'sfx2_yelp_1.mp3', 'sfx2_yelp_2.mp3', 'sfx2_yelp_3.mp3'], vol: 0.7, pitch: [0.95, 1.1], gain: [-2, 0], cat: 'combat', max: 1, group: 'cine' },
   roar_pain:          { files: v3('roar_pain', 4), vol: 0.85, pitch: [0.72, 0.88], gain: [-1, 0], cat: 'boss', max: 1, group: 'cine' },
-  thud_deep:          { files: v3('thud_deep', 3), vol: 0.8, pitch: [0.85, 1.0], cat: 'combat', max: 2, group: 'cine' },
+  thud_deep:          { files: v3('thud_deep', 3), vol: 1.0, pitch: [0.85, 1.0], cat: 'combat', max: 2, group: 'cine' },
   rush_whoosh:        { files: v3('rush_whoosh', 4), vol: 0.6, pitch: [0.9, 1.12], gain: [-2, 0], cat: 'combat', max: 3, group: 'cine' },
   hide_stretch:       { files: ['sfx3_hide_stretch.mp3'], vol: 0.45, pitch: [0.55, 0.7], cat: 'combat', max: 1, group: 'cine' },
 };
@@ -122,6 +165,14 @@ export const EVENTS = {
   step:      { cat: 'move', layers: [{ s: 'step_dirt' }, { s: 'step_leaf', d: 0.012, vol: 0.9, p: 0.75 }, { s: 'step_claw', d: 0.02, p: 0.3 }] },
   stepSoft:  { cat: 'move', layers: [{ s: 'step_dirt', vol: 0.55 }, { s: 'step_leaf', d: 0.01, vol: 0.5, p: 0.5 }] },
   stepRock:  { cat: 'move', layers: [{ s: 'step_claw', vol: 1.4 }, { s: 'step_dirt', vol: 0.5 }] },
+  // pintakohtaiset askeleet (footsteps.js: setSurface('leaves' | 'dirt' | 'rock' | 'water' | 'snow'); *Soft = kävely)
+  stepLeaf:     { cat: 'move', layers: [{ s: 'step_leaf' }, { s: 'step_dirt', d: 0.01, vol: 0.45 }] },
+  stepLeafSoft: { cat: 'move', layers: [{ s: 'step_leaf', vol: 0.6, rate: 1.05 }] },
+  stepDirt:     { cat: 'move', layers: [{ s: 'step_dirt', vol: 1.15 }, { s: 'step_claw', d: 0.015, vol: 0.5, p: 0.35 }] },
+  stepDirtSoft: { cat: 'move', layers: [{ s: 'step_dirt', vol: 0.65 }] },
+  stepRockSoft: { cat: 'move', layers: [{ s: 'step_claw', vol: 0.9, rate: 1.05 }, { s: 'step_dirt', vol: 0.3 }] },
+  stepSnow:     { cat: 'move', layers: [{ s: 'step_dirt', vol: 0.8, rate: 0.72 }, { s: 'fur', d: 0.01, vol: 0.5, rate: 1.3 }] },   // pehmeä narske (ei omaa lumitiedostoa)
+  stepSnowSoft: { cat: 'move', layers: [{ s: 'step_dirt', vol: 0.5, rate: 0.7 }] },
   wade:      { cat: 'move', layers: [{ s: 'wade' }] },
   lunge:     { cat: 'move', layers: [{ s: 'whoosh', vol: 0.45, rate: 1.1 }, { s: 'scuff', vol: 0.5, p: 0.7 }] },
   jump:      { cat: 'move', layers: [{ s: 'scuff', vol: 0.8 }, { s: 'whoosh', d: 0.03, rate: 0.85 }, { s: 'fur', d: 0.02, p: 0.7 }] },
@@ -239,6 +290,8 @@ export const AMB_FILES = {
   dawn: 'sfx2_amb_dawn.mp3',           // aamu: tuuli + harvat linnut
   drone: 'sfx2_boss_drone.mp3',        // bossin matala drone (sub)
 };
+// ambienssikerrosten tasaus: jokainen silmukka -24 LUFS:iin ennen preset-painoa (gorge -31 -> +7 dB, river -22 -> -2 dB)
+for (const [k, f] of Object.entries(AMB_FILES)) { const L = AUDIO_LEVELS[f]; MIX.ambTrim[k] = L ? Math.min(2.5, Math.max(0.4, Math.pow(10, (-24 - L[0]) / 20))) : 1; }
 export const AMBIENCE = {
   battle: { forest: 0.55, waterfall: 0.14, crows: true },
   boss:   { forest: 0.45, waterfall: 0.12, drone: 0.22, crows: true },
