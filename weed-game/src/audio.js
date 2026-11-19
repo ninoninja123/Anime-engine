@@ -4,16 +4,38 @@
 //  - jos tiedosto puuttuu tai lataus epäonnistuu, käytetään vanhaa WebAudio-synteesiä varalla
 // Selaimen autoplay-sääntö: AudioContext luodaan vasta käyttäjän ensimmäisestä napautuksesta (initAudio).
 import { E } from './engine.js';
-import { SOUNDS, EVENTS, AMBIENCE, AMB_FILES, CATEGORIES, filesOfGroup } from './data/sfx_map.js';
+import { SOUNDS, EVENTS, AMBIENCE, AMB_FILES, CATEGORIES, filesOfGroup, MIX, variantTrim, musicTrim } from './data/sfx_map.js';
 
+// Signaaliketju (miksauspolitiikka: src/data/sfx_map.js MIX, mittaukset docs/weed-game/audio-audit.md):
+//   musiikki: raita (trim -19 LUFS) -> musicBus -> duckGain -> volMusic ┐
+//   ambienssi: kerros (trim) -> ambBus -> ambDuck ─────────────────────┤-> volSfx ┐
+//   tehosteet: ääni (variantti-trim × vol) -> kategoria -> sfxBus ─────┘          │
+//   UI: uiBus -> volSfx                                                           ├-> master (mute) -> limitteri -> ulos
+//   puhe: lähde (normalisointi) -> voiceBus -> kompressori -> volVoice ──────────┘
 let analyser = null, anaBuf = null;
-let ctx = null, master = null, musicBus = null, duckGain = null, sfxBus = null, voiceBus = null, synthMusic = null;
+let ctx = null, master = null, limiter = null, musicBus = null, duckGain = null, sfxBus = null, voiceBus = null, synthMusic = null;
+let volMusic = null, volSfx = null, volVoice = null, voiceComp = null;
 export let muted = false;
 const NO_FILES = E.params.has('synthaudio');
 
+// ---------------------------------------------------------------- käyttäjän äänenvoimakkuudet (Settings, localStorage)
+function readNum(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : Math.max(0, Math.min(1, +v)); } catch (_) { return d; } }
+export const volumes = { music: readNum('weed.vol.music', 0.8), sfx: readNum('weed.vol.sfx', 0.9), voice: readNum('weed.vol.voice', 1) };
+const curve = v => v * v;     // liukusäädin 0..1 -> gain (kuulokäyrä: 50 % ≈ -12 dB)
+/** Aseta käyttäjän äänenvoimakkuus: kind = music | sfx | voice, v = 0..1. Tallentuu. */
+export function setVolume(kind, v) {
+  if (!(kind in volumes)) return;
+  volumes[kind] = Math.max(0, Math.min(1, +v || 0));
+  try { localStorage.setItem('weed.vol.' + kind, String(volumes[kind])); } catch (_) {}
+  const n = { music: volMusic, sfx: volSfx, voice: volVoice }[kind];
+  if (n && ctx) n.gain.setTargetAtTime(curve(volumes[kind]), ctx.currentTime, 0.03);
+}
+
 const AUDIO_BASE = () => new URL('audio/', window.ASSET_BASE || document.baseURI).href;
 export const MUSIC_FILES = { intro: 'mus_intro_user.mp3', battle: 'mus_battle.mp3', sad: 'mus_sad.mp3', dawn: 'mus_dawn.mp3', smith: 'mus_smith_theme.mp3', smith2: 'mus_smith_theme2.mp3', story: 'mus_user_a.mp3' };
-const MUSIC_VOL = { intro: 0.55, battle: 0.5, sad: 0.6, dawn: 0.6, smith: 0.6, smith2: 0.6, story: 0.5 };
+// raitakohtainen taiteellinen painotus (1 = tavoitetaso MIX.target.music); mittauksen trim kerrotaan tällä
+const MUSIC_WEIGHT = { intro: 1, battle: 0.9, sad: 1, dawn: 1, smith: 1, smith2: 1, story: 0.9 };
+const MUSIC_VOL = new Proxy({}, { get: (_, n) => musicTrim(MUSIC_FILES[n]) * (MUSIC_WEIGHT[n] ?? 1) });
 const MUSIC_LOOP = { intro: true, battle: true, sad: false, dawn: false, smith: false, smith2: false, story: false };
 export const SFX_FILES = {
   bite: 'sfx_bite.mp3', hit: 'sfx_hit.mp3', roar: 'sfx_roar.mp3', rock: 'sfx_rock.mp3', rumble: 'sfx_rockslide.mp3',
@@ -30,11 +52,26 @@ export function initAudio() {
   if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return; }
   try {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
-    master = ctx.createGain(); master.gain.value = muted ? 0 : 0.9; master.connect(ctx.destination);
-    duckGain = ctx.createGain(); duckGain.connect(master);
+    // master-limitteri: huiput eivät leikkaa, kun iskut, musiikki ja puhe osuvat yhteen
+    limiter = ctx.createDynamicsCompressor();
+    const Lm = MIX.limiter;
+    limiter.threshold.value = Lm.threshold; limiter.knee.value = Lm.knee; limiter.ratio.value = Lm.ratio;
+    limiter.attack.value = Lm.attack; limiter.release.value = Lm.release;
+    limiter.connect(ctx.destination);
+    master = ctx.createGain(); master.gain.value = muted ? 0 : 1; master.connect(limiter);
+    volMusic = ctx.createGain(); volMusic.gain.value = curve(volumes.music); volMusic.connect(master);
+    volSfx = ctx.createGain(); volSfx.gain.value = curve(volumes.sfx); volSfx.connect(master);
+    volVoice = ctx.createGain(); volVoice.gain.value = curve(volumes.voice); volVoice.connect(master);
+    duckGain = ctx.createGain(); duckGain.connect(volMusic);
     musicBus = ctx.createGain(); musicBus.gain.value = 1; musicBus.connect(duckGain);
-    sfxBus = ctx.createGain(); sfxBus.gain.value = 0.9; sfxBus.connect(master);
-    voiceBus = ctx.createGain(); voiceBus.gain.value = 1; voiceBus.connect(master);
+    sfxBus = ctx.createGain(); sfxBus.gain.value = MIX.bus.sfx; sfxBus.connect(volSfx);
+    // puhe: kevyt kompressori tasaa hahmojen väliset erot (tiedostot normalisoidaan lisäksi voice.js:ssä)
+    voiceComp = ctx.createDynamicsCompressor();
+    const Vc = MIX.voiceComp;
+    voiceComp.threshold.value = Vc.threshold; voiceComp.knee.value = Vc.knee; voiceComp.ratio.value = Vc.ratio;
+    voiceComp.attack.value = Vc.attack; voiceComp.release.value = Vc.release;
+    const makeup = ctx.createGain(); makeup.gain.value = Vc.makeup;
+    voiceBus = ctx.createGain(); voiceBus.gain.value = 1; voiceBus.connect(voiceComp); voiceComp.connect(makeup); makeup.connect(volVoice);
     analyser = ctx.createAnalyser(); analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.3;
     voiceBus.connect(analyser); anaBuf = new Float32Array(analyser.fftSize);
     synthMusic = ctx.createGain(); synthMusic.gain.value = 0.35; synthMusic.connect(duckGain);
@@ -47,6 +84,8 @@ export function initAudio() {
 }
 export function audioCtx() { return ctx; }
 export function voiceOut() { return voiceBus; }
+/** Tehostelähtö muille WebAudio-lähteille (src/shared/synth.js: rekka, äänitorvi) -> Effects-säädin + limitteri. */
+export function sfxOut() { return catBus.env || sfxBus; }
 /** Puheen voimakkuus 0..1 (RMS voiceBusista) – suun animointiin. */
 export function voiceLevel() {
   if (!analyser) return 0;
@@ -56,7 +95,8 @@ export function voiceLevel() {
 }
 /** Valmiiksi ladattu puskuri (tai undefined, jos lataus kesken / ei ladattu). */
 export function cachedBuffer(file) { return buffers[file] || undefined; }
-export function setMuted(m) { muted = m; if (master) master.gain.setTargetAtTime(m ? 0 : 0.9, ctx.currentTime, 0.05); }
+export function setMuted(m) { muted = m; try { localStorage.setItem('weed.muted', m ? '1' : '0'); } catch (_) {} if (master) master.gain.setTargetAtTime(m ? 0 : 1, ctx.currentTime, 0.05); }
+try { muted = localStorage.getItem('weed.muted') === '1'; } catch (_) {}
 
 /** Lataa ja purkaa äänitiedoston (välimuisti). Palauttaa AudioBufferin tai null. */
 export function load(file, base = AUDIO_BASE()) {
@@ -74,17 +114,38 @@ export function load(file, base = AUDIO_BASE()) {
 export function preloadMusic(...names) { for (const n of names) primeMusic(n); }
 
 // ---------------------------------------------------------------- ducking
-let duckUntil = 0;
-/** Hiljennä musiikkia (level 0..1) secs sekunniksi. */
-export function duck(level = 0.35, secs = 1, attack = 0.08) {
-  if (!ctx) return;
-  const t = ctx.currentTime;
-  duckGain.gain.cancelScheduledValues(t);
-  duckGain.gain.setTargetAtTime(level, t, attack);
-  duckUntil = Math.max(duckUntil, t + secs);
-  const until = duckUntil;
-  setTimeout(() => { if (ctx && Math.abs(until - duckUntil) < 1e-6) duckGain.gain.setTargetAtTime(1, ctx.currentTime, 0.35); }, secs * 1000);
+// Ducking-ryhmät: jokainen lähde (puhe, kertoja, iso isku, Hush) rekisteröi oman { taso, loppu } -avaimen; väylän
+// taso on aktiivisten pienin. Näin esim. isku (duck 0.6) kesken kertojan repliikin (0.16) EI nosta musiikkia puheen
+// päälle, ja kun isku loppuu, puheen ducking jatkuu. Musiikki ja ambienssi ovat omat ryhmänsä (amb: duckAmb / opts.amb).
+const duckSets = { music: new Map(), amb: new Map() };
+const duckTimer = { music: 0, amb: 0 };
+let duckSeq = 0;
+function applyDuck(kind, attack = 0.08) {
+  const node = kind === 'music' ? duckGain : ambDuck;
+  if (!ctx || !node) return;
+  const now = ctx.currentTime, set = duckSets[kind];
+  let lvl = 1, next = Infinity;
+  for (const [k, d] of set) { if (d.until <= now + 0.01) { set.delete(k); continue; } lvl = Math.min(lvl, d.level); next = Math.min(next, d.until); }
+  const cur = node.gain.value;
+  node.gain.cancelScheduledValues(now);
+  node.gain.setValueAtTime(cur, now);
+  node.gain.setTargetAtTime(lvl, now, lvl < cur ? attack : (kind === 'music' ? 0.35 : 0.6));   // nopea alas, pehmeä ylös
+  clearTimeout(duckTimer[kind]);
+  if (next < Infinity) duckTimer[kind] = setTimeout(() => applyDuck(kind), Math.max(20, (next - ctx.currentTime) * 1000 + 15));
 }
+/** Hiljennä musiikkia (level 0..1) secs sekunniksi. key: saman lähteen uusi kutsu korvaa edellisen (esim. 'voice').
+ *  opts.amb: hiljennä myös ambienssi tälle tasolle. */
+export function duck(level = 0.35, secs = 1, attack = 0.08, key = null, opts = {}) {
+  if (!ctx) return;
+  const until = ctx.currentTime + Math.max(0.05, secs);
+  duckSets.music.set(key || 'd' + (++duckSeq), { level, until });
+  applyDuck('music', attack);
+  if (opts.amb !== undefined) duckAmb(opts.amb, secs, key);
+}
+/** Lopeta avaimen ducking heti (esim. repliikki ohitettiin). */
+export function unduck(key) { if (!ctx) return; duckSets.music.delete(key); duckSets.amb.delete(key); applyDuck('music'); applyDuck('amb'); }
+/** Debug / testit: aktiivisten duckien tasot. */
+export function duckState() { return { music: duckGain ? +duckGain.gain.value.toFixed(3) : 1, amb: ambDuck ? +ambDuck.gain.value.toFixed(3) : 1, keys: [...duckSets.music.keys()] }; }
 
 // ---------------------------------------------------------------- musiikki (SUORATOISTO)
 // Musiikkia EI pureta AudioBufferiksi (3 min stereo float32 ≈ 30+ MB → iPhone voi kaataa selaimen). Jokaisella raidalla on
@@ -159,7 +220,7 @@ export function currentMusic() { return current ? current.name : (synthMode ? 's
 // peräkkäin), pitch/gain-satunnaisuus, polyfoniaraja per ääni (vanhin häivytetään), stereopan x-sijainnin mukaan.
 let ambBus = null, ambDuck = null, uiBus = null;
 const catBus = {};
-const CAT_GAIN = { move: 0.85, combat: 1, boss: 1, env: 0.9, cine: 0.9, ui: 0.7 };
+const CAT_GAIN = MIX.cat;
 const lastVariant = {};          // sound -> viimeisin variantti-indeksi
 const voices = {};               // sound -> [{ src, g, end }] (polyfonia)
 const lastEventAt = {};          // event -> ctx.currentTime (cooldown)
@@ -168,9 +229,9 @@ audioStats.events = {};          // tapahtuma -> laukaisukerrat (testit / ?sound
 audioStats.missing = [];         // tuntemattomat tapahtumanimet
 
 function initSfxBuses() {
-  ambDuck = ctx.createGain(); ambDuck.connect(master);
-  ambBus = ctx.createGain(); ambBus.gain.value = 1; ambBus.connect(ambDuck);
-  uiBus = ctx.createGain(); uiBus.gain.value = CAT_GAIN.ui; uiBus.connect(master);
+  ambDuck = ctx.createGain(); ambDuck.connect(volSfx);
+  ambBus = ctx.createGain(); ambBus.gain.value = MIX.ambBus; ambBus.connect(ambDuck);
+  uiBus = ctx.createGain(); uiBus.gain.value = CAT_GAIN.ui; uiBus.connect(volSfx);
   for (const c of CATEGORIES) {
     if (c === 'ui') { catBus.ui = uiBus; continue; }
     const g = ctx.createGain(); g.gain.value = CAT_GAIN[c] ?? 1; g.connect(sfxBus); catBus[c] = g;
@@ -253,7 +314,7 @@ function playSound(id, { delay = 0, vol = 1, rate = 1, pan = 0 } = {}) {
   const r = rate * (s.pitch ? rnd(s.pitch[0], s.pitch[1]) : 1);
   src.playbackRate.value = r;
   const g = ctx.createGain();
-  g.gain.value = (s.vol ?? 1) * vol * (s.gain ? Math.pow(10, rnd(s.gain[0], s.gain[1]) / 20) : 1);
+  g.gain.value = (s.vol ?? 1) * vol * variantTrim(file, s) * (s.gain ? Math.pow(10, rnd(s.gain[0], s.gain[1]) / 20) : 1);
   src.connect(g);
   let out = g;
   if (pan && ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, pan)); g.connect(p); out = p; }
@@ -280,8 +341,8 @@ export function play(name, opts = {}) {
   const now = ctx.currentTime;
   if (ev.cool && now - (lastEventAt[name] ?? -9) < ev.cool) return false;
   lastEventAt[name] = now;
-  if (ev.duck) duck(ev.duck[0], ev.duck[1], ev.duck[2]);
-  if (ev.ambDuck) duckAmb(ev.ambDuck[0], ev.ambDuck[1]);
+  if (ev.duck) duck(ev.duck[0], ev.duck[1], ev.duck[2], 'ev:' + name);
+  if (ev.ambDuck) duckAmb(ev.ambDuck[0], ev.ambDuck[1], 'ev:' + name);
   const pan = panFor(opts.x);
   let any = false;
   for (const L of ev.layers) {
@@ -292,13 +353,10 @@ export function play(name, opts = {}) {
   return any;
 }
 
-let ambDuckUntil = 0;
-function duckAmb(level, secs) {
+function duckAmb(level, secs, key = null) {
   if (!ambDuck) return;
-  const t = ctx.currentTime;
-  ambDuck.gain.cancelScheduledValues(t); ambDuck.gain.setTargetAtTime(level, t, 0.05);
-  ambDuckUntil = Math.max(ambDuckUntil, t + secs); const until = ambDuckUntil;
-  setTimeout(() => { if (ctx && Math.abs(until - ambDuckUntil) < 1e-6) ambDuck.gain.setTargetAtTime(1, ctx.currentTime, 0.6); }, secs * 1000);
+  duckSets.amb.set(key || 'a' + (++duckSeq), { level, until: ctx.currentTime + Math.max(0.05, secs) });
+  applyDuck('amb', 0.05);
 }
 
 // ---------------------------------------------------------------- ambienssi (kerroksellinen, myöhäissyksy)
@@ -314,7 +372,7 @@ export function ambience(on, vol = 0.4) {
   ambPreset = preset;
   const P = AMBIENCE[preset];
   for (const k of Object.keys(ambLayers)) if (!(k in P)) fadeAmbLayer(k, 0);
-  for (const [k, gv] of Object.entries(P)) if (AMB_FILES[k]) fadeAmbLayer(k, gv * ambScale);
+  for (const [k, gv] of Object.entries(P)) if (AMB_FILES[k]) fadeAmbLayer(k, gv * ambScale * (MIX.ambTrim[k] ?? 1));
   if (P.crows && !crowTimer) { preloadSfx('amb'); scheduleCrow(); }
   if (!P.crows && crowTimer) { clearTimeout(crowTimer); crowTimer = null; }
 }
