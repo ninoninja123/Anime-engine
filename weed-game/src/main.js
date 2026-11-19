@@ -175,6 +175,19 @@ async function startChapter(section = 0, story = true) {
   await startLevel1({ section, onDone: () => { UI.show('hud', false); UI.cine(false); UI.show('result1', true); sfx.victory(); } });
 }
 
+function standalonePWA() { return window.navigator.standalone === true || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches; }
+function setupFullscreenUX() {
+  const coarse = matchMedia('(pointer: coarse)').matches; if (!coarse) { const b = document.getElementById('fsBtn'); if (b) b.style.display = 'none'; return; }
+  // first tap anywhere: go fullscreen where the browser allows it (Android Chrome etc.)
+  document.addEventListener('pointerdown', () => requestLandscape(), { once: true, capture: true });
+  document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && mode === 'level') { /* re-enter on the next tap */ document.addEventListener('pointerdown', () => requestLandscape(), { once: true, capture: true }); } });
+  const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  let dismissed = false; try { dismissed = localStorage.getItem('weed.fshint') === '1'; } catch (_) {}
+  if (ios && !standalonePWA() && !dismissed) {
+    const h = document.getElementById('fsHint'); if (h) { h.classList.remove('hidden'); const x = document.getElementById('fsHintX'); if (x) x.addEventListener('click', () => { h.classList.add('hidden'); try { localStorage.setItem('weed.fshint', '1'); } catch (_) {} }); }
+  }
+}
+
 function requestLandscape() {
   try {
     const el = document.documentElement;
@@ -190,6 +203,7 @@ function syncSettingLabels() {
 }
 
 function wireUI() {
+  setupFullscreenUX(); { const fb = document.getElementById('fsBtn'); if (fb) fb.addEventListener('click', () => requestLandscape()); }
   // napin ääni: oletuksena klik; aloitus/paluu/ohitus omilla äänillä (pause/resume soittaa setPaused)
   const UI_SND = { startBtn: 'start', castBack: 'uiBack', quitBtn: 'uiBack', defeatQuit: 'uiBack', resultBtn: 'uiBack', helpClose: 'uiBack', skipBtn: 'skip', pauseBtn: null, resumeBtn: null, retryBtn: 'uiConfirm' };
   const tap = (id, fn) => { const el = $(id); if (!el) return; el.addEventListener('click', e => { e.stopPropagation(); initAudio(); const s = id in UI_SND ? UI_SND[id] : 'ui'; if (s) sfx.play(s); fn(); }); };

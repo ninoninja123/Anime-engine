@@ -92,6 +92,8 @@ export function initEngine(canvas) {
     document.body.dataset.gfx = Q.tier;
   };
   window.addEventListener('resize', applyQuality);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', applyQuality);   // mobile browser bars hide/show
+  window.addEventListener('orientationchange', () => setTimeout(applyQuality, 250));
   onQuality(applyQuality);
   applyQuality();
 
