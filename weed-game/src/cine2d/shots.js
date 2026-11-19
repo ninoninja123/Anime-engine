@@ -168,7 +168,7 @@ export const SHOTS = [
     cues: [[0, S => { S.say('arrows_cry_robert'); S.sfx('rushWhoosh'); }]],
     draw: S => {
       streaks(S, 420, 'day', 3200);
-      S.L(1, g => withT(g, 760 + S.t * 160, 600, 2.3, 0, gg => dogSide(gg, 'robert', step2(S.t, 'run1', 'run2'), { expr: 'fury', jaw: 0.3, teeth: true })));
+      S.L(1, g => withT(g, 720 + S.t * 160, 650, 2.9, 0, gg => dogSide(gg, 'robert', step2(S.t, 'run1', 'run2'), { expr: 'fury', jaw: 0.3, teeth: true })));
       S.screen((g, w, h) => speedLines(g, w, h, { mode: 'h', dir: -1, n: 40, col: 'rgba(255,255,255,0.8)' }));
     } },
   { n: 10, dur: 0.15, bg: '#000',
@@ -196,10 +196,11 @@ export const SHOTS = [
       const k = eo(S.t / 0.32);
       S.L(1, g => {
         g.fillStyle = '#1a0e10'; g.fillRect(-400, 640, 2400, 600);
+        withT(g, 1060, 650, 1.45, 0, gg => { gg.save(); gg.translate(5, -4); p4Sil(gg, '#ffe2b0', lerpPose(P4P.stand, P4P.bite, k), { jaw: (1 - k) * 0.5 }); gg.restore(); }, true);
         withT(g, 1060, 650, 1.45, 0, gg => p4Sil(gg, '#1a0e10', lerpPose(P4P.stand, P4P.bite, k), { jaw: (1 - k) * 0.5,
           onChest: g3 => {   // Robert clamped on the chest; a warm rim keeps his shape readable against P4
             const f = ART.flat;
-            withT(g3, 40, 40, 0.95, 0.5, g4 => { ART.flat = '#f8d8a0'; g4.save(); g4.translate(-4, -3); dogSide(g4, 'robert', 'hang'); g4.restore(); ART.flat = '#120a0c'; dogSide(g4, 'robert', 'hang'); }, true);
+            withT(g3, 90, 60, 0.95, 0.35, g4 => { ART.flat = '#f8d8a0'; g4.save(); g4.translate(-4, -3); dogSide(g4, 'robert', 'hang'); g4.restore(); ART.flat = '#120a0c'; dogSide(g4, 'robert', 'hang'); }, true);
             ART.flat = f;
           } }), true);
       });
@@ -217,7 +218,7 @@ export const SHOTS = [
   { n: 15, dur: 2.6, cam: [{ k: 0, z: 1.0, x: 0 }, { k: 0.4, z: 1.04, x: 20 }, { k: 0.41, z: 1.0, x: 0 }, { k: 1, z: 1.1, x: 0 }],
     enter: S => {},
     cues: [[0, S => { S.music('sad', { fade: 2.2 }); S.sfx('throw'); }], [0.75, S => { dustBurst(S.P, 380, 690, 12); S.sfx('yelpPain'); S.shake(0.3); }],
-      [1.05, S => S.say('arrows_fall_robert', { hold: true })], [1.4, S => S.sfx('spirit')]],
+      [1.05, S => { S.P.clear(); S.say('arrows_fall_robert', { hold: true }); }], [1.4, S => S.sfx('spirit')]],
     draw: S => {
       if (S.t < 1.05) {
         land(S, { hy: 520, m: 'storm', pile: [1300, 600, 0.7, 0.45], seed: 5 });
@@ -234,7 +235,7 @@ export const SHOTS = [
         S.L(0.5, g => spirit(g, 980, 400, 1.6, clamp01((S.t - 1.4) / 2.2), 'robert', { rise: 160 }));
         S.L(1, g => {
           g.fillStyle = MOOD.storm.grass; g.fillRect(-400, 560, 2400, 600);
-          withT(g, 760, 430, 5.0, 0.32, gg => { gg.translate(-51, 4); headSide(gg, 'robert', { expr: 'sad', lid: 0.45 + kk * 0.55, jaw: jawOf(S, 'robert', 0.15), look: [0.4, 0.3] }); });
+          withT(g, 820, 380, 17, 0.14, gg => { gg.translate(-51, 4); headSide(gg, 'robert', { expr: 'sad', lid: 0.45 + kk * 0.55, jaw: jawOf(S, 'robert', 0.15), look: [0.4, 0.3] }); });
           grass(g, -400, 2000, 640, 70, MOOD.storm.grassFG, 15);
         });
       }
@@ -246,7 +247,7 @@ export const SHOTS = [
     draw: S => {
       skyL(S, 900, 'storm'); cloudsL(S, 900, 'storm', 0.08, 17, 1.3);
       const sq = 1 - eo(S.t / 0.45) * 0.1;
-      S.L(1, g => { g.fillStyle = MOOD.storm.grassD; g.fillRect(-400, 700, 2400, 400); withT(g, 980, 720, 3.6, 0, gg => { gg.scale(1, sq); dogSide(gg, 'rocker', 'crouch', { expr: 'fury' }); }); });
+      S.L(1, g => { g.fillStyle = MOOD.storm.grassD; g.fillRect(-400, 700, 2400, 400); withT(g, 1040, 760, 5.6, 0, gg => { gg.scale(1, sq); dogSide(gg, 'rocker', 'crouch', { expr: 'fury' }); }); });
       fgGrass(S, 720, 60, 'storm', 1);
     } },
   { n: 17, dur: 0.5, cam: [{ k: 0, z: 1.0, x: -200 }, { k: 1, z: 1.0, x: 260, e: 'in' }],
@@ -261,7 +262,7 @@ export const SHOTS = [
     draw: S => S.screen((g, w, h) => impactFrame(g, w, h, w * 0.55, h * 0.5, { invert: true, seed: 2 })) },
   { n: 19, dur: 0.8, cam: [{ k: 0, z: 1.2, r: -4 }, { k: 1, z: 1.08, r: -2, e: 'out' }],
     cues: [[0.06, S => { S.shake(0.9); S.P.add('tuft', 760, 410, 16, { speed: 900, size: 26, life: 1, col: '#b47c40' }); S.P.add('spark', 780, 410, 18, { speed: 1500, life: 0.5, grav: 400 }); }]],
-    draw: S => S.L(1, g => withT(g, 820, 410, 1.0, -0.08, gg => chestECU(gg, 2, eo(S.t / 0.1), 'rocker'))) },
+    draw: S => S.L(1, g => withT(g, 860, 430, 1.18, -0.22, gg => chestECU(gg, 2, eo(S.t / 0.1), 'rocker'))) },
   { n: 20, dur: 1.0, cam: [{ k: 0, z: 1.0, y: 60 }, { k: 1, z: 1.0, y: -40, e: 'out' }],
     cues: [[0, S => { S.sfx('roarPain'); }], [0.35, S => { S.sfx('thudDeep'); S.shake(0.4); }]],
     draw: S => {
@@ -269,7 +270,7 @@ export const SHOTS = [
       const k = eo(S.t / 0.45);
       S.L(1, g => {
         g.fillStyle = MOOD.storm.grassD; g.fillRect(-400, 760, 2400, 400);
-        withT(g, 900, 770, 1.25, 0, gg => {
+        withT(g, 900, 770, 1.0, 0, gg => {
           gg.rotate(-k * 0.0);
           p4Side(gg, lerpPose(P4P.stand, P4P.rear, k), { jaw: 0.6, expr: 'fury', wound: 2,
             onChest: g3 => withT(g3, 40, 40, 0.8, 0.5, g4 => dogSide(g4, 'rocker', 'hang', { expr: 'pain' }), true) });
@@ -314,7 +315,7 @@ export const SHOTS = [
   { n: 24, dur: 0.8, cam: [{ k: 0, z: 1.0 }, { k: 1, z: 1.1 }],
     draw: S => {
       S.L(0, g => skyGrad(g, -400, -400, 2400, 1600, MOOD.storm.sky));
-      S.L(1, g => withT(g, 800, 380, 9.5, 0, gg => { gg.translate(22, 6); headFront(gg, 'heuler', { expr: 'sad', tear: clamp01(S.t / 0.75), look: [0.6, 0] }); }));
+      S.L(1, g => withT(g, 820, 400, 10, -0.05, gg => { gg.translate(-51, 4); headSide(gg, 'heuler', { expr: 'sad', tear: clamp01(S.t / 0.75), look: [1, 0.1] }); }));
     } },
   { n: 25, dur: 0.5, cam: [{ k: 0, z: 1.0, r: -6 }, { k: 1, z: 1.12, r: -6, e: 'in' }],
     cues: [[0, S => { S.say('arrows_cry_heuler'); S.sfx('rushWhoosh'); }]],
@@ -322,7 +323,7 @@ export const SHOTS = [
       skyL(S, 1000, 'storm'); cloudsL(S, 900, 'storm', 0.04, 29, 1.3);
       S.L(0.3, g => { g.fillStyle = MOOD.storm.grassD; g.fillRect(-400, 720, 2400, 500); });
       S.screen((g, w, h) => speedLines(g, w, h, { mode: 'radial', cx: w * 0.86, cy: h * 0.38, n: 70, col: 'rgba(255,255,255,0.75)', inner: 0.12 }));
-      S.L(1, g => withT(g, 760 + S.t * 300, 760, 2.7, -0.2, gg => dogSide(gg, 'heuler', step2(S.t, 'run1', 'leap'), { expr: 'fury', jaw: 0.35, teeth: true })));
+      S.L(1, g => withT(g, 700 + S.t * 300, 680, 2.4, -0.2, gg => dogSide(gg, 'heuler', step2(S.t, 'run1', 'leap'), { expr: 'fury', jaw: 0.35, teeth: true })));
     } },
   { n: 26, dur: 0.1, bg: '#000', cues: [[0, S => S.sfx('arrow_bite_3')]],
     draw: S => S.screen((g, w, h) => {
@@ -332,7 +333,7 @@ export const SHOTS = [
     }) },
   { n: 27, dur: 1.0, cam: [{ k: 0, z: 1.25, r: 3 }, { k: 1, z: 1.12, r: 5 }],
     cues: [[0.06, S => { S.shake(1.0); S.P.add('tuft', 780, 410, 22, { speed: 1100, size: 30, life: 1.1, col: '#b47c40' }); S.P.add('spark', 780, 410, 24, { speed: 1700, life: 0.6, grav: 400, col: '#ffd890' }); }], [0.5, S => S.sfx('tear')]],
-    draw: S => S.L(1, g => withT(g, 800 + Math.sin(S.t * 30) * 6, 410, 1.05, 0.1 + Math.sin(S.t * 9) * 0.03, gg => chestECU(gg, 3, eo(S.t / 0.1), 'heuler'))) },
+    draw: S => S.L(1, g => withT(g, 760 + Math.sin(S.t * 30) * 6, 400, 1.32, 0.22 + Math.sin(S.t * 9) * 0.03, gg => chestECU(gg, 3, eo(S.t / 0.1), 'heuler'))) },
   { n: 28, dur: 0.7, cam: [{ k: 0, z: 1.0 }, { k: 0.25, z: 1.22, e: 'out' }, { k: 1, z: 1.26 }],
     cues: [[0.05, S => S.sfx('roarPain')]],
     draw: S => S.L(1, g => withT(g, 800, 420, 1.15, 0, gg => p4EyeECU(gg, { expr: S.t > 0.12 ? 'wide' : 'beast', wide: S.t > 0.12, side: -1, look: [0, 0] }))) },
@@ -409,7 +410,7 @@ export const SHOTS = [
     cues: [[0.05, S => { dustBurst(S.P, 470, 690, 10, { size: 36 }); S.sfx('stepRock'); }]],
     draw: S => {
       skyL(S, 700, 'dusk'); cloudsL(S, 640, 'dusk', 0.06, 37, 1); mountainsL(S, 620, 'dusk', 0.12); meadowL(S, 620, 'dusk', 0.3);
-      S.L(0.6, g => withT(g, 1240, 330, 2.0, 0.08, gg => p4HeadSide(gg, { expr: 'fury', look: [S.t > 0.45 ? 1 : -0.4, 0.2] }), true));
+      S.L(0.6, g => withT(g, 1820, 760, 1.55, 0, gg => p4Side(gg, P4P.stand, { expr: 'fury', wound: 3, look: [S.t > 0.45 ? 1 : -0.4, 0.2] }), true));
       S.L(1, g => withT(g, 480, 720, 2.2, 0, gg => dogSide(gg, 'jerome', 'crouch', { expr: 'fury', jaw: 0.1, teeth: true, look: [1, 0] })));
     } },
   { n: 36, dur: 2.2, cam: [{ k: 0, z: 1.0, x: -20 }, { k: 1, z: 1.1, x: 10 }],
@@ -427,7 +428,7 @@ export const SHOTS = [
     cues: [[0.15, S => S.say('arrows_now', { hold: true })], [0.6, S => { S.sfx('growl'); }]],
     draw: S => {
       land(S, { hy: 480, m: 'dusk', pile: [1300, 570, 0.9, 0.45], seed: 11 });
-      S.L(0.3, g => { for (let i = 0; i < 3; i++) spirit(g, 600 + i * 260, 230 - i * 20, 0.8, clamp01(0.55 + S.t / 3), MEN[i], { rise: 120, alpha: 0.9 }); });
+      S.L(0.3, g => { for (let i = 0; i < 3; i++) spirit(g, 620 + i * 240, 360 - i * 20, 0.8, clamp01(0.55 + S.t / 3), MEN[i], { rise: 120, alpha: 0.9 }); });
       const k = eo(S.t / 1.6);
       S.L(0.5, g => withT(g, 1300, 480, 0.55, 0, gg => p4Side(gg, lerpPose(P4P.crouch, P4P.stand, k), { wound: 3, expr: 'fury' }), true));
       S.L(0.75, g => { withT(g, 230, 660, 0.55, 0, gg => dogSide(gg, 'weed', 'alert', { expr: 'determined' })); withT(g, 420, 672, 0.62, 0, gg => dogSide(gg, 'jerome', 'alert', { expr: 'fury' })); });

@@ -398,7 +398,7 @@ export function dogSide(g, id, pose = 'stand', o = {}) {
   ink(g, torso, {
     fill: C.base, shade: C.shade, light: [4, -7], hatch: true, seed: sd + 6,
     marks: g2 => {
-      if (id === 'jerome' || id === 'robert') { g2.fillStyle = C.dark; g2.fill(path(g2, [[40 * st, -40], [36 * st, -14], [10, -6], [-20, -4], [-46 * st, -2], [-70, -40]], { seed: sd + 7, amp: 0.6 })); }
+      if (id === 'jerome' || id === 'robert') { g2.fillStyle = C.dark; g2.fill(path(g2, [[44 * st, -44], [40 * st, -6], [10, 6], [-20, 8], [-50 * st, 8], [-70, -40]], { seed: sd + 7, amp: 0.6 })); }
       if (id === 'rocker') { g2.fillStyle = C.tan; g2.fill(path(g2, [[54, 4], [44, 30], [20, 30], [30, 10]], { seed: sd + 7 })); }
       if (id === 'heuler') { g2.fillStyle = C.dark; g2.fill(path(g2, ell(-10, -14, 22, 12, 9), { seed: sd + 7 })); g2.fill(path(g2, ell(-40, -4, 10, 8, 7), { seed: sd + 8 })); }
       if (id === 'robert' || id === 'heuler' || id === 'weed') { g2.fillStyle = id === 'robert' ? C.muzzle : '#fbf8f2'; g2.fill(path(g2, [[50, 0], [40, 30], [0, 30], [10, 18]], { seed: sd + 9 })); }
@@ -528,7 +528,8 @@ export function p4Sil(g, col, pose = 'stand', o = {}) { const f = ART.flat; ART.
 export function p4RoarBelow(g, o = {}) {
   const C = P4C, open = o.open ?? 1;
   // mane fan
-  ink(g, furry(ell(0, -40, 260, 220, 26), 34, 1, 91), { fill: C.mane, shade: C.maneSh, light: [14, 16], hatch: true, lw: 2.8, seed: 4201, k: 0.08 });
+  ink(g, furry(ell(0, -30, 250, 215, 14), 70, 1, 91), { fill: C.mane, shade: C.maneSh, light: [18, 20], hatch: true, lw: 2.8, seed: 4201, k: 0.12 });
+  for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2, r0 = 170, r1 = 250 + (i % 3) * 20; brush(g, [[Math.cos(a) * r0, -30 + Math.sin(a) * r0 * 0.86], [Math.cos(a + 0.08) * (r0 + r1) / 2, -30 + Math.sin(a + 0.08) * (r0 + r1) / 2 * 0.86], [Math.cos(a + 0.14) * r1, -30 + Math.sin(a + 0.14) * r1 * 0.86]], { w: 4, seed: 4260 + i, col: i % 2 ? C.maneHi : C.maneSh }); }
   // throat / chin (we look up at it)
   ink(g, [[-150, 80], [-120, 160], [0, 210], [120, 160], [150, 80], [80, 120], [0, 130], [-80, 120]], { fill: C.belly, shade: C.furSh, light: [0, -14], hatch: true, seed: 4202 });
   // lower jaw
