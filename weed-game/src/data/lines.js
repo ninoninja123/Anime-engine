@@ -143,6 +143,15 @@ export const LINES = Object.fromEntries([
     'urgent resolve', 'Pulls himself together: strong and fast. A breath between sentences.', 4, 0, 0.2),
 
   // ------------------------------------------------------------ THE LOCK (canon: Weed, Ken and Kagetora pin P4, Jerome bites the artery)
+  // --- Four Arrows / lock scene: battle cries and pain sounds (voice files made; the scene calls say(id, { noWait: true }) at the charge / bite) ---
+  L('robert', 'arrows_cry_robert', 'うおおおおおおッ！！', '[Battle cry]', 'furious charge', 'Full-throated battle cry as he launches himself.', 5, 0, 0),
+  L('rocker', 'arrows_cry_rocker', 'おらあああああッ！！', '[Battle cry]', 'furious charge', 'Raw, roaring battle cry on the leap.', 5, 0, 0),
+  L('heuler', 'arrows_cry_heuler', 'いくぞおおおおおッ！！', '[Battle cry]', 'desperate charge', 'Desperate, cracking roar of resolve.', 5, 0, 0),
+  L('robert', 'arrows_pain_robert', 'ぐあああッ…！ぐっ…ううっ…！', '[Cry of pain]', 'agony', 'Pained grunts while clamped on, straining.', 4, 0, 0),
+  L('rocker', 'arrows_pain_rocker', 'がはっ…！ぐうう…ッ！', '[Cry of pain]', 'agony', 'Choking gasp, straining through the pain.', 4, 0, 0),
+  L('heuler', 'arrows_pain_heuler', 'ぐっ…ああああああッ！', '[Cry of pain]', 'agony', 'A long cry as he is torn away.', 5, 0, 0),
+  L('kagetora', 'lock_pain_kage', 'ぐあっ…！ああっ…！', '[Cry of pain]', 'pain', 'Sharp pained cry when P4 bites him.', 4, 0, 0),
+  L('weed', 'lock_shout_weed', 'うわあああああッ！！', '[Shout]', 'effort', 'All-out shout of effort holding the monster down.', 5, 0, 0),
   L('weed', 'lock_call', 'ケン！カゲトラ！押さえ込め！', 'Ken! Kagetora! Pin it down!',
     'desperate command', 'Shouted mid-leap, voice cracking with effort. Fast.', 5, 0, 0.1),
   L('jerome', 'lock_artery', '…届け…！', '…Reach…!',

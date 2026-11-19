@@ -50,7 +50,7 @@ async function step(s, ctx) {
   if (E.skipping && !s.always) {
     // ohitus: aja vain tilaa muuttavat askeleet heti (sijainnit, piilotus, musiikki), ohita odotukset
     if (s.place) { doPlace({ ...s, fade: undefined }); return; }   // suoraan: ei rekursiota (ohitus pysyy päällä)
-    if (s.release || s.strike || s.thrash || s.reach) { C.releaseAll(); return; }
+    if (s.release || s.strike || s.thrash || s.reach || s.motion) { C.releaseAll(); return; }
     if (s.track) return;
     if (!(s.move || s.hide || s.music !== undefined || s.amb !== undefined || s.surface !== undefined || s.fn || s.par || s.face || s.anim || s.expr)) return;
   }
@@ -64,6 +64,12 @@ async function step(s, ctx) {
     const f = s.from, t2 = s.to || s.from, L = s.look || [0, 0, 0];
     const upd = k => { const p = tgt(); E.camPos.set(p.x + f[0] + (t2[0] - f[0]) * k, p.y + f[1] + (t2[1] - f[1]) * k, p.z + f[2] + (t2[2] - f[2]) * k); E.camLook.set(p.x + L[0], p.y + L[1], p.z + L[2]); };
     upd(0); await tween({ k: 0 }, { k: 1 }, s.t || 2, { real: !C.LOG.seq, ease: s.ease || 'inOut', onUpdate: upd }); return;   // kuvasarjatarkistuksessa pelin ajassa (pysäytys pysäyttää myös kameran)
+  }
+  if (s.motion) {   // { motion: 'kaibutsu', kind: 'rearup'|'fallback', releaseAt: 'apex'|'impact', release: { who, mode, to, ... }, wait }
+    if (E.skipping) return;
+    const rel = () => s.release && C.release({ ...s.release });
+    const p = C.bodyMotion(s.motion, s.kind, { ...s, onApex: s.releaseAt === 'apex' ? rel : undefined, onImpact: s.releaseAt === 'impact' ? rel : undefined });
+    if (s.wait !== false) await p; return;
   }
   if (s.reach) { if (E.skipping) return; const { reach, ...o } = s; await C.reach({ who: reach, ...o }); return; }
   if (s.release) { const { release, ...o } = s; await C.release({ who: release, ...o }); return; }

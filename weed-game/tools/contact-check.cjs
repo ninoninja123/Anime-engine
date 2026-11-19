@@ -3,12 +3,25 @@
 //  - hyökkääjän vartalo (ilman päätä/kaulaa) ei saa olla kohteen vartalon sisällä (bodyK >= 0.5)
 //  - koko kohtauksen ajan: kukaan ei seiso toisen päällä eikä ole toisen sisällä (paitsi purennassa/loikassa)
 //  - kuvakaappaus jokaisesta kontaktihetkestä: screenshots/contact/<kohtaus>_<n>_<hyökkääjä>_<piste>.png
-// Käyttö: npm run build && (npx vite preview --port 4174 &) && node tools/contact-check.cjs [smith arrows lock finale twinfang bite]
-//         URL=http://localhost:4174/ node tools/contact-check.cjs smith
+// Käyttö: npm run build && node tools/contact-check.cjs [smith arrows lock finale twinfang bite]
+//         (palvelee dist/-kansion itse; URL=http://localhost:4174/ käyttää ulkoista palvelinta, DIST=polku toista buildia)
 const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
-const BASE = process.env.URL || 'http://localhost:4174/';
+let BASE = process.env.URL || '';
+const http = require('http');
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.glb': 'model/gltf-binary', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg', '.wasm': 'application/wasm', '.svg': 'image/svg+xml' };
+function serveDist() {
+  const root = path.resolve(process.env.DIST || path.join(__dirname, '..', 'dist'));
+  const srv = http.createServer((req, res) => {
+    let p = decodeURIComponent(req.url.split('?')[0]); if (p.endsWith('/')) p += 'index.html';
+    const f = path.join(root, p);
+    if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
+    res.writeHead(200, { 'Content-Type': MIME[path.extname(f)] || 'application/octet-stream' });
+    fs.createReadStream(f).pipe(res);
+  });
+  return new Promise(r => srv.listen(0, '127.0.0.1', () => { BASE = `http://127.0.0.1:${srv.address().port}/`; r(srv); }));
+}
 const OUT = path.join(__dirname, '..', 'screenshots', 'contact');
 const ALL = ['smith', 'arrows', 'lock', 'finale', 'twinfang', 'bite'];
 const scenes = process.argv.slice(2).length ? process.argv.slice(2) : ALL;
@@ -17,6 +30,7 @@ const RATIO = 0.25, BODY_K = 0.5;
 fs.mkdirSync(OUT, { recursive: true });
 
 (async () => {
+  const srv = BASE ? null : await serveDist();
   const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'] });
   const ctx = await browser.newContext({ viewport: { width: 844, height: 390 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
   const report = { when: new Date().toISOString(), thresholds: { ratio: RATIO, bodyK: BODY_K }, scenes: {}, pass: true };
@@ -26,6 +40,7 @@ fs.mkdirSync(OUT, { recursive: true });
     page.on('pageerror', e => errors.push('PAGEERROR ' + e.message));
     page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|404/.test(m.text())) errors.push(m.text()); });
     const t0 = Date.now();
+    try {
     await page.goto(BASE + '?phase=' + ({ lock: 2, finale: 3 }[name] || 1) + '&nointro&fastcine&fixedres');
     await page.waitForFunction(() => window.__game && document.getElementById('loading').classList.contains('hidden'), null, { timeout: 180000 });
     await page.waitForTimeout(1500);
@@ -62,7 +77,8 @@ fs.mkdirSync(OUT, { recursive: true });
     console.log(`${name}: ${fails.length ? 'FAIL' : 'ok'}  strikes=${res.strikes.length}  ${res.strikes.map(s => `${s.who}->${s.point} d=${s.dist} k=${s.bodyK}`).join(' | ')}${res.whiffs.length ? '  whiffs: ' + res.whiffs.map(w => `${w.who} miss=${w.miss}`).join(' ') : ''}`);
     for (const f of fails) console.log('   - ' + f);
     for (const e of errors.slice(0, 5)) console.log('   ! ' + e);
-    await page.close();
+    } catch (e) { report.scenes[name] = { pass: false, fails: ['run error: ' + e.message.split('\n')[0]] }; report.pass = false; console.log(name + ': ERROR ' + e.message.split('\n')[0]); }
+    await page.close().catch(() => {});
     // kuvasarja-arkit: anticipation -> launch -> lunge -> contact -> follow -> after (6 framea per isku)
     try {
       const groups = {};
@@ -78,10 +94,12 @@ W.resize((w*3//2,h)).save(sys.argv[1])`, out, ...list.map(f => path.join(OUT, f)
         report.scenes[name].sheets = (report.scenes[name].sheets || []).concat(path.basename(out));
       }
     } catch (e) { console.log('   (sheet failed: ' + e.message + ')'); }
+    fs.writeFileSync(path.join(OUT, 'report' + (process.env.TAG ? '_' + process.env.TAG : '') + '.json'), JSON.stringify(report, null, 2));   // väliraportti
   }
   const RP = path.join(OUT, 'report' + (process.env.TAG ? '_' + process.env.TAG : '') + '.json');
   fs.writeFileSync(RP, JSON.stringify(report, null, 2));
   console.log(report.pass ? 'ALL CONTACT CHECKS PASSED' : 'CONTACT CHECKS FAILED', '->', RP);
   await browser.close();
+  if (srv) srv.close();
   process.exit(report.pass ? 0 : 1);
 })();

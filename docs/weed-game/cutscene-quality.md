@@ -92,3 +92,11 @@ Signature-efekti ei ole oletuskerros jokaiselle osumalle.
   päällä seisomisen koko kohtauksen ajan; ottaa jokaisesta iskusta 6 framen kuvasarjan
   (anticipation → launch → lunge → contact → follow → after) arkiksi `screenshots/contact/sheet_<kohtaus>_s<n>.png`.
 - Katso arkit ja korjaa ennen kuin väität valmiiksi.
+
+## Research first (user rule)
+- BEFORE building or rewriting any scene, character look or mechanic: find out how it actually went in the anime/manga
+  (search several sources in several languages, look at the stills/clips the user provides, note open questions) and write
+  the findings to docs/weed-game/ (scene notes with sources and [UNCERTAIN] marks). Resolve open questions by searching more,
+  or ask the user for a reference clip/image. Do not build from guesses.
+- The user's own reference clips/descriptions take priority over fan-wiki summaries.
+- If the research doc lists an open question for a scene, close it before implementing that scene.
