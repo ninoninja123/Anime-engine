@@ -6,7 +6,7 @@ import { loadFor, makeDog, isLoaded } from './dogs.js';
 import { CHARACTERS, ROSTER } from './characters.js';
 import { buildWorld } from './world.js';
 import { initInput } from './input.js';
-import { initAudio, setMuted, muted, music, sfx, audioStats, currentMusic } from './audio.js';
+import { initAudio, setMuted, muted, music, sfx, audioStats, currentMusic, musicState } from './audio.js';
 import { settings, setPref } from './voice.js';
 import * as FX from './fx.js';
 import * as UI from './ui.js';
@@ -199,7 +199,7 @@ function wireUI() {
   syncSettingLabels();
 }
 
-window.__game = { E, cast, debug, startGame, showMenu, showCast, sfx, audioStats, currentMusic, gallery, ROSTER };
+window.__game = { E, cast, debug, startGame, showMenu, showCast, sfx, audioStats, currentMusic, musicState, gallery, ROSTER };
 boot().catch(err => {
   console.error(err);
   $('loading').innerHTML = `<div>Loading failed: ${String(err.message || err)}</div>`;
