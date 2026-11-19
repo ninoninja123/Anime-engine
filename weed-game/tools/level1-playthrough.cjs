@@ -275,11 +275,12 @@ async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {})
       const q = await st(p);
       !q.active && q.menu && !q.cine ? pass('quit', 'Main menu from pause returns to the menu') : fail('quit', JSON.stringify(q));
       // menu -> Prologue -> continue from the checkpoint (townRun)
+      await p.evaluate(() => localStorage.removeItem('weed.prologue'));   // "The story so far" plays first and is skipped
       await click(p, 'prologueBtn');
-      let off = false; for (let i = 0; i < 400; i++) {
+      let off = false; for (let i = 0; i < 1200; i++) {
         await adv(p, 0.1);
         off = await p.evaluate(() => { const b = document.getElementById('l1cont'); return !!b && !b.closest('.hidden'); }); if (off) break;
-        if (i % 20 === 10) await p.evaluate(() => { for (const b of document.querySelectorAll('button')) if (/^skip/i.test(b.textContent.trim()) && b.offsetParent) { b.click(); break; } });   // "The story so far" may play first
+        if (i % 20 === 10) await p.evaluate(() => { for (const b of document.querySelectorAll('button')) if (/^skip/i.test(b.textContent.trim()) && b.getClientRects().length && getComputedStyle(b).visibility !== "hidden") { b.click(); break; } });   // "The story so far" may play first
       }
       if (!off) console.log('     state: ' + await p.evaluate(() => JSON.stringify({ l1ck: !!document.getElementById('l1ck'), cls: document.body.className, S1: { a: window.__S1.active, m: window.__S1.mode, s: window.__S1.section }, saved: localStorage.getItem('weed.p1.section'), screens: [...document.querySelectorAll('.screen')].filter(e => !e.classList.contains('hidden')).map(e => e.id) })));
       if (!off) fail('checkpoint', 'no "Continue from checkpoint" offer after quitting at townRun');

@@ -47,7 +47,7 @@ function l1Style() {
   st.textContent = `#l1ck{z-index:12}#l1ck .ckname{opacity:.85;margin:-4px 0 10px;font-size:14px}
 #l1tut{position:fixed;left:50%;top:27%;transform:translateX(-50%) scale(.9);z-index:7;pointer-events:none;opacity:0;transition:opacity .18s,transform .18s;
  font:800 clamp(16px,3.6vw,26px)/1.15 var(--f-head,sans-serif);letter-spacing:.06em;text-transform:uppercase;color:#fff;text-align:center;
- padding:8px 22px;border-radius:6px;background:rgba(8,12,28,.62);text-shadow:0 2px 8px rgba(0,0,0,.8);white-space:nowrap}
+ padding:8px 22px;border-radius:6px;background:rgba(8,12,28,.62);text-shadow:0 2px 8px rgba(0,0,0,.8);max-width:92vw;width:max-content}
 #l1tut.on{opacity:1;transform:translateX(-50%) scale(1);animation:l1pulse .7s ease-in-out infinite alternate}
 #l1tut small{display:block;font-size:.5em;letter-spacing:.1em;opacity:.8;margin-top:2px}
 @keyframes l1pulse{to{box-shadow:0 0 0 3px rgba(255,214,120,.55),0 0 24px rgba(255,200,100,.4)}}
@@ -567,7 +567,9 @@ function runUpdate(dt, dtr) {
     if (!o.passed && ahead < 0.15) {
       o.passed = true;
       let safe = o.cleared;
-      if (!safe) safe = o.kind === 'up' ? R.y > o.h * PLAYER.run.clearFrac : o.kind === 'down' ? R.slideT > 0 : false;
+      if (!safe) safe = o.kind === 'up' ? R.y > o.h * PLAYER.run.clearFrac
+        : o.kind === 'down' ? R.slideT > 0 || (o.type === 'beam' && R.y > (o.obj.userData.low || 0.36) + 0.14)   // a high jump clears a bare beam (not a net)
+        : false;
       if (!safe && R.inv <= 0) runHit(o);
       else if (!o.cleared && !o.knocked) { if (o.kind === 'up') { FX.ring(new THREE.Vector3(x, 0.3, 0), 0x9fe0ff, 0.9, 0.3); sfx.tick(); } }
     }

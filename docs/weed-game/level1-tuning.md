@@ -31,15 +31,17 @@ offers the checkpoint and resumes there; portrait viewport shows the rotate prom
 
 ## Results
 
-| Section | before (sloppy, notut, 6 tries) | after (sloppy, notut) | good bot after |
-|---|---|---|---|
-| Farm run | 3/6 first-try wins (cascading hits) | 5/6 – 6/6 | 6/6, 0–1 hearts lost |
-| Tosa fight | 6/6 | 6/6 | 6/6 |
-| Jōshū run | 6/6 (3 hearts) → 4/6 at higher miss | 6/6 | 6/6 |
-| Blue fight | 3/6 (good bot lost 2 of 4!) | 6/6 | 6/6 |
+First-try wins of the scripted player (8 tries per section after tuning; "before" = 6 tries with the original values):
 
-With tutorials on (a real first attempt) the first obstacle / attack of each kind is in slow motion with a callout, so
-the first attempt is easier than the `--notut` numbers.
+| Section | before: sloppy, no tutorial | after: sloppy, tutorial on 1st try | after: sloppy, no tutorial | after: good |
+|---|---|---|---|---|
+| Farm run | 3/6 (chains of hits) | 7/8 | 7/8 | all, 0–1 hearts lost |
+| Tosa fight | 6/6 | 8/8 | 8/8 | all, 0 hearts lost |
+| Jōshū run | 4/6 (at 3 hearts, 6.6 speed) | 7/8 | 8/8 | all, 0 hearts lost |
+| Blue fight | 3/6 — even the good bot lost 2 of 4 | 7/8 | 6/8 | all, 1–2 hearts lost |
+
+The sloppy player ignores one warning in eight; a real first-timer also gets the slow-motion tutorial on the first
+obstacle/attack of each kind. Every loss is one "Retry from checkpoint" (the run or fight only, not its cutscene).
 
 ## Changes and reasons
 
@@ -53,6 +55,7 @@ the first attempt is easier than the `--notut` numbers.
 | `clearFrac` | 0.75 | 0.65 | jump counts if Weed is above 65 % of the obstacle height when it passes: hitbox closer to what is seen (the pup clears a log visually earlier than the check said) |
 | `duckT` | 0.7 s | 0.8 s | duck window = 0.8 s; jump window ≈ 0.5 s; the two now feel equally forgiving |
 | `invT` | 1.3 s | 1.5 s | no double hit from the next obstacle right after a hit |
+| beam + high jump | always a hit unless ducking | a jump higher than the beam's top also clears it (nets still need a duck) | the pup visibly sailed over the beam and still lost a heart |
 | bark range | ahead < 7.5 | ahead < `iconAt` + 0.5 (10.5) | the TAP icon appears at 10: a bark at first sight did nothing (bug); now "icon visible = bark works" |
 | swipe latency | on release | fires as soon as the finger has moved 34 px vertically (runner only) | ~0.1 s earlier jump/duck, the release is ignored |
 | tutorial | text hint only | first log / beam / birds: slow motion 0.2× + callout ("Swipe ↑ to jump") until the player does it (3.5 s max) | first attempt winnable without reading the hint bar |
@@ -84,6 +87,25 @@ kept: with the run-up and the coordination the sloppy bot wins 6/6.
   skipped).
 
 ## Performance
-- Obstacles are pooled per type (a retry or the second run reuses meshes); warning icons share one texture per kind.
-- Geese: small parts (neck, head, beak) without outline hulls and shadows.
-- See the `--perf` numbers below.
+
+`PR.flatten(group, keep)` (src/shared/props.js) merges every static mesh of a prop that shares a material (outline hulls
+included) into one mesh. Used for the town backdrop, road (≈60 lane marks, each with its own material), net fence posts,
+pond stones, the kennel (planks stay separate, they fly apart), and every runner obstacle (each goose separately so they
+can still scatter). Obstacles are pooled per type (retry / second run reuse meshes) and the warning icons share one
+texture per kind. Fight movement is frame-rate independent (30 fps phones).
+
+Draw calls per frame during play (`--perf`, quality `med`, 844x390; average / max):
+
+| | before | after |
+|---|---|---|
+| Farm run | 51 / 73 | 42 / 53 |
+| Tosa fight | 119 / 146 | 68 / 96 |
+| Jōshū run | 119 / 166 | 64 / 70 |
+| Blue fight | 84 / 87 | 47 / 48 |
+
+Triangles are unchanged (120–200 k, mostly the dogs and the world); headless fps is not meaningful (swiftshader).
+
+## Not done / open
+- Real-phone check of the swipe threshold (34 px early swipe) and of the callout size on small phones.
+- The Story So Far still plays before the checkpoint offer when its "seen" flag is cleared (main.js order, out of scope).
+- `tools/smoke-level1.cjs` (debug-hook smoke test, slow) is kept; `level1-playthrough.cjs` replaces it for normal use.
