@@ -236,7 +236,7 @@ function setTitle(o) {
   t.querySelector('.k').textContent = o.kicker || '';
   t.querySelector('.m').textContent = o.main || '';
   t.querySelector('.s').textContent = o.sub || '';
-  t.querySelector('.j').textContent = o.jp || '';
+  t.querySelector('.j').textContent = '';   // no Japanese glyphs on screen
   t.classList.toggle('big', !!o.sub);
   t.classList.remove('on'); void t.offsetWidth; t.classList.add('on');
 }
