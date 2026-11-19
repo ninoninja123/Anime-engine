@@ -458,7 +458,7 @@ export class Dog {
     if (c.kind === 'factory') this._buildFactory(); else if (c.kind === 'rigged') this._buildRigged(); else this._buildRigid();
 
     const sh = new THREE.Mesh(new THREE.CircleGeometry(0.5, 24),
-      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35, depthWrite: false }));
+      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));   // no z-fighting with the ground
     sh.rotation.x = -Math.PI / 2; sh.position.y = 0.012; sh.scale.set(this.length * 1.05, this.width * 1.5, 1);
     this.root.add(sh); this.shadow = sh;
 
