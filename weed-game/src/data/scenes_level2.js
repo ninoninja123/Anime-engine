@@ -333,9 +333,9 @@ export const arrows = (ctx) => {
       { fn: () => { m.root.position.z = 0.9; m.root.position.y = 0; m.face(1, true); } },
       // a breath before he goes: slow push onto his face
       { track: id, from: [1.3, 0.25, 1.4], to: [1.0, 0.2, 1.1], look: [0.2, 0.25, 0], t: 1.1 },
-      { sfx: 'bark' },
       // the run: the camera runs with him
       { fx: 'speed', v: 1 },
+      { bark: 'arrows_cry_' + id },                                     // battle cry as he breaks into the charge
       { par: [
         { move: id, x: B.x - half - 2.0, z: 1.0, t: 0.75, anim: 'Gallop', ts: 1.4, ease: 'in' },
         { track: id, from: [-1.2, 0.1, 2.8], to: [-0.4, 0.3, 3.2], look: [1.0, 0.3, 0], t: 0.75, ease: 'in' },
@@ -350,6 +350,7 @@ export const arrows = (ctx) => {
         A.cam === 'low' ? { cam: [B.x - half - 3.2, 0.5, 4.2], look: [B.x - half * 0.6, 1.5, 0.6], t: 1.6, ease: 'out' }
           : { cam: [B.x - half - 1.2, 1.2, 4.6], look: [B.x - half * 0.7, 1.3, 0.6], t: 1.6, ease: 'out' },
       ] },
+      ...(A.counter !== 'fallback' ? [{ bark: 'arrows_pain_' + id }] : []),   // cry of pain as P4 bucks under his teeth
       { freeze: 0.4 },
       { slow: 1 }, { fx: 'speed', v: 0 },
       // extreme close-up: the teeth sunk in the wound, then P4's eye
@@ -375,6 +376,7 @@ export const arrows = (ctx) => {
         { cam: [B.x - half - 2.4, 0.4, 5.2], look: [B.x - half * 0.5, 2.0, 0.5], t: 0.25, ease: 'out' },
         { motion: 'kaibutsu', kind: 'rearup', angle: 1.05, releaseAt: 'apex', release: { who: id, mode: 'throw', to: A.land, arc: A.arc, t: A.t, land: 'Death', spin: 1 } },
       ] : [
+        { bark: 'arrows_pain_' + id },                                  // Heuler's long cry while P4 tears him loose
         { thrash: 'kaibutsu', t: 0.8, amp: 0.45, freq: 2.6 },
         { cam: [B.x - half - 1.0, 0.35, 5.6], look: [B.x - half * 0.3, 1.0, 0.4], t: 0.3, ease: 'out' },
         { motion: 'kaibutsu', kind: 'fallback', side: -1, releaseAt: 'impact', wait: false, release: { who: id, mode: 'throw', to: A.land, arc: A.arc, t: A.t, land: 'Death', spin: 1 } },
@@ -467,6 +469,8 @@ export const lock = (ctx) => {
     { music: 'battle' },
     { cam: [-0.6, 0.9, 6.2], look: [2.4, 1.2, 0.4] },
     { bark: 'lock_call' },
+    { wait: 0.6 },
+    { bark: 'lock_shout_weed' },
     // three of them lock the monster down: Kagetora hangs from its throat (far side), Weed hangs off its flank,
     // Ken clamps its haunch from behind-side. Each bite is a real contact; P4's legs stop.
     { par: [
@@ -505,6 +509,7 @@ export const lock = (ctx) => {
     // P4 bends its head down and bites Kagetora's neck, flings him, then tears Jerome loose
     { cam: [0.2, 1.3, 6.4], look: [2.4, 1.1, 0.2], t: 0.3, ease: 'out' },
     { fn: () => { if (strain) strain(); strain = null; } },
+    { fn: () => setTimeout(() => ctx.say && ctx.say('lock_pain_kage', { noWait: true }), 380) },
     { reach: 'kaibutsu', target: 'kagetora', point: 'neck', side: 'near', t: 0.35, hold: 0.55, back: 0.4, fx: 'impact', strong: true, sfx: ['bite', 'hitHeavy'], react: 'hurt', shake: 0.6 },
     { sfx: 'hurt' },
     { release: 'kagetora', mode: 'throw', to: [B.x - half - 1.6, -1.6], arc: 0.9, t: 0.6, land: 'Idle_HitReact2', after: 'Idle_2_HeadLow' },
