@@ -580,12 +580,12 @@ export const lock = (ctx) => {
     { bark: 'lock_call' },
     { wait: 0.6 },
     { bark: 'lock_shout_weed' }, { fx: 'speed', v: 1 }, { sfx: 'rushWhoosh' },
-    // three of them lock the monster down: Kagetora hangs from its throat (far side), Weed hangs off its flank,
+    // three of them lock the monster down: Kagetora hangs from its chest under the jaws (far side), Weed hangs off its flank,
     // Ken clamps its haunch from behind-side. Each bite is a real contact; P4's legs stop.
     { par: [
-      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'kagetora', target: 'kaibutsu', point: 'throat', side: 'far', wind: 0.2, t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
-      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'weed', target: 'kaibutsu', point: 'flank', side: 'near', wind: 0.25, t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
-      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', wind: 0.3, t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
+      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'kagetora', target: 'kaibutsu', point: 'chest', side: 'far', wind: 0.2, t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'none', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
+      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'weed', target: 'kaibutsu', point: { bone: 'spine_02', dir: [-0.7, 0.1, 1], name: 'flank' }, side: 'near', wind: 0.25, t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'none', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
+      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', wind: 0.3, t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'none', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
       { cam: [0.6, 1.4, 7.4], look: [3.0, 1.2, 0.3], t: 1.0, ease: 'out' },
     ] },
     { fx: 'speed', v: 0 },
@@ -595,11 +595,11 @@ export const lock = (ctx) => {
     { track: 'mouth:ken', from: [-0.8, 0.15, 1.0], to: [-0.65, 0.1, 0.85], look: [0.05, -0.05, 0], t: 0.6 },
     // P4 strains against them: legs locked, body shudders
     { fn: () => {
-      boss.play('Idle_HitReact2', { loop: false, timeScale: 0.4 });
+      boss.play('Idle', { timeScale: 0.4 });   // head stays up (the three hang from it)
       let t = 0;
-      strain = boss.overlay((d, dt) => { t += dt; if (d.cur && d.cur.action) d.cur.action.timeScale = 0.05; const sp = d.bones.spine_02; if (sp) ctx.contact.rotBoneWorld(sp, new THREE.Vector3(1, 0, 0), Math.sin(t * 31) * 0.025); });
+      strain = boss.overlay((d, dt) => { t += dt; const sp = d.bones.spine_02; if (sp) ctx.contact.rotBoneWorld(sp, new THREE.Vector3(1, 0, 0), Math.sin(t * 31) * 0.025); });
     } },
-    { thrash: 'kaibutsu', t: 1.2, amp: 0.18, freq: 3.2 },
+    { thrash: 'kaibutsu', t: 1.2, amp: 0.07, freq: 3.2 },   // a shudder: the head stays clear of the dogs hanging from it
     { freeze: 0.45 },
     // Jerome goes for the artery in the bare left chest
     { par: [
@@ -711,7 +711,7 @@ export const post = (ctx) => {
     { par: [
       { fn: () => tween(B, { x: 8.8 }, 2.0, { real: true, ease: 'inOut', onUpdate: () => { boss.root.position.x = B.x; } }) },
       { anim: 'kaibutsu', name: 'Walk', ts: 0.5 },
-      { move: 'ken', x: 6.0, z: 1.9, t: 1.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
+      { move: 'ken', x: 6.0, z: 2.5, t: 1.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
       { move: 'kagetora', x: 5.2, z: 1.3, t: 1.7, anim: 'Gallop', ts: 1.5, ease: 'in' },
       { cam: [5.0, 1.8, 7.0], look: [8.6, 1.6, 0], t: 2.0 },
     ] },
@@ -731,7 +731,7 @@ export const post = (ctx) => {
       const all = [boss, w, cast.ken, cast.kagetora];
       const p0 = boss.root.position.clone();
       await tween({ k: 0 }, { k: 1 }, 1.0, { real: true, ease: 'in', onUpdate: k => { boss.root.position.set(p0.x + k * 2.2, p0.y + Math.sin(k * Math.PI) * 0.5 - k * k * 1.2, p0.z); } });
-      ctx.contact.releaseAll();
+      ctx.contact.releaseAll(false);   // fangs let go mid-air (no snapping back onto the ground)
       all.forEach(d => { d.fade(1); });
     } },
     { music: null, fade: 0.6 }, { amb: 'gorge' }, { sfx: 'whoosh' },
@@ -742,7 +742,7 @@ export const post = (ctx) => {
       boss.root.position.set(12, -4, 0.4); boss.face(-1, true); boss.play('Death', { loop: false, timeScale: 0.3 });
       cast.ken.root.position.set(11.0, -3.2, 1.3); cast.ken.play('Gallop_Jump', { loop: false });
       cast.kagetora.root.position.set(12.8, -3.0, 1.2); cast.kagetora.play('Gallop_Jump', { loop: false });
-      w.root.position.set(11.6, -2.6, 1.6); w.play('Gallop_Jump', { loop: false });
+      w.root.position.set(12.3, -2.4, 2.1); w.play('Gallop_Jump', { loop: false });
       for (const d of [boss, cast.ken, cast.kagetora, w]) d.root.visible = true;
     } },
     { cam: [3.6, -1.2, 4.4], look: [12.0, -3.4, 0.3] },

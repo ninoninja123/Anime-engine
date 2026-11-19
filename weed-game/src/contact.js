@@ -175,8 +175,8 @@ export function bodySpheres(dog) {
   return out;
 }
 /** Pienin normalisoitu etäisyys kahden vartalon välillä (d / (ra+rb)); < ~0.6 = sisäkkäin. skipA: hyökkääjän pää/kaula ohitetaan. */
-export function bodyOverlap(a, b, skipA = []) {
-  const A = bodySpheres(a).filter(s => !skipA.includes(s.bone)), B = bodySpheres(b);
+export function bodyOverlap(a, b, skipA = [], skipB = []) {
+  const A = bodySpheres(a).filter(s => !skipA.includes(s.bone)), B = bodySpheres(b).filter(s => !skipB.includes(s.bone));
   let worst = 9, pair = null;
   for (const s of A) for (const t of B) { const k = s.p.distanceTo(t.p) / (s.r + t.r); if (k < worst) { worst = k; pair = [s.bone, t.bone]; } }
   return { k: worst, pair };
@@ -368,19 +368,21 @@ function solveBody(c, P, extraPitch = 0, allowAir = true) {
 /** Jos hyökkääjän vartalo painuu kohteen sisään (heilunta, riuhtonta), kallista sitä ulospäin (roll) kunnes irti. */
 const SKIP_PIN = ['head', 'neck', 'spine_03'];
 function pushOut(c, P, extra) {
-  let k = bodyOverlap(c.a, c.tg, SKIP_PIN).k;
-  for (let i = 0; i < 6 && k < 0.6; i++) {
+  const skB = c.ref && c.ref.bone ? [c.ref.bone.name] : [];
+  let k = bodyOverlap(c.a, c.tg, SKIP_PIN, skB).k;
+  c.pitchAdj = c.pitchAdj || 0;
+  for (let i = 0; i < 10 && k < 0.62; i++) {
     let best = 0;
-    for (const [key, dr] of [['roll', 0.08], ['roll', -0.08], ['yaw', 0.1], ['yaw', -0.1]]) {
-      c[key] += dr; solveBody(c, P, extra, true);
-      const k2 = bodyOverlap(c.a, c.tg, SKIP_PIN).k;
+    for (const [key, dr] of [['roll', 0.08], ['roll', -0.08], ['yaw', 0.1], ['yaw', -0.1], ['pitchAdj', 0.1], ['pitchAdj', -0.1]]) {
+      c[key] += dr; solveBody(c, P, extra + c.pitchAdj, true);
+      const k2 = bodyOverlap(c.a, c.tg, SKIP_PIN, skB).k;
       c[key] -= dr;
       if (k2 > k + 1e-3) { k = k2; best = [key, dr]; }
     }
     if (!best) break;
     c[best[0]] = clamp(c[best[0]] + best[1], -1.3, 1.3);
   }
-  solveBody(c, P, extra, true);
+  solveBody(c, P, extra + c.pitchAdj, true);
 }
 
 /**
@@ -461,7 +463,7 @@ export function release(o) {
 export function cancel(dog) { const d = dogOf(dog); for (const c of [...active]) if (c.a === d) endCtrl(c, true); }
 
 /** Hampaat irti heti ilman animaatiota (ohitus / kohtauksen loppu). */
-export function releaseAll() { for (const c of [...active]) endCtrl(c, true); }
+export function releaseAll(snap = true) { for (const c of [...active]) { endCtrl(c, snap); if (!snap) c.a.pose.rotation.set(0, 0, 0); } }
 
 function endCtrl(c, snap) {
   active.delete(c); if (pins[c.a.id] === c) delete pins[c.a.id];
@@ -715,7 +717,7 @@ export function reach(o) {
       hit = true; a.root.updateMatrixWorld(true); eff(M);
       const dist = M.distanceTo(P);
       Object.assign(rec, { scene: LOG.scene, who: a.id, target: tg.id, point: ref.name, part: paw ? 'paw' : 'jaw', dist: +dist.toFixed(4), th: tg.height, ratio: +(dist / tg.height).toFixed(4),
-        bodyK: +bodyOverlap(tg, a, ['head', 'neck', 'spine_03']).k.toFixed(3), P: [P.x, P.y, P.z].map(v => +v.toFixed(3)), M: [M.x, M.y, M.z].map(v => +v.toFixed(3)), t: +E.time.toFixed(2) });
+        bodyK: +bodyOverlap(tg, a, ['head', 'neck', 'spine_03'], ['head']).k.toFixed(3), P: [P.x, P.y, P.z].map(v => +v.toFixed(3)), M: [M.x, M.y, M.z].map(v => +v.toFixed(3)), t: +E.time.toFixed(2) });
       LOG.strikes.push(rec);
       hitFx({ o: { strong: o.strong, fx: o.fx, sfx: o.sfx ?? (paw ? ['hitHeavy'] : ['bite']), hitstop: o.hitstop, shake: o.shake }, part: paw ? 'paw' : 'jaw' }, P.clone());
       if (o.react !== 'none') react(tg, o.react || 'hurt', Math.sign(tg.root.position.x - a.root.position.x) || 1, o.reactOpts || {});
@@ -783,7 +785,7 @@ function monitor(dtr) {
     }
     // purennassa: hyökkääjän vartalo (ei pää/kaula) ei saa mennä kohteen sisään
     if (busyA && busyA.tg === b && (busyA.phase === 'pin' || busyA.phase === 'lunge')) {
-      const ov = bodyOverlap(a, b, ['head', 'neck', 'spine_03']);
+      const ov = bodyOverlap(a, b, ['head', 'neck', 'spine_03'], busyA.ref && busyA.ref.bone ? [busyA.ref.bone.name] : []);   // purtu luu itse ei ole läpileikkaus
       if (ov.k < 0.5) add('pin_inside', a, b, { k: +ov.k.toFixed(2), pair: ov.pair, phase: busyA.phase });
     }
   }
