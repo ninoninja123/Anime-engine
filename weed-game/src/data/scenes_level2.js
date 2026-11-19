@@ -580,12 +580,12 @@ export const lock = (ctx) => {
     { bark: 'lock_call' },
     { wait: 0.6 },
     { bark: 'lock_shout_weed' }, { fx: 'speed', v: 1 }, { sfx: 'rushWhoosh' },
-    // three of them lock the monster down: Kagetora hangs from its throat (far side), Weed hangs off its flank,
+    // three of them lock the monster down: Kagetora hangs from its chest under the jaws (far side), Weed hangs off its flank,
     // Ken clamps its haunch from behind-side. Each bite is a real contact; P4's legs stop.
     { par: [
-      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'kagetora', target: 'kaibutsu', point: 'throat', side: 'far', wind: 0.2, t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
-      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'weed', target: 'kaibutsu', point: { bone: 'spine_02', dir: [-0.4, 0.2, 1], name: 'flank' }, side: 'near', wind: 0.25, t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
-      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', wind: 0.3, t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
+      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'kagetora', target: 'kaibutsu', point: 'chest', side: 'far', wind: 0.2, t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'none', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
+      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'weed', target: 'kaibutsu', point: { bone: 'spine_02', dir: [-0.7, 0.1, 1], name: 'flank' }, side: 'near', wind: 0.25, t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'none', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
+      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', wind: 0.3, t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'none', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
       { cam: [0.6, 1.4, 7.4], look: [3.0, 1.2, 0.3], t: 1.0, ease: 'out' },
     ] },
     { fx: 'speed', v: 0 },
@@ -599,7 +599,7 @@ export const lock = (ctx) => {
       let t = 0;
       strain = boss.overlay((d, dt) => { t += dt; const sp = d.bones.spine_02; if (sp) ctx.contact.rotBoneWorld(sp, new THREE.Vector3(1, 0, 0), Math.sin(t * 31) * 0.025); });
     } },
-    { thrash: 'kaibutsu', t: 1.2, amp: 0.18, freq: 3.2 },
+    { thrash: 'kaibutsu', t: 1.2, amp: 0.07, freq: 3.2 },   // a shudder: the head stays clear of the dogs hanging from it
     { freeze: 0.45 },
     // Jerome goes for the artery in the bare left chest
     { par: [
