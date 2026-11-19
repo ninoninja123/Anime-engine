@@ -1,6 +1,6 @@
 // PROLOGUE "The story so far" – seven panels drawn with code (SVG layers, src/story/panels.js). Player: src/prologue.js.
 // Backstory (Ginga: Nagareboshi Gin) → years of peace → the present crisis at the start of Weed's story.
-// Only well-established canon is narrated; uncertain details are left out or kept general (docs/weed-game/story-intro-svg.md).
+// Only well-established canon is narrated; uncertain details are left out or kept general (docs/weed-game/canon-deep-dive.md); art notes: docs/weed-game/story-intro-svg.md.
 //
 // Panel fields:
 //   scene      key in SCENES (src/story/panels.js): returns the panel's SVG layers far → near

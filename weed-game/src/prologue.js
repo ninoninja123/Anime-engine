@@ -70,7 +70,7 @@ function spawn(kind, init) {
     case 'snow': p.vx = R(-14, 6) * s; p.vy = R(18, 34) * s; p.r = R(0.8, 1.8) * s; break;
     case 'blizzard': p.vx = R(-260, -140) * s; p.vy = R(60, 120) * s; p.r = R(0.7, 1.6) * s; p.x = init ? R(0, fxW) : fxW + 10; p.y = R(-20, fxH); break;
     case 'motes': p.vx = R(-5, 5); p.vy = R(-8, -2); p.r = R(0.6, 1.4) * s; p.y = init ? R(0, fxH) : fxH + 5; break;
-    case 'embers': p.vx = R(-4, 14) * s; p.vy = R(-34, -14) * s; p.r = R(0.8, 1.7) * s; p.y = init ? R(fxH * 0.2, fxH) : fxH + 5; p.life = R(3, 7); break;
+    case 'embers': p.vx = R(-4, 14) * s; p.vy = R(-34, -14) * s; p.r = R(0.6, 1.2) * Math.min(s, 1.3); p.y = init ? R(fxH * 0.2, fxH) : fxH + 5; p.life = R(3, 7); break;
     case 'leaves': p.vx = R(-30, -8) * s; p.vy = R(14, 34) * s; p.r = R(2, 3.6) * s; p.x = init ? R(0, fxW) : R(0, fxW * 1.3); p.spin = R(1, 4); p.col = ['#c8642a', '#e0a040', '#a8401e', '#d8b060'][Math.floor(R(0, 4))]; break;
     case 'seeds': p.vx = R(12, 30) * s; p.vy = R(-6, 4); p.r = R(1, 2.2) * s; p.x = init ? R(0, fxW) : -10; p.y = R(0, fxH); break;
     case 'fireflies': p.vx = R(-6, 6); p.vy = R(-6, 6); p.r = R(1.2, 2.4) * s; p.y = R(fxH * 0.3, fxH); p.x = R(0, fxW); break;
