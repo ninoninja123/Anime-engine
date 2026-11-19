@@ -552,7 +552,7 @@ function runUpdate(dt, dtr) {
       let safe = o.cleared;
       if (!safe) safe = o.kind === 'up' ? R.y > o.h * PLAYER.run.clearFrac : o.kind === 'down' ? R.slideT > 0 : false;
       if (!safe && R.inv <= 0) runHit(o);
-      else if (!o.cleared && !o.knocked) { if (o.kind === 'up') FX.ring(new THREE.Vector3(x, 0.3, 0), 0x9fe0ff, 0.9, 0.3); }
+      else if (!o.cleared && !o.knocked) { if (o.kind === 'up') { FX.ring(new THREE.Vector3(x, 0.3, 0), 0x9fe0ff, 0.9, 0.3); sfx.tick(); } }
     }
   }
   // voice calls
