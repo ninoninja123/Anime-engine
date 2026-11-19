@@ -183,13 +183,15 @@ export function bodyOverlap(a, b, skipA = []) {
 }
 
 // ------------------------------------------------------------------ luukerrokset (riuhtonta, nytkähdys)
+const _m4 = new THREE.Matrix4(), _ax = new THREE.Vector3();
 export function rotBoneWorld(bone, axis, ang) {
-  // kierrä luuta maailman akselin ympäri (vanhemman suunta huomioiden)
+  // kierrä luuta maailman akselin ympäri: akseli vanhemman avaruuteen; peilatussa hierarkiassa (det < 0, esim. P4) kulma kääntyy
   const par = bone.parent; par.updateWorldMatrix(true, false);
-  par.getWorldQuaternion(_q);
-  _q2.setFromAxisAngle(axis, ang);
-  const inv = _q.clone().invert();
-  bone.quaternion.premultiply(inv.multiply(_q2).multiply(_q));
+  _m4.copy(par.matrixWorld).invert();
+  _ax.copy(axis).transformDirection(_m4);
+  const sgn = par.matrixWorld.determinant() < 0 ? -1 : 1;
+  _q2.setFromAxisAngle(_ax, ang * sgn);
+  bone.quaternion.premultiply(_q2);
 }
 const Y = new THREE.Vector3(0, 1, 0), Z = new THREE.Vector3(0, 0, 1), X = new THREE.Vector3(1, 0, 0);
 
@@ -275,7 +277,7 @@ function solveBody(c, P, extraPitch = 0, allowAir = true) {
     return { ox, oy, oz, f: P.y - oy + hy };
   };
   let th, r;
-  const lo = c.minPitch ?? -0.55, hi = c.maxPitch ?? 1.2;
+  const lo = c.minPitch ?? -0.9, hi = c.maxPitch ?? 1.2;
   const rLo = evalAt(lo);
   if (rLo.f <= 0.02) { th = lo; r = rLo; }                      // matala kohde: nokka alas, juuri maassa
   else {
@@ -296,6 +298,24 @@ function solveBody(c, P, extraPitch = 0, allowAir = true) {
   R.add(_d.copy(P).sub(_c)); if (!c.hanging) R.y = Math.max(0, R.y);
   a.root.updateMatrixWorld(true);
   return th;
+}
+
+/** Jos hyökkääjän vartalo painuu kohteen sisään (heilunta, riuhtonta), kallista sitä ulospäin (roll) kunnes irti. */
+const SKIP_PIN = ['head', 'neck', 'spine_03'];
+function pushOut(c, P, extra) {
+  let k = bodyOverlap(c.a, c.tg, SKIP_PIN).k;
+  for (let i = 0; i < 6 && k < 0.6; i++) {
+    let best = 0;
+    for (const dr of [0.08, -0.08]) {
+      c.roll += dr; solveBody(c, P, extra, true);
+      const k2 = bodyOverlap(c.a, c.tg, SKIP_PIN).k;
+      c.roll -= dr;
+      if (k2 > k + 1e-3) { k = k2; best = dr; }
+    }
+    if (!best) break;
+    c.roll = clamp(c.roll + best, -1.1, 1.1);
+  }
+  solveBody(c, P, extra, true);
 }
 
 /**
@@ -432,6 +452,7 @@ function update(dt, dtr) {
       continue;
     }
     const a = c.a; c.el += dt;
+    c.tg.root.updateMatrixWorld(true);          // kohteen luut tämän ruudun asentoon (klippi + kerrokset)
     const P = c.fixedP ? c.fixedP.clone() : c.ref.world(new THREE.Vector3());
     if (c.phase === 'lunge') {
       const k = Math.min(1, c.el / c.T);
@@ -450,6 +471,7 @@ function update(dt, dtr) {
       if (k >= 1) {
         solveBody(c, P, 0, true);
         if (c.o.whiff) { whiff(c); continue; }
+        pushOut(c, P, 0);
         contact(c);
       }
       continue;
@@ -464,7 +486,7 @@ function update(dt, dtr) {
         c.swing = clamp(c.swing + c.swingV * dt, -0.6, 0.6);
       }
       c.prevP = P.clone();
-      if (dt > 0) solveBody(c, P, c.swing + (c.o.pinPitch || 0), true);
+      if (dt > 0) { solveBody(c, P, c.swing + (c.o.pinPitch || 0), true); pushOut(c, P, c.swing + (c.o.pinPitch || 0)); }
       if (c.el >= c.pinT) { release({ who: a.id, mode: c.o.then || 'drop', ...(c.o.releaseOpts || {}) }); }
       continue;
     }
@@ -513,7 +535,7 @@ export function reach(o) {
   const a = dogOf(o.who), tg = dogOf(o.target);
   if (!a || !tg || !a.bones) return Promise.resolve();
   const ref = targetRef(tg, o.point || 'neck', o.side || 'near', o.sink ?? 0.02 * tg.height);
-  const joints = [['head', 0.9], ['neck', 1.0], ['spine_03', 0.35]].filter(([n]) => a.bones[n]);
+  const joints = [['head', 1.1], ['neck', 1.2], ['spine_03', 0.5], ['spine_02', 0.25]].filter(([n]) => a.bones[n]);
   const T = Math.max(0.05, o.t ?? 0.3), hold = o.hold ?? 0.25, back = o.back ?? 0.35;
   const P = new THREE.Vector3(), M = new THREE.Vector3(), J = new THREE.Vector3(), v1 = new THREE.Vector3(), v2 = new THREE.Vector3(), ax = new THREE.Vector3();
   let t = 0, hit = false, done = false;
@@ -525,7 +547,7 @@ export function reach(o) {
     t += dt;
     const w = t < T ? ease.inOut(t / T) : t < T + hold ? 1 : Math.max(0, 1 - (t - T - hold) / back);
     ref.world(P);
-    for (let it = 0; it < 4; it++) {
+    for (let it = 0; it < 5; it++) {
       for (const [bn, lim] of joints) {
         a.root.updateMatrixWorld(true);
         const b = a.bones[bn]; b.getWorldPosition(J); mouthWorld(a, M);
@@ -611,3 +633,4 @@ if (typeof window !== 'undefined') {
   };
   LOG.reset = () => { LOG.strikes.length = 0; LOG.violations.length = 0; seen.clear(); };
 }
+if (typeof window !== 'undefined') LOG.api = { SEP, strike, reach, release, releaseAll, thrash, react, mouthWorld, targetRef, bodyOverlap };

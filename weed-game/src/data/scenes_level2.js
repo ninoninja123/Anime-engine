@@ -408,15 +408,15 @@ export const lock = (ctx) => {
     { place: 'kaibutsu', x: 3.4, z: 0, face: -1, anim: 'Idle_HitReact1', loop: false },
     { place: 'weed', x: -1.8, z: 1.7, face: 1, anim: 'Gallop', ts: 1.4 },
     { place: 'ken', x: -2.8, z: 2.3, face: 1, anim: 'Gallop', ts: 1.4 },
-    { place: 'kagetora', x: -2.4, z: -0.4, face: 1, anim: 'Gallop', ts: 1.4 },
+    { place: 'kagetora', x: -2.4, z: -0.6, face: 1, anim: 'Gallop', ts: 1.4 },
     { place: 'jerome', x: -5.0, z: 1.0, face: 1, anim: 'Idle' },
     { music: 'battle' },
     { cam: [-0.6, 0.9, 6.2], look: [2.4, 1.2, 0.4] },
     { bark: 'lock_call' },
-    // three of them lock the monster down: Kagetora takes the far foreleg from the front, Weed hangs off its flank,
+    // three of them lock the monster down: Kagetora hangs from its throat (far side), Weed hangs off its flank,
     // Ken clamps the near hind leg. Each bite is a real contact; P4's legs stop.
     { par: [
-      { strike: 'kagetora', target: 'kaibutsu', point: 'foreleg', side: 'far', t: 0.75, arc: 0.15, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25 },
+      { strike: 'kagetora', target: 'kaibutsu', point: 'throat', side: 'far', t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
       { strike: 'weed', target: 'kaibutsu', point: 'flank', side: 'near', t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
       { strike: 'ken', target: 'kaibutsu', point: 'hindleg', side: 'near', t: 1.0, arc: 0.2, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25 },
       { cam: [0.6, 1.4, 7.4], look: [3.0, 1.2, 0.3], t: 1.0, ease: 'out' },
