@@ -153,7 +153,7 @@ export function targetRef(target, point = 'neck', side = 'near', sink = 0.03) {
   const bw = b.getWorldPosition(new THREE.Vector3());
   let best = null, bd = -1e9;
   for (const p of list) { const w = b.localToWorld(_a.copy(p)); const k = _b.copy(w).sub(bw).dot(dir); if (k > bd) { bd = k; best = p; } }
-  return mkRef(tg, String(point), b, best, sink);
+  return mkRef(tg, typeof point === 'string' ? point : (point.name || bn), b, best, sink);
 }
 function mkRef(tg, name, bone, local, sink) {
   const p = local.clone();
@@ -353,6 +353,9 @@ export function release(o) {
   if (o.thrown) a.play(o.thrown, { loop: false });
   return new Promise(res => { c.relRes = res; });
 }
+
+/** Keskeytä hahmon isku/purenta heti (esim. pelaaja saa osuman kesken syöksyn). */
+export function cancel(dog) { const d = dogOf(dog); for (const c of [...active]) if (c.a === d) endCtrl(c, true); }
 
 /** Hampaat irti heti ilman animaatiota (ohitus / kohtauksen loppu). */
 export function releaseAll() { for (const c of [...active]) endCtrl(c, true); }
@@ -601,5 +604,10 @@ function add(kind, a, b, extra) {
 if (typeof window !== 'undefined') {
   LOG.release = () => { LOG.pending = null; };
   LOG.measure = (who, target, point, side) => { const r = targetRef(target, point, side); return mouthWorld(who).distanceTo(r.world(new THREE.Vector3())); };
+  LOG.debugSolve = (id, yaw, maxPitch, roll = 0) => {   // contact-check / säätö: kokeile asentoa pysäytetyssä kontaktissa
+    const c = [...active].find(x => x.id === id); if (!c) return null;
+    c.yaw = yaw; c.maxPitch = maxPitch; c.roll = roll; solveBody(c, c.ref.world(new THREE.Vector3()));
+    return { k: bodyOverlap(c.a, c.tg, ['head', 'neck', 'spine_03']), hanging: c.hanging, root: c.a.root.position.toArray() };
+  };
   LOG.reset = () => { LOG.strikes.length = 0; LOG.violations.length = 0; seen.clear(); };
 }

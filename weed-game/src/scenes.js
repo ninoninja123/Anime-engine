@@ -155,10 +155,10 @@ export async function freezeFrame(secs, tint = 'freeze') {
 }
 
 /** Aja kohtaus. ctx välitetään fn-askelille. */
-export async function runScene(steps, ctx = {}) {
+export async function runScene(steps, ctx = {}, opts = {}) {
   for (const s of steps) {
     try { await step(s, ctx); } catch (e) { console.error('scene step failed', s, e); }
   }
-  C.releaseAll();
+  if (!opts.keepPins) C.releaseAll();     // keepPins: purenta jatkuu seuraavaan kohtaukseen (finaali -> jälkikohtaus)
   E.timeScale = 1; FX.speedLines(0);
 }

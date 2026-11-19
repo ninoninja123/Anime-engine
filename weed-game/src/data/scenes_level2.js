@@ -170,7 +170,7 @@ export const smith = (ctx) => {
     { slow: 0.4 },
     // the leap: jaws close on the side of P4's neck (real contact, then the teeth stay in)
     { par: [
-      { strike: 'smith', target: 'kaibutsu', point: { bone: 'spine_03', dir: [-0.15, 0.6, 0.8] }, side: 'near', t: 0.42, arc: 0.7, anim: 'Gallop_Jump', hitAt: 0.5, yaw: 0.8, maxPitch: 1.0,
+      { strike: 'smith', target: 'kaibutsu', point: { bone: 'spine_03', dir: [-0.15, 0.6, 0.8] }, side: 'near', t: 0.42, arc: 0.7, anim: 'Gallop_Jump', hitAt: 0.5, yaw: 0.8, roll: -0.4, maxPitch: 1.0,
         pin: true, react: 'roar', fx: 'impact', strong: true, sfx: ['bite', 'hitHeavy'], hitstop: 0.14, shake: 0.7, tug: 0.22 },
       { cam: [1.5, 1.4, 5.0], look: [3.4, 1.9, 0.3], t: 0.9, ease: 'out' },
     ] },
@@ -481,29 +481,34 @@ export const finale = (ctx) => {
     { say: 'finale_cry' },
 
     { sfx: 'battoga' }, { fx: 'speed', v: 1 },
-    { anim: 'weed', name: 'Battoga', loop: false },        // tavallinen Battōga (canon: Zetsu Tenrō vasta jaksossa 15)
     { caption: '<b>BATTŌGA</b>', t: 2.0, wait: false },
     { slow: 0.18 },
-    { fn: async () => {
-      const arcs = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, w.height * 0.5, 0.2)), 0x9fd0ff, 0.9, 0.4, Math.random() * 6), E.lowFx ? 360 : 180);
-      const orbit = { a: -0.6 }; const p0 = new THREE.Vector3();
-      FX.vortex(w.root, 1, w.height * 1.1, 2.2, false);
-      if (!w.hasClip || !w.hasClip('Battoga')) tween(w.spin.rotation, { z: -Math.PI * 6, x: Math.PI * 2 }, 1.9, { real: true, ease: 'inOut' });
-      else { w.cur.action.timeScale = 2.6; }   // kierre valmis kameran kiertäessä (slow-mo 0.18)
-      tween(W, { x: B.x - ctx.bossHalf() * 0.35, y: boss.height * 0.55 }, 1.9, { real: true, ease: 'inOut', onUpdate: () => w.root.position.set(W.x, W.y, 0) });
-      await tween(orbit, { a: 1.4 }, 1.9, { real: true, ease: 'inOut', onUpdate: () => {
-        p0.copy(w.root.position);
-        E.camPos.set(p0.x + Math.sin(orbit.a) * 3.6, p0.y + 0.9, p0.z + Math.cos(orbit.a) * 3.6);
-        E.camLook.set(p0.x, p0.y + 0.4, 0);
-      } });
-      clearInterval(arcs);
-      const hp = boss.weak.getWorldPosition(new THREE.Vector3());
-      FX.flash('#ffffff', 1.4, 1); sfx.boom();
-      FX.burst(hp, { color: 0xffffff, count: 60, speed: 10, life: 1 }); FX.ring(hp, 0xbfe4ff, 8, 0.8);
-      w.spin.rotation.set(0, 0, 0);
-    } },
+    // the spinning fang: Weed corkscrews in and his jaws close on the bare skin of the left chest (real contact, held)
+    { par: [
+      { strike: 'weed', target: 'kaibutsu', point: 'chest_weak', side: 'near', t: 0.46, arc: 0.9, anim: 'Battoga', ts: 2.2, hitAt: 0.45,
+        pin: true, react: 'stagger', reactOpts: { push: 0.25, onMove: x => { B.x = x; } }, fx: 'crit', strong: true, sfx: ['boom', 'bite'], hitstop: 0, shake: 1.0, tug: 0.3, maxPitch: 1.0,
+        onHit: (hp) => {
+          FX.flash('#ffffff', 1.4, 1);
+          FX.burst(hp, { color: 0xffffff, count: 60, speed: 10, life: 1 }); FX.ring(hp, 0xbfe4ff, 8, 0.8);
+          boss.weakReveal = 1;
+        } },
+      { fn: async () => {
+        const arcs = setInterval(() => FX.slashArc(w.root.position.clone().add(new THREE.Vector3(0, w.height * 0.5, 0.2)), 0x9fd0ff, 0.9, 0.4, Math.random() * 6), E.lowFx ? 360 : 180);
+        FX.vortex(w.root, 1, w.height * 1.1, 2.2, false);
+        const orbit = { a: -0.6 }; const p0 = new THREE.Vector3();
+        await tween(orbit, { a: 1.1 }, 2.4, { real: true, ease: 'inOut', onUpdate: () => {
+          p0.copy(w.root.position).lerp(boss.weak.getWorldPosition(new THREE.Vector3()), 0.5);
+          E.camPos.set(p0.x + Math.sin(orbit.a) * 3.8, p0.y + 0.7, p0.z + Math.cos(orbit.a) * 3.8);
+          E.camLook.set(p0.x, p0.y + 0.2, p0.z);
+        } });
+        clearInterval(arcs);
+      } },
+    ] },
     { shake: 1.0 }, { freeze: 0.9 },
     { slow: 1 }, { fx: 'speed', v: 0 },
+    { fn: () => { const n = ctx.contact.mouthWorld('weed'); E.camPos.set(n.x - 1.6, n.y + 0.2, n.z + 2.4); E.camLook.set(n.x + 0.3, n.y - 0.1, n.z); } },
+    { sfx: 'roar' }, { thrash: 'kaibutsu', t: 0.9, amp: 0.3, freq: 2.4 },
+    { wait: 0.6 },
   ];
 };
 
@@ -515,31 +520,34 @@ export const post = (ctx) => {
   return [
     // the monster staggers to the edge with Weed's fangs in its flank; Ken & Kagetora grab on
     { anim: 'kaibutsu', name: 'Idle_HitReact2', loop: false },
-    { fn: () => { w.root.position.set(B.x - 0.4, boss.height * 0.5, 0.6); w.play('Attack', { loop: true, timeScale: 0.8 }); } },
+    // (Weed's fangs are still in its chest from the Battōga – the pin carries over from the finale)
+    { fn: () => { if (!ctx.contact.pins.weed) ctx.contact.strike({ who: 'weed', target: 'kaibutsu', point: 'chest_weak', t: 0.05, pin: true, fx: 'none', sfx: [], react: 'none', maxPitch: 1.0 }); } },
     { place: 'ken', x: -2, z: 0.8, face: 1, anim: 'Gallop', ts: 1.4 },
     { place: 'kagetora', x: -2.8, z: -0.6, face: 1, anim: 'Gallop', ts: 1.4 },
     { cam: [2.0, 1.6, 7.5], look: [5.5, 1.6, 0] },
     { par: [
-      { fn: () => tween(B, { x: 8.8 }, 2.0, { real: true, ease: 'inOut', onUpdate: () => { boss.root.position.x = B.x; w.root.position.x = B.x - 0.4; } }) },
+      { fn: () => tween(B, { x: 8.8 }, 2.0, { real: true, ease: 'inOut', onUpdate: () => { boss.root.position.x = B.x; } }) },
       { anim: 'kaibutsu', name: 'Walk', ts: 0.5 },
-      { move: 'ken', x: 6.4, z: 0.5, t: 1.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
-      { move: 'kagetora', x: 6.0, z: -0.3, t: 1.7, anim: 'Gallop', ts: 1.5, ease: 'in' },
+      { move: 'ken', x: 6.0, z: 1.9, t: 1.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
+      { move: 'kagetora', x: 5.2, z: 1.3, t: 1.7, anim: 'Gallop', ts: 1.5, ease: 'in' },
       { cam: [5.0, 1.8, 7.0], look: [8.6, 1.6, 0], t: 2.0 },
     ] },
     { bark: 'fall_hold' },
     { par: [
-      { move: 'ken', x: 8.0, y: 1.0, z: 0.4, t: 0.35, ease: 'out', anim: 'Attack' },
-      { move: 'kagetora', x: 7.7, y: 0.8, z: -0.2, t: 0.35, ease: 'out', anim: 'Attack' },
+      { strike: 'ken', target: 'kaibutsu', point: 'hindleg', side: 'near', t: 0.35, arc: 0.2, hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'] },
+      { strike: 'kagetora', target: 'kaibutsu', point: 'hip', side: 'near', t: 0.4, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'none', fx: 'impact', sfx: ['bite'], maxPitch: 1.0 },
     ] },
     { say: 'fall_with' },
     // over the edge: everyone plunges into the gorge (no gorge mesh yet -> white-out while falling)
     { cam: [5.5, 3.2, 8.5], look: [10, 0.5, 0], t: 0.3 },
     { fn: async () => {
       boss.play('Death', { loop: false, timeScale: 0.5 });
-      const ds = [boss, w, cast.ken, cast.kagetora];
-      const p0 = ds.map(d => d.root.position.clone());
+      // the three are still biting: their pins carry them over the edge with the monster
+      const all = [boss, w, cast.ken, cast.kagetora];
+      const p0 = boss.root.position.clone();
       setTimeout(() => FX.flash('#ffffff', 3.2, 1), 650);
-      await tween({ k: 0 }, { k: 1 }, 1.1, { real: true, ease: 'in', onUpdate: k => ds.forEach((d, i) => { d.root.position.set(p0[i].x + k * 2.5, p0[i].y + Math.sin(k * Math.PI) * 0.6 - k * k * 1.5, p0[i].z); d.fade(1 - Math.max(0, k - 0.6) * 2.5); }) });
+      await tween({ k: 0 }, { k: 1 }, 1.1, { real: true, ease: 'in', onUpdate: k => { boss.root.position.set(p0.x + k * 2.5, p0.y + Math.sin(k * Math.PI) * 0.6 - k * k * 1.5, p0.z); all.forEach(d => d.fade(1 - Math.max(0, k - 0.6) * 2.5)); } });
+      ctx.contact.releaseAll();
     } },
     { sfx: 'rock' }, { amb: 'gorge' },
     { music: null, fade: 1.5 },
@@ -553,6 +561,7 @@ export const post = (ctx) => {
     { place: 'kaibutsu', x: 6.2, z: -1.2, face: -1, anim: 'Death', loop: false },
     { fn: () => { const t = boss.cur; if (t) { t.t = 99; if (t.action) t.action.time = t.action.getClip().duration - 0.01; } } },   // already lying
     { place: 'ken', x: -5.5, z: 0.4, face: 1, anim: 'Walk', ts: 0.6 },
+    { fn: () => { cast.kagetora._carried = true; } },                  // carried on Ken's back (intended, not a collision)
     { place: 'kagetora', x: -5.5, y: cast.ken.height * 0.62, z: 0.4, face: 1, anim: 'LieDown' },
     { cam: [-4.5, 2.6, 9], look: [0.5, 0.6, 0] },
     { amb: 'river' }, { caption: 'Below the falls', t: 2.4, wait: false },
@@ -565,7 +574,7 @@ export const post = (ctx) => {
     { say: 'post_alive_ken' },
     { say: 'post_alive_kage' },
     { expr: 'ken', name: null },
-    { fn: () => { cast.kagetora.root.position.set(-1.5, 0, 0.9); } },
+    { fn: () => { cast.kagetora.root.position.set(-1.5, 0, 0.9); cast.kagetora._carried = false; } },
     // Weed holds Jerome on a rock in the current
     { place: 'jerome', x: 2.4, z: -0.3, face: -1, anim: 'LieDown' },
     { place: 'weed', x: 1.5, z: 0.1, face: 1, anim: 'Attack', loop: true, ts: 0.25 },
