@@ -60,6 +60,9 @@ src/main.js              käynnistys, valikko, Lauma-galleria (kaikki hahmot py�
 tools/optimize-models.mjs  assets/models-src/*.glb -> public/models/*.glb (WebP, simplify, meshopt)
 tools/rig_dog_standalone.py  Geminin auto-riggaaja (staattinen GLB -> 24 luuta + 9 klippiä)
 tools/voices.mjs         public/audio/voice/manifest.json + docs/VOICE_LINES.md
+tools/audio-audit.py     ffmpeg-mittaus (LUFS/peak/RMS/kesto) kaikille äänille -> docs/weed-game/audio-audit.md + src/data/audio_levels.js
+tools/audio-mix-report.mjs  tapahtumien tehollinen taso pelissä miksauksen jälkeen (MIX, sfx_map.js) -> audio-audit.md
+tools/sound-coverage.mjs näkyvät kohtaustapahtumat ilman ääntä + tuntemattomat sfx-avaimet
 tools/shots.cjs          Playwright-läpiajo + kuvakaappaukset -> screenshots/
 tools/deploy-cf.py       julkaisu Cloudflare Workeriksi (Workers KV)
 ```
