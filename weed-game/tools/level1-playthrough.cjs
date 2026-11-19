@@ -141,7 +141,7 @@ const st = p => p.evaluate(() => {
   const S1 = window.__S1 || {}, d1 = window.__game && window.__game.debug1, vis = id => { const e = document.getElementById(id); return !!e && !e.classList.contains('hidden'); };
   return { t: window.__vt() / 1000, active: !!S1.active, mode: S1.mode, sec: S1.section, paused: !!S1.paused, cine: document.body.classList.contains('cine'),
     skipVis: vis('skipBtn'), defeat: vis('defeat'), result1: vis('result1'), menu: vis('menu'), pause: vis('pause'), loading: vis('loading'),
-    sceneN: S1.sceneN, hp: d1 && d1.R && S1.mode === 'run' ? d1.R.hp : d1 && d1.F ? d1.F.W.hp : null, boss: d1 && d1.F ? Math.round(d1.F.B.hp) : null,
+    tut: (() => { const e = document.getElementById('l1tut'); return e && e.classList.contains('on') ? e.textContent : ''; })(), sceneN: S1.sceneN, hp: d1 && d1.R && S1.mode === 'run' ? d1.R.hp : d1 && d1.F ? d1.F.W.hp : null, boss: d1 && d1.F ? Math.round(d1.F.B.hp) : null,
     l2: !!(window.__S && (window.__S.active || window.__S.cutscene)), saved: (() => { try { return localStorage.getItem('weed.p1.section'); } catch (_) { return null; } })() };
 });
 const click = (p, id) => p.evaluate(id => { const e = document.getElementById(id); if (!e || e.classList.contains('hidden') || getComputedStyle(e).display === 'none') return false; e.click(); return true; }, id);
@@ -161,7 +161,7 @@ async function boot(p, query, sec = null) {
 // Drive the chapter from the current state until `stop(state)` is true. Skips each scene after `skipAfter` s with the
 // Skip button. Returns the trail of modes. Fails on a mode stuck longer than its limit.
 async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {}) {
-  let last = null, since = 0, trail = [], skipped = new Set(), sceneN = 0; const hpLog = {};
+  let last = null, since = 0, trail = [], skipped = new Set(), sceneN = 0; const hpLog = {}; let lastTut = '', sinceReal = Date.now();
   const t0 = (await st(p)).t;
   for (;;) {
     await adv(p, 0.25);
@@ -170,7 +170,9 @@ async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {})
     if ((s.mode === 'run' || s.mode === 'fight') && s.hp != null) { hpLog[key] = Math.min(hpLog[key] ?? 99, s.hp); }
     if (key !== last && last && last.endsWith(':fight')) { const h = await p.evaluate(() => window.__game.debug1.F && window.__game.debug1.F.hits); if (h && h.length) console.log('     fight hits: ' + JSON.stringify(h)); }
     if (key !== last && last && last.endsWith(':run')) { const h = await p.evaluate(() => window.__game.debug1.R && window.__game.debug1.R.hits); if (h && h.length) console.log('     run hits: ' + JSON.stringify(h)); }
-    if (key !== last) { last = key; since = s.t; trail.push(key); sceneN = s.sceneN; if (onMode) await onMode(s); await shot(p, `${tag}_${trail.length}_${s.sec}_${s.mode}`); }
+    if (key !== last) { last = key; since = s.t; sinceReal = Date.now(); trail.push(key); sceneN = s.sceneN; if (onMode) await onMode(s); await shot(p, `${tag}_${trail.length}_${s.sec}_${s.mode}`); }
+    if (s.tut && s.tut !== lastTut) await shot(p, `${tag}_tut_${trail.length}_${s.tut.slice(0, 12).replace(/\W+/g, '_')}`);
+    lastTut = s.tut;
     if (stop(s)) { if (Object.keys(hpLog).length) console.log('     min hearts left: ' + JSON.stringify(hpLog)); return { ok: true, trail, s }; }
     const dur = s.t - since;
     if ((s.mode === 'scene' || s.mode === 'fightCut') && dur > skipAfter && !skipped.has(sceneN)) {
@@ -178,7 +180,8 @@ async function drive(p, tag, stop, { skipAfter = 1.2, maxT = 900, onMode } = {})
       skipped.add(sceneN); await click(p, 'skipBtn');
     }
     const limit = s.mode === 'scene' || s.mode === 'fightCut' ? skipAfter + 6 : s.mode === 'run' ? 60 : s.mode === 'fight' ? 240 : s.mode === 'leap' ? 12 : 20;
-    if (!s.defeat && !s.result1 && dur > limit) { fail(tag, `stuck in ${key} for ${dur.toFixed(1)} s (trail ${trail.join(' > ')})`); return { ok: false, trail, s }; }
+    if (!s.defeat && !s.result1 && dur > limit && Date.now() - sinceReal > 5000) {   // also 5 s of real time: assets/voice still loading is not "stuck"
+       fail(tag, `stuck in ${key} for ${dur.toFixed(1)} s (trail ${trail.join(' > ')})`); return { ok: false, trail, s }; }
     if (s.t - t0 > maxT) { fail(tag, `timeout after ${maxT} s (trail ${trail.join(' > ')})`); return { ok: false, trail, s }; }
     if (s.defeat && !stop(s)) { return { ok: false, defeat: true, trail, s }; }
   }

@@ -298,7 +298,7 @@ export const PROLOGUE_MODELS = {
   sasuke:  { model: 'gin_auto',     look: 'spitz_red_cream',  tint: null,      height: 0.66 },  // PLACEHOLDER: user model pending
   nero:    { model: 'generic_auto', look: 'mutt_black_white', tint: null,      height: 1.2 },   // PLACEHOLDER: user model pending
   tosa:    { model: 'tobei_rigged', look: null,               tint: '#b8805a', height: 1.3 },   // PLACEHOLDER: user model pending (farm watchdog)
-  mel_pup: { model: 'smith_rigged', look: null,               tint: '#e2b46e', height: 0.62 },  // PLACEHOLDER: user model pending
+  mel_pup: { model: 'smith_rigged', look: 'spaniel_liver',    tint: '#f0c068', height: 0.62 },  // PLACEHOLDER: user model pending (golden pup)
   hook:    { model: 'generic_auto', look: 'mutt_cream',       tint: null,      height: 1.08 },  // PLACEHOLDER: user model pending
-  blue:    { model: 'john_auto',    look: 'shepherd_black',   tint: null,      height: 1.22 },  // PLACEHOLDER: user model pending
+  blue:    { model: 'john_auto',    look: 'pinscher_black_tan', tint: null,    height: 1.22 },  // PLACEHOLDER: user model pending (beauceron: black and tan, not Nero's black)
 };
