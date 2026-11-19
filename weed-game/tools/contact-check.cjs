@@ -30,7 +30,7 @@ fs.mkdirSync(OUT, { recursive: true });
     await page.waitForFunction(() => window.__game && document.getElementById('loading').classList.contains('hidden'), null, { timeout: 180000 });
     await page.waitForTimeout(1500);
     await page.evaluate(n => { const C = window.__contact; C.reset(); C.monitor = true; C.hold = true; C.seq = !window.__noseq; window.__game.debug.scene(n); }, name);
-    let shots = 0; const deadline = Date.now() + 15 * 60 * 1000;
+    let shots = 0; const deadline = Date.now() + 40 * 60 * 1000;
     while (Date.now() < deadline) {
       const st = await page.evaluate(() => ({ p: window.__contact.pending, done: window.__game.debug.S.sceneDone }));
       if (st.p) {

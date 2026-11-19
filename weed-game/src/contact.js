@@ -594,22 +594,26 @@ export function reach(o) {
   const a = dogOf(o.who), tg = dogOf(o.target);
   if (!a || !tg || !a.bones) return Promise.resolve();
   const ref = targetRef(tg, o.point || 'neck', o.side || 'near', o.sink ?? 0.02 * tg.height);
-  const joints = [['head', 1.1], ['neck', 1.2], ['spine_03', 0.5], ['spine_02', 0.35], ['spine_01', 0.15]].filter(([n]) => a.bones[n]);
+  const paw = o.part === 'paw', S = paw ? nearSide(a, o.pawSide || 'near') : null;
+  const joints = (paw ? [['front_lower_' + S, 1.4], ['front_upper_' + S, 1.4], ['spine_03', 0.25]]
+    : [['head', 1.1], ['neck', 1.2], ['spine_03', 0.5], ['spine_02', 0.35], ['spine_01', 0.15]]).filter(([n]) => a.bones[n]);
+  const eff = out => paw ? a.bones['front_paw_' + S].getWorldPosition(out) : mouthWorld(a, out);
   const T = Math.max(0.05, o.t ?? 0.3), hold = o.hold ?? 0.25, back = o.back ?? 0.35;
   const P = new THREE.Vector3(), M = new THREE.Vector3(), J = new THREE.Vector3(), v1 = new THREE.Vector3(), v2 = new THREE.Vector3(), ax = new THREE.Vector3();
   let t = 0, hit = false, done = false;
   const rec = { id: ++LOG.n, kind: 'reach' };
   let resolveHit, resolveEnd;
   const pHit = new Promise(r => { resolveHit = r; }), pEnd = new Promise(r => { resolveEnd = r; });
-  a.play(o.anim || 'Attack', { loop: false, timeScale: o.ts || 0.8, fade: 0.08 });
+  a.play(o.anim || (paw ? 'Idle' : 'Attack'), { loop: false, timeScale: o.ts || 0.8, fade: 0.08 });
   const off = a.overlay((dd, dt) => {
     t += dt;
     const w = t < T ? ease.inOut(t / T) : t < T + hold ? 1 : Math.max(0, 1 - (t - T - hold) / back);
     ref.world(P);
+    if (o.dip) { a.pose.rotation.order = 'XYZ'; a.pose.rotation.z = -o.dip * w; a.pose.position.y -= a.height * 0.04 * o.dip * w; }   // etupää alas (syöksy)
     for (let it = 0; it < 5; it++) {
       for (const [bn, lim] of joints) {
         a.root.updateMatrixWorld(true);
-        const b = a.bones[bn]; b.getWorldPosition(J); mouthWorld(a, M);
+        const b = a.bones[bn]; b.getWorldPosition(J); eff(M);
         v1.subVectors(M, J); v2.subVectors(P, J);
         const ang = v1.angleTo(v2); if (ang < 1e-3) continue;
         ax.crossVectors(v1, v2).normalize();
@@ -617,18 +621,18 @@ export function reach(o) {
       }
     }
     if (!hit && t >= T) {
-      hit = true; a.root.updateMatrixWorld(true); mouthWorld(a, M);
+      hit = true; a.root.updateMatrixWorld(true); eff(M);
       const dist = M.distanceTo(P);
-      Object.assign(rec, { scene: LOG.scene, who: a.id, target: tg.id, point: ref.name, part: 'jaw', dist: +dist.toFixed(4), th: tg.height, ratio: +(dist / tg.height).toFixed(4),
+      Object.assign(rec, { scene: LOG.scene, who: a.id, target: tg.id, point: ref.name, part: paw ? 'paw' : 'jaw', dist: +dist.toFixed(4), th: tg.height, ratio: +(dist / tg.height).toFixed(4),
         bodyK: +bodyOverlap(tg, a, ['head', 'neck', 'spine_03']).k.toFixed(3), P: [P.x, P.y, P.z].map(v => +v.toFixed(3)), M: [M.x, M.y, M.z].map(v => +v.toFixed(3)), t: +E.time.toFixed(2) });
       LOG.strikes.push(rec);
-      hitFx({ o: { strong: o.strong, fx: o.fx, sfx: o.sfx ?? ['bite'], hitstop: o.hitstop, shake: o.shake }, part: 'jaw' }, P.clone());
+      hitFx({ o: { strong: o.strong, fx: o.fx, sfx: o.sfx ?? (paw ? ['hitHeavy'] : ['bite']), hitstop: o.hitstop, shake: o.shake }, part: paw ? 'paw' : 'jaw' }, P.clone());
       if (o.react !== 'none') react(tg, o.react || 'hurt', Math.sign(tg.root.position.x - a.root.position.x) || 1, o.reactOpts || {});
       if (o.onHit) try { o.onHit(P.clone()); } catch (e) { console.error(e); }
       if (LOG.hold) { LOG.pending = rec; rec.prevTS = E.timeScale; E.timeScale = 0; const u = () => { if (!LOG.pending || LOG.pending.id !== rec.id) { E.updaters.delete(u); E.timeScale = rec.prevTS || 1; resolveHit(); } }; E.updaters.add(u); }
       else resolveHit();
     }
-    if ((t >= T + hold + back || E.skipping) && !done) { done = true; off(); if (!hit) resolveHit(); resolveEnd(); }
+    if ((t >= T + hold + back || E.skipping) && !done) { done = true; off(); if (o.dip) a.pose.rotation.z = 0; if (!hit) resolveHit(); resolveEnd(); }
   });
   return o.wait === 'end' ? pEnd : pHit;
 }
