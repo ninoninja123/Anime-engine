@@ -22,7 +22,7 @@ export const intro = ({ cast }) => [
   { place: 'ken', x: -15.6, z: 0.9, face: 1, anim: 'Walk' },
   { place: 'kagetora', x: -16.4, z: -0.1, face: 1, anim: 'Walk' },
   { cam: [-6, 9, 22], look: [-18, 22, -100] },
-  { caption: '<b>LEVEL 2</b>Gajō – Kaibutsu', t: 3.4, wait: false },
+  { sfx: 'levelStart' }, { caption: '<b>LEVEL 2</b>Gajō – Kaibutsu', t: 3.4, wait: false },
   { cam: [0, 3.2, 13], look: [2, 2.5, 0], t: 4.2 },
   { say: 'intro_1' },
   // the pack walks in along the ridge – low tracking shot
@@ -79,7 +79,9 @@ export const intro = ({ cast }) => [
   { shake: 0.35 }, { sfx: 'rumble', arg: 2 }, { wait: 0.9 },
   { place: 'kaibutsu', x: 13, z: 0, face: -1, anim: 'Walk', ts: 0.7 },
   { cam: [5.2, 0.35, 6.2], look: [8.5, 2.8, 0] },                        // very low angle
+  { amb: 'boss' },                                                      // sub-drone joins as it approaches
   { move: 'kaibutsu', x: 3.6, t: 3.4, anim: 'Walk', ts: 0.7, ease: 'out', faceMove: false, after: 'Idle' },
+  { sfx: 'bossAppear' },
   { anim: 'kaibutsu', name: 'Howl' }, { bark: 'roar_intro' }, { sfx: 'roar' }, { shake: 0.7 },
   { fx: 'ring', at: 'kaibutsu', color: 0xffa060, r: 6, t: 0.9 }, { fx: 'flash', color: '#ff9060', peak: 0.3 },
   { cam: [3.0, 2.2, 4.4], look: [5.6, 2.5, 0], t: 1.8, ease: 'out' },     // push in on the face
@@ -169,6 +171,7 @@ export const smith = (ctx) => {
     { hide: 'smith' }, { hide: 'kaibutsu' }, { shake: 0.8 },
     { wait: 1.4 },
     // silence – Weed screams
+    { amb: 'sad' }, { sfx: 'heartbeat' },
     { anim: 'weed', name: 'Howl' },
     { dolly: 'weed', dist: 1.9, side: 0.5, h: 0.15, lookH: 0.6, t: 0 },
     { say: 'sac_scream' },
@@ -177,7 +180,7 @@ export const smith = (ctx) => {
     { anim: 'weed', name: 'Idle_2_HeadLow' },
     { fx: 'spirit', at: [6.6, 1.6, 0.6], t: 6 },
     { cam: [4.2, 1.6, 7.5], look: [6.5, 2.8, 0], t: 3.2 },
-    { caption: 'Smith', t: 2.6 },
+    { sfx: 'memory' }, { caption: 'Smith', t: 2.6 },
     // it rises from under the rocks
     { sfx: 'rumble', arg: 1.5 }, { shake: 0.5 }, { wait: 0.9 },
     { fn: () => {
@@ -204,7 +207,7 @@ export const smith = (ctx) => {
     { dolly: 'weed', dist: 1.2, side: -0.5, t: 0.6 },
     { say: 'sac_nod' },
     { fn: () => ctx.restoreLight && ctx.restoreLight() },
-    { music: 'battle' },
+    { music: 'battle' }, { amb: 'boss' },
     { cam: GAME_CAM.cam, look: GAME_CAM.look, t: 1.0 },
   ];
 };
@@ -221,7 +224,7 @@ export const arrows = (ctx) => {
     { place: 'weed', x: -1.5, z: 1.0, face: 1, anim: 'Idle' },
     { place: 'jerome', x: -3.8, z: 0, face: 1, anim: 'Idle' },
     ...MEN.map((id, i) => ({ place: id, x: -12 - i * 1.5, z: -0.8 + i * 0.8, face: 1, anim: 'Gallop', ts: 1.2 })),
-    { music: 'sad', fade: 2 },
+    { music: 'sad', fade: 2 }, { amb: 'sad' },
     { light: { rim: 1.2, fog: 0x30304a, t: 1.5 } },
     { cam: [-5.2, 1.3, 5.6], look: [-5.6, 0.8, 0] },
     { par: MEN.map((id, i) => ({ move: id, x: -6.4 + i * 0.95, t: 1.4 + i * 0.15, anim: 'Gallop', ts: 1.2, after: 'Idle', ease: 'out' })) },
@@ -282,7 +285,7 @@ export const arrows = (ctx) => {
     { anim: 'jerome', name: 'Attack', loop: true, ts: 0.6 },                 // puree ja pitää kiinni
     { fn: () => {
       const hp = boss.weak.getWorldPosition(new THREE.Vector3());
-      FX.impact(hp, true); FX.flash('#ffffff', 0.5, 0.9); sfx.bite(); sfx.hit();
+      FX.impact(hp, true); FX.flash('#ffffff', 0.5, 0.9); sfx.bite(); sfx.hit(); sfx.crit();
       FX.burst(hp, { color: 0xffd090, count: 40, speed: 8 }); FX.ring(hp, 0xffffff, 7, 0.7);
       B.hp = 8;
     } },
@@ -310,7 +313,7 @@ export const arrows = (ctx) => {
     { say: 'arrows_now' },
     ...['jerome', 'robert', 'rocker', 'heuler'].map(id => ({ expr: id, name: null })),
     { fn: () => ctx.restoreLight && ctx.restoreLight() },
-    { music: 'battle' },
+    { music: 'battle' }, { amb: 'boss' },
     { cam: GAME_CAM.cam, look: GAME_CAM.look, t: 0.8 },
   );
   return steps;
@@ -390,8 +393,9 @@ export const post = (ctx) => {
       setTimeout(() => FX.flash('#ffffff', 3.2, 1), 650);
       await tween({ k: 0 }, { k: 1 }, 1.1, { real: true, ease: 'in', onUpdate: k => ds.forEach((d, i) => { d.root.position.set(p0[i].x + k * 2.5, p0[i].y + Math.sin(k * Math.PI) * 0.6 - k * k * 1.5, p0[i].z); d.fade(1 - Math.max(0, k - 0.6) * 2.5); }) });
     } },
-    { sfx: 'rock' },
+    { sfx: 'rock' }, { amb: 'gorge' },
     { music: null, fade: 1.5 },
+    { sfx: 'splash' },                                                  // into the river below the falls
     { say: 'fall_wind' },
     { say: 'fall_mist' },
     { fn: () => { for (const d of Object.values(cast)) d.root.visible = false; } },
@@ -403,7 +407,7 @@ export const post = (ctx) => {
     { place: 'ken', x: -5.5, z: 0.4, face: 1, anim: 'Walk', ts: 0.6 },
     { place: 'kagetora', x: -5.5, y: cast.ken.height * 0.62, z: 0.4, face: 1, anim: 'LieDown' },
     { cam: [-4.5, 2.6, 9], look: [0.5, 0.6, 0] },
-    { caption: 'Below the falls', t: 2.4, wait: false },
+    { amb: 'river' }, { caption: 'Below the falls', t: 2.4, wait: false },
     { par: [
       { move: 'ken', x: -2.2, t: 3.0, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' },
       { move: 'kagetora', x: -2.2, t: 3.0, faceMove: false },
@@ -435,7 +439,7 @@ export const post = (ctx) => {
     { dolly: 'weed', dist: 1.2, side: -0.5, t: 1.2 },
     { say: 'post_human' },
     // the laboratory helicopter lands; Jerome refuses to go back
-    { sfx: 'rumble', arg: 2 },
+    { sfx: 'heli' },                                                    // rotor approaching (was: rumble)
     { caption: 'A laboratory helicopter sets down by the river.', t: 3.0, wait: false },
     { place: 'jerome', x: 1.2, z: 0.2, face: 1, anim: 'Idle' },
     { cam: [-0.4, 1.0, 3.6], look: [1.6, 1.0, -1], t: 1.2 },
@@ -443,6 +447,7 @@ export const post = (ctx) => {
     { expr: 'jerome', name: 'determined' },
     { say: 'post_stay' },
     { expr: 'jerome', name: null },
+    { amb: 'dusk' },
     { light: { rim: 1.1, fog: 0x3a2e40, exposure: 0.95, t: 2 } },          // dusk: the graves
     // memorial at dusk: five lights rise over the graves
     { music: 'smith2', fade: 2.5 },                                  // Smith's second theme for the memorial
@@ -451,11 +456,11 @@ export const post = (ctx) => {
     { face: 'weed', dir: 1 },
     { cam: [0, 2.2, 10], look: [0, 2.8, -3], t: 2.2 },
     { fn: () => ['Smith', 'North', 'Robert', 'Rocker', 'Heuler'].forEach((n, i) => setTimeout(() => FX.spiritLight(new THREE.Vector3(-4 + i * 2, 1.4, -1), 0xffe6b0, 7), i * 500)) },
-    { sfx: 'spirit' },
+    { sfx: 'spirit' }, { sfx: 'memory' },
     { caption: '<b>IN MEMORY</b>Smith · North · Robert · Rocker · Heuler', t: 5, wait: false },
     { say: 'memorial' },
     // hope: Weed faces the last light, thinks of his father
-    { music: 'dawn', fade: 3 },
+    { music: 'dawn', fade: 3 }, { amb: 'dawn' },
     { anim: 'weed', name: 'Howl' },
     { cam: [-1.0, 0.6, 2.6], look: [1.6, 1.4, -2] , t: 1.6 },
     { say: 'post_father' },

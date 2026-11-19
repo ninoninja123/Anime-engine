@@ -17,6 +17,7 @@ const $ = UI.$;
 let mode = 'menu';
 
 async function boot() {
+  if (E.params.has('soundtest')) { UI.show('loading', false); (await import('./soundtest.js')).openSoundTest(); return; }   // ?soundtest: jokainen ääni napista
   initEngine($('gl'));
   initInput($('touch'), $('overlay'));
   FX.setOverlay($('overlay').getContext('2d'));
@@ -166,7 +167,9 @@ function syncSettingLabels() {
 }
 
 function wireUI() {
-  const tap = (id, fn) => $(id).addEventListener('click', e => { e.stopPropagation(); initAudio(); fn(); });
+  // napin ääni: oletuksena klik; aloitus/paluu/ohitus omilla äänillä (pause/resume soittaa setPaused)
+  const UI_SND = { startBtn: 'start', castBack: 'uiBack', quitBtn: 'uiBack', defeatQuit: 'uiBack', resultBtn: 'uiBack', helpClose: 'uiBack', skipBtn: 'skip', pauseBtn: null, resumeBtn: null, retryBtn: 'uiConfirm' };
+  const tap = (id, fn) => { const el = $(id); if (!el) return; el.addEventListener('click', e => { e.stopPropagation(); initAudio(); const s = id in UI_SND ? UI_SND[id] : 'ui'; if (s) sfx.play(s); fn(); }); };
   tap('startBtn', () => startGame(1, true));
   tap('castBtn', () => showCast(0));
   tap('storyBtn', async () => { UI.show('menu', false); await runPrologue({ force: true }); showMenu(); });

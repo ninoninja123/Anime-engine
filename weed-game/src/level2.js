@@ -7,7 +7,8 @@ import { E, tween, wait, shake } from './engine.js';
 import { makeDog, gradientMap, loadFor } from './dogs.js';
 import { LEVEL2_CAST } from './characters.js';
 import * as FX from './fx.js';
-import { sfx, music, ambience, preloadMusic, duck } from './audio.js';
+import { sfx, music, ambience, preloadMusic, duck, preloadSfx } from './audio.js';
+import { initFootsteps } from './footsteps.js';
 import { say, preloadLines, stopVoice } from './voice.js';
 import { runScene, setSceneCast, freezeFrame } from './scenes.js';
 import * as UI from './ui.js';
@@ -69,6 +70,7 @@ export async function createCast() {
     d.root.visible = false;
   }
   setSceneCast(cast);
+  initFootsteps(cast);            // askeläänet liikkeen mukaan (myös kohtauksissa)
   makeProps();
   E.updaters.add(update);
   onGesture(handleGesture);
@@ -93,8 +95,8 @@ function useCard(id) {
   if (!S.active || S.cutscene || S.special || S.paused) return;
   const c = S.cards.find(k => k.id === id);
   if (!c) return;
-  if (c.state === 'sacrifice') { c.state = 'fallen'; UI.updateCard(c); smithSacrifice(); return; }
-  if (c.state !== 'ready') { sfx.tell(); return; }
+  if (c.state === 'sacrifice') { c.state = 'fallen'; UI.updateCard(c); sfx.sacrifice(); smithSacrifice(); return; }
+  if (c.state !== 'ready') { sfx.denied(); return; }
   if (S.phase === 3) { UI.toast('This is Weed\'s moment!'); return; }
   sfx.card();
   c.state = 'cooldown'; c.cool = c.cooldown;
@@ -143,6 +145,7 @@ async function jeromeReveal() {
   B.weakT = 9; tween(boss, { weakReveal: 1 }, 0.25, { real: true });
   reticle.material.opacity = 1; reticle.scale.setScalar(3);
   tween(reticle.scale, { x: 1.3, y: 1.3 }, 0.3, { real: true, ease: 'out' });
+  sfx.scan(); setTimeout(() => sfx.lockOn(), 300);      // heikon kohdan tähtäin: skannaus-ping + lukittuu
   FX.ring(wp, 0xffaa55, 2.5, 0.6); FX.burst(wp, { color: 0xffb070, count: 20 });
   FX.flash('#ffe2b0', 0.25, 0.35);
   await wait(0.55, true);
@@ -185,7 +188,7 @@ async function kenKageStrike() {
   k.spin.rotation.set(0, 0, 0); g.spin.rotation.set(0, 0, 0);
   FX.slashArc(new THREE.Vector3(B.x, top, 0.6), 0xd8e6ff, 1.5, 0.5, 0.8);
   FX.slashArc(new THREE.Vector3(B.x, top, 0.6), 0xffe0b0, 1.5, 0.5, -0.8);
-  sfx.bite(); sfx.hit(); FX.flash('#ffffff', 0.25, 0.6);
+  sfx.bite(); sfx.hit(); sfx.twinFang(); FX.flash('#ffffff', 0.25, 0.6);
   FX.ring(new THREE.Vector3(B.x, top, 0.5), 0xffffff, 5, 0.5);
   E.timeScale = 1; FX.speedLines(0);
   damageBoss(9, hit, { stagger: 1.8, force: false });
@@ -210,7 +213,8 @@ export async function startLevel({ phase = 1, intro = true, onExit } = {}) {
   if (phase >= 2) { const sm = S.cards.find(c => c.id === 'smith'); sm.state = 'fallen'; }
   preloadMusic('battle', 'sad', 'dawn', 'smith', 'smith2');
   setupArena(phase);
-  ambience(true);
+  preloadSfx('boss', 'cine');     // boss- ja kohtausäänet ennen intro-kohtausta
+  ambience(phase >= 2 ? 'boss' : 'battle');
   if (intro && phase === 1) await introCutscene();
   beginPhase(phase);
 }
@@ -244,6 +248,7 @@ function beginPhase(p) {
   for (const c of S.cards) UI.updateCard(c);
   setInputEnabled(true);
   music('battle');
+  ambience(p >= 2 ? 'boss' : 'battle');   // vaihe 2–3: matala drone mukaan
   if (p === 1) UI.hint('Tap = bite &nbsp;•&nbsp; Swipe ←/→ = dodge &nbsp;•&nbsp; Swipe ↑ = jump', 6);
   if (p === 2) UI.hint('Kaibutsu is enraged and faster. Use Jerome and strike its left chest!', 4);
   if (p === 3) UI.hint('Kaibutsu is staggering! Draw a circle ⟳ – <b>BATTŌGA!</b>');
@@ -292,6 +297,7 @@ async function bite() {
   const reach = bossHalf() * 0.85 + 0.3;
   const target = B.x - dir * reach;
   w.play('Gallop', { timeScale: 1.6 });
+  sfx.lunge();
   await tween(W, { x: target }, clamp(Math.abs(target - W.x) / 14, 0.08, 0.3), { ease: 'in' });
   if (seq !== W.seq) return;
   w.play('Attack', { loop: false, timeScale: 1.6, fade: 0.06 });
@@ -315,7 +321,7 @@ async function dodge(dir) {
   const seq = ++W.seq; W.busy = true;
   checkPerfect();
   W.inv = Math.max(W.inv, 0.32);
-  sfx.whoosh();
+  sfx.dodge();
   w.play('Gallop', { timeScale: 2 });
   w.face(dir);
   FX.dust(new THREE.Vector3(W.x, 0.1, 0));
@@ -330,7 +336,7 @@ function jump() {
   W.seq++; W.busy = false;
   checkPerfect();
   W.vy = 9.2; W.y = 0.01;
-  sfx.whoosh();
+  sfx.jump();
   w.play('Gallop_Jump', { loop: false, timeScale: 1.1 });
 }
 
@@ -372,7 +378,7 @@ function damageBoss(amount, pos, o = {}) {
   const B = S.B, boss = cast.kaibutsu;
   const p = pos || new THREE.Vector3(B.x, 1.3, 0.5);
   if (B.armored && !o.force) {
-    FX.burst(p, { color: 0x9aa3b8, count: 8, speed: 3 });
+    FX.burst(p, { color: 0x9aa3b8, count: 8, speed: 3 }); sfx.parry();   // kivikova nahka: kilahdus
     UI.toast('No effect! Its hide is like stone', 1.1);
     return 0;
   }
@@ -384,6 +390,7 @@ function damageBoss(amount, pos, o = {}) {
   UI.setBossHP(B.hp / B.max, B.armored);
   FX.impact(p, o.strong || B.weakT > 0);
   if (B.weakT > 0) FX.burst(p, { color: 0xff9a50, count: 12, speed: 5 });
+  if (B.weakT > 0 && !o.battoga) sfx.crit({}, { x: p.x });          // kriittinen isku heikkoon kohtaan
   boss.setTint(0xffffff, 0.8); setTimeout(() => boss.setTint(0x000000, 0), 70);
   if (B.open && !o.battoga) UI.toast(B.weakT > 0 ? 'Weak spot + opening!' : 'Opening!', 0.7);
   else if (B.weakT > 0 && !o.battoga) UI.toast('Weak spot!', 0.6);
@@ -400,7 +407,7 @@ function checkThresholds() {
   if (S.phase === 1 && B.hp <= 60 && !B.armored) {
     B.hp = 60; B.armored = true; UI.setBossHP(B.hp / B.max, true);
     const sm = S.cards.find(c => c.id === 'smith'); sm.state = 'sacrifice'; UI.updateCard(sm);
-    sfx.roar(); shake(0.4); say('roar_armor', { noWait: true });
+    sfx.roar(); sfx.armor(); shake(0.4); say('roar_armor', { noWait: true });
     UI.hint('Rage has hardened its hide! <b>Tap Smith\'s card.</b>');
     cast.smith.play('Idle'); cast.smith.earPerk = 1;
     setTimeout(() => say('card_ready', { noWait: true }), 1800);
@@ -427,8 +434,9 @@ async function defeat() {
   setInputEnabled(false);
   cast.weed.play('Death', { loop: false });
   S.defeats++;
-  music(null);
+  music(null); sfx.die();
   await wait(1.4, true);
+  sfx.gameOver();
   UI.show('hud', false);
   UI.show('defeat', true);
 }
@@ -530,7 +538,7 @@ async function atkCharge(alive) {
   }
   showWarn(0, 1, false); B.threatT = -1;
   if (!alive()) return;
-  shake(0.3); sfx.rock();
+  shake(0.3); sfx.bossCrash({}, { x: B.x });
   await recover(alive, 1.5 / B.speed);
 }
 
@@ -540,7 +548,7 @@ async function atkRock(alive) {
   const rock = makeRock(0.5); rocks.push(rock);
   boss.play('Bark', { loop: true, timeScale: 0.4 });
   const t0 = E.time; const tell = 0.85 / B.speed;
-  sfx.tell(); bang.visible = true;
+  sfx.rockLift({}, { x: B.x }); sfx.tell(); bang.visible = true;
   while (alive() && E.time - t0 < tell) {
     rock.position.set(B.x + boss.facing * bossHalf() * 0.8, boss.height + 0.3, 0.2);
     rock.rotation.x += 0.1;
@@ -552,7 +560,7 @@ async function atkRock(alive) {
   if (!alive()) return;
   boss.play('Attack', { loop: false, timeScale: 0.9 });
   const tx = W.x, from = rock.position.clone(), flight = 0.95 / B.speed;
-  sfx.whoosh();
+  sfx.throw({}, { x: B.x });
   const t1 = E.time;
   while (alive() && E.time - t1 < flight) {
     const k = (E.time - t1) / flight;
@@ -591,7 +599,7 @@ async function atkPounce(alive) {
   boss.root.position.y = 0; showWarn(0, 1, false); B.threatT = -1;
   if (!alive()) return;
   boss.play('Jump_ToIdle', { loop: false });
-  shake(0.35); sfx.rock(); FX.dust(new THREE.Vector3(landX, 0.1, 0), true);
+  shake(0.35); sfx.bossLand({}, { x: landX }); FX.dust(new THREE.Vector3(landX, 0.1, 0), true);
   if (Math.abs(W.x - (landX + dir * bossHalf() * 0.4)) < 1.9 && W.y < 0.8) hurtWeed(landX);
   await recover(alive, (S.phase === 3 ? 2.5 : 1.2) / B.speed);
 }
@@ -609,7 +617,7 @@ function update(dt, dtr) {
   }
   if (W.y > 0 || W.vy > 0) {
     W.vy -= 24 * dt; W.y += W.vy * dt;
-    if (W.y <= 0) { W.y = 0; W.vy = 0; w.play('Jump_ToIdle', { loop: false }); setTimeout(() => { if (!W.busy && W.y <= 0) w.play('Idle'); }, 350); FX.dust(new THREE.Vector3(W.x, 0.1, 0)); }
+    if (W.y <= 0) { W.y = 0; W.vy = 0; sfx.land({}, { x: W.x }); w.play('Jump_ToIdle', { loop: false }); setTimeout(() => { if (!W.busy && W.y <= 0) w.play('Idle'); }, 350); FX.dust(new THREE.Vector3(W.x, 0.1, 0)); }
   }
   W.x = clamp(W.x, ARENA.min, ARENA.max);
   if (!S.special) { w.root.position.x = W.x; w.root.position.y = W.y; }
@@ -621,7 +629,7 @@ function update(dt, dtr) {
   if (B.weakT > 0) { B.weakT -= dt; if (B.weakT <= 0) tween(boss, { weakReveal: 0 }, 0.4); }
 
   for (const c of S.cards) {
-    if (c.state === 'cooldown') { c.cool -= dt; if (c.cool <= 0) { c.state = 'ready'; c.cool = 0; } }
+    if (c.state === 'cooldown') { c.cool -= dt; if (c.cool <= 0) { c.state = 'ready'; c.cool = 0; sfx.cardReady(); } }
     UI.updateCard(c);
   }
   if (!S.cutscene && !S.special) {
@@ -639,6 +647,7 @@ export function setPaused(p) {
   S.paused = p;
   E.timeScale = p ? 0 : 1;
   UI.show('pause', p);
+  sfx[p ? 'uiOpen' : 'uiBack']();
 }
 export function quit() {
   S.active = false; S.paused = false; S.cutscene = false; S.special = false; S.B.token++; endAttackVisuals();
@@ -719,7 +728,7 @@ async function finale() {
   cutEnd();
   restoreLight(); lightState = null;
   S.active = false; S.cutscene = false;
-  ambience(false);
+  ambience('dawn');               // aamunkoitto: linnut heräävät, joki
   music('dawn');
   showResult(['Smith', 'North', 'Robert', 'Rocker', 'Heuler']);
 }
@@ -733,6 +742,7 @@ function showResult(names) {
     localStorage.setItem('weed.cleared2', String(Math.max(stars, Number(localStorage.getItem('weed.cleared2') || 0))));
   } catch (_) {}
   UI.show('result', true);
+  sfx.victory();
 }
 
 // test hooks (Playwright)

@@ -4,6 +4,7 @@
 //  - jos tiedosto puuttuu tai lataus epäonnistuu, käytetään vanhaa WebAudio-synteesiä varalla
 // Selaimen autoplay-sääntö: AudioContext luodaan vasta käyttäjän ensimmäisestä napautuksesta (initAudio).
 import { E } from './engine.js';
+import { SOUNDS, EVENTS, AMBIENCE, AMB_FILES, CATEGORIES, filesOfGroup } from './data/sfx_map.js';
 
 let analyser = null, anaBuf = null;
 let ctx = null, master = null, musicBus = null, duckGain = null, sfxBus = null, voiceBus = null, synthMusic = null;
@@ -38,8 +39,9 @@ export function initAudio() {
     voiceBus.connect(analyser); anaBuf = new Float32Array(analyser.fftSize);
     synthMusic = ctx.createGain(); synthMusic.gain.value = 0.35; synthMusic.connect(duckGain);
   } catch (e) { ctx = null; return; }
-  // esilataa pienet tehosteet + valikon musiikki; muut kun niitä tarvitaan
-  for (const k of Object.keys(SFX_FILES)) load(SFX_FILES[k]);
+  initSfxBuses();
+  // esilataa ydintehosteet (isku/purenta/askel/UI) + valikon musiikki; boss/cine/ambienssi kun niitä tarvitaan
+  preloadSfx('core');
   load(MUSIC_FILES.intro);
   if (pendingMusic !== undefined) { const m = pendingMusic; pendingMusic = undefined; music(m); }
 }
@@ -121,30 +123,205 @@ function fadeOutCurrent(fade) {
 }
 export function currentMusic() { return current ? current.name : (synthMode ? 'synth:' + synthMode : null); }
 
-// ---------------------------------------------------------------- ambienssi (myöhäissyksyn yö: metsä + korpit)
-let amb = null;
-export function ambience(on, vol = SFX_VOL.wind) {
-  if (!ctx) return;
-  if (!on) { if (amb) { amb.g.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.5); const a = amb; setTimeout(() => { try { a.s.stop(); } catch (_) {} }, 2500); amb = null; } return; }
-  if (amb) { amb.g.gain.setTargetAtTime(vol, ctx.currentTime, 0.5); return; }
-  load(SFX_FILES.wind).then(buf => {
-    if (!buf || amb) return;
-    const s = ctx.createBufferSource(); s.buffer = buf; s.loop = true;
-    const g = ctx.createGain(); g.gain.value = 0.0001; s.connect(g); g.connect(sfxBus);
-    g.gain.setTargetAtTime(vol, ctx.currentTime, 0.8); s.start();
-    amb = { s, g };
-  });
+// ---------------------------------------------------------------- tehostemoottori (src/data/sfx_map.js)
+// Väylät: sfxBus (move/combat/boss/env/cine, kategoriakohtaiset gainit) + ambBus (ambienssi, oma ducking) + uiBus.
+// sfx.<tapahtuma>(arg) / play(name, { vol, rate, x, delay }) → kerrokset viiveillä, variantin arvonta (ei samaa kahdesti
+// peräkkäin), pitch/gain-satunnaisuus, polyfoniaraja per ääni (vanhin häivytetään), stereopan x-sijainnin mukaan.
+let ambBus = null, ambDuck = null, uiBus = null;
+const catBus = {};
+const CAT_GAIN = { move: 0.85, combat: 1, boss: 1, env: 0.9, cine: 0.9, ui: 0.7 };
+const lastVariant = {};          // sound -> viimeisin variantti-indeksi
+const voices = {};               // sound -> [{ src, g, end }] (polyfonia)
+const lastEventAt = {};          // event -> ctx.currentTime (cooldown)
+const groupLoaded = {};
+audioStats.events = {};          // tapahtuma -> laukaisukerrat (testit / ?soundtest)
+audioStats.missing = [];         // tuntemattomat tapahtumanimet
+
+function initSfxBuses() {
+  ambDuck = ctx.createGain(); ambDuck.connect(master);
+  ambBus = ctx.createGain(); ambBus.gain.value = 1; ambBus.connect(ambDuck);
+  uiBus = ctx.createGain(); uiBus.gain.value = CAT_GAIN.ui; uiBus.connect(master);
+  for (const c of CATEGORIES) {
+    if (c === 'ui') { catBus.ui = uiBus; continue; }
+    const g = ctx.createGain(); g.gain.value = CAT_GAIN[c] ?? 1; g.connect(sfxBus); catBus[c] = g;
+  }
 }
 
-// ---------------------------------------------------------------- tehosteet
-function playFile(name, { vol = 1, rate = 1, vary = 0.06 } = {}) {
-  const buf = buffers[SFX_FILES[name]];
-  if (!ctx || !buf) return false;
-  const s = ctx.createBufferSource(); s.buffer = buf;
-  s.playbackRate.value = rate * (1 + (Math.random() - 0.5) * 2 * vary);
-  const g = ctx.createGain(); g.gain.value = (SFX_VOL[name] || 1) * vol;
-  s.connect(g); g.connect(sfxBus); s.start();
+/** Lataa latausryhmän tiedostot (core | boss | cine | amb). Palauttaa Promisen. */
+export function preloadSfx(...groups) {
+  if (!ctx) return Promise.resolve();
+  const ps = [];
+  for (const g of groups) { groupLoaded[g] = true; for (const f of filesOfGroup(g)) ps.push(loadSfxFile(f)); }
+  return Promise.all(ps);
+}
+// Muistin säästö puhelimessa: tehosteet dekoodataan matalammalla näytetaajuudella (OfflineAudioContext), soitto
+// resamplaa. 32 kHz riittää iskuille/UI:lle (taajuudet < 16 kHz), matalat/ambienssit 22.05 kHz. ~½–⅔ muistista.
+const LOW_RATE = /amb_|boss_drone|boss_step|boss_land|quake|heli|underwater|rockslide|sfx_ambience|debris|heartbeat/;
+const decoders = {};
+function decoderFor(rate) {
+  if (decoders[rate] !== undefined) return decoders[rate];
+  try { const O = window.OfflineAudioContext || window.webkitOfflineAudioContext; decoders[rate] = O ? new O(1, 1, rate) : null; }
+  catch (_) { decoders[rate] = null; }
+  return decoders[rate];
+}
+function loadSfxFile(file) {
+  if (!ctx || NO_FILES) return Promise.resolve(null);
+  if (file in buffers) return Promise.resolve(buffers[file]);
+  if (loading[file]) return loading[file];
+  const dec = decoderFor(LOW_RATE.test(file) ? 22050 : 32000) || ctx;
+  loading[file] = fetch(AUDIO_BASE() + file)
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+    .then(a => new Promise((res, rej) => dec.decodeAudioData(a, res, rej)))
+    .then(b => { buffers[file] = b; audioStats.loaded.push(file); return b; })
+    .catch(() => { buffers[file] = null; audioStats.failed.push(file); return null; });
+  return loading[file];
+}
+/** Vapauttaa ryhmän puskurit muistista (esim. cine-äänet kohtausten jälkeen). Ladataan uudelleen tarvittaessa. */
+export function releaseSfx(group) {
+  for (const f of filesOfGroup(group)) if (buffers[f]) { delete buffers[f]; delete loading[f]; }
+  groupLoaded[group] = false;
+}
+/** Arvio dekoodattujen puskureiden muistista (MB). */
+export function audioMemoryMB() {
+  let b = 0; for (const k in buffers) { const x = buffers[k]; if (x) b += x.length * x.numberOfChannels * 4; }
+  return Math.round(b / 1e5) / 10;
+}
+/** Suurimmat puskurit (debug): [tiedosto, MB, Hz, kanavat]. */
+export function audioBufferList() {
+  return Object.entries(buffers).filter(([, x]) => x).map(([k, x]) => [k, Math.round(x.length * x.numberOfChannels * 4 / 1e4) / 100, x.sampleRate, x.numberOfChannels]).sort((a, b) => b[1] - a[1]);
+}
+
+function pick(id, n) {
+  if (n <= 1) return 0;
+  let i = Math.floor(Math.random() * n);
+  if (i === lastVariant[id]) i = (i + 1 + Math.floor(Math.random() * (n - 1))) % n;
+  lastVariant[id] = i; return i;
+}
+const rnd = (a, b) => a + Math.random() * (b - a);
+
+/** Soita yksi atomiääni (SOUNDS). Palauttaa true jos soi. */
+function playSound(id, { delay = 0, vol = 1, rate = 1, pan = 0 } = {}) {
+  const s = SOUNDS[id];
+  if (!ctx || !s) return false;
+  const file = s.files[pick(id, s.files.length)];
+  let buf = buffers[file];
+  if (buf === undefined) {                      // ei vielä ladattu: lataa laiskasti (seuraava kerta soi), kokeile toista varianttia
+    loadSfxFile(file);
+    buf = s.files.map(f => buffers[f]).find(Boolean);
+    if (!buf) return false;
+  }
+  if (!buf) return false;
+  const t = ctx.currentTime + Math.max(0, delay);
+  // polyfoniaraja: häivytä vanhin
+  const list = voices[id] || (voices[id] = []);
+  for (let i = list.length - 1; i >= 0; i--) if (list[i].end < ctx.currentTime) list.splice(i, 1);
+  if (list.length >= (s.max || 4)) {
+    const old = list.shift();
+    try { old.g.gain.setTargetAtTime(0.0001, t, 0.015); old.src.stop(t + 0.08); } catch (_) {}
+  }
+  const src = ctx.createBufferSource(); src.buffer = buf;
+  const r = rate * (s.pitch ? rnd(s.pitch[0], s.pitch[1]) : 1);
+  src.playbackRate.value = r;
+  const g = ctx.createGain();
+  g.gain.value = (s.vol ?? 1) * vol * (s.gain ? Math.pow(10, rnd(s.gain[0], s.gain[1]) / 20) : 1);
+  src.connect(g);
+  let out = g;
+  if (pan && ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, pan)); g.connect(p); out = p; }
+  out.connect(catBus[s.cat] || sfxBus);
+  src.start(t);
+  const v = { src, g, end: t + buf.duration / r };
+  list.push(v);
+  src.onended = () => { const i = list.indexOf(v); if (i >= 0) list.splice(i, 1); try { out.disconnect(); } catch (_) {} };
   return true;
+}
+
+/** Stereopan maailman x-koordinaatista kameran suhteen (-0.8..0.8). */
+function panFor(x) {
+  if (x === undefined || !E.camPos) return 0;
+  return Math.max(-0.8, Math.min(0.8, (x - E.camPos.x) / 9));
+}
+
+/** Laukaise tapahtuma (EVENTS) tai suoraan yksittäinen ääni (SOUNDS). opts: { vol, rate, x (pan), delay, arg } */
+export function play(name, opts = {}) {
+  audioStats.events[name] = (audioStats.events[name] || 0) + 1;
+  if (!ctx) return false;
+  const ev = EVENTS[name] || (SOUNDS[name] ? { layers: [{ s: name }] } : null);
+  if (!ev) { if (SYN[name]) { SYN[name](opts.arg); return true; } if (!audioStats.missing.includes(name)) audioStats.missing.push(name); return false; }
+  const now = ctx.currentTime;
+  if (ev.cool && now - (lastEventAt[name] ?? -9) < ev.cool) return false;
+  lastEventAt[name] = now;
+  if (ev.duck) duck(ev.duck[0], ev.duck[1], ev.duck[2]);
+  if (ev.ambDuck) duckAmb(ev.ambDuck[0], ev.ambDuck[1]);
+  const pan = panFor(opts.x);
+  let any = false;
+  for (const L of ev.layers) {
+    if (L.p !== undefined && Math.random() > L.p) continue;
+    any = playSound(L.s, { delay: (L.d || 0) + (opts.delay || 0), vol: (L.vol ?? 1) * (opts.vol ?? 1), rate: (L.rate || 1) * (opts.rate || 1), pan }) || any;
+  }
+  if (!any && ev.syn && SYN[ev.syn]) SYN[ev.syn](opts.arg);
+  return any;
+}
+
+let ambDuckUntil = 0;
+function duckAmb(level, secs) {
+  if (!ambDuck) return;
+  const t = ctx.currentTime;
+  ambDuck.gain.cancelScheduledValues(t); ambDuck.gain.setTargetAtTime(level, t, 0.05);
+  ambDuckUntil = Math.max(ambDuckUntil, t + secs); const until = ambDuckUntil;
+  setTimeout(() => { if (ctx && Math.abs(until - ambDuckUntil) < 1e-6) ambDuck.gain.setTargetAtTime(1, ctx.currentTime, 0.6); }, secs * 1000);
+}
+
+// ---------------------------------------------------------------- ambienssi (kerroksellinen, myöhäissyksy)
+// ambience(true|false|preset, vol): preset = AMBIENCE-avain (battle, boss, night, sad, gorge, river, dusk, dawn).
+// true = 'battle'. vol skaalaa koko ambienssin (vanha oletus 0.4 = 1.0).
+const ambLayers = {};            // layer -> { s, g, want }
+let ambPreset = null, crowTimer = null, ambScale = 1;
+export function ambience(on, vol = 0.4) {
+  if (!ctx) return;
+  const preset = on === true ? 'battle' : on;
+  ambScale = vol / 0.4;
+  if (!preset || !AMBIENCE[preset]) { stopAmbience(); return; }
+  ambPreset = preset;
+  const P = AMBIENCE[preset];
+  for (const k of Object.keys(ambLayers)) if (!(k in P)) fadeAmbLayer(k, 0);
+  for (const [k, gv] of Object.entries(P)) if (AMB_FILES[k]) fadeAmbLayer(k, gv * ambScale);
+  if (P.crows && !crowTimer) { preloadSfx('amb'); scheduleCrow(); }
+  if (!P.crows && crowTimer) { clearTimeout(crowTimer); crowTimer = null; }
+}
+export function currentAmbience() { return ambPreset; }
+function fadeAmbLayer(k, gv) {
+  const L = ambLayers[k];
+  if (L) {
+    L.want = gv;
+    if (!L.g) return;                           // lataus kesken: käytetään want-arvoa kun valmis
+    L.g.gain.setTargetAtTime(Math.max(0.0001, gv), ctx.currentTime, 0.8);
+    if (gv <= 0) setTimeout(() => { if (ambLayers[k] === L && L.want <= 0) { try { L.s.stop(); } catch (_) {} delete ambLayers[k]; delete buffers[AMB_FILES[k]]; delete loading[AMB_FILES[k]]; } }, 3500);
+    return;
+  }
+  if (gv <= 0) return;
+  const holder = { want: gv, s: null, g: null }; ambLayers[k] = holder;
+  loadSfxFile(AMB_FILES[k]).then(buf => {
+    if (ambLayers[k] !== holder || !buf) { if (!buf) delete ambLayers[k]; return; }
+    if (holder.want <= 0) { delete ambLayers[k]; return; }
+    const s = ctx.createBufferSource(); s.buffer = buf; s.loop = true;
+    const g = ctx.createGain(); g.gain.value = 0.0001; s.connect(g); g.connect(ambBus);
+    s.start(ctx.currentTime, Math.random() * buf.duration);        // eri kohta joka kerta, ettei silmukka erotu
+    holder.s = s; holder.g = g;
+    g.gain.setTargetAtTime(Math.max(0.0001, holder.want), ctx.currentTime, 0.9);
+  });
+}
+function stopAmbience() {
+  ambPreset = null;
+  if (crowTimer) { clearTimeout(crowTimer); crowTimer = null; }
+  for (const k of Object.keys(ambLayers)) fadeAmbLayer(k, 0);
+}
+function scheduleCrow() {
+  crowTimer = setTimeout(() => {
+    crowTimer = null;
+    if (!ambPreset || !AMBIENCE[ambPreset].crows) return;
+    if (!document.hidden) play('crow', { vol: ambScale * rnd(0.5, 1), x: (E.camPos ? E.camPos.x : 0) + rnd(-12, 12) });
+    scheduleCrow();
+  }, rnd(7000, 19000));
 }
 
 // --- synteettinen varajärjestelmä (vanha WebAudio-toteutus)
@@ -184,25 +361,29 @@ const SYN = {
   spirit() { [784, 988, 1175, 1568].forEach((f, i) => tone({ f0: f, dur: 1.4, type: 'sine', peak: 0.08, a: 0.3, when: i * 0.18 })); },
 };
 
-/** Tehosteet: tiedosto jos ladattu, muuten synteesi. Kutsut kuten ennen: sfx.bite(), sfx.roar() ... */
-export const sfx = {
-  bite() { if (!playFile('bite', { rate: 1.25 })) SYN.bite(); },
-  hit() { if (!playFile('hit')) SYN.hit(); },
-  whoosh() { if (!playFile('whoosh', { vary: 0.12 })) SYN.whoosh(); },
-  hurt() { if (!playFile('hurt')) SYN.hurt(); },
-  roar() { duck(0.45, 1.6); if (!playFile('roar', { vary: 0.03 })) SYN.roar(); },
-  rock() { if (!playFile('rock', { vol: 0.8, vary: 0.15 })) SYN.rock(); },
-  rumble(d = 2.5) { duck(0.5, Math.min(d, 3)); if (!playFile('rumble')) SYN.rumble(d); },
-  boom() { duck(0.25, 1.8, 0.02); if (!playFile('boom')) SYN.boom(); },
-  bark() { if (!playFile('bark', { vary: 0.1 })) SYN.bark(); },
-  spirit() { if (!playFile('spirit')) SYN.spirit(); },
+Object.assign(SYN, {
   howl() { tone({ f0: 420, f1: 640, dur: 1.6, type: 'triangle', peak: 0.16, a: 0.3 }); },
   tell() { tone({ f0: 300, f1: 300, dur: 0.12, type: 'square', peak: 0.08 }); tone({ f0: 450, f1: 450, dur: 0.12, type: 'square', peak: 0.08, when: 0.13 }); },
   card() { [660, 880, 1320].forEach((f, i) => tone({ f0: f, dur: 0.25, type: 'triangle', peak: 0.15, when: i * 0.06 })); },
   cutin() { noise({ dur: 0.35, type: 'bandpass', f0: 800, f1: 6000, q: 1, peak: 0.3, a: 0.02 }); [880, 1320].forEach((f, i) => tone({ f0: f, dur: 0.3, type: 'triangle', peak: 0.12, when: i * 0.05 })); },
   perfect() { [990, 1480].forEach((f, i) => tone({ f0: f, dur: 0.4, type: 'sine', peak: 0.18, when: i * 0.07 })); },
-  battoga() { if (!playFile('whoosh', { rate: 0.7, vol: 1.2, vary: 0 })) noise({ dur: 0.7, type: 'bandpass', f0: 400, f1: 5000, q: 1.2, peak: 0.6, a: 0.3 }); [523, 659, 784, 1047].forEach((f, i) => tone({ f0: f, dur: 0.6, type: 'triangle', peak: 0.1, when: i * 0.05 })); },
-};
+  battoga() { noise({ dur: 0.7, type: 'bandpass', f0: 400, f1: 5000, q: 1.2, peak: 0.6, a: 0.3 }); [523, 659, 784, 1047].forEach((f, i) => tone({ f0: f, dur: 0.6, type: 'triangle', peak: 0.1, when: i * 0.05 })); },
+});
+
+/** Tehosteet: sfx.<tapahtuma>(arg, opts) – mikä tahansa EVENTS/SOUNDS-nimi (src/data/sfx_map.js). Kutsut kuten ennen:
+ *  sfx.bite(), sfx.roar(), sfx.rumble(2) … Tiedostot jos ladattu, muuten synteettinen varaääni.
+ *  sfx.play(name, opts) ja sfx.at(name, x) (stereopan maailman x:n mukaan) toimivat myös. */
+const sfxFns = {};
+export const sfx = new Proxy({}, {
+  get(_, name) {
+    if (typeof name !== 'string') return undefined;
+    if (name === 'play') return play;
+    if (name === 'at') return (n, x, o = {}) => play(n, { ...o, x });
+    if (!(name in EVENTS) && !(name in SOUNDS) && !(name in SYN)) return undefined;
+    return sfxFns[name] || (sfxFns[name] = (arg, o = {}) => play(name, { ...o, arg }));
+  },
+  has(_, name) { return name in EVENTS || name in SOUNDS || name in SYN; },
+});
 
 // --- synteettinen musiikki (varalla, jos musiikkitiedostoa ei saada)
 let synthTimer = null, synthMode = null, step = 0;

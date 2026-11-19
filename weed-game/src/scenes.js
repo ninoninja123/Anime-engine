@@ -15,7 +15,8 @@
 import * as THREE from 'three';
 import { E, tween, wait, shake } from './engine.js';
 import * as FX from './fx.js';
-import { sfx, music } from './audio.js';
+import { sfx, music, ambience } from './audio.js';
+import { setSurface } from './footsteps.js';
 import { say } from './voice.js';
 import * as UI from './ui.js';
 
@@ -38,7 +39,7 @@ async function step(s, ctx) {
   if (E.skipping && !s.always) {
     // ohitus: aja vain tilaa muuttavat askeleet heti (sijainnit, piilotus, musiikki), ohita odotukset
     if (s.place) return step({ ...s, fade: undefined }, { ...ctx });
-    if (!(s.move || s.hide || s.music !== undefined || s.fn || s.par || s.face || s.anim || s.expr)) return;
+    if (!(s.move || s.hide || s.music !== undefined || s.amb !== undefined || s.surface !== undefined || s.fn || s.par || s.face || s.anim || s.expr)) return;
   }
   if (s.par) { await Promise.all(s.par.map(x => step(x, ctx))); return; }
   if (s.cam) { await camTo(V(s.cam), V(s.look || [0, 1, 0]), s.t || 0, s.ease); return; }
@@ -79,11 +80,13 @@ async function step(s, ctx) {
   if (s.fadeOut) { const d = castRef[s.fadeOut]; await tween({ v: 1 }, { v: 0 }, s.t || 1.5, { real: true, onUpdate: e => d.fade(1 - e) }); d.root.visible = false; return; }
   if (s.say) { await say(s.say, { hold: s.hold }); return; }
   if (s.bark) { say(s.bark, { noWait: true }); return; }
-  if (s.caption) { if (s.wait === false) UI.caption(s.caption, s.t || 3); else await UI.caption(s.caption, s.t || 3); return; }
+  if (s.caption) { sfx.caption(); if (s.wait === false) UI.caption(s.caption, s.t || 3); else await UI.caption(s.caption, s.t || 3); return; }
   if (s.wait !== undefined) { await wait(s.wait, true); return; }
-  if (s.slow !== undefined) { E.timeScale = s.slow; return; }
+  if (s.slow !== undefined) { if (s.slow < 0.5 && E.timeScale >= 0.5) sfx.slowmo(); E.timeScale = s.slow; return; }
   if (s.freeze !== undefined) { await freezeFrame(s.freeze, s.tint); return; }
   if (s.music !== undefined) { music(s.music, { fade: s.fade ?? 1.6 }); return; }
+  if (s.amb !== undefined) { ambience(s.amb); return; }                 // ambienssipreset (sfx_map.js AMBIENCE) tai null
+  if (s.surface !== undefined) { setSurface(s.surface); return; }       // askelten alusta: step | stepRock | wade
   if (s.sfx) { (sfx[s.sfx] || (() => {}))(s.arg); return; }
   if (s.shake) { shake(s.shake); return; }
   if (s.fx) { doFx(s); return; }
@@ -100,7 +103,7 @@ function doFx(s) {
     case 'impact': FX.impact(p, s.strong); break;
     case 'spirit': FX.spiritLight(p, s.color ?? 0xcfe4ff, s.t || 5); sfx.spirit(); break;
     case 'dust': FX.dust(p, s.big); break;
-    case 'speed': FX.speedLines(s.v ?? 1); break;
+    case 'speed': FX.speedLines(s.v ?? 1); if ((s.v ?? 1) >= 0.5) sfx.speed(); break;
     case 'arc': FX.slashArc(p, s.color ?? 0xbfe4ff, s.r || 1.2, s.t || 0.6, s.rot || 0); break;
   }
 }
@@ -116,6 +119,7 @@ async function light({ rim, fog, exposure, bg, t = 2 }) {
 /** Taukokuva: aika pysähtyy, kuva saa anime-sävytyksen + nopeuslinjat. */
 export async function freezeFrame(secs, tint = 'freeze') {
   const prev = E.timeScale; E.timeScale = 0;
+  if (!E.skipping) sfx.freeze();
   document.body.classList.add(tint);
   FX.speedLines(0.7);
   await wait(secs, true);
