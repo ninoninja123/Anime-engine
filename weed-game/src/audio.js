@@ -20,7 +20,7 @@ const NO_FILES = E.params.has('synthaudio');
 
 // ---------------------------------------------------------------- käyttäjän äänenvoimakkuudet (Settings, localStorage)
 function readNum(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : Math.max(0, Math.min(1, +v)); } catch (_) { return d; } }
-export const volumes = { music: readNum('weed.vol.music', 0.8), sfx: readNum('weed.vol.sfx', 0.9), voice: readNum('weed.vol.voice', 1) };
+export const volumes = { music: readNum('weed.vol.music', 1), sfx: readNum('weed.vol.sfx', 0.9), voice: readNum('weed.vol.voice', 1) };
 const curve = v => v * v;     // liukusäädin 0..1 -> gain (kuulokäyrä: 50 % ≈ -12 dB)
 /** Aseta käyttäjän äänenvoimakkuus: kind = music | sfx | voice, v = 0..1. Tallentuu. */
 export function setVolume(kind, v) {

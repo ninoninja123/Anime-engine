@@ -18,7 +18,7 @@ import { AUDIO_LEVELS } from './audio_levels.js';
 //  - ambienssi: kerroskohtainen trim (ambTrim) -> ambDuck -> Effects-liukusäädin
 //  - master: limitteri (DynamicsCompressorNode) ettei summa leikkaa
 export const MIX = {
-  target: { music: -19, voice: -15 },
+  target: { music: -13, voice: -14 },
   bus: { sfx: 0.9 },
   // kategoriagainit: iskut (combat/boss) eturivissä, liike ja UI taustalla
   cat: { move: 0.85, combat: 1.25, boss: 1.2, env: 0.9, cine: 0.95, ui: 0.9 },
