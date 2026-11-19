@@ -7,6 +7,14 @@ Epävirallinen, ei-kaupallinen fanipelin **luonnos** (Three.js, puhelin vaakatas
 - **Hahmot:** käyttäjän omat 3D-mallit (Tripo) pääosille + **koiratehdas** (`dog_parts.glb`) muille. Ks. CREDITS.md.
 - **Live:** https://weed-game.huone-k7q2.workers.dev/
 
+## Prologi-luku (taso 1) "Prologue: Weed and GB"
+Valikko: **▶ Prologue** (ennen sitä "The Story So Far") → lopussa **▶ Continue: Level 2** (Story So Far ohitetaan, kun luku on pelattu,
+`localStorage weed.p1done`). Suora käynnistys: `?level=1` (`&section=0..7` tai nimi: opening, farmRun, tosa, sakura, townRun, blue, truck,
+ending; `&story` = Story So Far ensin), `?level=2`. Tiedostot: `src/level1.js` (luvun kulku, juoksu, kevyt taistelu, aidan ylitys),
+`src/data/scenes_level1.js`, `src/data/level1_config.js` (hahmot, radat, taistelut), `src/shared/props.js` (proseduraaliset esineet:
+rekka, verkkoaita, koppi, puunrungot…). Repliikit `p_*` lines.js:ssä. Testi: `URL=http://localhost:4187/ node tools/shots-level1.cjs fast`
+→ `screenshots/prologue_level/`. Sivuhahmot (sakura, sasuke, nero, tosa, mel_pup, hook, blue) ovat PLACEHOLDER-koiria olemassa olevilla malleilla (characters.js `PROLOGUE_MODELS`, yksi rivi per hahmo): käyttäjän omat mallit vaihdetaan niihin. `tools/smoke-level1.cjs` = nopea savutesti kaikille osioille.
+
 ## Ajaminen
 
 ```bash

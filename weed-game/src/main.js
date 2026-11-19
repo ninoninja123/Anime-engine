@@ -12,6 +12,8 @@ import * as FX from './fx.js';
 import * as UI from './ui.js';
 import { cast, createCast, startLevel, retryPhase, setPaused, quit, debug } from './level2.js';
 import { runPrologue, shouldPlayPrologue } from './prologue.js';
+import './data/level1_config.js';          // prologue chapter characters (Sakura, Blue, Hook, ...) -> CHARACTERS + The Pack
+import { startLevel1, quit1, setPaused1, retry1, isLevel1Active, debug1, SECTIONS } from './level1.js';
 
 const $ = UI.$;
 let mode = 'menu';
@@ -27,6 +29,9 @@ async function boot() {
   wireUI();
   showMenu();
   const p = E.params;
+  const lv = p.get('level');
+  if (lv === '1') { const sec = p.get('section'); startChapter(sec ? (isNaN(+sec) ? Math.max(0, SECTIONS.indexOf(sec)) : +sec) : 0, p.has('story')); return; }
+  if (lv === '2') { startGame(1, !p.has('nointro')); return; }
   if (p.has('prologue') && !(p.has('play') || p.has('phase'))) startGame(1, true);
   if (p.has('play') || p.has('phase')) startGame(Number(p.get('phase') || 1), !p.has('nointro'));
   if (p.has('gallery')) showCast(Number(p.get('gallery')) || 0);
@@ -46,7 +51,10 @@ function showMenu() {
   k.weakReveal = 0;
   k.eyes.material.color.set(0xffb030); k.eyes.scale.setScalar(0.5);
   E.camPos.set(-0.6, 1.3, 6.2); E.camLook.set(2.6, 1.1, -0.5);
-  UI.show('menu', true); UI.show('castScreen', false); UI.show('hud', false);
+  UI.show('menu', true); UI.show('castScreen', false); UI.show('hud', false); UI.show('result1', false);
+  const done = safeGet('weed.p1done') === '1';
+  $('l2note').textContent = done ? '' : ' · Prologue first';
+  $('prologueBtn').textContent = done ? '▶ Prologue: Weed and GB ✓' : '▶ Prologue: Weed and GB';
   const mem = JSON.parse(safeGet('weed.memorial') || '[]');
   if (mem.length) { $('memorial').innerHTML = `Memorial stone: <b>${mem.join(' · ')}</b> ✦`; UI.show('memorial', true); }
   music('intro');
@@ -147,9 +155,24 @@ async function startGame(phase = 1, intro = true) {
   hideGallery();
   UI.show('menu', false); UI.show('castScreen', false); UI.show('result', false);
   for (const d of Object.values(cast)) d.root.rotation.set(0, 0, 0);
-  // the illustrated prologue ("The story so far") leads into the level's own intro cutscene
-  if (intro && phase === 1 && shouldPlayPrologue()) await runPrologue();
+  // the illustrated prologue ("The story so far") leads into the level's own intro cutscene; once the playable
+  // Prologue chapter has been played it already told that story, so it is skipped (?prologue forces it)
+  const chapterDone = safeGet('weed.p1done') === '1' && !E.params.has('prologue');
+  if (intro && phase === 1 && !chapterDone && shouldPlayPrologue()) await runPrologue();
   await startLevel({ phase, intro });
+}
+
+// ---------------------------------------------------------------- the playable Prologue chapter (level 1)
+async function startChapter(section = 0, story = true) {
+  initAudio();
+  requestLandscape();
+  mode = 'level';
+  hideGallery();
+  for (const d of Object.values(cast)) d.root.visible = false;
+  UI.show('menu', false); UI.show('castScreen', false); UI.show('result', false); UI.show('result1', false);
+  // "The story so far" (legend of Gin -> the monster) stays in front of the chapter
+  if (story && section === 0 && shouldPlayPrologue()) await runPrologue();
+  await startLevel1({ section, onDone: () => { UI.show('hud', false); UI.cine(false); UI.show('result1', true); sfx.victory(); } });
 }
 
 function requestLandscape() {
@@ -171,6 +194,9 @@ function wireUI() {
   const UI_SND = { startBtn: 'start', castBack: 'uiBack', quitBtn: 'uiBack', defeatQuit: 'uiBack', resultBtn: 'uiBack', helpClose: 'uiBack', skipBtn: 'skip', pauseBtn: null, resumeBtn: null, retryBtn: 'uiConfirm' };
   const tap = (id, fn) => { const el = $(id); if (!el) return; el.addEventListener('click', e => { e.stopPropagation(); initAudio(); const s = id in UI_SND ? UI_SND[id] : 'ui'; if (s) sfx.play(s); fn(); }); };
   tap('startBtn', () => startGame(1, true));
+  tap('prologueBtn', () => startChapter(0, true));
+  tap('nextBtn', () => { UI.show('result1', false); startGame(1, true); });
+  tap('result1Menu', () => { UI.show('result1', false); showMenu(); });
   tap('castBtn', () => showCast(0));
   tap('storyBtn', async () => { UI.show('menu', false); await runPrologue({ force: true }); showMenu(); });
   tap('castNext', () => showCast(castIdx + 1));
@@ -178,13 +204,13 @@ function wireUI() {
   tap('castBack', () => showMenu());
   tap('soundBtn', () => { setMuted(!muted); syncSettingLabels(); });
   tap('subsBtn', () => { setPref('subs', !settings.subs); syncSettingLabels(); });
-  tap('pauseBtn', () => setPaused(true));
-  tap('resumeBtn', () => setPaused(false));
+  tap('pauseBtn', () => { if (!setPaused1(true)) setPaused(true); });
+  tap('resumeBtn', () => { if (!setPaused1(false)) setPaused(false); });
   tap('helpBtn', () => { UI.show('pause', false); UI.show('help', true); });
   tap('helpClose', () => { UI.show('help', false); UI.show('pause', true); });
-  tap('quitBtn', () => { quit(); showMenu(); });
-  tap('retryBtn', () => retryPhase());
-  tap('defeatQuit', () => { quit(); showMenu(); });
+  tap('quitBtn', () => { quit1(); quit(); showMenu(); });
+  tap('retryBtn', () => (isLevel1Active() ? retry1() : retryPhase()));
+  tap('defeatQuit', () => { quit1(); quit(); showMenu(); });
   tap('resultBtn', () => { quit(); showMenu(); });
   tap('rotateIgnore', () => document.body.classList.add('ignorerotate'));
   const skip = () => { E.skipping = true; };
@@ -195,11 +221,11 @@ function wireUI() {
   // first touch anywhere unlocks audio (mobile autoplay rules)
   const unlock = () => { initAudio(); window.removeEventListener('pointerdown', unlock, true); };
   window.addEventListener('pointerdown', unlock, true);
-  document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'level') setPaused(true); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'level') { if (!setPaused1(true)) setPaused(true); } });
   syncSettingLabels();
 }
 
-window.__game = { E, cast, debug, startGame, showMenu, showCast, sfx, audioStats, currentMusic, musicState, gallery, ROSTER };
+window.__game = { E, cast, debug, debug1, startChapter, startGame, showMenu, showCast, sfx, audioStats, currentMusic, musicState, gallery, ROSTER };
 boot().catch(err => {
   console.error(err);
   $('loading').innerHTML = `<div>Loading failed: ${String(err.message || err)}</div>`;

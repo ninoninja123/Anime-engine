@@ -1,0 +1,531 @@
+// PROLOGUE (level 1) "Weed and GB": scene scripts (data). Step format: src/scenes.js. Lines: src/data/lines.js (p_*).
+// Canon (docs/weed-game/canon-deep-dive.md, anime ep. 1–2): northern Alps in autumn (evening → night → morning); GB and the pup
+// quarrel over food, the pup's mother is sick; Nero orders GB to steal a duck from a farm guarded by a Tosa; Sasuke is the bait;
+// the pup attacks, is thrown through the kennel wall and makes his first, unconscious spinning leap (cuts the Tosa's ear);
+// Smith's fighting spirit makes the Tosa back off; Sakura entrusts her son to Smith and dies; in the morning GB comforts the pup
+// and names him Weed. Jōshū: Weed saves Mel from a human; Hook (chained) tells about Blue; Blue sets Mel on Weed; Hook breaks his
+// chain and comes with Smith; Blue flees onto the road and is hit by a truck while Weed's group is behind the net fence; when the
+// next truck comes Weed leaps the fence to save him, and Blue throws Weed clear and dies. Hook stays; Mel follows Weed.
+// Not in the anime (left out): Mel's mother Lenny. Dialogue is original. PEGI 12: no blood, impacts are cut / implied.
+// Each export: (ctx) -> steps. ctx = { cast, P (props), E, FX, sfx, setMood, ... } from src/level1.js.
+
+export function linesOf(steps, out = []) {
+  for (const s of steps) { if (s.say) out.push(s.say); if (s.bark) out.push(s.bark); if (s.par) linesOf(s.par, out); }
+  return out;
+}
+
+// ------------------------------------------------------------------------------------------------
+// 1. OPENING: title card, autumn Alps at evening, GB and the pup over a scrap, Nero's order
+export const opening = ({ cast, P }) => [
+  { music: 'dawn', fade: 2.5 },
+  { amb: 'dusk' },
+  { mood: 'autumn_dusk', t: 0.1 },
+  { place: 'weed', x: -0.4, z: 0.2, face: -1, anim: 'Idle' },
+  { place: 'gb', x: -2.1, z: 0.1, face: 1, anim: 'Idle' },
+  { fn: () => { P.show('scrap', -1.25, 0.15); } },
+  // wide establishing: drifting over the red-gold mountains
+  { cam: [-14, 7.5, 22], look: [-8, 9, -60] },
+  { sfx: 'levelStart' }, { caption: '<b>PROLOGUE</b>Weed and GB', t: 4.2, wait: false },
+  { cam: [-4, 5.5, 18], look: [2, 7, -60], t: 6, ease: 'inOut' },
+  { say: 'p_open_1' },
+  { say: 'p_open_2' },
+  // crane down to the two of them, tug-of-war over the scrap
+  { cam: [-0.6, 1.4, 5.2], look: [-1.2, 0.4, 0], t: 3.2, ease: 'inOut' },
+  { anim: 'gb', name: 'Bark', loop: false }, { sfx: 'bark' },
+  { cam: [-1.0, 0.75, 3.3], look: [-1.3, 0.45, 0], t: 0.4, ease: 'out' },     // two-shot: both tugging at the scrap
+  { say: 'p_gb_mine' },
+  { cam: [-0.7, 0.42, 1.9], look: [-0.9, 0.3, 0], t: 0.5, ease: 'out' },
+  { expr: 'weed', name: 'sad' },
+  { say: 'p_weed_mother' },
+  { cam: [-1.4, 0.9, 3.2], look: [-1.4, 0.45, 0], t: 1.2 },
+  { anim: 'gb', name: 'Idle_2_HeadLow' },
+  { say: 'p_gb_give' },
+  { fn: () => P.attach('scrap', cast.weed) },
+  { anim: 'weed', name: 'Bark', loop: false },
+  { expr: 'weed', name: 'happy' },
+  { say: 'p_weed_thanks' },
+  { anim: 'gb', name: 'Bark', loop: false },
+  { say: 'p_gb_mister' },
+  { expr: 'weed', name: null },
+  // Nero and Sasuke come down the slope
+  { place: 'nero', x: -9.5, z: -1.6, face: 1, anim: 'Walk' },
+  { place: 'sasuke', x: -10.6, z: -0.6, face: 1, anim: 'Walk' },
+  { cam: [-3.4, 0.8, 4.6], look: [-6.5, 0.9, -1], t: 0 },
+  { par: [
+    { move: 'nero', x: -4.4, t: 3.2, anim: 'Walk', ts: 0.8, after: 'Idle' },
+    { move: 'sasuke', x: -5.4, t: 3.2, anim: 'Walk', after: 'Idle' },
+    { cam: [-2.2, 0.75, 3.6], look: [-4.4, 0.85, -1.2], t: 3.2 },
+  ] },
+  { fn: () => cast.gb.face(-1) },
+  { dolly: 'nero', dist: 1.5, side: 0.7, t: 0.6, h: -0.1 },
+  { amb: 'night' },
+  { say: 'p_nero_order' },
+  { dolly: 'gb', dist: 1.5, side: -0.6, t: 0.4 },
+  { expr: 'gb', name: 'surprised' },
+  { say: 'p_gb_tosa' },
+  { dolly: 'nero', dist: 1.2, side: 0.4, t: 0.5, h: -0.15 },
+  { say: 'p_nero_threat' },
+  { expr: 'gb', name: null },
+  { move: 'gb', x: -4.6, z: -0.2, t: 1.2, anim: 'Walk', after: 'Idle' },
+  { cam: [-4.2, 0.8, 2.8], look: [-5.2, 0.6, -0.4], t: 0.8 },
+  { say: 'p_gb_sasuke' },
+  { anim: 'sasuke', name: 'Idle_HitReact1', loop: false },
+  { say: 'p_sasuke_me' },
+  // the pup watches them go
+  { par: [
+    { move: 'nero', x: -14, t: 3.5, anim: 'Walk', ts: 0.8 },
+    { move: 'gb', x: 9, z: -1, t: 4.5, anim: 'Walk' },
+    { move: 'sasuke', x: 8, z: -0.4, t: 4.2, anim: 'Walk' },
+    { fn: async () => { cast.weed.face(1); } },
+    { cam: [-1.9, 0.5, 1.5], look: [2.6, 0.4, -0.7], t: 2.5, ease: 'inOut' },     // over the pup's shoulder
+  ] },
+  { hide: 'nero' },
+  { say: 'p_weed_worry' },
+  { fn: () => P.hide('scrap') },
+];
+
+// ------------------------------------------------------------------------------------------------
+// 2. NIGHT, THE FARM: the pup runs after them (leads into the run)
+export const farmIntro = () => [
+  { mood: 'autumn_night', t: 2.5 },
+  { music: null, fade: 2 },
+  { amb: 'night' },
+  { caption: '<b>The farm under the ridge</b>Night', t: 3, wait: false },
+  { place: 'weed', x: -3, z: 0, face: 1, anim: 'Idle' },
+  { cam: [-6, 2.6, 8], look: [-1, 0.6, -1] },
+  { cam: [-4.2, 0.8, 3.2], look: [-2.6, 0.4, 0], t: 3 },
+  { sfx: 'heartbeat' },
+  { anim: 'weed', name: 'Gallop' },
+];
+
+// ------------------------------------------------------------------------------------------------
+// 3. THE TOSA: Sasuke caught at the kennel; the pup charges in (leads into the fight)
+export const tosaIntro = ({ cast, P }) => [
+  { music: null },
+  { fn: () => { P.show('kennel', 3.6, -1.6); P.show('pond', -2.5, -3.4); } },
+  { place: 'tosa', x: 2.4, z: 0, face: -1, anim: 'Idle_2_HeadLow' },
+  { place: 'sasuke', x: 1.45, z: 0.2, face: 1, anim: 'Idle_HitReact2' },
+  { place: 'weed', x: -6, z: 0, face: 1, anim: 'Gallop' },
+  { place: 'gb', x: -7.5, z: -1.3, face: 1, anim: 'Idle' },
+  { cam: [0.4, 0.5, 4.2], look: [2.2, 0.9, 0] },
+  { anim: 'tosa', name: 'Bark', loop: false }, { bark: 'p_tosa_growl' }, { sfx: 'growl' }, { shake: 0.25 },
+  { move: 'weed', x: -2.2, t: 0.9, anim: 'Gallop', ts: 1.2, after: 'Idle' },
+  { dolly: 'weed', dist: 1.8, side: 0.6, t: 0.35, h: 0.2 },
+  { expr: 'weed', name: 'angry' },
+  { say: 'p_weed_letgo' },
+  { cam: [0.8, 0.35, 3.2], look: [2.2, 1.0, 0], t: 0.5, ease: 'out' },
+  { say: 'p_tosa_scoff' },
+  { music: 'battle', fade: 0.8 },
+  // Sasuke wriggles free while the giant turns to the pup
+  { par: [
+    { move: 'sasuke', x: -8, z: 1.5, t: 1.6, anim: 'Gallop', ts: 1.4 },
+    { fn: () => cast.tosa.face(-1) },
+  ] },
+  { hide: 'sasuke' },
+  { expr: 'weed', name: null },
+];
+
+// mid-fight: thrown through the kennel wall, the pup "changes" (leads into phase 2)
+export const tosaThrow = ({ cast, P, E, FX, sfx }) => [
+  { music: null, fade: 0.3 },
+  { place: 'weed', x: 1.2, z: 0, face: 1, anim: 'Attack', loop: false },
+  { place: 'tosa', x: 2.6, z: 0, face: -1, anim: 'Attack', loop: false },
+  { cam: [1.6, 0.5, 2.8], look: [2.0, 0.6, 0] },
+  { slow: 0.25 }, { sfx: 'whoosh' },
+  { anim: 'weed', name: 'Idle_HitReact2', loop: false },
+  { par: [
+    { move: 'weed', x: 3.5, y: 0.9, z: -1.0, t: 0.35, ease: 'out', real: false },
+    { cam: [2.6, 0.9, 3.6], look: [3.4, 0.7, -1.2], t: 0.45 },
+  ] },
+  { slow: 1 },
+  { fn: () => { P.breakKennel(); sfx.hitHeavy(); sfx.bodyfall(); } }, { shake: 0.7 }, { fx: 'flash', color: '#ffffff', peak: 0.6 },
+  { move: 'weed', x: 3.6, y: 0, z: -1.5, t: 0.2, ease: 'in', real: true },
+  { anim: 'weed', name: 'LieDown' },
+  { fx: 'dust', at: [3.6, 0.2, -1.5], big: true },
+  { wait: 0.8 },
+  { anim: 'gb', name: 'Bark', loop: false },
+  { say: 'p_gb_run' },
+  // silence. heartbeat. the pup's eyes
+  { light: { exposure: 0.55, t: 0.8 } },
+  { sfx: 'heartbeat' },
+  { cam: [3.9, 0.3, -0.6], look: [3.6, 0.25, -1.5], t: 1.6, ease: 'inOut' },
+  { wait: 0.6 },
+  { sfx: 'heartbeat' },
+  { anim: 'weed', name: 'Idle_2_HeadLow' },
+  { say: 'p_weed_rise' },
+  { light: { exposure: 1.0, t: 0.4 } },
+  { fn: () => { FX.spiritLight(cast.weed.root.position.clone().add(new E.V3(0, 0.3, 0)), 0x9fd0ff, 1.6); sfx.riser(); } },
+  { anim: 'weed', name: 'Idle' },
+  { dolly: 'weed', dist: 1.3, side: -0.5, t: 0.3, h: 0.1 },
+  { freeze: 0.5 },
+  { music: 'battle', fade: 0.4 },
+];
+
+// Battōga hits: the Tosa's ear is cut (shown as a flash and a yelp; no blood), Smith steps in
+export const tosaEnd = ({ cast, E, FX, sfx }) => [
+  { music: null, fade: 0.4 },
+  { place: 'tosa', x: 2.6, z: 0, face: -1, anim: 'Idle_HitReact2', loop: false },
+  { cam: [0.8, 0.6, 3.6], look: [2.4, 1.1, 0] },
+  { sfx: 'whimper' }, { shake: 0.4 },
+  { fn: () => cast.tosa.setTint(0xffffff, 0.5) }, { wait: 0.12 }, { fn: () => cast.tosa.setTint(0x000000, 0) },
+  { dolly: 'gb', dist: 1.4, side: 0.6, t: 0.4 },
+  { expr: 'gb', name: 'surprised' },
+  { say: 'p_gb_what' },
+  { expr: 'gb', name: null },
+  { anim: 'tosa', name: 'Bark', loop: false }, { sfx: 'roar' },
+  { dolly: 'tosa', dist: 1.3, side: 0.5, t: 0.3 },
+  { say: 'p_tosa_rage' },
+  { move: 'tosa', x: 1.2, t: 0.5, anim: 'Gallop', ease: 'in', faceMove: false },
+  // a three-legged shadow on the fence: Smith
+  { place: 'smith', x: -1.6, z: -1.2, face: 1, anim: 'Idle' },
+  { slow: 0.2 },
+  { cam: [-3.4, 0.4, 2.2], look: [-1.4, 0.9, -1.2], t: 0.35 },
+  { fn: () => FX.spiritLight(cast.smith.root.position.clone().add(new E.V3(0, 0.5, 0)), 0xffd8a0, 1.5) },
+  { slow: 1 },
+  { anim: 'tosa', name: 'Idle' },
+  { say: 'p_smith_enough' },
+  { cam: [0.4, 0.7, 3.4], look: [1.4, 0.8, 0], t: 0.6 },
+  { anim: 'tosa', name: 'Idle_HitReact1', loop: false }, { sfx: 'whimper' },
+  { move: 'tosa', x: 6.5, z: -1.8, t: 2.0, anim: 'Walk', ts: 0.8 },
+  { hide: 'tosa' },
+  { music: 'smith', fade: 2 },
+  { move: 'gb', x: -0.6, z: 0.4, t: 1.2, anim: 'Walk', after: 'Idle' },
+  { place: 'weed', x: 0.6, z: 0.2, face: -1, anim: 'Idle' },
+  { cam: [-0.4, 0.8, 3.6], look: [-0.6, 0.6, -0.4], t: 1.0 },
+  { say: 'p_gb_who' },
+  { dolly: 'smith', dist: 1.4, side: 0.6, t: 0.5 },
+  { say: 'p_smith_name' },
+  { dolly: 'weed', dist: 1.6, side: -0.5, t: 0.4 },
+  { say: 'p_weed_home' },
+  { move: 'weed', x: 8, z: -0.5, t: 1.8, anim: 'Gallop' },
+];
+
+// ------------------------------------------------------------------------------------------------
+// 4. SAKURA: the den under the roots; she entrusts her son to Smith and dies. Morning: GB names him Weed.
+export const sakura = ({ cast, P, E, FX }) => [
+  { music: null, fade: 1.5 },
+  { mood: 'grief', t: 0.1 },
+  { amb: 'sad' },
+  { fn: () => { P.hideAll(); P.show('den', 0.8, -2.6); P.show('weedPlant', -1.3, 0.9); } },
+  { place: 'sakura', x: 0.6, z: -0.7, face: -1, anim: 'LieDown' },
+  { place: 'weed', x: -2.6, z: 0.3, face: 1, anim: 'Walk' },
+  { place: 'smith', x: -4.4, z: -0.4, face: 1, anim: 'Walk' },
+  { place: 'gb', x: -5.6, z: 0.5, face: 1, anim: 'Walk' },
+  { caption: '<b>That night</b>', t: 2.6, wait: false },
+  { cam: [-1.0, 3.0, 7.5], look: [0.6, 1.0, -1.6] },
+  { cam: [-0.4, 1.6, 5.2], look: [0.4, 0.6, -0.8], t: 4.5, ease: 'inOut' },
+  { par: [
+    { move: 'weed', x: -0.3, z: 0, t: 2.0, anim: 'Walk', after: 'Idle' },
+    { move: 'smith', x: -2.0, z: -0.3, t: 2.4, anim: 'Walk', ts: 0.8, after: 'Idle' },
+    { move: 'gb', x: -3.2, z: 0.6, t: 2.4, anim: 'Walk', ts: 0.8, after: 'Idle_2_HeadLow' },
+  ] },
+  { music: 'sad', fade: 3 },
+  // Smith recognises her
+  { dolly: 'smith', dist: 1.3, side: 0.5, t: 1.2, ease: 'inOut' },
+  { say: 'p_smith_sakura' },
+  { cam: [1.6, 0.55, 1.4], look: [0.5, 0.35, -0.7], t: 1.4 },
+  { say: 'p_sakura_smith' },
+  { move: 'smith', x: -0.9, z: -0.25, t: 1.4, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' },
+  { say: 'p_smith_sorry' },
+  { say: 'p_sakura_hush' },
+  { cam: [0.2, 0.7, 2.4], look: [-0.2, 0.4, -0.5], t: 1.6 },
+  { say: 'p_sakura_entrust' },
+  { dolly: 'smith', dist: 1.2, side: -0.5, t: 0.8 },
+  { say: 'p_smith_promise' },
+  // nose to nose: mother and son
+  { move: 'weed', x: 0.0, z: -0.45, t: 1.2, anim: 'Walk', ts: 0.7, after: 'Idle_2_HeadLow' },
+  { fn: () => { cast.weed.lookTarget = cast.sakura; cast.sakura.lookTarget = cast.weed; } },
+  { cam: [0.3, 0.32, 0.9], look: [0.25, 0.3, -0.6], t: 1.8, ease: 'inOut' },
+  { say: 'p_sakura_pup', hold: 0.4 },
+  { say: 'p_sakura_last' },
+  { fn: () => { cast.sakura.lookTarget = null; } },
+  { light: { exposure: 0.75, t: 2 } },
+  { wait: 0.8 },
+  { expr: 'weed', name: 'sad' },
+  { say: 'p_weed_mama' },
+  { fn: () => FX.spiritLight(cast.sakura.root.position.clone().add(new E.V3(0, 0.4, 0)), 0xffd6e8, 6) },
+  { cam: [0.4, 1.6, 4.6], look: [0.6, 1.8, -0.8], t: 5, ease: 'inOut' },
+  { wait: 1.5 },
+  { light: { exposure: 1.0, t: 0.1 } },
+  { fn: () => { cast.weed.lookTarget = null; } },
+  { fx: 'flash', color: '#000000', t: 1.6, peak: 1 },
+  { wait: 1.2 },
+  // MORNING
+  { mood: 'night', t: 0.1 },          // autumn base = cold golden morning
+  { amb: 'dawn' },
+  { hide: 'sakura' },
+  { place: 'weed', x: 0.2, z: -0.2, face: -1, anim: 'LieDown' },
+  { place: 'smith', x: -2.2, z: -1.2, face: 1, anim: 'Idle_2_HeadLow' },
+  { place: 'gb', x: -2.8, z: 0.6, face: 1, anim: 'Idle' },
+  { caption: '<b>Morning</b>', t: 2.4, wait: false },
+  { cam: [2.6, 1.6, 5.0], look: [0.0, 0.6, -0.6] },
+  { cam: [1.6, 0.9, 3.4], look: [-0.4, 0.4, -0.2], t: 4 },
+  { sfx: 'whimper' },
+  { move: 'gb', x: -0.7, z: 0.25, t: 2.0, anim: 'Walk', ts: 0.7, after: 'Idle_2_HeadLow' },
+  { say: 'p_gb_comfort' },
+  { anim: 'weed', name: 'Idle_2_HeadLow' },
+  { say: 'p_gb_noname' },
+  { cam: [-1.0, 0.45, 2.2], look: [-1.3, 0.25, 0.9], t: 1.6, ease: 'inOut' },     // the little plant in the stone
+  { say: 'p_gb_weed' },
+  { music: 'dawn', fade: 2.5 },
+  { dolly: 'gb', dist: 1.3, side: 0.6, t: 0.8 },
+  { expr: 'gb', name: 'happy' },
+  { say: 'p_gb_name' },
+  { expr: 'gb', name: null },
+  { anim: 'weed', name: 'Idle' },
+  { cam: [0.9, 0.38, 1.2], look: [0.15, 0.32, -0.2], t: 1.4 },
+  { expr: 'weed', name: 'determined' },
+  { say: 'p_weed_name' },
+  { caption: '<b>WEED</b>Small, but never uprooted.', t: 3.2, wait: false },
+  { cam: [0.2, 1.4, 4.4], look: [-0.6, 0.5, -0.4], t: 2.4 },
+  { move: 'smith', x: -0.9, z: -0.8, t: 1.2, anim: 'Walk', ts: 0.7, after: 'Idle' },
+  { say: 'p_smith_go' },
+  { expr: 'weed', name: null },
+  { par: [
+    { move: 'weed', x: 6, z: 0.2, t: 4, anim: 'Walk' },
+    { move: 'smith', x: 4.6, z: -0.6, t: 4, anim: 'Walk', ts: 0.8 },
+    { fn: async ({ wait }) => { await wait(1.4, true); } },
+  ] },
+  { anim: 'gb', name: 'Bark', loop: false },
+  { say: 'p_gb_coming' },
+  { place: 'sasuke', x: -6, z: -2, face: 1, anim: 'Idle' },
+  { cam: [-2.4, 0.9, 3.4], look: [-4.6, 0.5, -1.6], t: 0.8 },
+  { say: 'p_sasuke_bye' },
+  { move: 'sasuke', x: -12, t: 1.6, anim: 'Gallop' },
+  { hide: 'sasuke' },
+];
+
+// ------------------------------------------------------------------------------------------------
+// 5. THE ROAD → JŌSHŪ: a human chases a golden pup (leads into the second run)
+export const journey = ({ cast, P }) => [
+  { fn: () => P.hideAll() },
+  { mood: 'night', t: 0.1 },
+  { amb: 'battle' },
+  { place: 'weed', x: -8, z: 0.2, face: 1, anim: 'Walk' },
+  { place: 'smith', x: -9.6, z: -0.6, face: 1, anim: 'Walk', ts: 0.8 },
+  { place: 'gb', x: -10.8, z: 0.4, face: 1, anim: 'Walk' },
+  { cam: [-2, 6.5, 16], look: [4, 6, -60] },
+  { par: [
+    { cam: [-4, 1.2, 6.5], look: [-6, 0.6, 0], t: 5, ease: 'inOut' },
+    { move: 'weed', x: -3.5, t: 5, anim: 'Walk' },
+    { move: 'smith', x: -5.2, t: 5, anim: 'Walk', ts: 0.8 },
+    { move: 'gb', x: -6.4, t: 5, anim: 'Walk' },
+    { say: 'p_road_1' },
+  ] },
+  { fn: () => { P.show('town', 0, -8); } },
+  { caption: '<b>Jōshū</b>Weeks later', t: 3, wait: false },
+  { say: 'p_road_2' },
+  { place: 'mel', x: 6, z: -1.5, face: -1, anim: 'Gallop', ts: 1.3 },
+  { cam: [-1.0, 0.7, 4.0], look: [2.6, 0.5, -1], t: 0 },
+  { move: 'mel', x: 0.2, z: -0.4, t: 1.4, anim: 'Gallop', ts: 1.3, after: 'Idle' },
+  { sfx: 'bark' }, { shake: 0.2 },
+  { fn: () => P.show('netThrow', 3.2, -0.4) },
+  { expr: 'weed', name: 'determined' },
+  { dolly: 'weed', dist: 1.7, side: 0.5, t: 0.3 },
+  { say: 'p_weed_follow_me' },
+  { expr: 'weed', name: null },
+];
+
+// after the town run: Mel won't say thanks; Hook tells about Blue
+export const hook = ({ cast, P }) => [
+  { fn: () => { P.hideAll(); P.show('town', 0, -8); P.show('hookKennel', -3.0, -1.6); } },
+  { music: null, fade: 1.2 },
+  { place: 'weed', x: -0.4, z: 0.3, face: 1, anim: 'Idle' },
+  { place: 'mel', x: 1.4, z: 0.1, face: -1, anim: 'Idle' },
+  { place: 'gb', x: -2.0, z: 0.8, face: 1, anim: 'Idle' },
+  { place: 'smith', x: -1.6, z: -0.4, face: 1, anim: 'Idle_2' },
+  { place: 'hook', x: -3.0, z: -0.6, face: 1, anim: 'Idle' },
+  { cam: [0.6, 0.55, 2.6], look: [0.6, 0.4, 0] },
+  { anim: 'mel', name: 'Idle_2_HeadLow' },
+  { say: 'p_mel_nothanks' },
+  { move: 'mel', x: 9, z: -2.5, t: 2, anim: 'Gallop' },
+  { hide: 'mel' },
+  { dolly: 'gb', dist: 1.5, side: 0.6, t: 0.4 },
+  { say: 'p_gb_rude' },
+  { music: 'sad', fade: 2 },
+  { cam: [-2.0, 0.8, 1.6], look: [-3.0, 0.7, -0.6], t: 1.2 },
+  { anim: 'hook', name: 'Idle_2_HeadLow' },
+  { say: 'p_hook_warn' },
+  { dolly: 'weed', dist: 1.6, side: -0.5, t: 0.4 },
+  { expr: 'weed', name: 'determined' },
+  { say: 'p_weed_save' },
+  { move: 'weed', x: 7, z: -1, t: 1.4, anim: 'Gallop', ts: 1.2 },
+  { expr: 'weed', name: null },
+  { dolly: 'smith', dist: 1.4, side: 0.6, t: 0.3 },
+  { say: 'p_smith_wait' },
+];
+
+// ------------------------------------------------------------------------------------------------
+// 6. BLUE: the mountain forest above the truck road
+export const blueIntro = ({ cast, P }) => [
+  { fn: () => { P.hideAll(); P.show('road', 0, -4.2); P.show('netFence', 0, -2.6); } },
+  { mood: 'night', t: 0.1 },
+  { amb: 'battle' },
+  { place: 'blue', x: 3.2, z: 0, face: -1, anim: 'Idle' },
+  { place: 'mel', x: 4.6, z: -1.0, face: -1, anim: 'Idle' },
+  { place: 'weed', x: -5, z: 0, face: 1, anim: 'Gallop' },
+  { caption: '<b>The forest above the truck road</b>Jōshū', t: 3, wait: false },
+  { cam: [-1.0, 1.1, 6.0], look: [2.0, 0.8, -1.5] },
+  { move: 'weed', x: -2.6, t: 1.0, anim: 'Gallop', after: 'Idle' },
+  { dolly: 'blue', dist: 1.4, side: 0.5, t: 0.6, h: -0.1 },
+  { say: 'p_blue_taunt' },
+  { music: 'battle', fade: 0.8 },
+];
+export const blueMel = ({ cast }) => [
+  { place: 'mel', x: 4.6, z: -0.6, face: -1, anim: 'Idle' },
+  { dolly: 'blue', dist: 1.5, side: 0.6, t: 0.3 },
+  { anim: 'blue', name: 'Bark', loop: false }, { sfx: 'bark' },
+  { say: 'p_blue_mel' },
+  { cam: [2.4, 0.5, 2.6], look: [4.2, 0.4, -0.5], t: 0.4 },
+  { anim: 'mel', name: 'Idle_2_HeadLow' }, { wait: 0.6 },
+];
+export const blueHook = ({ cast }) => [
+  { music: null, fade: 0.4 },
+  { place: 'hook', x: -9, z: -0.8, face: 1, anim: 'Gallop', ts: 1.3 },
+  { place: 'smith', x: -10.5, z: 0.4, face: 1, anim: 'Gallop' },
+  { cam: [-3.5, 0.8, 4.4], look: [-6.4, 0.8, -0.4] },
+  { par: [
+    { move: 'hook', x: -3.2, t: 1.2, anim: 'Gallop', ts: 1.3, after: 'Idle' },
+    { move: 'smith', x: -4.6, t: 1.3, anim: 'Gallop', after: 'Idle' },
+  ] },
+  { anim: 'hook', name: 'Bark', loop: false }, { sfx: 'bark' }, { shake: 0.3 },
+  { say: 'p_hook_arrive' },
+  { dolly: 'blue', dist: 1.4, side: 0.6, t: 0.3 },
+  { say: 'p_blue_flee' },
+  // Blue bolts, over the net fence onto the road
+  { move: 'blue', x: 6.5, z: -1.2, t: 0.8, anim: 'Gallop', ts: 1.4 },
+  { anim: 'blue', name: 'Gallop_Jump', loop: false }, { sfx: 'whoosh' },
+  { move: 'blue', x: 7.5, z: -3.0, y: 1.2, t: 0.35, ease: 'out' },
+  { move: 'blue', x: 8.0, z: -4.2, y: 0, t: 0.3, ease: 'in' },
+  { anim: 'blue', name: 'Gallop', ts: 1.4 },
+];
+
+// ------------------------------------------------------------------------------------------------
+// 7. THE TRUCK (fn-steps drive the trucks; the leap over the fence is a player action in level1.js)
+export const truckHit = ({ cast, P, E, FX, sfx, truckRun }) => [
+  { place: 'weed', x: -0.4, z: -1.4, face: 1, anim: 'Gallop' },
+  { place: 'hook', x: -2.4, z: -1.2, face: 1, anim: 'Gallop' },
+  { place: 'smith', x: -3.6, z: -0.8, face: 1, anim: 'Gallop' },
+  { place: 'gb', x: -4.8, z: -1.0, face: 1, anim: 'Gallop' },
+  { place: 'mel', x: 3.6, z: -1.2, face: -1, anim: 'Idle' },
+  { place: 'blue', x: -2.0, z: -4.2, face: 1, anim: 'Gallop', ts: 1.3 },
+  { cam: [-1.2, 0.8, 1.6], look: [-0.4, 0.8, -4.0] },
+  { par: [
+    { move: 'weed', x: 1.0, t: 0.8, anim: 'Gallop', after: 'Idle' },
+    { move: 'hook', x: -0.6, t: 0.8, anim: 'Gallop', after: 'Idle' },
+    { move: 'smith', x: -1.6, t: 0.8, anim: 'Gallop', after: 'Idle' },
+    { move: 'gb', x: -2.6, t: 0.8, anim: 'Gallop', after: 'Idle' },
+    { move: 'blue', x: 0.6, t: 1.0, anim: 'Gallop', ts: 1.3 },
+  ] },
+  // headlights: the first truck (impact is a white cut, no blood)
+  { fn: () => truckRun(0, { from: -34, to: 34, t: 2.4, hitAt: 0.6, blueX: 0.6 }) },
+  { cam: [3.2, 0.6, -1.6], look: [0.6, 0.6, -4.2], t: 0 },
+  { sfx: 'riser' },
+  { anim: 'blue', name: 'Idle_HitReact1', loop: false },
+  { wait: 1.2 },
+  { fx: 'flash', color: '#ffffff', t: 0.5, peak: 1 }, { shake: 0.8 }, { sfx: 'cineBoom' },
+  { place: 'blue', x: 1.6, z: -4.2, face: -1, anim: 'LieDown' },
+  { wait: 1.3 },
+  { cam: [0.6, 0.45, 0.6], look: [1.4, 0.4, -4.2], t: 0 },
+  { music: null },
+  { wait: 0.6 },
+  { expr: 'weed', name: 'surprised' },
+  { say: 'p_weed_blue' },
+];
+export const truckSave = ({ cast, P, E, FX, sfx, truckRun }) => [
+  { expr: 'weed', name: 'determined' },
+  { place: 'blue', x: 1.6, z: -4.2, face: -1, anim: 'LieDown' },
+  // Weed tries to drag him off the asphalt: nose under his shoulder (contact), pulling
+  { par: [
+    { move: 'weed', x: 1.05, z: -4.05, t: 0.5, anim: 'Walk', ts: 1.4, ease: 'inOut' },
+    { cam: [2.6, 0.5, -1.9], look: [1.3, 0.35, -4.2], t: 0.5 },
+  ] },
+  { fn: () => { cast.weed.face(1); cast.weed.lookTarget = cast.blue; } },
+  { anim: 'weed', name: 'Attack', loop: false }, { sfx: 'claw' },
+  { move: 'weed', x: 0.85, t: 0.4, anim: 'Walk', ts: 0.6, faceMove: false },
+  { fn: () => truckRun(1, { from: -16, to: -5, t: 1.5 }) },
+  { sfx: 'riser' },
+  { dolly: 'smith', dist: 1.4, side: 0.5, t: 0.3 },
+  { say: 'p_smith_no' },
+  { cam: [2.4, 0.4, -2.8], look: [1.2, 0.4, -4.2], t: 0.4 },
+  { anim: 'blue', name: 'Idle_2_HeadLow' },
+  { wait: 0.3 },
+  { slow: 0.22 }, { sfx: 'slowmo' },
+  { anim: 'blue', name: 'Attack', loop: false },
+  { say: 'p_blue_go' },
+  { fn: () => { cast.weed.lookTarget = null; } },
+  { par: [
+    { move: 'weed', x: 2.0, z: -1.7, y: 0.5, t: 0.45, ease: 'out', real: false },
+    { cam: [5, 0.8, 0.8], look: [2.0, 0.6, -3.2], t: 0.6 },
+  ] },
+  { fx: 'flash', color: '#ffffff', t: 0.8, peak: 1 },
+  { fn: () => truckRun(1, { from: -5, to: 34, t: 0.55 }) },
+  { slow: 1 },
+  { shake: 0.7 }, { sfx: 'whoosh' },
+  { move: 'weed', x: 2.2, y: 0, z: -1.6, t: 0.2, ease: 'in' },
+  { anim: 'weed', name: 'Idle_HitReact2', loop: false },
+  { fn: () => { cast.blue.root.position.set(4.6, 0, -4.4); cast.blue.play('LieDown'); } },
+  { wait: 1.6 },
+  { music: null },
+  { wait: 1.0 },
+];
+export const blueDeath = ({ cast, P, E, FX }) => [
+  { mood: 'grief', t: 3 },
+  { amb: 'sad' },
+  { music: 'smith2', fade: 3 },
+  { cam: [6.6, 1.8, -0.6], look: [4.4, 0.3, -4.2] },
+  { move: 'weed', x: 3.8, z: -3.9, t: 2.2, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' },
+  { cam: [4.9, 0.32, -3.0], look: [4.4, 0.3, -4.3], t: 2.0, ease: 'inOut' },
+  { say: 'p_blue_last' },
+  { fn: () => FX.spiritLight(cast.blue.root.position.clone().add(new E.V3(0, 0.4, 0)), 0xcfe4ff, 6) },
+  { expr: 'weed', name: 'sad' },
+  { cam: [3.5, 0.35, -3.2], look: [4.2, 0.3, -4.2], t: 1.2 },
+  { say: 'p_weed_why' },
+  { place: 'smith', x: 2.4, z: -3.4, face: 1, anim: 'Idle_2_HeadLow' },
+  { place: 'hook', x: 5.6, z: -3.5, face: -1, anim: 'Idle_2_HeadLow' },
+  { place: 'gb', x: 2.0, z: -2.6, face: 1, anim: 'Idle_2_HeadLow' },
+  { cam: [4.0, 2.4, 1.8], look: [4.0, 0.6, -4.0], t: 3, ease: 'inOut' },
+  { say: 'p_smith_blue' },
+  { dolly: 'hook', dist: 1.5, side: -0.6, t: 0.6 },
+  { say: 'p_hook_stay' },
+  { expr: 'weed', name: null },
+];
+
+// ------------------------------------------------------------------------------------------------
+// 8. ENDING: Mel follows; the long walk toward Ōu at dusk
+export const ending = ({ cast, P }) => [
+  { fn: () => P.hideAll() },
+  { mood: 'memorial', t: 2 },
+  { amb: 'dusk' },
+  { music: 'dawn', fade: 3 },
+  { place: 'weed', x: -1, z: 0.3, face: 1, anim: 'Walk', ts: 0.8 },
+  { place: 'smith', x: -2.6, z: -0.4, face: 1, anim: 'Walk', ts: 0.7 },
+  { place: 'gb', x: -3.6, z: 0.6, face: 1, anim: 'Walk', ts: 0.8 },
+  { place: 'mel', x: -8, z: 0.4, face: 1, anim: 'Gallop' },
+  { cam: [-3.0, 0.9, 4.2], look: [-1.8, 0.5, 0] },
+  { par: [
+    { move: 'weed', x: 0.4, t: 2.2, anim: 'Walk', ts: 0.8, after: 'Idle' },
+    { move: 'smith', x: -1.2, t: 2.2, anim: 'Walk', ts: 0.7, after: 'Idle' },
+    { move: 'gb', x: -2.2, t: 2.2, anim: 'Walk', ts: 0.8, after: 'Idle' },
+    { move: 'mel', x: -3.4, t: 2.2, anim: 'Gallop', after: 'Idle' },
+  ] },
+  { fn: () => cast.weed.face(-1) },
+  { dolly: 'mel', dist: 1.6, side: 0.6, t: 0.5 },
+  { anim: 'mel', name: 'Idle_2_HeadLow' },
+  { say: 'p_mel_follow' },
+  { dolly: 'weed', dist: 1.6, side: -0.6, t: 0.4 },
+  { expr: 'weed', name: 'happy' },
+  { say: 'p_weed_yes' },
+  { expr: 'weed', name: null },
+  { fn: () => cast.weed.face(1) },
+  { par: [
+    { move: 'weed', x: 14, t: 9, anim: 'Walk', ts: 0.8, ease: 'linear' },
+    { move: 'mel', x: 13, z: 0.9, t: 9, anim: 'Walk', ts: 0.8, ease: 'linear' },
+    { move: 'smith', x: 12.2, t: 9, anim: 'Walk', ts: 0.7, ease: 'linear' },
+    { move: 'gb', x: 11.4, t: 9, anim: 'Walk', ts: 0.8, ease: 'linear' },
+    { cam: [2, 1.6, 9], look: [10, 3, -40], t: 9, ease: 'inOut' },
+    { fn: async ({ say }) => { await say('p_end_1'); } },
+  ] },
+  { say: 'p_end_2' },
+  { fx: 'flash', color: '#000000', t: 2, peak: 1 },
+];
