@@ -68,7 +68,9 @@ tuuli, Ken kantaa Kagetoran, Weed pitää Jeromea joessa ("kuoleminen on epärei
 vaaleat silmät), Ken (fawn + musta naamio, 2 arpea vasemmalla), GB (mustat täplät, pitkät mustat korvat), Robert/Heuler
 (ajokoirat, luppakorvat), Lector/Thunder (typistämättömät korvat), Kagetora (käyttäjän päätös: tumma raidallinen, 2 arpea),
 Gin (sinertävä akita); syksyn ambienssi.
-Jäi (iso työ / epävarma): Smithin kuolema Gajōn **sisällä yöllä ennen** päätaistelua (nyt kesken taistelun ulkona), rotkohyppy
-introssa, helikopterin malli, GB ja Mel loppukohtauksessa, Weed+Ken+Kagetora "lukitus"-mekaniikka Jeromen puremaan,
-ajopuupiikki (PEGI 12: vain viitteellisesti), Tokimune, vuorokaudenajat (aamu/kultainen taivas päätaistelussa) – ympäristö
-Fable-agentilla. Kenin tehdasmalli on parempi kuin ennen, mutta oma Tripo-malli olisi uskottavampi.
+Tehty myöhemmin: rotkohyppy yöllä introssa; Gajōn sisällä yöllä North kaatuu ja Smith uhrautuu kivisortumassa ENNEN päätaistelua;
+"seuraavana aamuna" P4 nousee raunioista ja puhuu; Neljä nuolta vaiheessa 1 (P4 väistää Jeromen); lukituskortti vaiheessa 2
+(Weed, Ken ja Kagetora pitävät P4:n, Jerome puree valtimoon, P4 puree Kagetoraa ja riuhtoo Jeromen irti); Mel ja GB
+jokikohtauksessa; tunnelmat (yö/aamu) gfx/mood.js:n kautta; musiikki suoratoistona (ei purkua muistiin).
+Jäi: helikopterin malli, ajopuupiikki (PEGI 12: viitteellinen), Tokimune, rotkon 3D-malli (putoaminen = valkoinen häivytys),
+Weed–Gin-tason kohtaukset.
