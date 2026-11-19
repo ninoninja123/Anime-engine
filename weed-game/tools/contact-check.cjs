@@ -29,15 +29,17 @@ fs.mkdirSync(OUT, { recursive: true });
     await page.goto(BASE + '?phase=' + ({ lock: 2, finale: 3 }[name] || 1) + '&nointro&fastcine&fixedres');
     await page.waitForFunction(() => window.__game && document.getElementById('loading').classList.contains('hidden'), null, { timeout: 180000 });
     await page.waitForTimeout(1500);
-    await page.evaluate(n => { const C = window.__contact; C.reset(); C.monitor = true; C.hold = true; window.__game.debug.scene(n); }, name);
+    await page.evaluate(n => { const C = window.__contact; C.reset(); C.monitor = true; C.hold = true; C.seq = !window.__noseq; window.__game.debug.scene(n); }, name);
     let shots = 0; const deadline = Date.now() + 15 * 60 * 1000;
     while (Date.now() < deadline) {
       const st = await page.evaluate(() => ({ p: window.__contact.pending, done: window.__game.debug.S.sceneDone }));
       if (st.p) {
         await page.waitForTimeout(250);               // anna kuvan piirtyä pysäytetyssä kontaktihetkessä
-        const f = `${name}_${String(++shots).padStart(2, '0')}_${st.p.who}_${st.p.point}.png`;
+        ++shots;
+        const f = st.p.frame && st.p.strike ? `${name}_s${String(st.p.strike).padStart(2, '0')}_${st.p.who}_${st.p.point}_${st.p.frame}.png`
+          : `${name}_${String(shots).padStart(2, '0')}_${st.p.who}_${st.p.point}.png`;
         await page.screenshot({ path: path.join(OUT, f) });
-        await page.evaluate(f => { window.__contact.pending.shot = f; window.__contact.release(); }, f);
+        await page.evaluate(f => { const p = window.__contact.pending; p.shot = f; const r = window.__contact.strikes.find(x => x.id === p.id); if (r) r.shot = f; window.__contact.release(); }, f);
         continue;
       }
       if (st.done) break;
@@ -61,6 +63,21 @@ fs.mkdirSync(OUT, { recursive: true });
     for (const f of fails) console.log('   - ' + f);
     for (const e of errors.slice(0, 5)) console.log('   ! ' + e);
     await page.close();
+    // kuvasarja-arkit: anticipation -> launch -> lunge -> contact -> follow -> after (6 framea per isku)
+    try {
+      const groups = {};
+      for (const f of fs.readdirSync(OUT)) { const m = f.match(new RegExp('^' + name + '_s(\\d+)_.*_(f\\d)_\\w+\\.png$')); if (m) (groups[m[1]] = groups[m[1]] || []).push(f); }
+      for (const [id, list] of Object.entries(groups)) {
+        list.sort((a, b) => a.match(/_(f\d)_/)[1].localeCompare(b.match(/_(f\d)_/)[1]));
+        const out = path.join(OUT, `sheet_${name}_s${id}.png`);
+        require('child_process').execFileSync('python3', ['-c', `import sys
+from PIL import Image
+fs=sys.argv[2:]; ims=[Image.open(f) for f in fs]; w,h=ims[0].size; W=Image.new('RGB',(w*3,h*2))
+for k,im in enumerate(ims[:6]): W.paste(im,((k%3)*w,(k//3)*h))
+W.resize((w*3//2,h)).save(sys.argv[1])`, out, ...list.map(f => path.join(OUT, f))]);
+        report.scenes[name].sheets = (report.scenes[name].sheets || []).concat(path.basename(out));
+      }
+    } catch (e) { console.log('   (sheet failed: ' + e.message + ')'); }
   }
   const RP = path.join(OUT, 'report' + (process.env.TAG ? '_' + process.env.TAG : '') + '.json');
   fs.writeFileSync(RP, JSON.stringify(report, null, 2));

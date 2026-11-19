@@ -159,48 +159,57 @@ export const smith = (ctx) => {
     { dolly: 'weed', dist: 1.4, side: 0.7, t: 0.35 },
     { anim: 'weed', name: 'Bark', loop: false },
     { say: 'sac_wait' },
-    // the charge – low tracking dolly, three-legged gallop (right foreleg tucked: canon, lost saving GB)
+    // the charge – the camera runs beside him, three-legged gallop (right foreleg tucked: canon, lost saving GB)
     { fn: () => limp(cast.smith) },
-    { cam: [-4.6, 0.45, 3.6], look: [-2, 0.8, 0] },
     { par: [
-      { move: 'smith', x: B.x - ctx.bossHalf() - 1.5, z: 0.35, t: 1.5, anim: 'Gallop', ts: 1.1, ease: 'in' },
-      { cam: [0.4, 0.9, 5.4], look: [2.6, 1.3, 0], t: 1.5, ease: 'in' },
+      { move: 'smith', x: B.x - ctx.bossHalf() - 1.6, z: 0.35, t: 1.7, anim: 'Gallop', ts: 1.1, ease: 'in' },
+      { track: 'smith', from: [-1.6, 0.0, 2.6], to: [-0.6, 0.15, 2.9], look: [1.2, 0.2, 0], t: 1.7, ease: 'in' },
+      { fn: async () => { for (let i = 0; i < 5; i++) { sfx.gallopIn({}, { x: cast.smith.root.position.x }); await wait(0.34, true); } } },
     ] },
     { sfx: 'bark' },
-    { slow: 0.4 },
-    // the leap: jaws close on the side of P4's neck (real contact, then the teeth stay in)
+    { slow: 0.4 }, { fx: 'speed', v: 0.6 },
+    // the leap: anticipation (he gathers on his three legs), launch, and the jaws close on P4's shoulder
     { par: [
-      { strike: 'smith', target: 'kaibutsu', point: { bone: 'spine_03', dir: [-0.15, 0.6, 0.8] }, side: 'near', t: 0.42, arc: 0.7, anim: 'Gallop_Jump', hitAt: 0.5, yaw: 0.8, roll: -0.4, maxPitch: 1.0,
-        pin: true, react: 'roar', fx: 'impact', strong: true, sfx: ['bite', 'hitHeavy'], hitstop: 0.14, shake: 0.7, tug: 0.22 },
-      { cam: [1.5, 1.4, 5.0], look: [3.4, 1.9, 0.3], t: 0.9, ease: 'out' },
+      { strike: 'smith', target: 'kaibutsu', point: { bone: 'spine_03', dir: [-0.15, 0.6, 0.8] }, side: 'near', wind: 0.3, t: 0.46, arc: 0.7, anim: 'Gallop_Jump', hitAt: 0.5, yaw: 0.8, roll: -0.4, maxPitch: 1.0,
+        pin: true, react: 'roar', fx: 'bite', strong: true, sfx: ['bite', 'hitHeavy'], hitstop: 0.14, shake: 0.7, tug: 0.22 },
+      { track: 'smith', from: [-1.4, 0.2, 3.2], to: [-0.4, 0.9, 3.6], look: [0.8, 0.5, 0], t: 1.9, ease: 'out' },
     ] },
-    { slow: 1 },
+    { slow: 1 }, { fx: 'speed', v: 0 },
     { freeze: 0.6 },
-    // close: Smith's fangs are in P4's shoulder, his body hangs off the monster
-    { fn: () => { const n = ctx.contact.mouthWorld('smith'); E.camPos.set(n.x - 1.5, n.y - 0.1, n.z + 2.4); E.camLook.set(n.x, n.y - 0.45, n.z); } },
-    { sfx: 'growl' },
-    { wait: 0.9 },
-    // P4 rears and thrashes its head; Smith hangs on, his body swinging
+    // follow-through: a slow push onto his jaws in P4's shoulder; dust trickles from the roof of the passage
+    { par: [
+      { track: 'mouth:smith', from: [-1.9, 0.0, 2.8], to: [-1.3, -0.05, 2.0], look: [0.1, -0.45, 0], t: 1.6 },
+      { sfx: 'growl' },
+      { fn: () => { FX.dust(new THREE.Vector3(B.x - 1, 3.4, 0.5)); sfx.debris({}, { x: B.x }); } },
+    ] },
+    // P4 rears and thrashes its head; Smith hangs on, his body swinging; small stones rain down (foreshadowing)
     { cam: [1.2, 1.6, 6.8], look: [3.6, 1.8, 0], t: 0.35, ease: 'out' },
     { par: [
       { thrash: 'kaibutsu', t: 2.6, amp: 0.42, freq: 1.7, wait: true },
       { fn: () => tween(B, { x: 6.6 }, 2.4, { real: true, ease: 'inOut', onUpdate: () => { boss.root.position.x = B.x; } }) },
       { anim: 'kaibutsu', name: 'Walk', ts: -0.5 },
-      { fn: async () => { for (let i = 0; i < 3; i++) { await wait(0.75, true); sfx.roar(); FX.dust(new THREE.Vector3(B.x - 0.6, 0.1, 0.4), true); } } },
+      { fn: async () => { for (let i = 0; i < 3; i++) { await wait(0.75, true); sfx.roar(); sfx.bossStep({}, { x: B.x }); FX.dust(new THREE.Vector3(B.x - 0.6, 0.1, 0.4), true); FX.debrisBurst && FX.debrisBurst(new THREE.Vector3(B.x - 1 + i, 4.5, 0.2), 4); } } },
       { cam: [3.0, 2.0, 9.4], look: [6.0, 2.0, -0.4], t: 2.4 },
     ] },
     { anim: 'kaibutsu', name: 'Idle_HitReact1', loop: false },
     { react: 'kaibutsu', kind: 'flinch', dir: 1 },
-    // Smith looks at Weed one last time
-    { fn: () => { const n = ctx.contact.mouthWorld('smith'); E.camPos.set(n.x - 0.9, n.y + 0.15, n.z + 1.5); E.camLook.set(n.x - 0.1, n.y - 0.35, n.z); } },
-    { wait: 0.5 },
-    { dolly: 'weed', dist: 1.4, side: 0.7, t: 0.35 },
-    { anim: 'weed', name: 'Bark', loop: false },
-    { fn: () => { const n = ctx.contact.mouthWorld('smith'); E.camPos.set(n.x - 1.2, n.y + 0.25, n.z + 1.9); E.camLook.set(n.x - 0.2, n.y - 0.4, n.z); } },
-    { say: 'sac_live' },
+    // silence: the music drops away, time slows – Smith looks at Weed one last time
+    { music: null, fade: 1.2 }, { slow: 0.5 }, { sfx: 'heartbeat' },
+    { track: 'mouth:smith', from: [-1.0, 0.2, 1.7], to: [-0.75, 0.12, 1.25], look: [-0.1, -0.3, 0], t: 1.8 },
+    { par: [
+      { dolly: 'weed', dist: 1.5, side: 0.7, t: 1.4, ease: 'inOut' },
+      { anim: 'weed', name: 'Bark', loop: false },
+    ] },
+    { music: 'smith', fade: 0.8 },
+    { par: [
+      { say: 'sac_live' },
+      { track: 'mouth:smith', from: [-1.3, 0.25, 2.0], to: [-1.0, 0.2, 1.6], look: [-0.2, -0.4, 0], t: 3.0 },
+    ] },
+    { slow: 1 },
     // rockslide: the roof of the passage comes down on both of them
     { cam: [3.0, 3.0, 11.5], look: [6.2, 3.4, -1] },
     { thrash: 'kaibutsu', t: 2.2, amp: 0.3, freq: 2.2 },
+    { fn: () => { for (let i = 0; i < 4; i++) FX.lightPillar(new THREE.Vector3(B.x - 2 + i * 1.4, 0, -0.5 + (i % 2) * 0.8), 0xd8d2c0, 3.2, 10, 0.7); } },   // moonlight through the cracking roof
     { sfx: 'rumble', arg: 3 }, { shake: 0.7 },
     { fn: async () => {
       const falling = [];
@@ -321,27 +330,47 @@ export const arrows = (ctx) => {
   MEN.forEach((id, i) => {
     const m = cast[id], A = ARROW[i];
     steps.push(
-      { cam: A.cam === 'low' ? [B.x - half - 3.2, 0.5, 4.2] : [0.2, 1.5, 7.6], look: A.cam === 'low' ? [B.x - half * 0.6, 1.5, 0.6] : [1.6, 1.4, 0.6] },
       { fn: () => { m.root.position.z = 0.9; m.root.position.y = 0; m.face(1, true); } },
+      // a breath before he goes: slow push onto his face
+      { track: id, from: [1.3, 0.25, 1.4], to: [1.0, 0.2, 1.1], look: [0.2, 0.25, 0], t: 1.1 },
       { sfx: 'bark' },
-      { move: id, x: B.x - half - 2.0, z: 1.0, t: 0.55, anim: 'Gallop', ts: 1.4, ease: 'in' },
+      // the run: the camera runs with him
+      { par: [
+        { move: id, x: B.x - half - 2.0, z: 1.0, t: 0.75, anim: 'Gallop', ts: 1.4, ease: 'in' },
+        { track: id, from: [-1.2, 0.1, 2.8], to: [-0.4, 0.3, 3.2], look: [1.0, 0.3, 0], t: 0.75, ease: 'in' },
+        { sfx: 'gallopIn' },
+      ] },
       { slow: 0.3 }, { fx: 'speed', v: 0.6 },
-      { strike: id, target: 'kaibutsu', point: 'chest_weak', side: 'near', t: 0.32, arc: 0.45, anim: 'Gallop_Jump', hitAt: 0.5,
-        pin: true, react: 'roar', fx: 'crit', strong: true, sfx: ['bite', 'crit'], hitstop: 0.12, shake: 0.6, tug: 0.2, onHit: dmg(4) },
+      // anticipation -> leap -> jaws in the bare skin of the LEFT CHEST
+      { par: [
+        { strike: id, target: 'kaibutsu', point: 'chest_weak', side: 'near', wind: 0.25, t: 0.34, arc: 0.45, anim: 'Gallop_Jump', hitAt: 0.5,
+          pin: true, react: 'roar', fx: 'crit', strong: true, sfx: ['bite', 'crit'], hitstop: 0.12, shake: 0.6, tug: 0.2, onHit: dmg(4) },
+        A.cam === 'low' ? { cam: [B.x - half - 3.2, 0.5, 4.2], look: [B.x - half * 0.6, 1.5, 0.6], t: 1.6, ease: 'out' }
+          : { cam: [B.x - half - 1.2, 1.2, 4.6], look: [B.x - half * 0.7, 1.3, 0.6], t: 1.6, ease: 'out' },
+      ] },
       { freeze: 0.4 },
       { slow: 1 }, { fx: 'speed', v: 0 },
-      { cam: [B.x - half - 1.6, 1.3, 3.6], look: [B.x - half * 0.7, 1.2, 0.6], t: 0.25, ease: 'out' },
-      { wait: A.pin },
-      // P4 rears and tears him off
+      // follow-through: his jaws stay in the wound while P4 roars
+      { par: [
+        { track: 'mouth:' + id, from: [-2.1, 0.3, 2.9], to: [-1.6, 0.2, 2.3], look: [0.1, -0.3, 0], t: 0.6 + A.pin },
+        { sfx: 'bite_growl' },
+      ] },
+      // P4 rears and tears him off; he is flung down and does not get up
       { anim: 'kaibutsu', name: 'Attack', loop: false, ts: 1.2 },
       { thrash: 'kaibutsu', t: 0.7, amp: 0.4, freq: 2.2 },
       { sfx: 'roar' }, { shake: 0.5 },
+      { cam: [A.land[0] - 1.6, 1.4, A.land[1] + 4.2], look: [(A.land[0] + B.x - half) / 2, 0.9, 1.2], t: 0.5, ease: 'out' },
       { release: id, mode: 'throw', to: A.land, arc: A.arc, t: A.t, land: 'Death', spin: 1 },
-      { fn: () => fallen.push(m.root.position.clone()) },
+      { fn: () => { fallen.push(m.root.position.clone()); FX.dust(m.root.position.clone().setY(0.1), true); } },
+      { sfx: 'whimper' },
       { anim: 'kaibutsu', name: 'Idle_2_HeadLow', ts: 0.8 },
-      { wait: 0.5 },
-      { cam: [A.land[0] + 1.2, 0.6, A.land[1] + 1.9], look: [A.land[0], 0.3, A.land[1]] },
-      { say: 'arrows_fall_' + id },
+      // the camera comes to rest on him; his last words
+      { par: [
+        { track: id, from: [1.5, 0.35, 2.2], to: [1.0, 0.25, 1.5], look: [0, -0.25, 0], t: 3.0 },
+        { say: 'arrows_fall_' + id },
+      ] },
+      { dolly: 'jerome', dist: 1.5, side: 0.6, t: 0.8 },
+      { wait: 0.4 },
     );
   });
   steps.push(
@@ -350,13 +379,18 @@ export const arrows = (ctx) => {
     { anim: 'jerome', name: 'Howl' },
     { say: 'arrows_fourth' },
     { fn: () => { cast.jerome.root.position.z = 0.9; } },
-    { move: 'jerome', x: B.x - half - 2.0, z: 1.0, t: 0.5, anim: 'Gallop', ts: 1.5, ease: 'in' },
+    { music: 'battle', fade: 0.5 },
+    { par: [
+      { move: 'jerome', x: B.x - half - 2.0, z: 1.0, t: 0.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
+      { track: 'jerome', from: [-1.2, 0.1, 2.8], to: [-0.4, 0.3, 3.2], look: [1.0, 0.3, 0], t: 0.6, ease: 'in' },
+      { sfx: 'gallopIn' },
+    ] },
     { cam: [B.x - half - 2.6, 0.5, 4.4], look: [B.x - half * 0.5, 1.4, 0.4] },
     { slow: 0.25 }, { fx: 'speed', v: 1 },
     { par: [
-      { strike: 'jerome', target: 'kaibutsu', point: 'chest_weak', side: 'near', t: 0.34, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, whiff: true, wait: 'end' },
+      { strike: 'jerome', target: 'kaibutsu', point: 'chest_weak', side: 'near', wind: 0.2, t: 0.34, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, whiff: true, wait: 'end' },
       { fn: async () => {
-        await wait(0.08);
+        await wait(0.28);
         boss.play('Gallop_Jump', { loop: false, timeScale: 1.3 }); sfx.whoosh();
         const x0 = B.x, z0 = boss.root.position.z;
         await tween({ k: 0 }, { k: 1 }, 0.3, { ease: 'out', onUpdate: k => { B.x = x0 + 2.0 * k; boss.root.position.set(B.x, Math.sin(k * Math.PI) * 0.9, z0 - 0.9 * k); } });
