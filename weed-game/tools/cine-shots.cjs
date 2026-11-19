@@ -23,6 +23,11 @@ fs.mkdirSync(OUT, { recursive: true });
   const q = query + (mark ? `&cinefrom=${mark}` : '') + (process.env.EXTRA || '');
   await page.goto(BASE + '?' + q + '&q=med');
   await page.mouse.click(400, 200).catch(() => {});
+  if (process.env.EVAL) {
+    await page.waitForFunction(() => window.__game && document.getElementById('loading').classList.contains('hidden'), null, { timeout: 300000 });
+    await page.waitForTimeout(1500);
+    await page.evaluate(process.env.EVAL);
+  }
   if (mark) await page.waitForFunction(m => window.__cineMark === m, mark, { timeout: 400000 });
   else await page.waitForFunction(() => (window.__S1 && window.__S1.mode === 'scene') || window.__cineMark || document.body.classList.contains('prologue'), null, { timeout: 400000 });
   if (process.env.PRE) await page.waitForTimeout(+process.env.PRE);
