@@ -118,6 +118,17 @@ tools/gfx-shots.cjs  grafiikan ennen/jälkeen-kaappaukset -> screenshots/gfx/
 | MSAA / max DPR | 4x (canvas) / 1.25 | 4x / 1.5 | 4x / 2.0 |
 | Partikkelit, usvakerrokset | 50 %, 1 | 100 %, 3 | 150 %, 3 |
 
+**Vuodenaika on parametri** (`world.js`: `SEASONS`, `mood.js`: tunnelmataulu per vuodenaika):
+`buildWorld({ season })` / `E.setSeason('winter')` (rakentaa maailman uudelleen) / testilinkki `?season=autumn|summer|winter`.
+- **autumn** (oletus, taso 2 = animen jaksot 4–6, myöhäissyksy): ei lunta; ruskapuut, kelot, harvat havupuut, kuiva heinä,
+  lämpimän harmaa kivi, putoavat lehdet. Tunnelmat: perustila `autumn_morning_gold` (kulta + laventeli, matala aurinko, pitkät varjot),
+  `rage`/`storm` (punainen uhka, tuuli), `grief` = `autumn_night` (Smithin kuolema, kuunvalo), `finale` (nouseva tuuli: lehdet lentävät ylös),
+  `dawn`/`memorial` = `autumn_dusk` (iltahämärä, oranssi-violetti).
+- **summer**: vehreä nurmi + kukat, lehti- ja havupuut, siitepöly, tulikärpäset iltahämärässä.
+- **winter**: lumipeite ja kimallus, lumiset männyt/kalliot, lumisade, revontulet (tuleville tasoille, esim. Hōgen-finaali).
+Uusi vuodenaika = yksi palettirivi `SEASONS`-tauluun + tunnelmataulu `mood.js`:ään (avaimet: taivas, aurinko/kuu ja sen suunta,
+sumu, valot, maan sävyt `snowCol/snowShade`, peite `topCol`, hiukkaset `partCol/fall/snowAmt`, gradaatio).
+
 **Tunnelma on automaattinen:** `mood.js`:n ohjaaja lukee pelitilan (`window.__S`: vaihe, panssari, cutscene) ja
 kohtausskriptin `light: { rim }` -arvon (rim > 1.25 vaiheessa 3 = aamunkoitto), joten pelilogiikan ei tarvitse kutsua
 grafiikkaa. Käsin: `E.setMood('dawn', 4)` (pysyy, kunnes vaihe/cutscene vaihtuu). `FX.spiritLight` vaihtaa itse
