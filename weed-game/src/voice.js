@@ -52,13 +52,13 @@ function hideSub() { const el = $('sub'); if (el) el.classList.add('hidden'); }
 // Puhuva hahmo kaikille hahmoille: E.speaking = { who, level, roar } (null = kukaan ei puhu).
 // dogs.js lukee tämän joka frame ja liikuttaa leukaa / suuta / päätä. Kertojalla ei suuta.
 E.speaking = null;
-let speakSrc = null, speakT = 0, smooth = 0;
+let speakSrc = null, speakT = 0, smooth = 0, peak = 0.05;
 E.updaters.add((dt, dtr) => {
   const sp = E.speaking; if (!sp) { smooth = 0; return; }
   speakT += dtr;
   let target;
   if (sp.roar) target = 0.95;                                            // karjunta: suu auki koko ajan
-  else if (speakSrc) target = Math.min(1, voiceLevel() * 1.2);           // äänen amplitudi
+  else if (speakSrc) { const r = voiceLevel(); peak = Math.max(peak * Math.pow(0.6, dtr), r, 0.02); target = Math.min(1, Math.max(0, r / peak - 0.12) * 1.25); }   // amplitudi, automaattinen tasonsäätö per ääni
   else target = 0.25 + 0.45 * Math.max(0, Math.sin(speakT * 2 * Math.PI * 7.5) * (0.6 + 0.4 * Math.sin(speakT * 2.3)));  // ei ääntä: 7–8 Hz
   smooth += (target - smooth) * Math.min(1, dtr * 22);
   sp.level = smooth;
@@ -89,7 +89,7 @@ export async function say(id, opts = {}) {
   };
   showSub(line);
   E.speaking = line.who === 'narrator' ? null : { who: line.who, level: 0, roar: line.who === 'kaibutsu' && !/speak/.test(id) };
-  speakT = 0;
+  speakT = 0; peak = 0.05;
   if (hasFile) {
     const cached = cachedBuffer(line.file);
     if (cached) start(cached);
