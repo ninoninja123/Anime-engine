@@ -45,13 +45,13 @@ function l1Style() {
   if (l1css) return; l1css = true;
   const st = document.createElement('style');
   st.textContent = `#l1ck{z-index:12}#l1ck .ckname{opacity:.85;margin:-4px 0 10px;font-size:14px}
-#l1tut{position:fixed;left:50%;bottom:22%;transform:translateX(-50%) scale(.9);z-index:7;pointer-events:none;opacity:0;transition:opacity .18s,transform .18s;
- font:800 clamp(18px,4.4vw,30px)/1.15 var(--f-head,sans-serif);letter-spacing:.06em;text-transform:uppercase;color:#fff;text-align:center;
+#l1tut{position:fixed;left:50%;top:27%;transform:translateX(-50%) scale(.9);z-index:7;pointer-events:none;opacity:0;transition:opacity .18s,transform .18s;
+ font:800 clamp(16px,3.6vw,26px)/1.15 var(--f-head,sans-serif);letter-spacing:.06em;text-transform:uppercase;color:#fff;text-align:center;
  padding:8px 22px;border-radius:6px;background:rgba(8,12,28,.62);text-shadow:0 2px 8px rgba(0,0,0,.8);white-space:nowrap}
 #l1tut.on{opacity:1;transform:translateX(-50%) scale(1);animation:l1pulse .7s ease-in-out infinite alternate}
 #l1tut small{display:block;font-size:.5em;letter-spacing:.1em;opacity:.8;margin-top:2px}
 @keyframes l1pulse{to{box-shadow:0 0 0 3px rgba(255,214,120,.55),0 0 24px rgba(255,200,100,.4)}}
-@media (max-height:340px){#l1tut{bottom:16%}}`;
+@media (max-height:340px){#l1tut{top:24%}}`;
   document.head.appendChild(st);
 }
 function callout(html) {
@@ -59,6 +59,7 @@ function callout(html) {
   let el = document.getElementById('l1tut');
   if (!el) { el = document.createElement('div'); el.id = 'l1tut'; document.body.appendChild(el); }
   if (!html) { el.classList.remove('on'); return; }
+  UI.hint('');
   el.innerHTML = html; el.classList.add('on');
 }
 
@@ -230,6 +231,9 @@ function placeNow(s) {
   d.spin.rotation.set(0, 0, 0);
   if (s.anim) d.play(s.anim, { timeScale: s.ts || 1, loop: s.loop ?? true });
 }
+// a scene can leave un-awaited tweens running (par steps, moves); when gameplay starts they would keep moving the actors
+// (after the Tosa threw Weed, a leftover move put him back inside the kennel = invisible). Finish them in one frame.
+async function flushTweens() { const sk = E.skipping; E.skipping = true; await wait(0.001, true); E.skipping = sk; }
 function safeSteps(steps) {
   return steps.map(s => s.place ? { fn: () => placeNow(s) } : s.par ? { ...s, par: safeSteps(s.par) } : s);
 }
@@ -241,6 +245,7 @@ async function scene(steps, tok) {
   preloadLines(SC.linesOf(steps));
   drift({ push: 0.035, truck: 0.018 });            // the camera keeps creeping on every hold (src/shared/cine.js)
   await runScene(steps, ctx);
+  await flushTweens();
   drift(null); resetActing(cast1); grade({ t: 0 });
   E.skipping = false; E.timeScale = 1; FX.speedLines(0); stopVoice();
   check(tok);
@@ -948,17 +953,22 @@ async function phase2() {
   drift({ push: 0.035, truck: 0.018 });
   if (F.key === 'tosa') {
     await runScene(safeSteps(SC.tosaThrow(ctx)), ctx);
+    await flushTweens();
     drift(null); resetActing(cast1); E.skipping = false; E.timeScale = 1; stopVoice();
-    F.W.x = 3.0; cast1.weed.root.position.set(3.0, 0, 0); cast1.weed.root.position.z = 0; F.B.x = 0.6;
+    F.W.x = 3.0; F.W.y = 0; F.W.vy = 0; F.B.x = 0.6;
+    const w = cast1.weed; w.root.visible = true; w.fade(1); w.model.visible = true; w.spin.rotation.set(0, 0, 0); w.root.position.set(3.0, 0, 0); w.face(-1, true); w.play('Idle');
     F.boss.root.position.set(F.B.x, 0, 0); F.boss.face(1, true);
     F.W.henki = 0; addHenki(1);
     UI.hint('Weed\'s spirit is burning! Draw a circle ⟳ — or tap the Spirit ring — <b>BATTŌGA!</b>');
   } else {
     preloadLines(SC.linesOf(SC.blueMel(ctx)));
     await runScene(safeSteps(SC.blueMel(ctx)), ctx);
+    await flushTweens();
     drift(null); resetActing(cast1); E.skipping = false; E.timeScale = 1; stopVoice();
     F.mel = { active: true, x: cast1.mel.root.position.x, threatT: -1 };
     cast1.mel.root.position.z = 0.6;
+    const w = cast1.weed; w.root.visible = true; w.fade(1); w.model.visible = true; w.spin.rotation.set(0, 0, 0); w.root.position.z = 0; F.W.x = w.root.position.x; F.W.y = 0; F.W.vy = 0;
+    F.B.x = cast1.blue.root.position.x; cast1.blue.root.position.z = 0;
     UI.hint('Mel is forced to attack. <b>Dodge Mel</b> – bite only Blue!', 5);
   }
   E.camPos.set(0, 1.6, 6.6); E.camLook.set(0, 0.8, 0);
