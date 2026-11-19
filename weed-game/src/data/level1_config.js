@@ -41,19 +41,24 @@ export const SECTION_TITLES = ['Opening – the scrap', 'The farmyard', 'The far
 export const PLAYER = {
   run: {
     jumpV: 7.6, gravity: 25,  // ilma-aika 0.61 s, huippu 1.16
-    clearFrac: 0.75,          // hypyn pitää olla yli clearFrac × esteen korkeus, kun este ohittaa Weedin
-    duckT: 0.7,               // kyyristyksen kesto (s)
+    clearFrac: 0.65,          // hypyn pitää olla yli clearFrac × esteen korkeus, kun este ohittaa Weedin
+    duckT: 0.8,               // kyyristyksen kesto (s)
     iconAt: 10,               // varoitusikoni näkyy, kun este on alle iconAt yksikön päässä (myös haukun kantama)
-    invT: 1.3,                // osuman jälkeinen suoja-aika (s)
+    invT: 1.5,                // osuman jälkeinen suoja-aika (s)
     tutAt: 2.4, tutSlow: 0.2, // ensimmäinen este per laji: hidastus tällä etäisyydellä
   },
-  fight: { hearts: 4, invT: 1.3, tutSlow: 0.3 },
+  fight: {
+    hearts: 4, invT: 1.3, tutSlow: 0.3,
+    chargeRunUp: 4.2,         // rynnäkkö alkaa vähintään näin kaukaa (koira perääntyy ensin)
+    chargeMinT: 0.45,         // rynnäkön alusta Weediin vähintään (s)
+    jumpClear: 0.42,          // rynnäkkö ei osu, jos Weed on tätä korkeammalla
+  },
 };
 
 // Juoksuosuudet: esteet etäisyyden mukaan (x = matka lähdöstä). log/fence/hay/crate = hyppy (↑), beam/net = kyyristy (↓), geese = haukku (napautus).
 export const RUNS = {
   farm: {
-    title: 'The farmyard', speed: 6.0, length: 132, hearts: 3, card: true,
+    title: 'The farmyard', speed: 5.8, length: 132, hearts: 4, card: true,
     hint: 'Swipe ↑ = jump &nbsp;•&nbsp; Swipe ↓ = duck &nbsp;•&nbsp; Tap = bark',
     obstacles: [
       [14, 'log'], [24, 'log'], [33, 'beam'], [43, 'geese'], [52, 'fence'], [60, 'beam'], [68, 'hay'],
@@ -62,7 +67,7 @@ export const RUNS = {
     calls: [[30, 'p_gb_run'], [64, 'p_sasuke_help'], [100, 'p_gb_hurry']],
   },
   town: {
-    title: 'Jōshū – the dog catcher', speed: 6.6, length: 112, hearts: 3, card: true,
+    title: 'Jōshū – the dog catcher', speed: 6.2, length: 112, hearts: 4, card: true,
     hint: 'Lead Mel away! &nbsp;Swipe ↑ = jump &nbsp;•&nbsp; ↓ = duck under nets &nbsp;•&nbsp; Tap = bark',
     obstacles: [
       [14, 'crate'], [23, 'net'], [31, 'crate'], [39, 'net'], [47, 'fence'], [54, 'geese'], [61, 'net'],
@@ -77,6 +82,6 @@ export const FIGHTS = {
 // tele* = varoitusaika ennen iskua (s, jaetaan nopeudella): Charge, Lunge (purenta), Fake (harhautuksen 1. "!"), Feint (todellinen), Mel.
   tosa: { name: 'FARM TOSA', sub: '(watchdog)', hp: 100, phase2At: 55, speed: 0.85, reach: 0.55, biteDmg: 4, attacks: ['charge', 'swipe', 'charge'],
     teleCharge: 0.95, teleLunge: 0.75 },
-  blue: { name: 'BLUE', sub: '(Jōshū thieves)', hp: 100, phase2At: 55, endAt: 18, speed: 1.0, reach: 0.6, biteDmg: 5, attacks: ['charge', 'swipe', 'feint'],
-    teleCharge: 0.95, teleLunge: 0.75, teleFake: 0.35, teleFeint: 0.45, teleMel: 0.6 },
+  blue: { name: 'BLUE', sub: '(Jōshū thieves)', hearts: 5, hp: 100, phase2At: 55, endAt: 18, speed: 1.0, reach: 0.6, biteDmg: 5, attacks: ['charge', 'swipe', 'feint'],
+    teleCharge: 0.95, teleLunge: 0.75, teleFake: 0.35, teleFeint: 0.45, teleMel: 0.8, melDash: 2.2 },
 };
