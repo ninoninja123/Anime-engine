@@ -4,7 +4,8 @@
 // aiheuta 404-virheitä: jos ääntä ei ole, tekstitys näkyy merkkimäärän mukaan ajastettuna.
 import { E, wait } from './engine.js';
 import { LINES, VOICES, estimateDuration } from './data/lines.js';
-import { audioCtx, voiceOut, load, duck, voiceLevel, cachedBuffer } from './audio.js';
+import { audioCtx, voiceOut, load, duck, unduck, voiceLevel, cachedBuffer } from './audio.js';
+import { MIX, voiceTrim } from './data/sfx_map.js';
 
 const VOICE_BASE = () => new URL('audio/voice/', window.ASSET_BASE || document.baseURI).href;
 let available = null;          // Set tiedostonimistä
@@ -65,6 +66,14 @@ E.updaters.add((dt, dtr) => {
 });
 const PAUSE = 0.6;   // repliikkien pre/post-tauot skaalataan (nopeampi rytmi)
 
+// Ducking-ryhmä 'voice' (audio.js): musiikki ja ambienssi väistävät puhetta; kertoja syvemmin, Kaibutsun karjunta
+// vähemmän (se on itse "efekti"). Saman avaimen uusi repliikki korvaa edellisen, iskut eivät nosta musiikkia puheen päälle.
+function duckFor(line, secs) {
+  const D = MIX.duck, narr = line.who === 'narrator';
+  const lvl = line.duck ?? (line.who === 'kaibutsu' ? D.roar : narr ? D.narrator : D.speech);
+  duck(lvl, secs, 0.06, 'voice', { amb: narr ? D.narratorAmb : D.speechAmb });
+}
+
 /**
  * Toista repliikki (id src/data/lines.js:stä). Palauttaa lupauksen, joka ratkeaa repliikin jälkeen.
  * Tekstitys näkyy heti; jos ääni ei ole vielä ladattu, se käynnistyy heti kun lataus valmistuu.
@@ -82,10 +91,11 @@ export async function say(id, opts = {}) {
   let src = null, dur = estimateDuration(line), t0 = performance.now();
   const start = buf => {
     if (current !== token || E.skipping) return;
-    src = ctx.createBufferSource(); src.buffer = buf; (() => { const gn = ctx.createGain(); gn.gain.value = line.gain ?? 1; src.connect(gn); gn.connect(voiceOut()); })(); src.start();
+    // taso: tiedoston normalisointi (-15 LUFS, audio-audit) × repliikin oma gain (kertoja: lines.js), katto 3×
+    src = ctx.createBufferSource(); src.buffer = buf; (() => { const gn = ctx.createGain(); gn.gain.value = Math.min(3, voiceTrim(line.file) * (line.gain ?? 1)); src.connect(gn); gn.connect(voiceOut()); })(); src.start();
     speakSrc = src; src.onended = () => { if (speakSrc === src) speakSrc = null; };
     dur = (performance.now() - t0) / 1000 + buf.duration;
-    duck(line.duck ?? (line.who === 'kaibutsu' ? 0.55 : 0.32), buf.duration + 0.2);
+    duckFor(line, buf.duration + 0.25);
   };
   showSub(line);
   E.speaking = line.who === 'narrator' ? null : { who: line.who, level: 0, roar: line.who === 'kaibutsu' && !/speak/.test(id) };
@@ -95,7 +105,7 @@ export async function say(id, opts = {}) {
     if (cached) start(cached);
     else load(line.file, VOICE_BASE()).then(b => { if (b && (performance.now() - t0) / 1000 < dur * 0.6) start(b); });
   }
-  if (!src) duck(line.duck ?? (line.who === 'kaibutsu' ? 0.55 : 0.32), dur + 0.2);
+  if (!src) duckFor(line, dur + 0.2);
   const finish = () => { if (current === token) { hideSub(); E.speaking = null; speakSrc = null; } };
   if (opts.noWait) { const check = () => { if ((performance.now() - t0) / 1000 >= dur + 0.2) finish(); else setTimeout(check, 100); }; setTimeout(check, 200); return; }
   // odota kunnes repliikki (äänen kesto, joka voi päivittyä latauksen jälkeen) on ohi
@@ -104,5 +114,5 @@ export async function say(id, opts = {}) {
   finish();
   if (line.post && !E.skipping) await wait(line.post * PAUSE, true);
 }
-export function stopVoice() { hideSub(); current = null; E.speaking = null; if (speakSrc) try { speakSrc.stop(); } catch (_) {} speakSrc = null; }
+export function stopVoice() { hideSub(); current = null; E.speaking = null; if (speakSrc) try { speakSrc.stop(); } catch (_) {} speakSrc = null; unduck('voice'); }
 export { LINES };
