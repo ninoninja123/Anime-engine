@@ -503,8 +503,8 @@ function runDecoy() {
 function runUpdate(dt, dtr) {
   const w = cast1.weed, cfg = R.cfg;
   if (R.over) return;
-  const v = cfg.speed * (R.stumble > 0 ? 0.55 : 1);
-  R.stumble = Math.max(0, R.stumble - dt);
+  const v = cfg.speed;
+  R.stumble = Math.max(0, R.stumble - dt);   // (a hit no longer slows the run: it made the next obstacle arrive late)
   R.d += v * dt; R.wx += v * dt;
   if (R.wx > 32) {                         // wrap the treadmill (hidden by a quick dip + speed lines)
     R.wx -= 64; E.camPos.x -= 64; E.camLook.x -= 64;
@@ -596,12 +596,13 @@ async function endRun(ok) {
 // =====================================================================================
 const ARENA = { min: -5.2, max: 5.2 };
 let F = null;
-let warnMesh = null, bangSprite = null, teleId = 0;
+let warnMesh = null, bangSprite = null, melBang = null, teleId = 0;
 function fightProps() {
   if (warnMesh) return;
   // soft rounded danger zone (gfx/telegraph.js); fades out by itself if the attack is interrupted
   warnMesh = makeTelegraph({ guard: () => S1.active && S1.mode === 'fight' && F && F.B && F.B.attacking }); E.scene.add(warnMesh);
   bangSprite = iconSprite('!', '#ff5040'); bangSprite.visible = false; E.scene.add(bangSprite);
+  melBang = iconSprite('!', '#ffc040'); melBang.visible = false; melBang.scale.setScalar(0.42); E.scene.add(melBang);
 }
 function showWarn(x, w, on = true) { warnMesh.position.x = x; warnMesh.scale.set(w, 1.4, 1); warnMesh.material.opacity = on ? 0.32 : 0; }
 
@@ -613,7 +614,7 @@ function runFight(key, tok) {
   F = { key, cfg, tok, boss: cast1[bossRole], phase: 1, over: false,
     W: { x: -3, y: 0, vy: 0, hp: cfg.hearts || PLAYER.fight.hearts, max: cfg.hearts || PLAYER.fight.hearts, inv: 1, busy: false, seq: 0, henki: 0 },
     B: { x: 2.6, hp: cfg.hp, max: cfg.hp, token: 0, open: false, attacking: false, threatT: -1, stun: 0 },
-    mel: null, refusedAt: -9, p2T: 0 };
+    mel: null, refusedAt: -9, p2T: 0, hits: [] };
   hideCast();
   const w = cast1.weed; w.root.visible = true; w.fade(1); w.root.position.set(F.W.x, 0, 0); w.face(1, true); w.play('Idle');
   const b = F.boss; b.root.visible = true; b.fade(1); b.root.position.set(F.B.x, 0, 0); b.face(-1, true); b.play('Idle');
@@ -737,10 +738,11 @@ function thresholds() {
   if (F.phase === 1 && B.hp <= cfg.phase2At) phase2();
   else if (F.key === 'blue' && F.phase === 2 && B.hp <= cfg.endAt) finishFight();
 }
-function hurtWeed(fromX) {
+function hurtWeed(fromX, src) {
   const W = F.W, w = cast1.weed;
   if (W.inv > 0 || F.over || F.cut) return;
   fightTutEnd();
+  F.hits.push(src || (F.B.tele && F.B.tele.kind) || '?');   // read by the test (what hit Weed)
   W.hp--; W.inv = PLAYER.fight.invT; W.seq++; W.busy = false;
   UI.setHearts(W.hp, W.max);
   sfx.hurt(); shake(0.3); FX.flash('#ff2040', 0.3, 0.3);
@@ -762,6 +764,7 @@ async function loseFight() {
 function endAttack() {
   if (warnMesh) showWarn(0, 1, false);
   if (bangSprite) bangSprite.visible = false;
+  if (melBang) melBang.visible = false;
   if (!F) return;
   F.B.threatT = -1; F.B.attacking = false; F.B.open = false; F.B.tele = null; F.boss.setTint(0, 0);
   if (F.mel) { F.mel.threatT = -1; F.mel.tele = 0; }
@@ -816,6 +819,8 @@ async function bossBrain(t) {
       dtl = await tick();
     }
     if (!alive(t) || B.stun > 0) continue;
+    while (alive(t) && F.mel && F.mel.tele) await tick();       // wait until Mel's lunge is over
+    if (!alive(t) || B.stun > 0) continue;
     const kind = cfg.attacks[i++ % cfg.attacks.length];
     B.attacking = true; B.tele = { kind, id: ++teleId };   // B.tele: what is winding up (read by the test bot)
     if (kind === 'charge') await atkCharge(t, spd);
@@ -829,16 +834,21 @@ async function atkCharge(t, spd) {
   const dir = Math.sign(W.x - B.x) || -1; b.face(dir);
   b.play('Eating', { timeScale: 1.4 });
   const endX = dir > 0 ? ARENA.max + 0.2 : ARENA.min - 0.2;
-  showWarn((B.x + endX) / 2, Math.abs(endX - B.x) + 1.5);
+  // run-up: the dog backs off first so the charge is SEEN coming (it used to start 2.3 units away = 0.18 s to react)
+  const back = clamp(B.x - dir * Math.max(0, PLAYER.fight.chargeRunUp - Math.abs(W.x - B.x)), ARENA.min, ARENA.max);
+  tween(B, { x: back }, 0.45, { ease: 'out' });
+  showWarn((back + endX) / 2, Math.abs(endX - back) + 1.5);
   const tut = fightTut('charge');
   await telegraph(t, F.cfg.teleCharge / spd);
   if (!alive(t)) return;
   b.play('Gallop', { timeScale: 1.2 }); sfx.growl ? sfx.growl() : sfx.bark();
-  const speed = 9.5 * spd; let hit = false, dtc = 1 / 60;
+  // never less than PLAYER.fight.chargeMinT seconds from the start of the run to Weed (short run-up near a wall = slower)
+  const gap = Math.max(0.3, Math.abs(W.x - B.x) - half() * 0.7);
+  const speed = Math.min(9.5 * spd, Math.max(3.5, gap / PLAYER.fight.chargeMinT)); let hit = false, dtc = 1 / 60;
   while (alive(t) && Math.sign(endX - B.x) === dir) {
     B.x += dir * speed * dtc;
     const ahead = (W.x - B.x) * dir; B.threatT = ahead > 0 ? ahead / speed : -1;
-    if (!hit && Math.abs(W.x - B.x) < half() * 0.7 && W.y < 0.5 && W.inv <= 0) { hit = true; hurtWeed(B.x); }
+    if (!hit && Math.abs(W.x - B.x) < half() * 0.7 && W.y < PLAYER.fight.jumpClear && W.inv <= 0) { hit = true; hurtWeed(B.x); }
     if (Math.random() < 0.25) FX.dust(new THREE.Vector3(B.x - dir * 0.6, 0.1, 0));
     dtc = await tick();
   }
@@ -893,19 +903,23 @@ async function melBrain(t) {
       M.x += clamp(want - M.x, -1, 1) * 2.2 * dtm; m.root.position.x = M.x;
       dtm = await tick();
     }
-    if (!alive(t)) return;
+    // never at the same moment as Blue's attack: one threat at a time stays readable on a phone
+    while (alive(t) && M.active && (F.B.tele || F.B.stun > 0)) await tick();
+    if (!alive(t) || !M.active) return;
     const dir = Math.sign(W.x - M.x) || 1; m.face(dir);
     m.setTint(0xffc040, 0.25); sfx.tell(); m.play('Bark', { loop: false }); M.tele = ++teleId;
     const tut = fightTut('mel');
-    await wait(F.cfg.teleMel); m.setTint(0, 0);
+    melBang.visible = true;
+    { const t0 = E.time; while (alive(t) && E.time - t0 < F.cfg.teleMel) { melBang.position.set(M.x, m.height + 0.4 + Math.sin((E.time - t0) * 20) * 0.04, 0.7); await tick(); } }
+    melBang.visible = false; m.setTint(0, 0);
     if (!alive(t)) return;
     m.play('Gallop', { timeScale: 1.5 }); sfx.whoosh();
-    const x0 = M.x, x1 = clamp(M.x + dir * 2.6, ARENA.min, ARENA.max), s0 = E.time, dur = 0.3;
+    const x0 = M.x, x1 = clamp(M.x + dir * F.cfg.melDash, ARENA.min, ARENA.max), s0 = E.time, dur = 0.3;
     let hit = false;
     while (alive(t) && E.time - s0 < dur) {
       M.x = x0 + (x1 - x0) * ((E.time - s0) / dur); m.root.position.x = M.x;
       M.threatT = Math.max(0.01, dur - (E.time - s0));
-      if (!hit && Math.abs(W.x - M.x) < 0.45 && W.y < 0.4 && W.inv <= 0) { hit = true; hurtWeed(M.x); }
+      if (!hit && Math.abs(W.x - M.x) < 0.45 && W.y < 0.4 && W.inv <= 0) { hit = true; hurtWeed(M.x, 'mel'); }
       await wait(1 / 60);
     }
     M.threatT = -1; M.tele = 0; m.play('Idle');
