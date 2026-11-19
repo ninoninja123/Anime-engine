@@ -87,6 +87,7 @@ const P = {
         const cols = [0xb8a890, 0xa89480, 0xc4b49c, 0x9c8c7c, 0xb4a490];
         for (let i = 0; i < 9; i++) { const h = PR.house(2.6 + (i % 3) * 0.5, 2 + (i % 2) * 0.7, cols[i % 5]); h.position.set(-20 + i * 5, 0, (i % 2) * -1.6); o.add(h); }
         for (let i = 0; i < 6; i++) { const f = PR.fence(1.4, 0.6, 0x7a6a5a); f.rotation.y = Math.PI / 2; f.position.set(-12 + i * 1.45, 0, 3.2); o.add(f); }
+        PR.flatten(o);                                   // static backdrop: one mesh per material (was ~70 draw calls)
         break;
       }
       default: return null;
@@ -187,6 +188,7 @@ export async function startLevel1({ section = 0, onDone } = {}) {
   UI.show('loading', false);
   if (tok !== S1.token) return;
   enter();
+  S1.stats = { falls: 0, perfect: 0, t0: E.realTime, from: section };
   preloadMusic('sad', 'dawn', 'battle', 'smith', 'smith2');
   preloadSfx('boss', 'cine');
   await wait(0.35, true);            // let the mood director settle on the level context before scene moods
@@ -198,8 +200,17 @@ export async function startLevel1({ section = 0, onDone } = {}) {
     }
   } catch (e) { if (e !== ABORT) console.error(e); return; }
   save('weed.p1done', '1'); save('weed.p1.section', '0');
+  resultStats();
   leave();
   if (S1.onDone) S1.onDone();
+}
+// result screen (#result1): a short line of this play-through's numbers under the text
+function resultStats() {
+  const el = UI.$('result1'), st = S1.stats; if (!el || !st) return;
+  let p = el.querySelector('.r1stats');
+  if (!p) { p = document.createElement('p'); p.className = 'r1stats'; p.style.cssText = 'font-size:13px;opacity:.85;letter-spacing:.04em;margin:2px 0 8px'; const b = el.querySelector('button'); el.insertBefore(p, b); }
+  const secs = Math.round(E.realTime - st.t0), mm = Math.floor(secs / 60), ss = String(secs % 60).padStart(2, '0');
+  p.innerHTML = `Time ${mm}:${ss} &nbsp;·&nbsp; Falls ${st.falls} &nbsp;·&nbsp; Perfect dodges ${st.perfect}` + (st.falls === 0 && st.from === 0 ? ' &nbsp;·&nbsp; <b>No falls!</b>' : '');
 }
 function checkpointPrompt(sec) {
   l1Style();
@@ -289,6 +300,7 @@ async function loopUntilWin(play, tok, reset) {
     const ok = await play();
     check(tok);
     if (ok) return;
+    if (S1.stats) S1.stats.falls++;
     const choice = await defeatPrompt(lastTip);
     if (choice !== 'retry') throw ABORT;
     if (reset) await reset();
@@ -656,7 +668,7 @@ function checkPerfect() {
   const ts = [F.B.threatT, F.mel ? F.mel.threatT : -1];
   if (ts.some(t => t > 0 && t < 0.34)) {
     E.timeScale = 0.3; setTimeout(() => { if (S1.mode === 'fight' && !F.cut) E.timeScale = 1; }, 450);
-    sfx.perfect(); UI.toast('Perfect dodge!'); addHenki(0.25);
+    sfx.perfect(); UI.toast('Perfect dodge!'); addHenki(0.25); if (S1.stats) S1.stats.perfect++;
     FX.ring(cast1.weed.root.position.clone().add(new THREE.Vector3(0, 0.3, 0)), 0x9fd0ff, 1.8, 0.4);
   }
 }
@@ -1020,7 +1032,7 @@ async function leapAction(tok) {
   P.make('road');
   truckRun(1, { from: -38, to: -16, t: 9 });            // headlights creep closer while the player decides
   UI.hint('<b>Swipe ↑</b> — leap the fence and save Blue!');
-  const ic = icon('up'); E.scene.add(ic); ic.position.set(w.root.position.x + 0.3, 1.3, w.root.position.z); ic.scale.setScalar(0.6);
+  const ic = icon('up'); E.scene.add(ic); ic.position.set(w.root.position.x + 0.3, w.height + 0.45, w.root.position.z); ic.scale.setScalar(0.45);
   await Promise.race([new Promise(r => { leapRes = r; }), wait(7, true)]);
   leapRes = null; E.scene.remove(ic); ic.material.dispose();
   UI.hint(''); setInputEnabled(false); E.timeScale = 1;

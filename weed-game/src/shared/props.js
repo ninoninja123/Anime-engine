@@ -3,6 +3,7 @@
 // Jokainen funktio palauttaa THREE.Group:n (lisää itse sceneen). Mittakaava: Weed-pentu ≈ 0.5 yksikköä korkea.
 import * as THREE from 'three';
 import { gradientMap } from '../dogs.js';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 const matCache = new Map();
 export function toon(color, o = {}) {
@@ -33,34 +34,34 @@ export function log(len = 1.6, r = 0.16) {
   end.position.set(0, r, len / 2 + 0.002);
   const stub = mesh(new THREE.CylinderGeometry(0.03, 0.045, 0.3, 5), 0x4a3020, 0.01);
   stub.position.set(0.04, r * 1.9, -0.2); stub.rotation.z = -0.5;
-  const g = grp(body, end, stub); g.userData.h = r * 2; return g;
+  const g = flatten(grp(body, end, stub)); g.userData.h = r * 2; return g;
 }
 /** Puuaita (2 vaakalankkua + tolpat). */
 export function fence(w = 1.4, h = 0.55, color = 0x8a6440) {
   const g = new THREE.Group();
   for (const z of [-w / 2, w / 2]) { const p = mesh(new THREE.BoxGeometry(0.08, h + 0.12, 0.08), color, 0.012); p.position.set(0, (h + 0.12) / 2, z); g.add(p); }
   for (const y of [h * 0.45, h * 0.92]) { const b = mesh(new THREE.BoxGeometry(0.05, 0.08, w + 0.1), color, 0.012); b.position.set(0, y, 0); g.add(b); }
-  g.userData.h = h; return g;
+  flatten(g); g.userData.h = h; return g;
 }
 /** Heinäpaali. */
 export function hay(r = 0.3) {
   const b = mesh(new THREE.CylinderGeometry(r, r, 0.9, 12), 0xc9a24e);
   b.rotation.x = Math.PI / 2; b.position.y = r;
   const band = mesh(new THREE.CylinderGeometry(r * 1.01, r * 1.01, 0.05, 12), 0x8a6a2a, 0); band.rotation.x = Math.PI / 2; band.position.set(0, r, 0.2);
-  const g = grp(b, band); g.userData.h = r * 2; return g;
+  const g = flatten(grp(b, band)); g.userData.h = r * 2; return g;
 }
 /** Puulaatikko. */
 export function crate(s = 0.42, color = 0x9c7446) {
   const b = mesh(new THREE.BoxGeometry(s, s, s), color, 0.015); b.position.y = s / 2;
   const x1 = mesh(new THREE.BoxGeometry(s * 1.02, 0.04, 0.04), 0x5a3e22, 0); x1.position.set(0, s / 2, s / 2 + 0.005); x1.rotation.z = 0.78;
-  const g = grp(b, x1); g.userData.h = s; return g;
+  const g = flatten(grp(b, x1)); g.userData.h = s; return g;
 }
 /** Matala orsi / kärryn aisa / oksa (alitettava). y = alareuna. */
 export function beam(y = 0.36, len = 1.6, color = 0x6a4a30) {
   const b = mesh(new THREE.BoxGeometry(0.12, 0.12, len), color, 0.015); b.position.y = y + 0.06;
   const g = new THREE.Group(); g.add(b);
   for (const z of [-len / 2, len / 2]) { const p = mesh(new THREE.BoxGeometry(0.08, y + 0.12, 0.08), color, 0.012); p.position.set(0, (y + 0.12) / 2, z); g.add(p); }
-  g.userData.low = y; return g;
+  flatten(g); g.userData.low = y; return g;
 }
 /** Roikkuva verkko (ihmisten koiranloukku), alitettava. */
 export function hangingNet(y = 0.34) {
@@ -85,6 +86,8 @@ export function geese(n = 3) {
     const head = mesh(new THREE.SphereGeometry(0.05, 8, 6), 0xf2efe6, 0.008); head.position.set(0.16, 0.4, 0);
     const beak = mesh(new THREE.ConeGeometry(0.025, 0.08, 6), 0xf09030, 0); beak.rotation.z = -Math.PI / 2; beak.position.set(0.22, 0.4, 0);
     b.add(body, neck, head, beak);
+    for (const x of [neck, head, beak]) x.userData.castShadow = false;
+    flatten(b);
     b.position.set((i - (n - 1) / 2) * 0.28, 0, (i % 2 ? 0.25 : -0.2)); b.rotation.y = Math.PI + (i - 1) * 0.4;
     g.add(b); g.userData.birds.push(b);
   }
@@ -102,7 +105,7 @@ export function kennel() {
   for (const s of [-1, 1]) { const w = mesh(new THREE.BoxGeometry(0.08, H, D), 0x6e4c30, 0.012); w.position.set(s * W / 2, H / 2, 0); g.add(w); }
   const back = mesh(new THREE.BoxGeometry(W, H, 0.08), 0x6e4c30, 0.012); back.position.set(0, H / 2, -D / 2); g.add(back);
   for (const s of [-1, 1]) { const r = mesh(new THREE.BoxGeometry(W + 0.3, 0.06, D * 0.62), 0x3e3a44, 0.012); r.position.set(0, H + 0.26, s * D * 0.25); r.rotation.x = s * 0.62; g.add(r); }
-  return g;
+  return flatten(g, g.userData.planks);                 // planks stay separate (they fly apart); the rest is one mesh
 }
 /** Ankkalampi (litteä vesitaso + kivireuna). */
 export function pond(r = 1.6) {
@@ -110,7 +113,7 @@ export function pond(r = 1.6) {
   w.rotation.x = -Math.PI / 2; w.position.y = 0.025; w.scale.y = 0.6; w.receiveShadow = true; w.userData.noGfx = true;
   const g = grp(w);
   for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2; const s = mesh(new THREE.DodecahedronGeometry(0.1 + Math.random() * 0.06, 0), 0x7a766e, 0.01); s.position.set(Math.cos(a) * r, 0.05, Math.sin(a) * r * 0.6); g.add(s); }
-  return g;
+  return flatten(g);                                   // 14 stones + hulls -> 2 meshes
 }
 /** Pesäkolo juurakon alla (Sakuran pesä). */
 export function den() {
@@ -142,7 +145,7 @@ export function road(len = 120, w = 2.6) {
   const g = new THREE.Group();
   const a = new THREE.Mesh(new THREE.PlaneGeometry(len, w), toon(0x34343a)); a.rotation.x = -Math.PI / 2; a.position.y = 0.02; a.receiveShadow = true; a.userData.noGfx = true; g.add(a);
   for (let x = -len / 2; x < len / 2; x += 2.4) { const l = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.08), new THREE.MeshBasicMaterial({ color: 0xd8d0b0 })); l.rotation.x = -Math.PI / 2; l.position.set(x, 0.025, 0); l.userData.noGfx = true; g.add(l); }
-  return g;
+  return flatten(g);                                   // ~60 lane marks (each its own material) -> 1 mesh
 }
 /** Verkkoaita tien varressa (pitkä). */
 export function netFence(len = 30, h = 1.0) {
@@ -155,7 +158,7 @@ export function netFence(len = 30, h = 1.0) {
   net.position.y = h / 2; net.userData.noGfx = true; g.add(net);
   for (let p = -len / 2; p <= len / 2; p += 2.5) { const post = mesh(new THREE.CylinderGeometry(0.03, 0.03, h + 0.1, 6), 0x8a8e94, 0.008); post.position.set(p, (h + 0.1) / 2, 0); g.add(post); }
   const top = mesh(new THREE.CylinderGeometry(0.02, 0.02, len, 5), 0x8a8e94, 0); top.rotation.z = Math.PI / 2; top.position.y = h; g.add(top);
-  return g;
+  return flatten(g);                                   // posts + hulls (~50 draw calls) -> 3 meshes
 }
 /** Rekka (kuorma-auto) +X-suuntaan, ajovalot. userData.lights = valokartiot. */
 export function truck(color = 0x4a6a8a) {
@@ -190,6 +193,45 @@ export function house(w = 3, h = 2.2, color = 0xb8a890) {
   const roof = mesh(new THREE.ConeGeometry(w * 0.82, 1.2, 4), 0x4a3a40, 0.03); roof.rotation.y = Math.PI / 4; roof.scale.z = 0.75; roof.position.y = h + 0.6; g.add(roof);
   const win = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.45), new THREE.MeshBasicMaterial({ color: 0xffd890 })); win.position.set(0.5, h * 0.55, 1.21); g.add(win);
   g.userData.window = win; return g;
+}
+/** Draw-call saver for static props: merges every mesh under `root` that shares a material (outline hulls included)
+ * into one mesh, transforms baked in. Children listed in `keep` (and their subtrees) stay separate (animated parts).
+ * Town: ~70 -> ~6 draw calls; fence: 8 -> 2; a goose: 8 -> 3. Falls back to leaving the group as it was. */
+export function flatten(root, keep = []) {
+  root.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().copy(root.matrixWorld).invert(), rel = new THREE.Matrix4();
+  const keepSet = new Set(keep), groups = new Map(), victims = [];
+  const walk = o => {
+    for (const c of o.children) {
+      if (keepSet.has(c)) continue;
+      if (c.isMesh && !c.isSkinnedMesh && c.geometry && !Array.isArray(c.material)) {
+        const m = c.material;
+        const key = m.isMeshBasicMaterial && !m.map ? `b${m.color.getHex()}_${m.side}_${m.transparent}_${m.opacity}` : m.uuid;
+        if (!groups.has(key)) groups.set(key, { mat: m, geos: [], first: c });
+        let g = c.geometry.index ? c.geometry.toNonIndexed() : c.geometry.clone();
+        g.applyMatrix4(rel.multiplyMatrices(inv, c.matrixWorld));
+        for (const k of Object.keys(g.attributes)) if (k !== 'position' && k !== 'normal' && k !== 'uv') g.deleteAttribute(k);
+        if (!g.attributes.uv) g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(g.attributes.position.count * 2), 2));
+        groups.get(key).geos.push(g); victims.push(c);
+      }
+      walk(c);
+    }
+  };
+  walk(root);
+  const out = [];
+  for (const { mat, geos, first } of groups.values()) {
+    const merged = geos.length === 1 ? geos[0] : mergeGeometries(geos, false);
+    if (!merged) { geos.forEach(g => g.dispose()); out.forEach(m => m.geometry.dispose()); return root; }
+    if (geos.length > 1) geos.forEach(g => g.dispose());
+    const m = new THREE.Mesh(merged, mat);
+    m.castShadow = first.castShadow; m.receiveShadow = first.receiveShadow; Object.assign(m.userData, first.userData);
+    out.push(m);
+  }
+  for (const v of victims) { v.parent.remove(v); v.geometry.dispose(); }
+  const prune = o => { for (const c of [...o.children]) { if (keepSet.has(c)) continue; prune(c); if (c.type === 'Group' && !c.children.length && !c.userData.birds) o.remove(c); } };
+  prune(root);
+  for (const m of out) root.add(m);
+  return root;
 }
 /** Vapauta esineryhmä. */
 export function dispose(g) {
