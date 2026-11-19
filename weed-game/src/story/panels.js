@@ -9,7 +9,7 @@ import { W, H, defs, layer, ridge, hill, hillY, pines, crowns, deadTree, dots, c
 
 const mist = (df, x, y, w, h, col, a) => `<ellipse cx="${x}" cy="${y}" rx="${w}" ry="${h}" fill="${df.rad([[0, col, a], [1, col, 0]])}"/>`;
 const glow = (df, x, y, r, col, a = 1) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${df.rad([[0, col, a], [0.35, col, a * 0.35], [1, col, 0]])}"/>`;
-const sunRays = (df, x, y, n, len, col, a, opt) => rays(x, y, n, len, df.rad([[0, col, a], [0.55, col, a * 0.35], [1, col, 0]], { cx: x, cy: y, r: len, user: true }), opt);
+const sunRays = (df, x, y, n, len, col, a, opt) => rays(x, y, n, len, df.rad([[0, col, a], [0.32, col, a * 0.4], [0.6, col, 0]], { cx: x, cy: y, r: len, user: true }), opt);
 const sky = (df, stops) => `<rect y="-40" width="${W}" height="${H + 80}" fill="${df.lin(stops)}"/>`;
 
 // ------------------------------------------------------------------------------------------- 1 legend
