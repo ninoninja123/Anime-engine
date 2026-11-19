@@ -289,3 +289,16 @@ for (const [id, o] of Object.entries(LOOK_ARMY)) {
   ROSTER_EXTRA_IDS.push(id); if (!ROSTER.includes(id)) ROSTER.push(id);
 }
 export { GROUP_OF, GROUP_LABEL };
+
+// Prologue (level 1) side characters: model/look per character, ONE LINE EACH so the user's own models can be dropped in.
+// PLACEHOLDER: user model pending – generic dogs from existing models/looks only (no new textures, no character designs).
+// To swap: add the user's model to MODELS above (e.g. sakura_rigged) and change `model` (look/tint -> null) on its line.
+export const PROLOGUE_MODELS = {
+  sakura:  { model: 'gin_auto',     look: null,               tint: '#e6e2da', height: 1.1 },   // PLACEHOLDER: user model pending
+  sasuke:  { model: 'gin_auto',     look: 'spitz_red_cream',  tint: null,      height: 0.66 },  // PLACEHOLDER: user model pending
+  nero:    { model: 'generic_auto', look: 'mutt_black_white', tint: null,      height: 1.2 },   // PLACEHOLDER: user model pending
+  tosa:    { model: 'tobei_rigged', look: null,               tint: '#b8805a', height: 1.3 },   // PLACEHOLDER: user model pending (farm watchdog)
+  mel_pup: { model: 'smith_rigged', look: null,               tint: '#e2b46e', height: 0.62 },  // PLACEHOLDER: user model pending
+  hook:    { model: 'generic_auto', look: 'mutt_cream',       tint: null,      height: 1.08 },  // PLACEHOLDER: user model pending
+  blue:    { model: 'john_auto',    look: 'shepherd_black',   tint: null,      height: 1.22 },  // PLACEHOLDER: user model pending
+};
