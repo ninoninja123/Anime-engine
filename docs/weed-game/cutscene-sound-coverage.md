@@ -123,3 +123,37 @@ Askeleet tulevat automaattisesti liikkeestä (`src/footsteps.js`: pinta `step` =
 | Bluen viimeinen henkäys | +14 s | `breath`, voice p_blue_last, musiikki pois, `heartbeat` |
 | "Why…" | +20 s | `whimper` |
 | Henki nousee | +22 s | `spirit`, music `smith2` |
+
+## Taso 2: intro (ei-taistelu)
+| Tapahtuma | Aika | Ääni |
+|---|---|---|
+| Otsikko, vuoristo | 0 s | music `intro`, `levelStart` |
+| Lauma kävelee harjanteelle | 5–9 s | askeleet (`step`) |
+| Kagetora / Ken haukahtavat | 12 s | `Bark`-anim + voice |
+| Smithin hetki | 25 s | music `smith` |
+| Jeromen joukko laukkaa paikalle | 28 s | laukka-askeleet, `bark` |
+| Yö, railo | 36 s | amb `gorge` (rotkon tuuli), usva |
+| Weed hyppää (slow-mo kaaren huipulla) | 40 s | `jump`, `slowmo`, `land` |
+| Kolmikko hyppää | 43 s | `jump`, `land` |
+| Jeromen joukko ylittää | 45 s | laukka-askeleet, `land` |
+| Gajō yläpuolella | 47 s | `crow` |
+| Weedin haukahdus | 55 s | `Bark` + voice intro_go |
+
+## Taso 2: jälkikohtaus (putoamisesta eteenpäin)
+| Tapahtuma | Aika | Ääni |
+|---|---|---|
+| P4 kaatuu reunan yli | 0 s | `whoosh`, music pois, amb `gorge` |
+| Putoaminen rotkossa (slow-mo) | 1–4 s | `speed` (nopeuslinjat), kertoja fall_wind |
+| Weed paiskautuu reunalle | 4 s | `land`, `claw`, pöly |
+| Roiske kaukana alhaalla | 7 s | `splash` (+ `underwater`, ducking) |
+| Joki: Ken kahlaa | 10 s | amb `river`, askeleet vedessä (`wade`), `tired` |
+| Weed pitää Jeromea virrassa | 18 s | `wade` |
+| Mel juoksee rantaa | 30 s | askeleet (`step`), `Bark` |
+| P4:n henkivalo | 38 s | voice whimper, `spirit` |
+| Helikopteri tulee | 45 s | `heli` (looppi 11 s välein, ambienssi duckataan), roottoripöly |
+| Jerome haukkuu koneelle | 52 s | `bark`, voice post_stay |
+| Kone lähtee | 56 s | `heli` loittonee |
+| Haudat iltahämärässä | 60 s | amb `dusk`, music `smith2` |
+| Viisi henkeä nousee | 66 s | `spirit` × 5, `memory` |
+| Ulvonta | 78 s | `howl` × 2 |
+| Toivo | 85 s | music `dawn`, `spirit` |

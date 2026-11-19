@@ -1,18 +1,14 @@
-/* Prologue "The story so far": illustrated panels (src/prologue.js). Sits above the 3D view, below subtitles (#sub z 7). */
+/* Prologue "The story so far": SVG panels drawn with code (src/prologue.js, src/story/panels.js). Sits above the 3D view, below subtitles (#sub z 7). */
 #prologue { position: fixed; inset: 0; z-index: 6; display: none; overflow: hidden; background: #000; }
 #prologue.on { display: block; }
 #prologue.ending { background: transparent; pointer-events: none; }
 #prologue.ending .pl-btns, #prologue.ending .pl-bar { display: none; }
-#prologue .pl-stage, #prologue .pl-panel, #prologue .pl-img, #prologue .pl-grade, #prologue .pl-light, #prologue .pl-fx,
+#prologue .pl-stage, #prologue .pl-panel, #prologue .pl-fx,
 #prologue .pl-fog, #prologue .pl-vig, #prologue .pl-grain, #prologue .pl-flash, #prologue .pl-black { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 #prologue .pl-panel { opacity: 0; overflow: hidden; }
-#prologue .pl-img { background-size: cover; background-position: center; will-change: transform; transform-origin: 50% 50%; }
-#prologue .pl-grade { mix-blend-mode: soft-light; }
-#prologue .pl-light { mix-blend-mode: screen; }
 #prologue .pl-fog { opacity: 0.16; width: 200%;
   background: radial-gradient(40% 30% at 20% 70%, rgba(220,230,255,0.5), transparent 70%), radial-gradient(35% 25% at 70% 80%, rgba(220,230,255,0.4), transparent 70%);
   animation: plFog 38s linear infinite; }
-#prologue .pl-fog.b { opacity: 0.1; animation-duration: 62s; animation-direction: reverse; top: 8%; }
 @keyframes plFog { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 #prologue .pl-vig { background: linear-gradient(0deg, rgba(0,0,0,0.6) 11vh, rgba(0,0,0,0.25) 30vh, transparent 45vh),
   radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,0.65) 100%); }
@@ -37,7 +33,6 @@
 #prologue .pl-title .m { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(26px, 5.4vw, 52px); font-weight: 400; letter-spacing: 0.22em; margin: 6px 0 2px; }
 #prologue .pl-title.on .m { animation: plTitle 6s ease-out both; }
 #prologue .pl-title .s { font-size: clamp(11px, 2vw, 16px); letter-spacing: 0.5em; text-transform: uppercase; color: #cfdaff; }
-#prologue .pl-title .j { font-size: clamp(11px, 1.8vw, 15px); letter-spacing: 0.35em; opacity: 0.7; margin-top: 6px; }
 #prologue .pl-title.big .m { font-family: inherit; font-weight: 900; font-size: clamp(44px, 10vw, 92px); letter-spacing: 0.12em;
   color: #fff8ea; text-shadow: 0 0 28px rgba(255,190,110,0.55), 0 4px 18px rgba(0,0,0,0.75); }
 @keyframes plTitle { from { letter-spacing: 0.05em; filter: blur(6px); opacity: 0; } 35% { opacity: 1; filter: blur(0); } to { } }
@@ -51,3 +46,55 @@ body.prologue #sub { background: transparent; border: none; text-shadow: 0 1px 3
 body.prologue #sub .txt { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(14px, 2.5vw, 20px); letter-spacing: 0.02em; }
 body.prologue #sub .jp { opacity: 0.8; }
 body.prologue #sub.narr .txt { font-style: italic; }
+
+/* ---- SVG layers: rasterised once, moved by the camera (translate/scale written by JS) and CSS animations ---- */
+#prologue .pl-ly { position: absolute; inset: -7%; will-change: transform; pointer-events: none; }
+#prologue .pl-ly > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#prologue.paused *, #prologue.paused *::before { animation-play-state: paused !important; }
+#prologue .pl-pulse { animation: plPulse 4.5s ease-in-out infinite alternate; }
+#prologue .pl-pulse.fast { animation-duration: 1.6s; }
+@keyframes plPulse { from { opacity: 0.55; } to { opacity: 1; } }
+#prologue .pl-flicker { animation: plFlicker 2.3s steps(1) infinite; }
+@keyframes plFlicker { 0% { opacity: 0.9; } 20% { opacity: 0.75; } 35% { opacity: 1; } 60% { opacity: 0.82; } 80% { opacity: 0.95; } }
+#prologue .pl-drift { animation: plDrift 36s ease-in-out infinite alternate; }
+#prologue .pl-drift.fast { animation-duration: 14s; }
+@keyframes plDrift { from { transform: translateX(2%); } to { transform: translateX(-3%); } }
+#prologue .pl-rays { animation: plRays 18s ease-in-out infinite alternate; }
+@keyframes plRays { from { transform: rotate(-2.5deg); opacity: 0.7; } to { transform: rotate(2.5deg); opacity: 1; } }
+/* silhouettes: breathing, walking */
+#prologue .pl-breathe { transform-box: fill-box; transform-origin: 50% 100%; animation: plBreathe 3.2s ease-in-out infinite; }
+#prologue .pl-breathe.late { animation-delay: -1.4s; }
+@keyframes plBreathe { 50% { transform: scale(1.012, 1.035); } }
+#prologue .walking { animation: plBob 0.62s ease-in-out infinite; }
+@keyframes plBob { 50% { transform: translateY(-1.6px); } }
+#prologue .walking .lg-a { animation: plLegA 0.62s ease-in-out infinite alternate; }
+#prologue .walking .lg-b { animation: plLegA 0.62s ease-in-out infinite alternate-reverse; }
+@keyframes plLegA { from { transform: rotate(-20deg); } to { transform: rotate(20deg); } }
+#prologue .weed-walk { animation: plWalkOn 26s linear both; }
+@keyframes plWalkOn { from { transform: translateX(-60px); } to { transform: translateX(120px); } }
+
+/* beats ({ beat } steps add class b-<beat> to the panel) */
+#prologue .bt-roar { transform-box: view-box; }
+#prologue .b-roar .bt-roar { animation: plRoar 1.6s cubic-bezier(.2,.8,.3,1) both; }
+@keyframes plRoar { 0% { transform: scale(1); } 12% { transform: scale(1.07) translateY(-6px); } 100% { transform: scale(1.03); } }
+#prologue .bt-battoga { opacity: 0; }
+#prologue .b-battoga .bt-battoga { animation: plBattoga 1.9s ease-out both; }
+@keyframes plBattoga { 0% { opacity: 0; } 8% { opacity: 1; } 55% { opacity: 1; } 100% { opacity: 0; } }
+#prologue .bt-battoga .slash { stroke-dasharray: 1100; stroke-dashoffset: 1100; }
+#prologue .b-battoga .bt-battoga .slash { animation: plSlash 0.45s cubic-bezier(.3,0,.2,1) both; }
+@keyframes plSlash { to { stroke-dashoffset: 0; } }
+#prologue .b-battoga .bt-battoga .gin { animation: plLeap 0.5s cubic-bezier(.2,.7,.2,1) both; }
+#prologue .bt-battoga .gin { transform-box: fill-box; transform-origin: 50% 50%; }
+@keyframes plLeap { from { transform: translate(-560px, 140px) rotate(-340deg) scale(0.7); } to { transform: none; } }
+#prologue .bt-fall { transition: transform 3.2s cubic-bezier(.55,0,.75,.4), opacity 3.2s ease-in; }
+#prologue .b-fall .bt-fall { transform: rotate(-24deg) translate(-20px, 110px); }
+#prologue .b-fall .bt-fall .pl-pulse { animation: none; opacity: 0; transition: opacity 1.2s; }
+#prologue .bt-years { opacity: 0; transition: opacity 6s ease-in-out; }
+#prologue .b-years .bt-years { opacity: 0.85; }
+#prologue .bt-hunt { opacity: 0; transition: opacity 1.6s ease; }
+#prologue .b-hunt .bt-hunt { opacity: 1; }
+#prologue .bt-hunt .beam { animation: plSweep 5.5s ease-in-out infinite alternate; }
+#prologue .bt-hunt .beam.b2 { animation-duration: 4.2s; animation-delay: -2s; }
+@keyframes plSweep { from { transform: rotate(-7deg); } to { transform: rotate(9deg); } }
+#prologue .bt-far { opacity: 0; transition: opacity 3s ease; }
+#prologue .b-far .bt-far { opacity: 1; }

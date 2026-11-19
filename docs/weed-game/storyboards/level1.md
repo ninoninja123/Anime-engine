@@ -61,6 +61,9 @@ OTS = over the shoulder, INS = insert, POV, HA/LA = high/low angle. Kamera liikk
 | 21 | HA reaktiot → MCU Smith → MCU Hook | muut tulevat, päät alhaalla; Hook käy makaamaan Bluen viereen | kunnioitus | – | smith2 | p_smith_blue, p_hook_stay |
 | 22 | W siluetit auringonlaskussa | – | – | – | – | – |
 
+## 8. Loppu – `ending`
+LA auringonlasku, kolmikko päät alhaalla ilman musiikkia → Melin askeleet takaa, CU Weedin korva kääntyy → MCU Mel (p_mel_follow) → CU Weed nyökkää (p_weed_yes), `dawn` alkaa → korkea OTS: viimeinen katse Bluen tielle → W crane kohti vuoria (p_end_1/2) → caption "Ōu is waiting" → musta. Ääni: askeleet, amb `dusk`, music `dawn`. Siirtymä tasolle 2: animoitu tulosruutu (`src/shared/resultfx.js`).
+
 ## Muut prologin kohtaukset (kevyempi päivitys)
 - Kaikki prologin kohtaukset: kameran drift jokaisessa pysäytyksessä (ei jäätyneitä kuvia), elekielen nollaus ja valon palautus
   kohtauksen lopussa (`level1.js scene()`).
@@ -69,4 +72,3 @@ OTS = over the shoulder, INS = insert, POV, HA/LA = high/low angle. Kamera liikk
 ## Jäi kesken (seuraava kierros)
 - Avaus (GB ja pentu riitelevät palasta): oikea köydenveto-elekieli (acting `look`, `head`), Neron uhkaava LA-kuva.
 - Tosa: lisää ennakointi + iskun kontakti contact.js:llä (kun se on valmis tasolla 1).
-- Loppu: pitkä kävely kohti Ōuta – lisää paluukatse Bluen tielle ja siirtymä tasolle 2.

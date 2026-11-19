@@ -18,12 +18,14 @@ import * as PR from './shared/props.js';
 import * as SETS from './shared/sets.js';
 import { drift, grade } from './shared/cine.js';
 import { vehicleSound, horn } from './shared/synth.js';
+import { installResultFx } from './shared/resultfx.js';
 import { resetActing } from './shared/acting.js';
 import { ACTORS, RUNS, FIGHTS } from './data/level1_config.js';
 import * as SC from './data/scenes_level1.js';
 import { cast as cast2 } from './level2.js';
 
 E.V3 = E.V3 || THREE.Vector3;
+installResultFx();                 // animated result / defeat screens (both levels)
 export const SECTIONS = ['opening', 'farmRun', 'tosa', 'sakura', 'townRun', 'blue', 'truck', 'ending'];
 export const cast1 = {};
 const ABORT = new Error('level1-abort');
