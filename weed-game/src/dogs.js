@@ -806,7 +806,7 @@ export class Dog {
     this.cur.t += dt * this.cur.ts;
     this.mixer.update(dt);
     const sp = E.speaking && E.speaking.who === this.id ? E.speaking.level : 0;
-    if (sp > 0.01 && this.bones.jaw) this.bones.jaw.rotateZ(-sp * 0.5);          // puhuva leuka (klippi + lisäkierto)
+    if (sp > 0.01 && this.bones.jaw) this.bones.jaw.rotateZ(-sp * 0.6);          // puhuva leuka (klippi + lisäkierto)
     else if (sp > 0.01 && this.bones.head) this.bones.head.rotateZ(sp * 0.08);    // ei leukaluuta: pieni nyökkäys
     const targetRot = this.facingTarget > 0 ? 0 : Math.PI;
     this.turn.rotation.y += (targetRot - this.turn.rotation.y) * Math.min(1, dt * 10);

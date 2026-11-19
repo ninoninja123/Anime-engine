@@ -50,7 +50,7 @@ export function voiceLevel() {
   if (!analyser) return 0;
   analyser.getFloatTimeDomainData(anaBuf);
   let s = 0; for (let i = 0; i < anaBuf.length; i++) s += anaBuf[i] * anaBuf[i];
-  return Math.min(1, Math.sqrt(s / anaBuf.length) * 6);
+  return Math.sqrt(s / anaBuf.length);   // raaka RMS; voice.js normalisoi (AGC)
 }
 /** Valmiiksi ladattu puskuri (tai undefined, jos lataus kesken / ei ladattu). */
 export function cachedBuffer(file) { return buffers[file] || undefined; }
