@@ -302,3 +302,14 @@ export const PROLOGUE_MODELS = {
   hook:    { model: 'generic_auto', look: 'mutt_cream',       tint: null,      height: 1.08 },  // PLACEHOLDER: user model pending
   blue:    { model: 'john_auto',    look: 'shepherd_black',   tint: null,      height: 1.22 },  // PLACEHOLDER: user model pending
 };
+
+// Level 3 (The Alps Trap) side characters: same rule, ONE LINE EACH (src/data/level3_config.js builds them).
+export const LEVEL3_MODELS = {
+  reika:   { model: 'gin_auto',         look: 'spitz_red_cream',      tint: null, height: 1.0 },   // PLACEHOLDER: user model pending (red-and-white Akita)
+  hiro:    { model: 'generic_auto',     look: 'mutt_cream',           tint: null, height: 1.45 },  // PLACEHOLDER: user model pending (big pale wanderer)
+  lefty:   { model: 'tesshin_auto',     look: 'spitz_black_tan',      tint: null, height: 1.0 },   // PLACEHOLDER: user model pending
+  tommy:   { model: 'striped_b_rigged', look: 'kai_red_brindle',      tint: null, height: 1.02 },  // PLACEHOLDER: user model pending
+  rossi:   { model: 'akame_auto',       look: 'wolf_dark',            tint: null, height: 1.08 },  // PLACEHOLDER: user model pending
+  matsu:   { model: 'tobei_rigged',     look: 'mastiff_dark_brindle', tint: null, height: 1.38 },  // PLACEHOLDER: user model pending (pursuit leader)
+  missile: { model: 'rocket_rigged',    look: 'lurcher_red',          tint: null, height: 1.18 },  // PLACEHOLDER: user model pending (borzoi)
+};

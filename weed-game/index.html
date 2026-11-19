@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>Weed – Ōu Saga (fan game draft)</title>
+  <style>#level3Btn.locked { opacity: 0.5; filter: saturate(0.4); }</style>
 </head>
 <body>
   <div id="fsHint" class="hidden"><span>For true full screen: Share ▸ <b>Add to Home Screen</b>, then open from the icon.</span><button id="fsHintX" aria-label="Dismiss">✕</button></div>
@@ -54,6 +55,7 @@
     <div class="menubtns">
       <button id="prologueBtn" class="big">▶ Prologue: Weed and GB</button>
       <button id="startBtn">Level 2: Gajō – Kaibutsu <small id="l2note"></small></button>
+      <button id="level3Btn">Level 3: The Alps Trap <small id="l3note"></small></button>
       <div class="menuduo"><button id="storyBtn">Story so far</button><button id="castBtn">The Pack</button></div>
       <div class="setrow"><button id="soundBtn">Sound: on</button><button id="subsBtn">Subtitles: on</button><button id="fsBtn">Fullscreen</button></div>
     </div>
@@ -94,7 +96,15 @@
     <h2>Gajō is free</h2>
     <div id="stars"></div>
     <div id="fallen"></div>
-    <button id="resultBtn" class="big">Main menu</button>
+    <button id="next3Btn" class="big">▶ Continue: Level 3</button>
+    <button id="resultBtn">Main menu</button>
+  </div>
+
+  <div id="result3" class="screen hidden">
+    <div class="kicker">Level 3 complete</div>
+    <h2>John's last stand</h2>
+    <p class="r1txt">Hiro and Reika are safe. John kept his oath to Gin – not the one to Hiro.<br>Gin is still Hōgen's prisoner. Weed walks on.</p>
+    <button id="result3Menu" class="big">Main menu</button>
   </div>
 
   <div id="result1" class="screen hidden">
