@@ -165,6 +165,14 @@ export const EVENTS = {
   step:      { cat: 'move', layers: [{ s: 'step_dirt' }, { s: 'step_leaf', d: 0.012, vol: 0.9, p: 0.75 }, { s: 'step_claw', d: 0.02, p: 0.3 }] },
   stepSoft:  { cat: 'move', layers: [{ s: 'step_dirt', vol: 0.55 }, { s: 'step_leaf', d: 0.01, vol: 0.5, p: 0.5 }] },
   stepRock:  { cat: 'move', layers: [{ s: 'step_claw', vol: 1.4 }, { s: 'step_dirt', vol: 0.5 }] },
+  // pintakohtaiset askeleet (footsteps.js: setSurface('leaves' | 'dirt' | 'rock' | 'water' | 'snow'); *Soft = kävely)
+  stepLeaf:     { cat: 'move', layers: [{ s: 'step_leaf' }, { s: 'step_dirt', d: 0.01, vol: 0.45 }] },
+  stepLeafSoft: { cat: 'move', layers: [{ s: 'step_leaf', vol: 0.6, rate: 1.05 }] },
+  stepDirt:     { cat: 'move', layers: [{ s: 'step_dirt', vol: 1.15 }, { s: 'step_claw', d: 0.015, vol: 0.5, p: 0.35 }] },
+  stepDirtSoft: { cat: 'move', layers: [{ s: 'step_dirt', vol: 0.65 }] },
+  stepRockSoft: { cat: 'move', layers: [{ s: 'step_claw', vol: 0.9, rate: 1.05 }, { s: 'step_dirt', vol: 0.3 }] },
+  stepSnow:     { cat: 'move', layers: [{ s: 'step_dirt', vol: 0.8, rate: 0.72 }, { s: 'fur', d: 0.01, vol: 0.5, rate: 1.3 }] },   // pehmeä narske (ei omaa lumitiedostoa)
+  stepSnowSoft: { cat: 'move', layers: [{ s: 'step_dirt', vol: 0.5, rate: 0.7 }] },
   wade:      { cat: 'move', layers: [{ s: 'wade' }] },
   lunge:     { cat: 'move', layers: [{ s: 'whoosh', vol: 0.45, rate: 1.1 }, { s: 'scuff', vol: 0.5, p: 0.7 }] },
   jump:      { cat: 'move', layers: [{ s: 'scuff', vol: 0.8 }, { s: 'whoosh', d: 0.03, rate: 0.85 }, { s: 'fur', d: 0.02, p: 0.7 }] },

@@ -55,6 +55,7 @@ export function wait(s, real = false) {
 }
 
 export function shake(a) {
+  a *= E.shakeScale ?? 1;          // Settings: Reduce flashing -> 0.3
   E.shakeAmt = Math.max(E.shakeAmt, a);
   E.fovKick = Math.max(E.fovKick, Math.min(3.5, a * 4));
   post.ca = Math.max(post.ca, Math.min(0.02, a * 0.016));
@@ -69,7 +70,7 @@ export function initEngine(canvas) {
   initPost(renderer);
 
   E.scene = new THREE.Scene();
-  E.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 400);
+  E.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.2, 400);   // near 0.2: 2x depth precision (ground decals/shadows flickered far away)
   let baseFov = 40;
 
   const applyQuality = () => {

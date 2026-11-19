@@ -16,6 +16,7 @@ import * as UI from './ui.js';
 import { onGesture, setInputEnabled } from './input.js';
 import * as SC from './data/scenes_level2.js';
 import * as C from './contact.js';
+import { runArrows2D } from './cine2d/arrows2d.js';
 
 const ARENA = { min: -5.6, max: 5.6 };
 const PHASE_HP = { 1: 100, 2: 45, 3: 8 };   // 1: taistelu -> Neljä nuolta (45)  2: taistelu -> lukitus (20)  3: Battōga
@@ -213,6 +214,7 @@ export async function startLevel({ phase = 1, intro = true, onExit } = {}) {
   ambience(phase >= 2 ? 'boss' : 'battle');
   if (intro && phase === 1) await introCutscene();
   beginPhase(phase);
+  if (phase === 1 && E.params.has('arrows2d')) setTimeout(() => debug.arrows(), 600);   // test link: straight into Four Arrows (2D)
 }
 
 function setupArena(phase) {
@@ -728,15 +730,31 @@ async function lockScene() {
   beginPhase(3);
 }
 
-async function fourArrows() {
+// Four Arrows: 2D motion comic (src/cine2d/arrows2d.js) by default; ?arrows3d plays the old 3D cutscene.
+async function fourArrows(force3d = false) {
   await cutStart();
+  const after = () => {               // same end state as the 3D version: the three are gone, phase 2 begins
+    for (const id of MEN) cast[id].root.visible = false;
+    cast.jerome.root.position.set(-5.6, 0, -2.6);
+    S.W.x = -3; S.B.x = 3.5;
+  };
+  if (!force3d && !E.params.has('arrows3d')) {
+    await runArrows2D({ onBeforeEnd: () => {
+      E.skipping = false; E.timeScale = 1; E.camRoll = 0;
+      cast.kaibutsu.weakReveal = 1;                                 // the wound stays visible (as after the 3D scene)
+      E.camPos.set(0, 2.4, 9); E.camLook.set(0, 1.4, 0);          // GAME_CAM
+      after();
+    } });
+    cutEnd();
+    after();
+    beginPhase(2);
+    return;
+  }
   const steps = SC.arrows(ctx);
   preloadLines(SC.linesOf(steps));
   await runScene(steps, ctx);
   cutEnd();
-  for (const id of MEN) cast[id].root.visible = false;
-  cast.jerome.root.position.set(-5.6, 0, -2.6);
-  S.W.x = -3; S.B.x = 3.5;
+  after();
   beginPhase(2);
 }
 
@@ -791,7 +809,7 @@ export const debug = {
         await runScene(st, ctx); cutEnd();
         for (const r of ctx.fallingRocks || []) E.scene.remove(r);
         cast.smith.root.visible = false; setupArena(1); beginPhase(1);
-      } else if (name === 'arrows') { S.phase = 1; S.pending = 'arrows'; await fourArrows(); }
+      } else if (name === 'arrows' || name === 'arrows2d' || name === 'arrows3d') { S.phase = 1; S.pending = 'arrows'; await fourArrows(name === 'arrows3d'); }
       else if (name === 'lock') { S.phase = 2; await lockScene(); }
       else if (name === 'finale') { S.phase = 3; await finale(); }
       else if (name === 'twinfang' || name === 'jerome') {

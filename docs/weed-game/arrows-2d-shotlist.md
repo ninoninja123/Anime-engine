@@ -57,3 +57,15 @@ Voice lines (existing ids) in [brackets]; sfx keys from src/data/sfx_map.js in {
 
 ## Audio
 Music: 'battle' ducked during dialogue, 'sad' swells from shot 15, hold under 31-36. Voice pre/post shortened; sfx as above.
+
+## Implementation (2D motion comic)
+- Code: `weed-game/src/cine2d/` – `art.js` (drawing library: boiled ink shapes, cel shade + hatching, eyes, dog heads
+  side/front, dog bodies with poses, P4 body/head/roar-from-below/eye ECU, chest wound ECU in 3 stages, paw ECU, clouds,
+  ridges, mossy boulders, grass), `fx.js` (speed lines, impact frames, shockwave ring, particles: dust, sparks, fur tufts,
+  leaves, spirit lights; paper grain), `shots.js` (the 37 shots above as data + draw functions), `arrows2d.js` (player:
+  one canvas, timeline driven by the engine updater clock, hard cuts, speech holds, skip, fade back to 3D).
+- Game: `level2.js fourArrows()` plays the 2D version; `?arrows3d` keeps the old 3D cutscene. End state is the same
+  (Robert, Rocker, Heuler hidden, Jerome back at his spot, wound visible, `beginPhase(2)`: HP 45, battle music).
+- Test links: `?phase=1&nointro&noprologue&arrows2d` (straight into the scene), `__game.debug.scene('arrows2d' | 'arrows3d')`.
+  Dev preview without the game: `/src/cine2d/preview.html?shot=<index>&t=<sec>` (still) or `?play`.
+- Video: `URL=http://localhost:4174/ MAXS=80 node tools/cine-capture.cjs arrows2d 1 <dir>` + ffmpeg.

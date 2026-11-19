@@ -57,7 +57,7 @@
       <button id="startBtn">Level 2: Gajō – Kaibutsu <small id="l2note"></small></button>
       <button id="level3Btn">Level 3: The Alps Trap <small id="l3note"></small></button>
       <div class="menuduo"><button id="storyBtn">Story so far</button><button id="castBtn">The Pack</button></div>
-      <div class="setrow"><button id="soundBtn">Sound: on</button><button id="subsBtn">Subtitles: on</button><button id="fsBtn">Fullscreen</button></div>
+      <div class="setrow"><button id="settingsBtn">Settings</button><button id="fsBtn">Fullscreen</button></div>
     </div>
     <div id="memorial" class="hidden"></div>
     <div class="foot">Non-commercial fan work. Characters and story © Yoshihiro Takahashi / Nihon Bungeisha. No official artwork, logos, music or voices are used. Music &amp; SFX: Epidemic Sound.</div>
@@ -75,7 +75,29 @@
     <h2>Paused</h2>
     <button id="resumeBtn" class="big">Resume</button>
     <button id="helpBtn">Controls</button>
+    <button id="pauseSettingsBtn">Settings</button>
     <button id="quitBtn">Main menu</button>
+  </div>
+
+  <div id="settings" class="screen hidden" role="dialog" aria-labelledby="setTitle">
+    <h2 id="setTitle">Settings</h2>
+    <div class="setgrid">
+      <div class="setcol">
+        <div class="sethead">Audio</div>
+        <label class="slider"><span>Music</span><input id="volMusic" type="range" min="0" max="100" step="5" aria-label="Music volume"><output id="volMusicV">80%</output></label>
+        <label class="slider"><span>Effects</span><input id="volSfx" type="range" min="0" max="100" step="5" aria-label="Effects volume"><output id="volSfxV">90%</output></label>
+        <label class="slider"><span>Voice</span><input id="volVoice" type="range" min="0" max="100" step="5" aria-label="Voice volume"><output id="volVoiceV">100%</output></label>
+        <button id="soundBtn" class="toggle">Sound: on</button>
+      </div>
+      <div class="setcol">
+        <div class="sethead">Text &amp; accessibility</div>
+        <button id="subsBtn" class="toggle">Subtitles: on</button>
+        <div class="segrow" role="group" aria-label="Subtitle size"><span>Subtitle size</span><button data-subsize="s">S</button><button data-subsize="m">M</button><button data-subsize="l">L</button></div>
+        <button id="flashBtn" class="toggle">Reduce flashing: off</button>
+        <div class="setnote">Reduce flashing softens white flashes, impact frames and screen shake.</div>
+      </div>
+    </div>
+    <button id="settingsClose" class="big">Done</button>
   </div>
 
   <div id="help" class="screen hidden">
@@ -131,5 +153,15 @@
   <div id="loading" class="screen"><div class="spinner"></div><div id="loadingText">Gathering the pack…</div></div>
 
   <script type="module" src="./src/main.js"></script>
+  <script>
+    // service worker (public/sw.js): hashed assets cache-first, models stale-while-revalidate, offline page. ?nosw removes it.
+    // Not in the Vite dev server (its index loads ./src/main.js) so hot reload is never served stale.
+    (function () {
+      if (!('serviceWorker' in navigator)) return;
+      var dev = !!document.querySelector('script[src*="/src/main.js"]');
+      if (/[?&]nosw\b/.test(location.search) || dev) { navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.unregister(); }); }).catch(function () {}); return; }
+      window.addEventListener('load', function () { setTimeout(function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); }, 3000); });
+    })();
+  </script>
 </body>
 </html>
