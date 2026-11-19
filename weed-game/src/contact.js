@@ -279,7 +279,7 @@ function applyMotion(m, dt) {
       m.impact = true; r.z = 0;
       const fx = d.root.position.clone().add(new THREE.Vector3(d.facing * L * 0.35, 0.1, 0));
       FX.dust(fx, true); FX.ring(fx.clone().setY(0.08), 0xd9ccb0, 5, 0.5); shake(0.7);
-      playAny(['thud_deep', 'thud_deep_1', 'bossLand'], { x: fx.x });
+      playAny(['thudDeep', 'thud_deep', 'bossLand'], { x: fx.x }); sfx.bossLand({}, { x: fx.x });
       if (o.onImpact) o.onImpact();
       motions.delete(m); m.res();
     }
@@ -489,20 +489,23 @@ function hitFx(c, P) {
   if (kind !== 'none' && P.y < 0.9) FX.dust(P.clone().setY(0.1));
   const dep = o.depth || 0;
   if (dep > 0 && kind !== 'none') {
+    const layered = o.fleshSfx === false;      // kohtaus antaa valmiin kerrostetun tapahtuman (esim. arrow_bite_N)
     // hampaat uppoavat: turkki murskautuu (tumma varjo, ei verta), kipinät ja pölyrengas kasvavat syvyyden mukaan
     FX.burst(P, { color: 0x2a1c16, count: Math.round(8 + 22 * dep), additive: false, speed: 1.6 + 3 * dep, size: 0.2 + 0.25 * dep, gravity: -6, spread: 0.7 });
     FX.burst(P, { color: 0xffe2b0, count: Math.round(6 + 18 * dep), speed: 4 + 5 * dep, size: 0.25 });
     FX.ring(P, 0xcbbd9e, 1.6 + 2.6 * dep, 0.4 + 0.2 * dep);
     if (dep > 0.75) { FX.slashArc(P, 0xfff0d8, 0.6 + 0.5 * dep, 0.35, Math.random() * 6); FX.flash('#ffffff', 0.18, 0.4 + 0.3 * dep); }
     const tier = dep < 0.45 ? 'shallow' : dep < 0.75 ? 'mid' : 'deep';
-    playAny([`bite_flesh_${tier}`, `bite_flesh_${tier}_1`, `bite_flesh_${tier}_2`], { x: P.x });
-    if (dep >= 0.45) playAny(['tear', 'tear_1', 'tear_wet', 'tear_2'], { x: P.x, delay: 0.06 });
-    if (dep >= 0.75) playAny(['crunch', 'crunch_1', 'crunch_2'], { x: P.x, delay: 0.03 });
+    if (!layered) {
+      playAny([`bite_flesh_${tier}`, `bite_flesh_${tier}_1`, `bite_flesh_${tier}_2`], { x: P.x });
+      if (dep >= 0.45) playAny(['tear', 'tear_1', 'tear_wet', 'tear_2'], { x: P.x, delay: 0.06 });
+      if (dep >= 0.75) playAny(['crunch', 'crunch_1', 'crunch_2'], { x: P.x, delay: 0.03 });
+    }
     shake(0.25 * dep);
   }
   if (o.grunt) playAny([].concat(o.grunt), { x: P.x, delay: 0.08 });                     // ähkäisy/vingahdus osumassa
   for (const s of [].concat(o.sfx ?? (c.part === 'paw' ? ['hit'] : ['bite']))) if (s && sfx[s]) sfx[s]({}, { x: P.x });
-  if (strong && kind !== 'none') sfx.play('hit_heavy', { vol: 0.45, rate: 0.75, x: P.x });     // matala tömähdys
+  if (strong && kind !== 'none' && o.fleshSfx !== false) playAny(['thud_deep', 'hit_heavy'], { vol: 0.5, x: P.x });     // matala tömähdys
   shake(o.shake ?? (strong ? 0.55 : 0.3));
   E.fovKick = Math.max(E.fovKick || 0, strong ? 3 : 1.6);
   const hs = o.hitstop ?? (strong ? 0.12 : 0.07);
