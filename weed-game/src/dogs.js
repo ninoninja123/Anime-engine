@@ -14,6 +14,8 @@ import { E } from './engine.js';
 import { CHARACTERS, MODELS } from './characters.js';
 import { attachExtras } from './accessories.js';
 import { buildFace } from './face.js';
+import { Q } from './gfx/quality.js';
+import { budgetTexture } from './gfx/toon.js';
 
 export const CHARS = CHARACTERS;
 const RIG_DEBUG = E.params.has('rigdebug');
@@ -49,6 +51,7 @@ export function loadLook(id) {
   const url = new URL('models/looks/' + id + '.webp', window.ASSET_BASE || document.baseURI).href;
   lookCache[id] = texLoader.loadAsync(url).then(t => {
     t.flipY = false; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 2; t.needsUpdate = true;
+    budgetTexture(t, Q.charTex);          // phones: 768 px (low 512) is plenty for a ~150 px tall dog, saves GPU memory
     return (lookTex[id] = t);
   }).catch(e => { console.warn('look ' + id + ' missing', e); return null; });
   return lookCache[id];
@@ -82,7 +85,7 @@ function prepRigid(g, def) {
   }
   const bb = geo.boundingBox;
   const info = {
-    geo, map: mesh.material.map,
+    geo, map: (mesh.material.map && budgetTexture(mesh.material.map, Q.charTex), mesh.material.map),
     minX: bb.min.x, maxX: bb.max.x, halfW: Math.max(bb.max.z, -bb.min.z),
     frontX: fn ? fx / fn : bb.max.x * 0.5, rearX: rn ? rx / rn : bb.min.x * 0.5,
     legZ: fn ? fz / fn : 0.08,
@@ -96,6 +99,7 @@ function prepRigged(g, def) {
   const box = new THREE.Box3().setFromObject(scene, true);
   const h = box.max.y - box.min.y;
   let map = null; scene.traverse(o => { if (o.isMesh && o.material && o.material.map && !map) map = o.material.map; });
+  if (map) budgetTexture(map, Q.charTex);
   return { scene, clips: g.animations, h, minY: box.min.y, cx: (box.max.x + box.min.x) / 2, cz: (box.max.z + box.min.z) / 2,
     minX: (box.min.x - (box.max.x + box.min.x) / 2) / h, maxX: (box.max.x - (box.max.x + box.min.x) / 2) / h, halfW: (box.max.z - box.min.z) / 2 / h, map };
 }
@@ -355,6 +359,9 @@ const TAU = Math.PI * 2;
 const DUR = { Attack: 0.55, Gallop_Jump: 0.8, Jump_ToIdle: 0.55, Death: 1.3, Idle_HitReact1: 0.42, Idle_HitReact2: 0.6, Bark: 0.5, Howl: 2.6, Battoga: 0.6 };
 const blankPose = () => ({ x: 0, y: 0, pitch: 0, roll: 0, sx: 1, sy: 1, l0: 0, l1: 0, l2: 0, l3: 0, f0: 0, f1: 0, f2: 0, f3: 0, hp: 0, hy: 0, ty: 0, tp: 0, ear: 0, lie: 0 });
 const KEYS = Object.keys(blankPose());
+const POSE0 = blankPose();
+const EAR_SIDES = [['EARL', -1], ['EARR', 1]];
+function resetPose(o, src) { for (const k of KEYS) o[k] = POSE0[k]; for (const k in src) o[k] = src[k]; return o; }
 
 function gaitLegs(o, ph, amp, gait, liftAmt) {
   // ravi: FL & BR samassa vaiheessa, FR & BL vastakkain
@@ -737,10 +744,10 @@ export class Dog {
     // animaattorin ajastus + ristihäivytys
     const cur = this.cur;
     cur.t += dt * cur.ts; cur.blend = Math.min(1, cur.blend + dt / cur.fade);
-    const A = Object.assign(blankPose(), this._sample(cur, this));
+    const A = resetPose(this._pA || (this._pA = blankPose()), this._sample(cur, this));      // reused objects: no per-frame garbage
     if (this.prev && cur.blend < 1) {
       this.prev.t += dt * this.prev.ts;
-      const B = Object.assign(blankPose(), this._sample(this.prev, this));
+      const B = resetPose(this._pB || (this._pB = blankPose()), this._sample(this.prev, this));
       for (const k of KEYS) P[k] = B[k] + (A[k] - B[k]) * cur.blend;
     } else { for (const k of KEYS) P[k] = A[k]; this.prev = null; }
     // lisäkerrokset: hännän heilutus, korvien värähdys, hengitys
@@ -776,7 +783,7 @@ export class Dog {
       J.head.rotation.set(0, P.hy, -P.hp * 0.7);
       J.neck.rotation.z = -P.hp * 0.35;
       J.tail.rotation.set(0, P.ty * 0.9, P.tp * 0.6);
-      for (const [k, s] of [['EARL', -1], ['EARR', 1]]) {
+      for (const [k, s] of EAR_SIDES) {
         const b = J[k].userData.base; J[k].rotation.set(b.x + s * -P.ear * 0.25, b.y, b.z - P.ear * 0.3);
       }
     }

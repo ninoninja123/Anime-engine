@@ -6,7 +6,8 @@ import { loadFor, makeDog, isLoaded } from './dogs.js';
 import { CHARACTERS, ROSTER } from './characters.js';
 import { buildWorld } from './world.js';
 import { initInput } from './input.js';
-import { initAudio, setMuted, muted, music, sfx, audioStats, currentMusic, musicState } from './audio.js';
+import { initAudio, setMuted, muted, music, sfx, audioStats, currentMusic, musicState, volumes, setVolume, duckState } from './audio.js';
+import { post } from './gfx/post.js';
 import { settings, setPref } from './voice.js';
 import * as FX from './fx.js';
 import * as UI from './ui.js';
@@ -197,15 +198,54 @@ function requestLandscape() {
   } catch (_) {}
 }
 
+// ---------------------------------------------------------------- Settings (menu + pause): volumes, subtitles, accessibility
+const a11y = { subSize: safeGet('weed.subsize') || 'm', reduceFlash: safeGet('weed.reduceflash') === '1' };
+function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (_) {} }
+function applyA11y() {
+  const b = document.body;
+  b.classList.remove('subs-s', 'subs-m', 'subs-l'); b.classList.add('subs-' + a11y.subSize);
+  b.classList.toggle('reduceflash', a11y.reduceFlash);
+  post.reduceFlash = a11y.reduceFlash;          // gfx/post.js: no impact frames, softer bloom/exposure/CA kicks
+  E.shakeScale = a11y.reduceFlash ? 0.3 : 1;    // engine.shake + prologue shake
+}
+applyA11y();
 function syncSettingLabels() {
-  $('soundBtn').textContent = `Sound: ${muted ? 'off' : 'on'}`;
-  $('subsBtn').textContent = `Subtitles: ${settings.subs ? 'on' : 'off'}`;
+  const tog = (id, on, txt) => { const el = $(id); if (el) { el.textContent = txt; el.classList.toggle('on', on); el.setAttribute('aria-pressed', on ? 'true' : 'false'); } };
+  tog('soundBtn', !muted, `Sound: ${muted ? 'off' : 'on'}`);
+  tog('subsBtn', settings.subs, `Subtitles: ${settings.subs ? 'on' : 'off'}`);
+  tog('flashBtn', a11y.reduceFlash, `Reduce flashing: ${a11y.reduceFlash ? 'on' : 'off'}`);
+  document.querySelectorAll('[data-subsize]').forEach(b => b.classList.toggle('on', b.dataset.subsize === a11y.subSize));
+  for (const [id, k] of [['volMusic', 'music'], ['volSfx', 'sfx'], ['volVoice', 'voice']]) {
+    const el = $(id); if (!el) continue;
+    el.value = String(Math.round(volumes[k] * 100)); $(id + 'V').textContent = `${el.value}%`;
+  }
+}
+let settingsFrom = null;
+function openSettings(from) {
+  settingsFrom = from; if (from === 'pause') UI.show('pause', false);
+  syncSettingLabels(); UI.show('settings', true);
+}
+function closeSettings() { UI.show('settings', false); if (settingsFrom === 'pause') UI.show('pause', true); settingsFrom = null; }
+function wireSettings() {
+  let lastPreview = 0;
+  for (const [id, k] of [['volMusic', 'music'], ['volSfx', 'sfx'], ['volVoice', 'voice']]) {
+    const el = $(id); if (!el) continue;
+    el.addEventListener('pointerdown', e => e.stopPropagation());
+    el.addEventListener('input', () => {
+      initAudio(); setVolume(k, +el.value / 100); $(id + 'V').textContent = `${el.value}%`;
+      const now = performance.now();
+      if (k === 'sfx' && now - lastPreview > 250) { lastPreview = now; sfx.play('hitMed'); }       // hear the new level
+    });
+  }
+  document.querySelectorAll('[data-subsize]').forEach(b => b.addEventListener('click', e => {
+    e.stopPropagation(); initAudio(); sfx.play('tick'); a11y.subSize = b.dataset.subsize; safeSet('weed.subsize', a11y.subSize); applyA11y(); syncSettingLabels();
+  }));
 }
 
 function wireUI() {
   setupFullscreenUX(); { const fb = document.getElementById('fsBtn'); if (fb) fb.addEventListener('click', () => requestLandscape()); }
   // napin ääni: oletuksena klik; aloitus/paluu/ohitus omilla äänillä (pause/resume soittaa setPaused)
-  const UI_SND = { startBtn: 'start', castBack: 'uiBack', quitBtn: 'uiBack', defeatQuit: 'uiBack', resultBtn: 'uiBack', helpClose: 'uiBack', skipBtn: 'skip', pauseBtn: null, resumeBtn: null, retryBtn: 'uiConfirm' };
+  const UI_SND = { startBtn: 'start', settingsBtn: 'uiOpen', pauseSettingsBtn: 'uiOpen', settingsClose: 'uiBack', castBack: 'uiBack', quitBtn: 'uiBack', defeatQuit: 'uiBack', resultBtn: 'uiBack', helpClose: 'uiBack', skipBtn: 'skip', pauseBtn: null, resumeBtn: null, retryBtn: 'uiConfirm' };
   const tap = (id, fn) => { const el = $(id); if (!el) return; el.addEventListener('click', e => { e.stopPropagation(); initAudio(); const s = id in UI_SND ? UI_SND[id] : 'ui'; if (s) sfx.play(s); fn(); }); };
   tap('startBtn', () => startGame(1, true));
   tap('prologueBtn', () => startChapter(0, true));
@@ -218,6 +258,11 @@ function wireUI() {
   tap('castBack', () => showMenu());
   tap('soundBtn', () => { setMuted(!muted); syncSettingLabels(); });
   tap('subsBtn', () => { setPref('subs', !settings.subs); syncSettingLabels(); });
+  tap('flashBtn', () => { a11y.reduceFlash = !a11y.reduceFlash; safeSet('weed.reduceflash', a11y.reduceFlash ? '1' : '0'); applyA11y(); syncSettingLabels(); });
+  tap('settingsBtn', () => openSettings('menu'));
+  tap('pauseSettingsBtn', () => openSettings('pause'));
+  tap('settingsClose', () => closeSettings());
+  wireSettings();
   tap('pauseBtn', () => { if (!setPaused1(true)) setPaused(true); });
   tap('resumeBtn', () => { if (!setPaused1(false)) setPaused(false); });
   tap('helpBtn', () => { UI.show('pause', false); UI.show('help', true); });
@@ -239,7 +284,7 @@ function wireUI() {
   syncSettingLabels();
 }
 
-window.__game = { E, cast, debug, debug1, startChapter, startGame, showMenu, showCast, sfx, audioStats, currentMusic, musicState, gallery, ROSTER };
+window.__game = { E, cast, debug, debug1, startChapter, startGame, showMenu, showCast, sfx, audioStats, currentMusic, musicState, duckState, volumes, gallery, ROSTER };
 boot().catch(err => {
   console.error(err);
   $('loading').innerHTML = `<div>Loading failed: ${String(err.message || err)}</div>`;

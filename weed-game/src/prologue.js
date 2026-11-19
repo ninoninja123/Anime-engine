@@ -231,7 +231,7 @@ async function runStep(s) {
   if (E.skipping) return;
   if (s.wait) { await wait(s.wait, true); return; }
   if (s.sfx) { (sfx[s.sfx] || (() => {}))(s.arg); return; }
-  if (s.shake) { shakeAmt = Math.max(shakeAmt, s.shake); return; }
+  if (s.shake) { shakeAmt = Math.max(shakeAmt, s.shake * (E.shakeScale ?? 1)); return; }
   if (s.flash) { flash(s.flash); return; }
   if (s.beat) { if (cur) cur.el.classList.add('b-' + s.beat); return; }
   if (s.music !== undefined) { music(s.music, { fade: s.fade ?? 1.6 }); return; }

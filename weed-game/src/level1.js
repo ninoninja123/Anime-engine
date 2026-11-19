@@ -3,6 +3,7 @@
 //   → Sakura (scene: her death, the name) → Jōshū run (lead Mel away from the dog catcher) → Hook (scene)
 //   → Blue (2-phase fight, Mel is set on Weed) → the truck (scene + "leap the fence" action) → ending (scene).
 // Shares the engine, scene runner, voice/subtitles, gestures, FX and HUD with level 2 (no level2.js changes).
+import { makeTelegraph } from './gfx/telegraph.js';
 import * as THREE from 'three';
 import { E, tween, wait, shake } from './engine.js';
 import { loadFor, makeDog } from './dogs.js';
@@ -598,8 +599,8 @@ let F = null;
 let warnMesh = null, bangSprite = null, teleId = 0;
 function fightProps() {
   if (warnMesh) return;
-  warnMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0xff3322, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
-  warnMesh.rotation.x = -Math.PI / 2; warnMesh.position.y = 0.03; warnMesh.userData.noGfx = true; E.scene.add(warnMesh);
+  // soft rounded danger zone (gfx/telegraph.js); fades out by itself if the attack is interrupted
+  warnMesh = makeTelegraph({ guard: () => S1.active && S1.mode === 'fight' && F && F.B && F.B.attacking }); E.scene.add(warnMesh);
   bangSprite = iconSprite('!', '#ff5040'); bangSprite.visible = false; E.scene.add(bangSprite);
 }
 function showWarn(x, w, on = true) { warnMesh.position.x = x; warnMesh.scale.set(w, 1.4, 1); warnMesh.material.opacity = on ? 0.32 : 0; }
