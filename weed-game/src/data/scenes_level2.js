@@ -584,7 +584,7 @@ export const lock = (ctx) => {
     // Ken clamps its haunch from behind-side. Each bite is a real contact; P4's legs stop.
     { par: [
       { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'kagetora', target: 'kaibutsu', point: 'throat', side: 'far', wind: 0.2, t: 0.75, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25, maxPitch: 1.1 },
-      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'weed', target: 'kaibutsu', point: 'flank', side: 'near', wind: 0.25, t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
+      { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'weed', target: 'kaibutsu', point: { bone: 'spine_02', dir: [-0.4, 0.2, 1], name: 'flank' }, side: 'near', wind: 0.25, t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
       { depth: 0.45, cry: ['battleCry', 'bark'], cryRate: 1, grunt: ['breath'], strike: 'ken', target: 'kaibutsu', point: 'hip', side: 'near', wind: 0.3, t: 1.0, arc: 0.3, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25, yaw: 1.0 },
       { cam: [0.6, 1.4, 7.4], look: [3.0, 1.2, 0.3], t: 1.0, ease: 'out' },
     ] },
@@ -595,9 +595,9 @@ export const lock = (ctx) => {
     { track: 'mouth:ken', from: [-0.8, 0.15, 1.0], to: [-0.65, 0.1, 0.85], look: [0.05, -0.05, 0], t: 0.6 },
     // P4 strains against them: legs locked, body shudders
     { fn: () => {
-      boss.play('Idle_HitReact2', { loop: false, timeScale: 0.4 });
+      boss.play('Idle', { timeScale: 0.4 });   // head stays up (the three hang from it)
       let t = 0;
-      strain = boss.overlay((d, dt) => { t += dt; if (d.cur && d.cur.action) d.cur.action.timeScale = 0.05; const sp = d.bones.spine_02; if (sp) ctx.contact.rotBoneWorld(sp, new THREE.Vector3(1, 0, 0), Math.sin(t * 31) * 0.025); });
+      strain = boss.overlay((d, dt) => { t += dt; const sp = d.bones.spine_02; if (sp) ctx.contact.rotBoneWorld(sp, new THREE.Vector3(1, 0, 0), Math.sin(t * 31) * 0.025); });
     } },
     { thrash: 'kaibutsu', t: 1.2, amp: 0.18, freq: 3.2 },
     { freeze: 0.45 },
@@ -711,7 +711,7 @@ export const post = (ctx) => {
     { par: [
       { fn: () => tween(B, { x: 8.8 }, 2.0, { real: true, ease: 'inOut', onUpdate: () => { boss.root.position.x = B.x; } }) },
       { anim: 'kaibutsu', name: 'Walk', ts: 0.5 },
-      { move: 'ken', x: 6.0, z: 1.9, t: 1.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
+      { move: 'ken', x: 6.0, z: 2.5, t: 1.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
       { move: 'kagetora', x: 5.2, z: 1.3, t: 1.7, anim: 'Gallop', ts: 1.5, ease: 'in' },
       { cam: [5.0, 1.8, 7.0], look: [8.6, 1.6, 0], t: 2.0 },
     ] },
