@@ -173,7 +173,7 @@ const SEASONS = {
     spire: { body: '#8c867e', shade: '#5c5854', crack: '#48443f', edge: 'rgba(255,236,200,0.6)', cover: '#b89a52', cap: '#a88c4a' },
     rock: 0x8e8a82, rockTop: 0.42, fgRock: 0x3c3830,
     pine: ['#1c3c30', '#234636', '#34583e'], pines: 34, leafTrees: 30, deadTrees: 26, tufts: 380, ground: 'grass', particles: 520,
-    leaf: ['#9c3418', '#742410', '#a8501a', '#c47a22', '#8a2c16', '#b88a2a'], trunk: '#3c2c24', tuft: ['#b89a48', '#d4b860'],
+    leaf: ['#9c3418', '#742410', '#a8501a', '#c47a22', '#8a2c16', '#b88a2a'], trunk: '#3c2c24', tuft: ['#a08a40', '#bca452'],
     dots: 'fr > 0.985 ? vec3(0.78, 0.2, 0.08) : (fr > 0.965 ? vec3(0.9, 0.5, 0.12) : vec3(0.72, 0.55, 0.2))', dotDensity: 0.935,
   },
 };
@@ -498,7 +498,7 @@ export function buildWorld(opts = {}) {
       if (Math.abs(x) < 7.5 && z > -5.5) continue;
       if (x > 9 && x < 20 && z > -9) continue;
       if (dSpots.some(t => Math.hypot(t[0] - x, t[1] - z) < 2.4)) continue;
-      dSpots.push([x, z, 3.2 + r() * 3.4]);
+      dSpots.push([x, z, 2.6 + r() * 3.0]);
     }
     const dead = new THREE.InstancedMesh(deadGeo, makeToonMaterial({ color: 0xffffff, vertexColors: true, steps: 3, rim: 1.1 }), dSpots.length);
     dSpots.forEach(([x, z, sc], i) => { dm.position.set(x, groundH(x, z) - 0.05, z); dm.scale.set(sc, sc * (0.85 + r() * 0.4), sc); dm.rotation.set((r() - 0.5) * 0.14, r() * 6, (r() - 0.5) * 0.14); dm.updateMatrix(); dead.setMatrixAt(i, dm.matrix); });
