@@ -22,7 +22,7 @@ function update(_dt, dtr) {
   else {
     D.t += dtr;
     const env = Math.exp(-D.t / (D.on.tau || 5)) * dtr;           // eases out over a long hold
-    _d.subVectors(E.camLook, E.camPos); const dist = _d.length(); _d.normalize();
+    _d.subVectors(E.camLook, E.camPos); const dist = Math.min(4, _d.length()); _d.normalize();          // far look points: no runaway drift
     _s.set(-_d.z, 0, _d.x).normalize();
     const push = (D.on.push ?? 0.04) * dist * env, truck = (D.on.truck ?? 0.02) * dist * env, rise = (D.on.rise ?? 0) * dist * env;
     if (dist > 0.6) E.camPos.addScaledVector(_d, push);
@@ -70,3 +70,16 @@ export const Grade = (o) => ({ fn: () => grade(o) });
 export const GradeNow = (o) => ({ fn: () => { grade(o); } });
 /** Mood change that also runs while a scene is being skipped (plain { mood } steps are skipped). */
 export const Mood = (name, t = 2) => ({ fn: () => setMood(name, E.skipping ? 0.01 : t) });
+
+// ---------------------------------------------------------------- headlight glare (screen-space, from one side)
+let glareEl = null;
+/** A warm light grows from the left edge of the frame (headlights coming) over `secs`, then snaps off. */
+export function glare(secs = 2.4, peak = 0.8, side = 'left') {
+  if (E.skipping) return;
+  if (!glareEl) { glareEl = document.createElement('div'); glareEl.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:6;opacity:0;mix-blend-mode:screen;'; document.body.appendChild(glareEl); }
+  const x = side === 'left' ? '-5%' : '105%';
+  glareEl.style.background = `radial-gradient(60% 75% at ${x} 58%, rgba(255,246,214,0.95), rgba(255,226,160,0.45) 35%, rgba(255,200,120,0) 70%)`;
+  const o = { k: 0 };
+  tween(o, { k: 1 }, secs, { real: true, ease: 'in', onUpdate: () => { glareEl.style.opacity = String(o.k * peak); } })
+    .then(() => { const f = { k: 1 }; tween(f, { k: 0 }, 0.5, { real: true, onUpdate: () => { glareEl.style.opacity = String(f.k * peak); } }); });
+}

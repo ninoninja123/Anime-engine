@@ -17,6 +17,7 @@ import { onGesture, setInputEnabled } from './input.js';
 import * as PR from './shared/props.js';
 import * as SETS from './shared/sets.js';
 import { drift, grade } from './shared/cine.js';
+import { vehicleSound, horn } from './shared/synth.js';
 import { resetActing } from './shared/acting.js';
 import { ACTORS, RUNS, FIGHTS } from './data/level1_config.js';
 import * as SC from './data/scenes_level1.js';
@@ -63,7 +64,7 @@ const P = {
   },
   show(name, x = 0, z = 0) { const o = this.make(name); if (!o) return; if (o.parent !== E.scene) E.scene.add(o); o.visible = true; o.position.set(x, 0, z); return o; },
   hide(name) { const o = this.objs[name]; if (o) o.visible = false; },
-  hideAll() { for (const k in this.objs) this.objs[k].visible = false; for (const t of trucks) t.visible = false; },
+  hideAll() { for (const k in this.objs) this.objs[k].visible = false; for (const t of trucks) t.visible = false; truckSnd.forEach((s, i) => { if (s) { s.stop(); truckSnd[i] = null; } }); },
   attach(name, dog) { const o = this.make(name); dog.root.add(o); o.position.set(0.24, 0, 0.0); o.visible = true; },
   breakKennel() {
     const k = this.objs.kennel; if (!k) return;
@@ -77,11 +78,15 @@ const P = {
   resetKennel() { const k = this.objs.kennel; if (!k) return; for (const p of k.userData.planks) { p.position.copy(p.userData.home); p.rotation.set(0, 0, 0); } },
 };
 const trucks = [];
-function truckRun(i, { from = -34, to = 34, t = 2.4 } = {}) {
+const truckSnd = [];
+function truckRun(i, { from = -34, to = 34, t = 2.4, honk = false, keep = false } = {}) {
   if (!trucks[i]) { trucks[i] = PR.truck(i ? 0x6a3a3a : 0x3a5a7a); trucks[i].scale.setScalar(0.85); E.scene.add(trucks[i]); }
   const tr = trucks[i]; tr.visible = true; tr.position.set(from, 0, -4.6);
-  sfx.rumble && sfx.rumble(1.5);
-  return tween(tr.position, { x: to }, t, { ease: 'linear' }).then(() => { tr.visible = false; });
+  if (!truckSnd[i]) truckSnd[i] = vehicleSound(tr);                   // engine + tyres, Doppler (src/shared/synth.js)
+  if (honk) horn(honk === true ? 1.0 : honk);
+  const id = tr.userData.run = (tr.userData.run || 0) + 1;              // a newer run of the same truck wins
+  const o = { x: from };
+  return tween(o, { x: to }, t, { ease: 'linear', onUpdate: () => { if (tr.userData.run === id) tr.position.x = o.x; } }).then(() => { if (tr.userData.run !== id) return; if (!keep) { tr.visible = false; if (truckSnd[i]) { truckSnd[i].stop(); truckSnd[i] = null; } } });
 }
 
 // ---------------------------------------------------------------- world: hide Gajō-specific set dressing
@@ -182,7 +187,7 @@ async function scene(steps, tok) {
   E.skipping = false; E.timeScale = 1; FX.speedLines(0); stopVoice();
   check(tok);
 }
-const ctx = { cast: cast1, P, E, FX, sfx, wait, say, truckRun, setMood };
+const ctx = { cast: cast1, P, E, FX, sfx, wait, say, truckRun, setMood, horn, trucks };
 
 const SECTION_FNS = {
   opening: async tok => { hideCast(); P.hideAll(); setSurface('step'); await scene(SC.opening(ctx), tok); },

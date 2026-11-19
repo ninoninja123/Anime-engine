@@ -11,7 +11,7 @@
 
 import { tween } from '../engine.js';
 import { A, Nod, Shiver } from '../shared/acting.js';
-import { Mark, From, Hush, Grade, GradeNow, Mood } from '../shared/cine.js';
+import { Mark, From, Hush, Grade, GradeNow, Mood, glare } from '../shared/cine.js';
 
 export function linesOf(steps, out = []) {
   for (const s of steps) { if (s.say) out.push(s.say); if (s.bark) out.push(s.bark); if (s.par) linesOf(s.par, out); }
@@ -511,95 +511,205 @@ export const blueHook = ({ cast }) => [
 
 // ------------------------------------------------------------------------------------------------
 // 7. THE TRUCK (fn-steps drive the trucks; the leap over the fence is a player action in level1.js)
-export const truckHit = ({ cast, P, E, FX, sfx, truckRun }) => [
-  { place: 'weed', x: -0.4, z: -1.4, face: 1, anim: 'Gallop' },
-  { place: 'hook', x: -2.4, z: -1.2, face: 1, anim: 'Gallop' },
-  { place: 'smith', x: -3.6, z: -0.8, face: 1, anim: 'Gallop' },
-  { place: 'gb', x: -4.8, z: -1.0, face: 1, anim: 'Gallop' },
-  { place: 'mel', x: 3.6, z: -1.2, face: -1, anim: 'Idle' },
-  { place: 'blue', x: -2.0, z: -4.2, face: 1, anim: 'Gallop', ts: 1.3 },
-  { cam: [-1.2, 0.8, 1.6], look: [-0.4, 0.8, -4.0] },
+// headlights wash a dog in warm white as the truck comes (emissive ramp; cleared after the cut)
+function headlightWash(d, secs, peak) {
+  const o = { k: 0 }, tok = d._wash = {};
+  tween(o, { k: 1 }, secs, { ease: 'in', onUpdate: () => { if (d._wash === tok) d.setTint(0xfff0c8, o.k * peak); } });
+}
+const clearWash = (...ds) => { for (const d of ds) { d._wash = null; d.setTint(0x000000, 0); } };
+export const truckHit = ({ cast, P, E, FX, sfx, truckRun, horn }) => [
+  From(['tr_lights', 'tr_hit']),
+  Mood('autumn_dusk', 2.5), GradeNow({ exposure: 0.95, sat: 0.95, vig: 0.12, t: 0 }),
+  { amb: 'dusk' },
+  { surface: 'step' },
+  { place: 'weed', x: -3.6, z: -1.4, face: 1, anim: 'Gallop' },
+  { place: 'hook', x: -5.4, z: -1.15, face: 1, anim: 'Gallop' },
+  { place: 'smith', x: -6.6, z: -0.8, face: 1, anim: 'Gallop' },
+  { place: 'gb', x: -7.6, z: -1.0, face: 1, anim: 'Gallop' },
+  { place: 'mel', x: -4.6, z: -0.6, face: 1, anim: 'Idle' },
+  { place: 'blue', x: -1.4, z: -4.2, face: 1, anim: 'Walk', ts: 0.7 },
+  // 1. LOW, BEHIND THE NET FENCE: the pack skids to a halt; Blue is already out on the asphalt
+  { cam: [-2.4, 0.42, 0.6], look: [-0.6, 0.6, -4.0] },
   { par: [
-    { move: 'weed', x: 1.0, t: 0.8, anim: 'Gallop', after: 'Idle' },
-    { move: 'hook', x: -0.6, t: 0.8, anim: 'Gallop', after: 'Idle' },
-    { move: 'smith', x: -1.6, t: 0.8, anim: 'Gallop', after: 'Idle' },
-    { move: 'gb', x: -2.6, t: 0.8, anim: 'Gallop', after: 'Idle' },
-    { move: 'blue', x: 0.6, t: 1.0, anim: 'Gallop', ts: 1.3 },
+    { move: 'weed', x: 0.6, t: 1.6, anim: 'Gallop', after: 'Idle', ease: 'out' },
+    { move: 'hook', x: -0.8, t: 1.7, anim: 'Gallop', after: 'Idle', ease: 'out' },
+    { move: 'smith', x: -1.9, t: 1.8, anim: 'Gallop', after: 'Idle', ease: 'out' },
+    { move: 'gb', x: -2.9, t: 1.9, anim: 'Gallop', after: 'Idle', ease: 'out' },
+    { move: 'blue', x: 0.6, t: 2.4, anim: 'Walk', ts: 0.7 },
+    { cam: [-0.9, 0.5, 0.9], look: [0.4, 0.6, -4.0], t: 2.0, ease: 'out' },
   ] },
-  // headlights: the first truck (impact is a white cut, no blood)
-  { fn: () => truckRun(0, { from: -34, to: 34, t: 2.4, hitAt: 0.6, blueX: 0.6 }) },
-  { cam: [3.2, 0.6, -1.6], look: [0.6, 0.6, -4.2], t: 0 },
-  { sfx: 'riser' },
-  { anim: 'blue', name: 'Idle_HitReact1', loop: false },
-  { wait: 1.2 },
-  { fx: 'flash', color: '#ffffff', t: 0.5, peak: 1 }, { shake: 0.8 }, { sfx: 'cineBoom' },
-  { place: 'blue', x: 1.6, z: -4.2, face: -1, anim: 'LieDown' },
-  { wait: 1.3 },
-  { cam: [0.6, 0.45, 0.6], look: [1.4, 0.4, -4.2], t: 0 },
-  { music: null },
+  { sfx: 'tired' }, { sfx: 'claw' },
+  A('weed', { head: -0.05, ears: 0, look: 'blue', t: 0.4 }),
+  // 2. Blue stops in the middle of the road and looks back at them – a sneer
+  { anim: 'blue', name: 'Idle' },
+  { cam: [2.2, 0.55, -2.9], look: [0.6, 0.8, -4.2], t: 0.01 },
+  A('blue', { head: -0.15, look: 'weed', t: 0.5 }),
+  { wait: 1.0 },
+  Mark('tr_lights'),
+  // 3. DOWN THE ROAD: two headlights round the bend. The horn.
+  { fn: () => { truckRun(0, { from: -24, to: -8.5, t: 2.6, honk: 1.1, keep: true }); headlightWash(cast.blue, 2.6, 0.65); } },
+  { cam: [2.9, 0.7, -3.0], look: [0.0, 0.85, -4.4] },
+  { fn: () => { glare(2.4, 0.85); } },
+  { wait: 1.1 },
+  // 4. BLUE turns into the light – ears flat, frozen
+  A('blue', { head: 0, ears: 1, look: new E.V3(-30, 1, -4.6), t: 0.3 }),
+  { cam: [1.6, 0.85, -3.4], look: [0.55, 0.85, -4.2], t: 0.01 },
+  { sfx: 'heartbeat' },
+  { slow: 0.35 },
   { wait: 0.6 },
-  { expr: 'weed', name: 'surprised' },
-  { say: 'p_weed_blue' },
+  // 5. Weed behind the wire: the pup sees it coming
+  { cam: [0.95, 0.4, -2.3], look: [0.6, 0.4, -1.4] },
+  A('weed', { head: -0.1, ears: 0.3, look: 'blue', t: 0.2 }),
+  { wait: 0.6 },
+  Mark('tr_hit'),
+  // 6. IMPACT – a white cut, no blood: the truck passes, Blue is gone from the road's centre
+  { slow: 1 },
+  { fn: () => { truckRun(0, { from: -8.5, to: 40, t: 0.7 }); } },
+  { cam: [3.8, 0.9, -1.6], look: [0.6, 0.6, -4.2] },
+  { wait: 0.16 },
+  { fx: 'flash', color: '#ffffff', t: 0.7, peak: 1 }, { shake: 0.9 }, { sfx: 'cineBoom' }, { sfx: 'bodyfall' },
+  { music: null, fade: 0.2 },
+  { place: 'blue', x: 1.9, z: -4.0, face: -1, anim: 'LieDown' },
+  { fn: () => clearWash(cast.blue) },
+  A('blue', { head: 0.2, ears: 0.8, tail: 1, look: null, breath: 1.1, t: 0.05 }),
+  { wait: 1.0 },
+  // 7. SILENCE – high angle: the empty road, the tail lights going away, Blue in the dust
+  { cam: [3.4, 3.4, 0.4], look: [1.6, 0.2, -4.0] },
+  GradeNow({ exposure: 0.85, sat: 0.7, vig: 0.25, t: 1.5 }),
+  { cam: [3.0, 2.9, 0.0], look: [1.7, 0.2, -4.0], t: 2.2, ease: 'inOut' },
+  // 8. the pup's face
+  { cam: [1.15, 0.38, -0.85], look: [0.62, 0.38, -1.4] },
+  A('weed', { head: 0, ears: 0.6, look: 'blue', t: 0.3 }),
+  Shiver('weed', 0.8),
+  { sfx: 'heartbeat' },
+  { wait: 0.8 },
 ];
 export const truckSave = ({ cast, P, E, FX, sfx, truckRun }) => [
-  { expr: 'weed', name: 'determined' },
-  { place: 'blue', x: 1.6, z: -4.2, face: -1, anim: 'LieDown' },
-  // Weed tries to drag him off the asphalt: nose under his shoulder (contact), pulling
+  From(['ts_pull', 'ts_throw']),
+  Mood('autumn_dusk', 0.1), GradeNow({ exposure: 0.88, sat: 0.75, vig: 0.22, t: 0 }),
+  { surface: 'stepRock' },
+  { place: 'blue', x: 1.9, z: -4.0, face: -1, anim: 'LieDown' },
+  A('blue', { head: 0.3, ears: 0.8, tail: 1, look: null, breath: 1.1, t: 0.05 }),
+  // 1. Weed runs to him across the asphalt
   { par: [
-    { move: 'weed', x: 1.05, z: -4.05, t: 0.5, anim: 'Walk', ts: 1.4, ease: 'inOut' },
-    { cam: [2.6, 0.5, -1.9], look: [1.3, 0.35, -4.2], t: 0.5 },
+    { move: 'weed', x: 1.35, z: -3.75, t: 0.7, anim: 'Gallop', ts: 1.2, ease: 'inOut', after: 'Idle' },
+    { cam: [3.4, 0.45, -2.0], look: [1.6, 0.35, -4.0], t: 0.7 },
   ] },
-  { fn: () => { cast.weed.face(1); cast.weed.lookTarget = cast.blue; } },
+  Mark('ts_pull'),
+  // 2. he bites the scruff and pulls – the big dog barely moves
+  { fn: () => { cast.weed.face(1); } },
+  A('weed', { head: 0.35, look: 'blue', t: 0.2 }),
   { anim: 'weed', name: 'Attack', loop: false }, { sfx: 'claw' },
-  { move: 'weed', x: 0.85, t: 0.4, anim: 'Walk', ts: 0.6, faceMove: false },
-  { fn: () => truckRun(1, { from: -16, to: -5, t: 1.5 }) },
-  { sfx: 'riser' },
-  { dolly: 'smith', dist: 1.4, side: 0.5, t: 0.3 },
+  { move: 'weed', x: 1.15, z: -3.7, t: 0.45, faceMove: false, ease: 'inOut' }, { sfx: 'fur' },
+  { move: 'weed', x: 1.3, z: -3.75, t: 0.3, faceMove: false },
+  { anim: 'weed', name: 'Attack', loop: false }, { sfx: 'claw' },
+  { move: 'weed', x: 1.1, z: -3.7, t: 0.45, faceMove: false, ease: 'inOut' },
+  // 3. the second truck – headlights growing behind them
+  { fn: () => { truckRun(1, { from: -24, to: -8, t: 2.6, honk: 1.4, keep: true }); headlightWash(cast.blue, 2.6, 0.5); headlightWash(cast.weed, 2.6, 0.5); glare(2.8, 0.9); } },
+  { cam: [3.4, 0.45, -3.0], look: [1.2, 0.4, -4.0] },
+  { wait: 0.7 },
+  { cam: [-1.6, 0.85, 0.3], look: [-1.9, 0.75, -1.0] },
+  A('smith', { head: -0.1, ears: 0, look: 'weed', t: 0.2 }),
   { say: 'p_smith_no' },
-  { cam: [2.4, 0.4, -2.8], look: [1.2, 0.4, -4.2], t: 0.4 },
-  { anim: 'blue', name: 'Idle_2_HeadLow' },
-  { wait: 0.3 },
-  { slow: 0.22 }, { sfx: 'slowmo' },
-  { anim: 'blue', name: 'Attack', loop: false },
+  Mark('ts_throw'),
+  // 4. BLUE opens his eyes: the last of his strength. Slow motion.
+  { cam: [2.5, 0.45, -3.3], look: [1.6, 0.4, -4.05] },
+  A('blue', { head: -0.1, ears: 0, look: 'weed', t: 0.25 }),
+  { slow: 0.25 }, { sfx: 'slowmo' },
   { say: 'p_blue_go' },
-  { fn: () => { cast.weed.lookTarget = null; } },
+  // he heaves the pup off the road: head under the pup's chest, a toss toward the fence (camera follows the pup)
+  { anim: 'blue', name: 'Attack', loop: false }, { sfx: 'whoosh' },
+  { fn: () => { cast.weed.play('Idle_HitReact2', { loop: false }); } },
   { par: [
-    { move: 'weed', x: 2.0, z: -1.7, y: 0.5, t: 0.45, ease: 'out', real: false },
-    { cam: [5, 0.8, 0.8], look: [2.0, 0.6, -3.2], t: 0.6 },
+    { move: 'weed', x: 2.3, z: -2.95, y: 0.75, t: 0.42, ease: 'out', real: false, faceMove: false },
+    { cam: [4.6, 0.9, -6.2], look: [2.2, 0.6, -3.2], t: 0.55 },
   ] },
-  { fx: 'flash', color: '#ffffff', t: 0.8, peak: 1 },
-  { fn: () => truckRun(1, { from: -5, to: 34, t: 0.55 }) },
+  // 5. WHITE – the truck goes by between them
+  { fn: () => { truckRun(1, { from: -8, to: 40, t: 0.6 }); } },
+  { wait: 0.08 },
+  { fx: 'flash', color: '#ffffff', t: 1.0, peak: 1 }, { sfx: 'cineBoom' },
   { slow: 1 },
   { shake: 0.7 }, { sfx: 'whoosh' },
-  { move: 'weed', x: 2.2, y: 0, z: -1.6, t: 0.2, ease: 'in' },
-  { anim: 'weed', name: 'Idle_HitReact2', loop: false },
-  { fn: () => { cast.blue.root.position.set(4.6, 0, -4.4); cast.blue.play('LieDown'); } },
-  { wait: 1.6 },
   { music: null },
-  { wait: 1.0 },
+  { fn: () => { cast.blue.root.position.set(4.9, 0, -4.6); cast.blue.play('LieDown'); clearWash(cast.blue, cast.weed); } },
+  A('blue', { head: 0.5, ears: 0.8, tail: 1, breath: 0.7, look: null, t: 0.05 }),
+  // 6. the pup lands by the fence and rolls
+  { move: 'weed', x: 2.5, y: 0, z: -2.85, t: 0.22, ease: 'in', faceMove: false },
+  { sfx: 'land' }, { sfx: 'bodyfall' }, { fx: 'dust', at: [2.5, 0.15, -2.85] },
+  { fn: () => { cast.weed.play('LieDown'); } },
+  { cam: [3.5, 0.35, -4.1], look: [2.5, 0.25, -2.85] },
+  { wait: 1.6 },
 ];
-export const blueDeath = ({ cast, P, E, FX }) => [
-  { mood: 'grief', t: 3 },
+export const blueDeath = ({ cast, P, E, FX, sfx }) => [
+  From(['bd_last', 'bd_spirit', 'bd_others']),
+  Mood('autumn_dusk', 0.1), GradeNow({ exposure: 0.85, sat: 0.65, vig: 0.28, t: 0 }),
   { amb: 'sad' },
-  { music: 'smith2', fade: 3 },
-  { cam: [6.6, 1.8, -0.6], look: [4.4, 0.3, -4.2] },
-  { move: 'weed', x: 3.8, z: -3.9, t: 2.2, anim: 'Walk', ts: 0.6, after: 'Idle_2_HeadLow' },
-  { cam: [4.9, 0.32, -3.0], look: [4.4, 0.3, -4.3], t: 2.0, ease: 'inOut' },
+  { surface: 'stepRock' },
+  { place: 'blue', x: 4.9, z: -4.6, face: -1, anim: 'LieDown' },
+  { fn: () => clearWash(cast.blue, cast.weed) },
+  A('blue', { head: 0.5, ears: 0.8, tail: 1, breath: 0.7, look: null, t: 0.05 }),
+  // 1. HIGH WIDE: the empty road at sunset; the pup gets up and walks to him
+  { cam: [7.4, 2.6, 0.4], look: [3.8, 0.3, -3.8] },
+  { fn: () => { cast.weed.play('Idle', { fade: 0.6 }); } },
+  A('weed', { head: 0.3, ears: 0.7, tail: 0.8, t: 0.6 }),
+  { wait: 0.8 },
+  { music: 'smith2', fade: 4 },
+  { par: [
+    { move: 'weed', x: 3.85, z: -4.3, t: 3.2, anim: 'Walk', ts: 0.5, after: 'Idle' },
+    { cam: [6.4, 1.5, -1.4], look: [4.4, 0.3, -4.3], t: 3.2, ease: 'inOut' },
+  ] },
+  Mark('bd_last'),
+  // 2. LOW CLOSE: Blue's face on the asphalt; the pup's paws come into frame. He opens his eyes.
+  { cam: [4.05, 0.4, -5.4], look: [4.35, 0.32, -4.55] },
+  A('weed', { head: 0.45, ears: 0.6, look: 'blue', t: 0.6 }),
+  A('blue', { head: 0.25, look: 'weed', t: 1.2 }),
+  { sfx: 'breath' },
+  { wait: 0.6 },
   { say: 'p_blue_last' },
-  { fn: () => FX.spiritLight(cast.blue.root.position.clone().add(new E.V3(0, 0.4, 0)), 0xcfe4ff, 6) },
-  { expr: 'weed', name: 'sad' },
-  { cam: [3.5, 0.35, -3.2], look: [4.2, 0.3, -4.2], t: 1.2 },
+  // his head sinks; the breathing stops. Silence.
+  { music: null, fade: 2 },
+  A('blue', { head: 0.9, breath: 0, look: null, t: 2.6 }),
+  { wait: 2.2 },
+  { sfx: 'heartbeat' },
+  // 3. WEED – he does not understand why
+  { cam: [4.55, 0.4, -3.7], look: [3.85, 0.38, -4.3] },
+  A('weed', { head: 0.2, ears: 1, tail: 1, breath: 1.1, look: 'blue', t: 0.6 }),
+  Shiver('weed', 2.5),
   { say: 'p_weed_why' },
-  { place: 'smith', x: 2.4, z: -3.4, face: 1, anim: 'Idle_2_HeadLow' },
-  { place: 'hook', x: 5.6, z: -3.5, face: -1, anim: 'Idle_2_HeadLow' },
-  { place: 'gb', x: 2.0, z: -2.6, face: 1, anim: 'Idle_2_HeadLow' },
-  { cam: [4.0, 2.4, 1.8], look: [4.0, 0.6, -4.0], t: 3, ease: 'inOut' },
+  { sfx: 'whimper' },
+  Mark('bd_spirit'),
+  // 4. his light rises into the dusk sky; tilt up
+  { music: 'smith2', fade: 2.5 },
+  { cam: [6.3, 0.9, -1.5], look: [4.7, 0.9, -4.5] },
+  { fn: () => { FX.spiritLight(cast.blue.root.position.clone().add(new E.V3(0, 0.4, 0)), 0xcfe4ff, 7); sfx.spirit(); } },
+  GradeNow({ exposure: 0.95, sat: 0.85, vig: 0.2, bloom: 0.25, t: 3 }),
+  { cam: [6.6, 1.4, -0.9], look: [4.8, 3.2, -4.8], t: 5.5, ease: 'inOut' },
+  Mark('bd_others'),
+  // 5. the others have come round the fence: heads low
+  { place: 'smith', x: 2.8, z: -3.6, face: 1, anim: 'Idle' },
+  { place: 'hook', x: 6.2, z: -3.7, face: -1, anim: 'Idle' },
+  { place: 'gb', x: 2.2, z: -2.9, face: 1, anim: 'Idle' },
+  { place: 'mel', x: 3.4, z: -2.7, face: 1, anim: 'Idle' },
+  A('smith', { head: 0.6, ears: 0.8, tail: 0.6, t: 0.05 }),
+  A('hook', { head: 0.7, ears: 1, tail: 1, t: 0.05 }),
+  A('gb', { head: 0.5, ears: 0.8, tail: 0.8, t: 0.05 }), { expr: 'gb', name: 'sad' },
+  A('mel', { head: 0.4, ears: 0.6, tail: 0.8, look: 'weed', t: 0.05 }),
+  A('weed', { head: 0.6, ears: 1, tail: 1, look: null, t: 0.05 }),
+  { cam: [4.3, 2.2, 1.6], look: [4.1, 0.5, -4.0] },
+  { cam: [4.2, 1.9, 1.0], look: [4.1, 0.5, -4.0], t: 3, ease: 'inOut' },
+  { cam: [2.0, 0.75, -2.3], look: [2.9, 0.65, -3.65] },
+  A('smith', { head: 0.2, look: 'weed', t: 0.8 }),
   { say: 'p_smith_blue' },
-  { dolly: 'hook', dist: 1.5, side: -0.6, t: 0.6 },
+  // 6. Hook stays: he lies down beside his old enemy
+  { cam: [7.2, 0.6, -3.0], look: [6.0, 0.6, -3.8] },
+  A('hook', { head: 0.3, look: 'blue', t: 0.6 }),
   { say: 'p_hook_stay' },
-  { expr: 'weed', name: null },
+  A('hook', { lie: 1, head: 0.6, look: null, t: 1.6 }),
+  // 7. WIDE: silhouettes at the roadside, the sun going down behind them
+  { cam: [4.4, 0.7, 3.6], look: [4.2, 1.2, -6] },
+  { cam: [4.4, 0.9, 2.6], look: [4.2, 1.4, -6], t: 4, ease: 'inOut' },
+  { expr: 'gb', name: null },
 ];
-
 // ------------------------------------------------------------------------------------------------
 // 8. ENDING: Mel follows; the long walk toward Ōu at dusk
 export const ending = ({ cast, P }) => [
