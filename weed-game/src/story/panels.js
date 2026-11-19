@@ -9,7 +9,7 @@ import { W, H, defs, layer, ridge, hill, hillY, pines, crowns, deadTree, dots, c
 
 const mist = (df, x, y, w, h, col, a) => `<ellipse cx="${x}" cy="${y}" rx="${w}" ry="${h}" fill="${df.rad([[0, col, a], [1, col, 0]])}"/>`;
 const glow = (df, x, y, r, col, a = 1) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${df.rad([[0, col, a], [0.35, col, a * 0.35], [1, col, 0]])}"/>`;
-const sunRays = (df, x, y, n, len, col, a, opt) => rays(x, y, n, len, df.rad([[0, col, a], [0.55, col, a * 0.35], [1, col, 0]], { cx: x, cy: y, r: len, user: true }), opt);
+const sunRays = (df, x, y, n, len, col, a, opt) => rays(x, y, n, len, df.rad([[0, col, a], [0.32, col, a * 0.4], [0.6, col, 0]], { cx: x, cy: y, r: len, user: true }), opt);
 const sky = (df, stops) => `<rect y="-40" width="${W}" height="${H + 80}" fill="${df.lin(stops)}"/>`;
 
 // ------------------------------------------------------------------------------------------- 1 legend
@@ -169,7 +169,7 @@ function ruin() {
   // Gajō, taken by the monster
   d = defs('rn4');
   const gajo = smooth([[780, 860], [850, 600], [910, 500, 1], [950, 440], [1030, 408], [1120, 404, 1], [1180, 440], [1230, 520, 1], [1320, 640], [1400, 860]], 0.14);
-  L.push(layer(0.45, `<path d="${gajo}" fill="#0c0809"/><g class="bt-roar" style="transform-origin:1080px 410px">${place(1190, 410, 1.3, monster('#050304'), { flip: true })}
+  L.push(layer(0.45, `${glow(d, 1060, 360, 300, '#ff6a24', 0.32)}<path d="${gajo}" fill="#0c0809"/><g class="bt-roar" style="transform-origin:1080px 410px">${place(1190, 410, 1.3, monster('#050304'), { flip: true })}
     <g class="pl-pulse fast">${glow(d, 1001, 300, 18, '#ff9a2a', 1)}</g><circle cx="1001" cy="300" r="2.8" fill="#ffe2a0"/></g>`, { defs: d }));
   // withered forest; hunters with lights step in (beat 'hunt')
   d = defs('rn5'); const gy = x => hillY(87, x, { y: 580, amp: 24, waves: 1.4 });
