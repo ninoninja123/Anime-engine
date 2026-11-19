@@ -118,7 +118,7 @@ export function loadCast3() {
   return castReady;
 }
 function hideCast() {
-  for (const d of Object.values(cast3)) { d.root.visible = false; d.lookTarget = null; d.expr && d.expr(null); d.setTint(0, 0); d.fade(1); }
+  for (const d of Object.values(cast3)) { d.fade(1); d.setTint(0, 0); d.lookTarget = null; d.expr && d.expr(null); d.root.visible = false; }
   for (const b of Object.values(bangs)) b.visible = false;
 }
 
@@ -295,7 +295,7 @@ function holdLine(cfg, kind, tok) {
   if (isStand) P.show('tree', -3.9, -1.5);
   else { P.show('cabin', 4.4, -3.8); const a = cast3.akame; a.root.visible = true; a.root.position.set(-3.4, 0, -0.9); a.face(-1, true); a.play('Gallop', { timeScale: 1.2 }); H.akame = a; }
   // comrades beside John (stand): each a card until he falls
-  const ALLY_POS = { lefty: [1.2, -1.5], tommy: [1.7, 1.4], rossi: [-1.4, -1.7] };
+  const ALLY_POS = { lefty: [1.4, -2.3], tommy: [3.0, -2.7], rossi: [-1.3, -2.4] };
   for (const id of cfg.allies || []) {
     const d = cast3[id]; d.root.visible = true; d.fade(1); d.root.position.set(ALLY_POS[id][0], 0, ALLY_POS[id][1]); d.face(1, true); d.play('Idle');
     H.allies.push({ id, d, home: ALLY_POS[id], busy: false, t: Math.random() * 2 });
@@ -341,7 +341,7 @@ function spawn(type) {
   const want = def.ids ? free.filter(r => def.ids.includes(ACTORS[r])) : free.filter(r => !FOES.brute.ids.includes(ACTORS[r]));
   const role = (want.length ? want : free)[Math.floor(Math.random() * (want.length ? want : free).length)];
   const d = cast3[role];
-  const f = { role, dog: d, type, def, hp: def.hp, x: 9.5 + Math.random() * 1.5, z: type === 'runner' ? 0.95 : (Math.random() - 0.5) * 0.5, state: type === 'runner' ? 'run' : 'approach', t: 0, cd: 0.6 + Math.random() * 0.8, stun: 0 };
+  const f = { role, dog: d, type, def, hp: def.hp, x: H.J.x + 7.2 + Math.random() * 1.2, z: type === 'runner' ? 0.95 : (Math.random() - 0.5) * 0.5, state: type === 'runner' ? 'run' : 'approach', t: 0, cd: 0.6 + Math.random() * 0.8, stun: 0 };
   d.root.visible = true; d.fade(1); d.setTint(0, 0); d.root.position.set(f.x, 0, f.z); d.face(-1, true); d.spin.rotation.set(0, 0, 0);
   d.play(type === 'runner' ? 'Gallop' : 'Walk', { timeScale: type === 'runner' ? 1.4 : 1 });
   H.foes.push(f);
@@ -358,7 +358,7 @@ function fightUpdate(dt, dtr) {
   H.spawnT -= dt;
   if (H.queue.length && H.spawnT <= 0 && activeCount() < H.cfg.maxActive) {
     const t = { s: 'soldier', b: 'brute', r: 'runner' }[H.queue[0]];
-    if (spawn(t)) { H.queue.shift(); H.spawnT = 1.1 + Math.random() * 0.6; }
+    if (spawn(t)) { H.queue.shift(); H.spawnT = 0.7 + Math.random() * 0.5; }
   }
   // John
   J.biteCD = Math.max(0, J.biteCD - dt); J.roarCD = Math.max(0, J.roarCD - dt);
@@ -429,7 +429,7 @@ function foeUpdate(f, dt, attacking) {
       break;
     }
     case 'recover': {
-      if (f.t > 0.9) { f.state = 'approach'; f.cd = 1.4 + Math.random() * 1.4; }
+      if (f.t > 0.8) { f.state = 'approach'; f.cd = 1.0 + Math.random() * 1.0; }
       break;
     }
     case 'stagger': break;

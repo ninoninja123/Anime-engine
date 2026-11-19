@@ -102,29 +102,60 @@ async function frames() {
 }
 
 async function fight() {
-  const dir = path.join(OUT, 'fight'); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
-  const { b, p, errs } = await virtualPage(BASE + `?level=3&section=stand&fixedres&cb=${Date.now()}`);
-  await advanceUntil(p, () => window.__S3 && window.__S3.active && (window.__S3.mode === 'scene' || window.__S3.mode === 'fight'));
-  // the stand section starts straight with wave 1
-  await advanceUntil(p, () => window.__S3.mode === 'fight');
-  const plan = [];
-  for (let i = 0; i < 360; i++) plan.push(i % 9 === 0 ? { type: 'tap' } : i % 31 === 0 ? { type: 'swipe', dir: 'left' } : i % 47 === 0 ? { type: 'swipe', dir: 'up' } : null);
-  let n = 0;
-  for (let i = 0; i < plan.length; i++) {
-    if (plan[i]) await p.evaluate(g => window.__game.debug3.gesture(g), plan[i]);
-    if (i === 120) await p.evaluate(() => window.__game.debug3.fillHenki());
-    if (i === 130) await p.evaluate(() => window.__game.debug3.fang());
-    if (i === 60) await p.evaluate(() => { const c = document.querySelector('#cards .card'); if (c) c.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); });
-    for (let k = 0; k < 3; k++) await p.evaluate(() => window.__advance(33.3));
-    if (i % 12 === 0) await p.screenshot({ path: path.join(dir, String(n++).padStart(3, '0') + '.jpg'), type: 'jpeg', quality: 80 });
-    const m = await p.evaluate(() => window.__S3.mode);
-    if (m !== 'fight') break;
+  // real time: section `stand` (or argv[3]), scripted gestures every 300 ms, a screenshot every 2 s for argv[4] seconds
+  const sec = process.argv[3] || 'stand', secs = +(process.argv[4] || 70);
+  const dir = path.join(OUT, 'fight_' + sec); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+  const browser = await chromium.launch({ args: ARGS });
+  const p = await browser.newPage({ viewport: { width: 844, height: 390 } });
+  const errs = [];
+  p.on('pageerror', e => IGNORE.test(e.message) || errs.push(e.message));
+  p.on('console', m => m.type() === 'error' && !IGNORE.test(m.text()) && errs.push(m.text()));
+  await p.goto(BASE + `?level=3&section=${sec}&fixedres`);
+  await p.waitForFunction(() => window.__S3 && window.__S3.active && (window.__S3.mode === 'fight' || window.__S3.mode === 'scene'), null, { timeout: 240000 });
+  if (await p.evaluate(() => window.__S3.mode === 'scene')) { await p.evaluate(() => { window.__game.E.skipping = true; }); }
+  await p.waitForFunction(() => window.__S3.mode === 'fight', null, { timeout: 120000 });
+  const t0 = Date.now(); let n = 0, k = 0, lastShot = 0;
+  while (Date.now() - t0 < secs * 1000) {
+    const m = await p.evaluate(() => window.__S3.mode); if (m !== 'fight') break;
+    k++;
+    const g = k % 11 === 0 ? { type: 'swipe', dir: 'left' } : k % 17 === 0 ? { type: 'swipe', dir: 'up' } : { type: 'tap' };
+    await p.evaluate(g => window.__game.debug3.gesture(g), g);
+    if (k === 40) await p.evaluate(() => { const c = document.querySelector('#cards .card'); if (c) c.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); });
+    if (k === 70) await p.evaluate(() => { window.__game.debug3.fillHenki(); window.__game.debug3.fang(); });
+    if (Date.now() - lastShot > 2000) { lastShot = Date.now(); await p.screenshot({ path: path.join(dir, String(n++).padStart(3, '0') + '.jpg'), type: 'jpeg', quality: 78 }); }
+    await p.waitForTimeout(300);
   }
-  const st = await p.evaluate(() => { const H = window.__game.debug3.H; return H ? { hp: H.J.hp, defeated: H.defeated, queue: H.queue.length, foes: H.foes.map(f => [f.type, f.state, +f.x.toFixed(2)]) } : null; });
+  const st = await p.evaluate(() => { const H = window.__game.debug3.H; return { mode: window.__S3.mode, wave: window.__S3.wave, H: H ? { hp: H.J.hp, defeated: H.defeated, breached: H.breached, queue: H.queue.length, foes: H.foes.map(f => [f.type, f.state, +f.x.toFixed(2)]) } : null }; });
   console.log('fight state', JSON.stringify(st), 'errors', JSON.stringify(errs.slice(0, 5)));
-  await b.close();
-  try { cp.execSync(`ffmpeg -y -loglevel error -framerate 1 -i ${dir}/%03d.jpg -vf "scale=211:-1,tile=6x${Math.ceil(n / 6)}:padding=2" -frames:v 1 ${path.join(OUT, 'sheet_fight.jpg')}`); } catch (_) {}
+  await browser.close();
+  try { cp.execSync(`ffmpeg -y -loglevel error -framerate 1 -i ${dir}/%03d.jpg -vf "scale=281:-1,tile=6x${Math.ceil(n / 6)}:padding=2" -frames:v 1 ${path.join(OUT, 'sheet_fight_' + sec + '.jpg')}`); } catch (_) {}
   process.exit(errs.length ? 1 : 0);
 }
 
-({ smoke, frames, fight }[MODE] || smoke)().catch(e => { console.error(e); process.exit(1); });
+// watch <section> [everyMs]: real-time playback (no virtual clock), a screenshot every everyMs until the scene ends -> sheet
+async function watch() {
+  const sec = process.argv[3] || '0', every = +(process.argv[4] || 1500);
+  const dir = path.join(OUT, 'w' + sec); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
+  const browser = await chromium.launch({ args: ARGS });
+  const page = await browser.newPage({ viewport: { width: 844, height: 390 } });
+  const errs = [];
+  page.on('pageerror', e => IGNORE.test(e.message) || errs.push(e.message));
+  page.on('console', m => m.type() === 'error' && !IGNORE.test(m.text()) && errs.push(m.text()));
+  await page.goto(BASE + `?level=3&section=${sec}&fixedres`);
+  await page.waitForFunction(() => window.__S3 && window.__S3.mode === 'scene', null, { timeout: 240000 });
+  let n = 0; const t0 = Date.now(); const startSec = await page.evaluate(() => window.__S3.section);
+  while (Date.now() - t0 < +(process.env.MAXS || 400) * 1000) {
+    const st = await page.evaluate(() => ({ m: window.__S3.mode, d: window.__S3.sceneDone, s: window.__S3.section, a: window.__S3.active }));
+    if (st.s !== startSec || !st.a) break;
+    if (st.m === 'fight') { await page.evaluate(() => window.__game.debug3.winWave()); await page.waitForTimeout(400); continue; }
+    if (st.m !== 'scene' && st.m !== 'fightEnd') { await page.waitForTimeout(300); continue; }
+    if (st.m === 'scene' && !st.d) await page.screenshot({ path: path.join(dir, String(n++).padStart(3, '0') + '.jpg'), type: 'jpeg', quality: 75 });
+    await page.waitForTimeout(every);
+  }
+  console.log(`section ${sec}: ${n} shots in ${((Date.now() - t0) / 1000).toFixed(0)} s; errors ${JSON.stringify(errs.slice(0, 5))}`);
+  await browser.close();
+  try { cp.execSync(`ffmpeg -y -loglevel error -framerate 1 -i ${dir}/%03d.jpg -vf "scale=211:-1,tile=8x${Math.ceil(n / 8)}:padding=2" -frames:v 1 ${path.join(OUT, 'sheet_s' + sec + '.jpg')}`); } catch (_) {}
+  process.exit(errs.length ? 1 : 0);
+}
+
+({ smoke, frames, fight, watch }[MODE] || smoke)().catch(e => { console.error(e); process.exit(1); });
