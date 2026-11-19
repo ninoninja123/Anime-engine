@@ -322,9 +322,9 @@ export const arrows = (ctx) => {
   // Each arrow: gallop in the near lane, leap, jaws close on the bare skin of the LEFT CHEST (real contact),
   // P4 roars and flinches, then rears and flings the dog away; he crashes down and falls.
   const ARROW = [
-    { pin: 0.55, land: [-0.9, 1.9], arc: 1.5, t: 0.75, cam: 'side', depth: 0.3, cry: 0.95 },    // Robert opens the wound (surface)
-    { pin: 0.8, land: [B.x - half - 0.9, 2.3], arc: 0.6, t: 0.45, cam: 'low', depth: 0.6, cry: 1.1 },   // Rocker drives deeper – slammed down
-    { pin: 1.2, land: [-2.4, 2.6], arc: 1.8, t: 0.85, cam: 'side', depth: 0.9, cry: 0.85 },     // Heuler pushes his muzzle deep into the wound
+    { pin: 0.55, land: [B.x - half + 0.3, 0.6], arc: 1.5, t: 0.75, cam: 'side', depth: 0.3, cry: 0.95, counter: 'headbite' },    // Robert opens the wound (surface)
+    { pin: 0.8, land: [B.x - half - 0.9, 2.3], arc: 0.6, t: 0.45, cam: 'low', depth: 0.6, cry: 1.1, counter: 'rearup' },   // Rocker drives deeper – slammed down
+    { pin: 1.2, land: [-2.4, 2.6], arc: 1.8, t: 0.85, cam: 'side', depth: 0.9, cry: 0.85, counter: 'fallback' },     // Heuler pushes his muzzle deep into the wound
   ];
   const dmg = (n) => () => { B.hp = Math.max(9, B.hp - n); };
   MEN.forEach((id, i) => {
@@ -362,12 +362,25 @@ export const arrows = (ctx) => {
         { track: 'mouth:' + id, from: [-2.1, 0.3, 2.9], to: [-1.6, 0.2, 2.3], look: [0.1, -0.3, 0], t: 0.6 + A.pin },
         { sfx: 'bite_growl' },
       ] },
-      // P4 rears and tears him off; he is flung down and does not get up
-      { anim: 'kaibutsu', name: 'Attack', loop: false, ts: 1.2 },
-      { thrash: 'kaibutsu', t: 0.7, amp: 0.4, freq: 2.2 },
-      { sfx: 'roar' }, { shake: 0.5 },
+      // P4's counter (canon: Robert's head is bitten; Rocker – the force throws P4 up on its hind legs;
+      // Heuler – torn off by force as P4 crashes onto its back). Each one falls and does not get up.
+      ...(A.counter === 'headbite' ? [
+        { thrash: 'kaibutsu', t: 0.5, amp: 0.35, freq: 2.4 },
+        { release: id, mode: 'throw', to: A.land, arc: 0.5, t: 0.4, land: 'Idle_HitReact2' },
+        { cam: [A.land[0] - 1.4, 1.2, A.land[1] + 3.6], look: [A.land[0] + 0.6, 0.9, A.land[1] - 0.4], t: 0.3, ease: 'out' },
+        { reach: 'kaibutsu', target: id, point: 'head', side: 'near', t: 0.3, hold: 0.7, back: 0.45, fx: 'bite', strong: true, sfx: ['bite', 'hitHeavy'], react: 'hurt', shake: 0.6 },
+        { sfx: 'yelp' },
+        { anim: id, name: 'Death', loop: false, ts: 0.8 },
+      ] : A.counter === 'rearup' ? [
+        { cam: [B.x - half - 2.4, 0.4, 5.2], look: [B.x - half * 0.5, 2.0, 0.5], t: 0.25, ease: 'out' },
+        { motion: 'kaibutsu', kind: 'rearup', angle: 1.05, releaseAt: 'apex', release: { who: id, mode: 'throw', to: A.land, arc: A.arc, t: A.t, land: 'Death', spin: 1 } },
+      ] : [
+        { thrash: 'kaibutsu', t: 0.8, amp: 0.45, freq: 2.6 },
+        { cam: [B.x - half - 1.0, 0.35, 5.6], look: [B.x - half * 0.3, 1.0, 0.4], t: 0.3, ease: 'out' },
+        { motion: 'kaibutsu', kind: 'fallback', side: -1, releaseAt: 'impact', wait: false, release: { who: id, mode: 'throw', to: A.land, arc: A.arc, t: A.t, land: 'Death', spin: 1 } },
+        { wait: 3.3 },
+      ]),
       { cam: [A.land[0] - 1.6, 1.4, A.land[1] + 4.2], look: [(A.land[0] + B.x - half) / 2, 0.9, 1.2], t: 0.5, ease: 'out' },
-      { release: id, mode: 'throw', to: A.land, arc: A.arc, t: A.t, land: 'Death', spin: 1 },
       { fn: () => { fallen.push(m.root.position.clone()); FX.dust(m.root.position.clone().setY(0.1), true); } },
       { sfx: 'whimper' },
       { anim: 'kaibutsu', name: 'Idle_2_HeadLow', ts: 0.8 },

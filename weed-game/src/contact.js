@@ -245,6 +245,67 @@ export function react(target, kind = 'flinch', dirX = 1, o = {}) {
 }
 function setTimeoutReal(s, fn) { let t = 0; const u = (dt, dtr) => { t += dt; if (t >= s) { E.updaters.delete(u); fn(); } }; E.updaters.add(u); }
 
+// ------------------------------------------------------------------ koko vartalon reaktiot (proseduraalinen asento)
+// rearup: iskun voima heilauttaa kohteen takajaloilleen (pivot takatassuissa), etutassut huitovat, huipulla hitstop,
+//         raskas alastulo.  fallback: kohde kaatuu selälleen (rulla pituusakselin ympäri), makaa jalat ilmassa,
+//         nousee kolmessa vaiheessa (kyljelle -> rinta ylös -> jaloille).
+const motions = new Set();
+export function bodyMotion(dog, kind = 'rearup', o = {}) {
+  install();
+  const d = dogOf(dog);
+  return new Promise(res => {
+    const m = { d, kind, o, t: 0, res, apex: false, impact: false };
+    if (kind === 'rearup') { m.T = [o.rise ?? 0.38, o.hold ?? 0.55, o.drop ?? 0.32]; m.ang = o.angle ?? 1.08; sfx.roar(); }
+    else { m.T = [o.topple ?? 0.6, o.lie ?? 1.0, o.rise1 ?? 0.45, o.rise2 ?? 0.35, o.rise3 ?? 0.4]; sfx.roar(); }
+    motions.add(m);
+  });
+}
+function applyMotion(m, dt) {
+  const d = m.d, h = d.height, L = d.length, o = m.o; m.t += dt;
+  const r = d.pose.rotation, P = d.pose.position;
+  r.order = 'XYZ';
+  if (m.kind === 'rearup') {
+    const [a, b, c] = m.T; let th;
+    if (m.t < a) th = ease.out(m.t / a);
+    else if (m.t < a + b) { th = 1; if (!m.apex) { m.apex = true; if (!LOG.hold) { const prev = E.timeScale; E.timeScale = 0.08; setTimeoutRealS(0.09, () => { E.timeScale = prev || 1; }); } if (o.onApex) o.onApex(); } }
+    else th = 1 - ease.in(Math.min(1, (m.t - a - b) / c));
+    th *= m.ang;
+    r.z = th;                                                     // nokka ylös (paikallinen kehys, turn hoitaa suunnan)
+    const px = -0.38 * L, py = -0.5 * h, cs = Math.cos(th), sn = Math.sin(th);
+    P.x += px - (cs * px - sn * py); P.y += py - (sn * px + cs * py);   // pivot takatassuissa
+    if (d.bones && th > 0.2) for (const s of ['L', 'R']) { const b = d.bones['front_upper_' + s]; if (b) rotBoneWorld(b, new THREE.Vector3(0, 0, 1), Math.sin(m.t * 11 + (s === 'L' ? 0 : 2)) * 0.5 * (th / m.ang) * d.facing); }
+    if (d.bones && d.bones.neck) rotBoneWorld(d.bones.neck, new THREE.Vector3(0, 0, 1), 0.4 * (th / m.ang) * d.facing);   // pää taakse karjuntaan
+    if (m.t >= a + b + c && !m.impact) {
+      m.impact = true; r.z = 0;
+      const fx = d.root.position.clone().add(new THREE.Vector3(d.facing * L * 0.35, 0.1, 0));
+      FX.dust(fx, true); FX.ring(fx.clone().setY(0.08), 0xd9ccb0, 5, 0.5); shake(0.7);
+      playAny(['thud_deep', 'thud_deep_1', 'bossLand'], { x: fx.x });
+      if (o.onImpact) o.onImpact();
+      motions.delete(m); m.res();
+    }
+    return;
+  }
+  // fallback
+  const [a, b, c1, c2, c3] = m.T, side = o.side ?? -1, drop = 0.28 * h;
+  let roll, pitch = 0, y = 0;
+  if (m.t < a) { const k = ease.in(m.t / a); roll = Math.PI * k; pitch = 0.45 * Math.sin(k * Math.PI); y = -drop * k; }
+  else if (m.t < a + b) {
+    roll = Math.PI; y = -drop;
+    if (!m.impact) {
+      m.impact = true;
+      const g = d.root.position.clone().setY(0.1);
+      FX.dust(g, true); FX.dust(g.clone().add(new THREE.Vector3(d.facing * L * 0.3, 0, 0)), true); FX.ring(g.clone().setY(0.08), 0xd9ccb0, 7, 0.6);
+      shake(1.0); playAny(['knockdown'], { x: g.x }); playAny(['thud_deep', 'thud_deep_1'], { x: g.x });
+      if (o.onImpact) o.onImpact();
+    }
+    if (d.bones) for (const s of ['front_upper_L', 'front_upper_R', 'back_upper_L', 'back_upper_R']) { const bn = d.bones[s]; if (bn) rotBoneWorld(bn, new THREE.Vector3(0, 0, 1), Math.sin(m.t * 7 + s.length) * 0.35); }   // tassut sätkivät ilmassa
+  } else if (m.t < a + b + c1) { const k = ease.inOut((m.t - a - b) / c1); roll = Math.PI - Math.PI * 0.5 * k; y = -drop * (1 - 0.6 * k); }                 // kyljelleen
+  else if (m.t < a + b + c1 + c2) { const k = ease.inOut((m.t - a - b - c1) / c2); roll = Math.PI * 0.5 * (1 - 0.7 * k); pitch = 0.25 * k; y = -drop * 0.4 * (1 - k); }   // rinta ylös
+  else if (m.t < a + b + c1 + c2 + c3) { const k = ease.out((m.t - a - b - c1 - c2) / c3); roll = Math.PI * 0.15 * (1 - k); pitch = 0.25 * (1 - k); }   // jaloille
+  else { r.x = 0; r.z = 0; motions.delete(m); FX.dust(d.root.position.clone().setY(0.1)); playAny(['bossStep'], { x: d.root.position.x }); if (o.onEnd) o.onEnd(); m.res(); return; }
+  r.x = roll * side; r.z = pitch; P.y += y;
+}
+
 // ------------------------------------------------------------------ iskut ja purennat
 const active = new Set();       // käynnissä olevat ohjaimet
 export const pins = {};         // id -> ohjain (purenta kiinni)
@@ -510,6 +571,7 @@ function followFrames(info) {
 function fireHit(c) { const f = c.onHit; c.onHit = null; if (f) f(); }
 
 function update(dt, dtr) {
+  for (const m of [...motions]) { if (E.skipping) { m.d.pose.rotation.set(0, 0, 0); motions.delete(m); m.res(); continue; } applyMotion(m, dt); }
   if (E.skipping) { for (const c of [...active]) { if (c.held) { c.held = false; LOG.pending = null; E.timeScale = c.prevTS || 1; } endCtrl(c, true); } }
   for (const c of [...active]) {
     if (c.held) {
@@ -732,4 +794,4 @@ if (typeof window !== 'undefined') {
   };
   LOG.reset = () => { LOG.strikes.length = 0; LOG.violations.length = 0; seen.clear(); };
 }
-if (typeof window !== 'undefined') LOG.api = { SEP, strike, reach, release, releaseAll, thrash, react, mouthWorld, targetRef, bodyOverlap };
+if (typeof window !== 'undefined') LOG.api = { SEP, bodyMotion, strike, reach, release, releaseAll, thrash, react, mouthWorld, targetRef, bodyOverlap };
