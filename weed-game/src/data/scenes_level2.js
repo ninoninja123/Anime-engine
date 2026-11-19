@@ -371,7 +371,8 @@ export const arrows = (ctx) => {
         { cam: [A.land[0] - 1.4, 1.2, A.land[1] + 3.6], look: [A.land[0] + 0.6, 0.9, A.land[1] - 0.4], t: 0.3, ease: 'out' },
         { reach: 'kaibutsu', target: id, point: 'head', side: 'near', t: 0.3, hold: 0.7, back: 0.45, fx: 'bite', strong: true, sfx: ['bite', 'hitHeavy'], react: 'hurt', shake: 0.6 },
         { sfx: 'yelp' },
-        { anim: id, name: 'Death', loop: false, ts: 0.8 },
+        { thrash: 'kaibutsu', t: 0.45, amp: 0.4, freq: 2.4 },
+        { release: id, mode: 'throw', to: [-0.9, 1.9], arc: 1.3, t: 0.7, land: 'Death', spin: 1 },   // flung aside, he does not get up
       ] : A.counter === 'rearup' ? [
         { cam: [B.x - half - 2.4, 0.4, 5.2], look: [B.x - half * 0.5, 2.0, 0.5], t: 0.25, ease: 'out' },
         { motion: 'kaibutsu', kind: 'rearup', angle: 1.05, releaseAt: 'apex', release: { who: id, mode: 'throw', to: A.land, arc: A.arc, t: A.t, land: 'Death', spin: 1 } },
@@ -379,7 +380,7 @@ export const arrows = (ctx) => {
         { bark: 'arrows_pain_' + id },                                  // Heuler's long cry while P4 tears him loose
         { thrash: 'kaibutsu', t: 0.8, amp: 0.45, freq: 2.6 },
         { cam: [B.x - half - 1.0, 0.35, 5.6], look: [B.x - half * 0.3, 1.0, 0.4], t: 0.3, ease: 'out' },
-        { motion: 'kaibutsu', kind: 'fallback', side: -1, releaseAt: 'impact', wait: false, release: { who: id, mode: 'throw', to: A.land, arc: A.arc, t: A.t, land: 'Death', spin: 1 } },
+        { motion: 'kaibutsu', kind: 'fallback', side: -1, releaseAt: 'start', wait: false, release: { who: id, mode: 'throw', to: A.land, arc: A.arc, t: A.t, land: 'Death', spin: 1 } },
         { wait: 3.3 },
       ]),
       { cam: [A.land[0] - 1.6, 1.4, A.land[1] + 4.2], look: [(A.land[0] + B.x - half) / 2, 0.9, 1.2], t: 0.5, ease: 'out' },

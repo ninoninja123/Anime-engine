@@ -68,7 +68,7 @@ async function step(s, ctx) {
   if (s.motion) {   // { motion: 'kaibutsu', kind: 'rearup'|'fallback', releaseAt: 'apex'|'impact', release: { who, mode, to, ... }, wait }
     if (E.skipping) return;
     const rel = () => s.release && C.release({ ...s.release });
-    const p = C.bodyMotion(s.motion, s.kind, { ...s, onApex: s.releaseAt === 'apex' ? rel : undefined, onImpact: s.releaseAt === 'impact' ? rel : undefined });
+    const p = C.bodyMotion(s.motion, s.kind, { ...s, onApex: s.releaseAt === 'apex' ? rel : undefined, onStart: s.releaseAt === 'start' ? rel : undefined, onImpact: s.releaseAt === 'impact' ? rel : undefined });
     if (s.wait !== false) await p; return;
   }
   if (s.reach) { if (E.skipping) return; const { reach, ...o } = s; await C.reach({ who: reach, ...o }); return; }

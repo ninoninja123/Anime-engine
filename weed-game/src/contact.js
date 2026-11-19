@@ -258,6 +258,7 @@ export function bodyMotion(dog, kind = 'rearup', o = {}) {
     if (kind === 'rearup') { m.T = [o.rise ?? 0.38, o.hold ?? 0.55, o.drop ?? 0.32]; m.ang = o.angle ?? 1.08; sfx.roar(); }
     else { m.T = [o.topple ?? 0.6, o.lie ?? 1.0, o.rise1 ?? 0.45, o.rise2 ?? 0.35, o.rise3 ?? 0.4]; sfx.roar(); }
     motions.add(m);
+    if (o.onStart) o.onStart();
   });
 }
 function applyMotion(m, dt) {
@@ -439,7 +440,10 @@ function lungeStart(c) {
 
 /** Irrota purenta. mode: 'drop' (putoaa alas) | 'throw' (kohde heittää: to [x,z], arc, t, spin) | 'back' (perääntyy). */
 export function release(o) {
-  const a = dogOf(o.who); const c = a && pins[a.id];
+  const a = dogOf(o.who); let c = a && pins[a.id];
+  if (!c && a && o.mode === 'throw' && o.to) {   // heitto ilman purentaa (esim. P4 viskaa purkemansa koiran sivuun)
+    install(); c = { kind: 'toss', o: {}, a, tg: null, id: ++LOG.n }; a._cxBusy = c; active.add(c);
+  }
   if (!c) return Promise.resolve();
   delete pins[a.id];
   c.phase = 'release'; c.el = 0;
@@ -582,8 +586,8 @@ function update(dt, dtr) {
       continue;
     }
     const a = c.a; c.el += dt;
-    c.tg.root.updateMatrixWorld(true);          // kohteen luut tämän ruudun asentoon (klippi + kerrokset)
-    const P = c.fixedP ? c.fixedP.clone() : c.ref.world(new THREE.Vector3());
+    if (c.tg) c.tg.root.updateMatrixWorld(true);          // kohteen luut tämän ruudun asentoon (klippi + kerrokset)
+    const P = c.fixedP ? c.fixedP.clone() : c.ref ? c.ref.world(new THREE.Vector3()) : null;
     if (c.phase === 'wind') {
       const k = Math.min(1, c.el / c.wind), e = ease.inOut(k), R = a.root.position;
       R.x = c.R0.x - a.facing * a.height * 0.14 * e;                 // vetäytyy
