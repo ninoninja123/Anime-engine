@@ -19,7 +19,7 @@ function ghostRise(d, x, z) {
   const o = { k: 0 };
   tween(o, { k: 1 }, 7, { real: true, ease: 'linear', onUpdate: () => {
     const k = o.k; d.root.position.y = 0.25 + k * 1.6;
-    d.fade(Math.max(0.01, Math.min(0.5, k * 3) * (k > 0.7 ? (1 - k) / 0.3 : 1)));
+    d.fade(Math.max(0.01, Math.min(0.65, k * 3) * (k > 0.7 ? (1 - k) / 0.3 : 1)));
   } }).then(() => { d.root.visible = false; d.setTint(0x000000, 0); d.fade(1); });
 }
 
@@ -635,7 +635,7 @@ export const post = (ctx) => {
   const boss = cast.kaibutsu, w = cast.weed, B = S.B, W = S.W;
   const set = {};                        // scene-local props (gorge, river, helicopter, graves) – removed by the scene itself
   return [
-    From(['post_fall', 'post_river', 'post_jerome', 'post_heli', 'post_graves']),
+    From(['post_fall', 'post_river', 'post_jerome', 'post_heli', 'post_graves', 'post_spirits']),
     // the monster staggers to the edge with Weed's fangs in its flank; Ken & Kagetora grab on
     { anim: 'kaibutsu', name: 'Idle_HitReact2', loop: false },
     // (Weed's fangs are still in its chest from the Battōga – the pin carries over from the finale)
@@ -842,7 +842,8 @@ export const post = (ctx) => {
     { cam: [0.4, 1.1, -5.2], look: [0.2, 0.6, 1.4] },
     { cam: [0.4, 1.3, -4.4], look: [0.2, 0.7, 1.4], t: 4, ease: 'inOut' },
     // 2. one light per grave; a translucent silhouette of each fallen dog rises above it
-    { cam: [0.2, 2.0, 7.4], look: [0.2, 1.6, -2.2] },
+    Mark('post_spirits'),
+    { cam: [0.2, 2.7, 7.0], look: [0.2, 1.3, -2.2] },
     { fn: async () => {
       for (let i = 0; i < GRAVES.length && !E.skipping; i++) {
         const [x, z] = GRAVES[i], d = cast[FALLEN[i]];

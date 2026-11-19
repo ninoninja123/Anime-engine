@@ -6,9 +6,9 @@ import { sfx } from '../audio.js';
 
 const CSS = `
 .rfx-canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
-.screen.rfx>*{position:relative;z-index:1}
+.screen.rfx>*:not(.rfx-canvas){position:relative;z-index:1}
 .rfx .kicker{animation:rfxKick .9s cubic-bezier(.2,.8,.2,1) both}
-.rfx h2 .ch{display:inline-block;opacity:0;transform:translateY(.5em) scale(1.3);filter:blur(4px);animation:rfxCh .55s cubic-bezier(.2,.8,.2,1) forwards}
+.rfx h2 .ch{padding:0 .06em;margin:0 -.06em;background:inherit;-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;opacity:0;transform:translateY(.5em) scale(1.3);filter:blur(4px);animation:rfxCh .55s cubic-bezier(.2,.8,.2,1) forwards}
 .rfx .rfx-in{opacity:0;animation:rfxIn 1.1s ease forwards}
 .rfx .rfx-star{display:inline-block;opacity:0;transform:scale(2.4);animation:rfxStar .5s cubic-bezier(.2,1.6,.4,1) forwards}
 .rfx .rfx-name{display:inline-block;opacity:0;animation:rfxName 1.4s ease forwards;text-shadow:0 0 0 rgba(255,226,160,0)}
