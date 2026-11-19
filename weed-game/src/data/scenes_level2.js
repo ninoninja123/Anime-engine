@@ -2,6 +2,7 @@
 // Each export is a function (ctx) -> steps, so positions can depend on the current fight state.
 import * as THREE from 'three';
 import { tween, wait } from '../engine.js';
+import { rotBoneWorld } from '../contact.js';
 
 /** Collect line ids used by a scene (for preloading voice files). */
 export function linesOf(steps, out = []) {
@@ -107,9 +108,23 @@ export const intro = ({ cast }) => [
 ];
 
 // ------------------------------------------------------------------------------------------------
+// Smith's right foreleg is missing (canon): keep it tucked and add a hitch to his gait while he runs.
+function limp(d) {
+  if (!d.bones || d._limp) return;
+  const up = d.bones.front_upper_R, lo = d.bones.front_lower_R;
+  const Z = new THREE.Vector3(0, 0, 1);
+  d._limp = d.overlay((dd) => {
+    if (dd.currentName !== 'Gallop' && dd.currentName !== 'Walk') return;
+    if (up) rotBoneWorld(up, Z, 0.5 * dd.facing);
+    if (lo) rotBoneWorld(lo, Z, -1.9 * dd.facing);
+    const sp = d.bones.spine_03; if (sp) rotBoneWorld(sp, Z, Math.sin(dd.t * 15) * 0.06 * dd.facing);
+  });
+}
+
 // SMITH'S SACRIFICE (long, emotional; skippable)
 export const smith = (ctx) => {
   const { cast, S, E, FX, sfx, makeRock } = ctx;
+  cast.smith.root.position.y = 0;
   const boss = cast.kaibutsu, B = S.B, H = boss.height;
   ctx.fallingRocks = [];
   return [
@@ -144,37 +159,54 @@ export const smith = (ctx) => {
     { dolly: 'weed', dist: 1.4, side: 0.7, t: 0.35 },
     { anim: 'weed', name: 'Bark', loop: false },
     { say: 'sac_wait' },
-    // the charge – low tracking dolly, three-legged gallop
+    // the charge – low tracking dolly, three-legged gallop (right foreleg tucked: canon, lost saving GB)
+    { fn: () => limp(cast.smith) },
     { cam: [-4.6, 0.45, 3.6], look: [-2, 0.8, 0] },
     { par: [
-      { move: 'smith', x: B.x - ctx.bossHalf() - 1.0, z: 0, t: 1.5, anim: 'Gallop', ts: 1.1, ease: 'in' },
-      { cam: [0.6, 0.8, 5.0], look: [2.5, 1.0, 0], t: 1.5, ease: 'in' },
+      { move: 'smith', x: B.x - ctx.bossHalf() - 1.5, z: 0.35, t: 1.5, anim: 'Gallop', ts: 1.1, ease: 'in' },
+      { cam: [0.4, 0.9, 5.4], look: [2.6, 1.3, 0], t: 1.5, ease: 'in' },
     ] },
-    { anim: 'smith', name: 'Gallop_Jump', loop: false }, { sfx: 'bark' },
-    { slow: 0.35 },
-    { move: 'smith', x: B.x - 0.5, y: H * 0.72, t: 0.4, ease: 'out', real: false },
-    { slow: 1 },
-    { anim: 'smith', name: 'Attack', loop: true, ts: 1.3 }, { sfx: 'bite' }, { sfx: 'hit' },
-    { anim: 'kaibutsu', name: 'Idle_HitReact2', loop: false },
-    { fx: 'impact', at: 'smith', strong: true },
-    { freeze: 0.7 },
-    // the monster staggers back under the cliff with Smith on its back
+    { sfx: 'bark' },
+    { slow: 0.4 },
+    // the leap: jaws close on the side of P4's neck (real contact, then the teeth stay in)
     { par: [
-      { fn: () => tween(B, { x: 7.2 }, 1.7, { real: true, onUpdate: () => { boss.root.position.x = B.x; cast.smith.root.position.x = B.x - 0.5; } }) },
-      { anim: 'kaibutsu', name: 'Walk', ts: 0.6 },
-      { cam: [3.2, 2.4, 10.5], look: [6.2, 2.8, -1], t: 1.7 },
+      { strike: 'smith', target: 'kaibutsu', point: { bone: 'spine_03', dir: [-0.15, 0.6, 0.8] }, side: 'near', t: 0.42, arc: 0.7, anim: 'Gallop_Jump', hitAt: 0.5, yaw: 0.8, maxPitch: 1.0,
+        pin: true, react: 'roar', fx: 'impact', strong: true, sfx: ['bite', 'hitHeavy'], hitstop: 0.14, shake: 0.7, tug: 0.22 },
+      { cam: [1.5, 1.4, 5.0], look: [3.4, 1.9, 0.3], t: 0.9, ease: 'out' },
+    ] },
+    { slow: 1 },
+    { freeze: 0.6 },
+    // close: Smith's fangs are in P4's shoulder, his body hangs off the monster
+    { fn: () => { const n = ctx.contact.mouthWorld('smith'); E.camPos.set(n.x - 1.5, n.y - 0.1, n.z + 2.4); E.camLook.set(n.x, n.y - 0.45, n.z); } },
+    { sfx: 'growl' },
+    { wait: 0.9 },
+    // P4 rears and thrashes its head; Smith hangs on, his body swinging
+    { cam: [1.2, 1.6, 6.8], look: [3.6, 1.8, 0], t: 0.35, ease: 'out' },
+    { par: [
+      { thrash: 'kaibutsu', t: 2.6, amp: 0.42, freq: 1.7, wait: true },
+      { fn: () => tween(B, { x: 6.6 }, 2.4, { real: true, ease: 'inOut', onUpdate: () => { boss.root.position.x = B.x; } }) },
+      { anim: 'kaibutsu', name: 'Walk', ts: -0.5 },
+      { fn: async () => { for (let i = 0; i < 3; i++) { await wait(0.75, true); sfx.roar(); FX.dust(new THREE.Vector3(B.x - 0.6, 0.1, 0.4), true); } } },
+      { cam: [3.0, 2.0, 9.4], look: [6.0, 2.0, -0.4], t: 2.4 },
     ] },
     { anim: 'kaibutsu', name: 'Idle_HitReact1', loop: false },
-    { cam: [5.4, H * 0.8, 3.0], look: [6.8, H * 0.8, 0], t: 0.4, ease: 'out' },
+    { react: 'kaibutsu', kind: 'flinch', dir: 1 },
+    // Smith looks at Weed one last time
+    { fn: () => { const n = ctx.contact.mouthWorld('smith'); E.camPos.set(n.x - 0.9, n.y + 0.15, n.z + 1.5); E.camLook.set(n.x - 0.1, n.y - 0.35, n.z); } },
+    { wait: 0.5 },
+    { dolly: 'weed', dist: 1.4, side: 0.7, t: 0.35 },
+    { anim: 'weed', name: 'Bark', loop: false },
+    { fn: () => { const n = ctx.contact.mouthWorld('smith'); E.camPos.set(n.x - 1.2, n.y + 0.25, n.z + 1.9); E.camLook.set(n.x - 0.2, n.y - 0.4, n.z); } },
     { say: 'sac_live' },
-    // rockslide
-    { cam: [3.0, 3.0, 11.5], look: [7, 4.0, -1] },
+    // rockslide: the roof of the passage comes down on both of them
+    { cam: [3.0, 3.0, 11.5], look: [6.2, 3.4, -1] },
+    { thrash: 'kaibutsu', t: 2.2, amp: 0.3, freq: 2.2 },
     { sfx: 'rumble', arg: 3 }, { shake: 0.7 },
     { fn: async () => {
       const falling = [];
       for (let i = 0; i < 18; i++) {
         const r = makeRock(0.5 + Math.random() * 0.9);
-        r.position.set(5 + Math.random() * 4.5, 9 + Math.random() * 8, -1 + Math.random() * 2);
+        r.position.set(B.x - 2.6 + Math.random() * 5, 9 + Math.random() * 8, -1 + Math.random() * 2.4);
         falling.push({ r, v: -Math.random() * 3, s: (Math.random() - 0.5) * 6 }); ctx.fallingRocks.push(r);
       }
       E.cliff.children.slice(3).forEach(b => tween(b.position, { y: b.position.y - 3.5 }, 1.2, { real: true, ease: 'in' }));
@@ -187,10 +219,20 @@ export const smith = (ctx) => {
         }
         await wait(0.016, true);
       }
+      // the pile settles over both of them
+      boss.play('Death', { loop: false, timeScale: 0.6 });
       for (const f of falling) f.r.position.y = 0.3 + Math.random() * 1.6;
       E.timeScale = 1;
+      const pile = [];
+      for (let i = 0; i < 14; i++) {
+        const r = makeRock(0.6 + Math.random() * 0.8); ctx.fallingRocks.push(r);
+        r.position.set(B.x - 2.2 + Math.random() * 4.2, 6 + Math.random() * 3, -0.6 + Math.random() * 1.8); pile.push(r);
+        tween(r.position, { y: 0.4 + Math.random() * 2.2 }, 0.45 + Math.random() * 0.3, { ease: 'in', real: true }).then(() => { FX.dust(r.position.clone(), true); sfx.rock(); });
+      }
+      await wait(0.8, true);
     } },
     { fx: 'flash', color: '#e8eeff', t: 1.2, peak: 1 },
+    { fn: () => ctx.contact.releaseAll() },
     { hide: 'smith' }, { hide: 'kaibutsu' }, { shake: 0.8 },
     { wait: 1.4 },
     // silence – Weed screams
@@ -247,7 +289,7 @@ export const arrows = (ctx) => {
   const steps = [
     { fn: () => { B.x = 3.4; S.W.x = -1.5; } },
     { place: 'kaibutsu', x: 3.4, z: 0, face: -1, anim: 'Idle_2_HeadLow' },
-    { place: 'weed', x: -1.5, z: 1.0, face: 1, anim: 'Idle' },
+    { place: 'weed', x: -1.2, z: -1.5, face: 1, anim: 'Idle' },
     { place: 'jerome', x: -3.8, z: 0, face: 1, anim: 'Idle' },
     ...MEN.map((id, i) => ({ place: id, x: -12 - i * 1.5, z: -0.8 + i * 0.8, face: 1, anim: 'Gallop', ts: 1.2 })),
     { music: 'sad', fade: 2 }, { amb: 'sad' },
@@ -268,57 +310,67 @@ export const arrows = (ctx) => {
     { expr: 'heuler', name: 'determined' },
     { fn: () => { boss.weakReveal = 1; } },
   ];
+  // Each arrow: gallop in the near lane, leap, jaws close on the bare skin of the LEFT CHEST (real contact),
+  // P4 roars and flinches, then rears and flings the dog away; he crashes down and falls.
+  const ARROW = [
+    { pin: 0.55, land: [-0.9, 1.9], arc: 1.5, t: 0.75, cam: 'side' },    // Robert opens the wound
+    { pin: 0.8, land: [B.x - half - 0.9, 2.3], arc: 0.6, t: 0.45, cam: 'low' },   // Rocker drives deeper – slammed down
+    { pin: 1.2, land: [-2.4, 2.6], arc: 1.8, t: 0.85, cam: 'side' },     // Heuler pushes his muzzle into the wound
+  ];
+  const dmg = (n) => () => { B.hp = Math.max(9, B.hp - n); };
   MEN.forEach((id, i) => {
-    const m = cast[id];
-    const landX = -0.8 - i * 1.25, landZ = -1.8 + i * 0.35;
+    const m = cast[id], A = ARROW[i];
     steps.push(
-      { cam: i === 1 ? [B.x - half - 3, 0.5, 3.4] : [0.6, 1.6, 7.8], look: i === 1 ? [B.x, 1.6, 0] : [1.4, 1.4, 0] },
-      { fn: () => { m.root.position.z = 0; } },
+      { cam: A.cam === 'low' ? [B.x - half - 3.2, 0.5, 4.2] : [0.2, 1.5, 7.6], look: A.cam === 'low' ? [B.x - half * 0.6, 1.5, 0.6] : [1.6, 1.4, 0.6] },
+      { fn: () => { m.root.position.z = 0.9; m.root.position.y = 0; m.face(1, true); } },
       { sfx: 'bark' },
-      { move: id, x: B.x - half - 1.3, t: 0.55, anim: 'Gallop', ts: 1.4, ease: 'in' },
+      { move: id, x: B.x - half - 2.0, z: 1.0, t: 0.55, anim: 'Gallop', ts: 1.4, ease: 'in' },
       { slow: 0.3 }, { fx: 'speed', v: 0.6 },
-      { anim: id, name: 'Gallop_Jump', loop: false },
-      { move: id, x: B.x - half * 0.3, y: boss.height * 0.45, t: 0.3, ease: 'out', real: false },
-      { fn: () => {
-        const hp = boss.weak.getWorldPosition(new THREE.Vector3());
-        FX.impact(hp, true); FX.burst(hp, { color: 0xffb070, count: 26, speed: 6 });
-        FX.ring(hp, 0xffe0b0, 4, 0.5); FX.flash('#fff2d0', 0.3, 0.6); sfx.hit();
-        boss.play('Idle_HitReact1', { loop: false });
-        B.hp = Math.max(9, B.hp - 4);
-      } },
-      { freeze: 0.45 },
+      { strike: id, target: 'kaibutsu', point: 'chest_weak', side: 'near', t: 0.32, arc: 0.45, anim: 'Gallop_Jump', hitAt: 0.5,
+        pin: true, react: 'roar', fx: 'crit', strong: true, sfx: ['bite', 'crit'], hitstop: 0.12, shake: 0.6, tug: 0.2, onHit: dmg(4) },
+      { freeze: 0.4 },
       { slow: 1 }, { fx: 'speed', v: 0 },
-      { anim: 'kaibutsu', name: 'Attack', loop: false, ts: 1.5 },
-      { anim: id, name: 'Idle_HitReact2', loop: false },
-      { move: id, x: landX, y: 0, z: landZ, t: 0.5, ease: 'out', faceMove: false },
-      { anim: id, name: 'Death', loop: false, ts: 0.7 },
+      { cam: [B.x - half - 1.6, 1.3, 3.6], look: [B.x - half * 0.7, 1.2, 0.6], t: 0.25, ease: 'out' },
+      { wait: A.pin },
+      // P4 rears and tears him off
+      { anim: 'kaibutsu', name: 'Attack', loop: false, ts: 1.2 },
+      { thrash: 'kaibutsu', t: 0.7, amp: 0.4, freq: 2.2 },
+      { sfx: 'roar' }, { shake: 0.5 },
+      { release: id, mode: 'throw', to: A.land, arc: A.arc, t: A.t, land: 'Death', spin: 1 },
       { fn: () => fallen.push(m.root.position.clone()) },
-      { wait: 0.6 },
-      { cam: [landX + 1.0, 0.55, landZ + 1.7], look: [landX, 0.3, landZ] },
+      { anim: 'kaibutsu', name: 'Idle_2_HeadLow', ts: 0.8 },
+      { wait: 0.5 },
+      { cam: [A.land[0] + 1.2, 0.6, A.land[1] + 1.9], look: [A.land[0], 0.3, A.land[1]] },
       { say: 'arrows_fall_' + id },
     );
   });
   steps.push(
-    // Jerome – the fourth arrow
+    // Jerome – the fourth arrow. P4 sees it coming and leaps aside: his jaws snap shut on empty air.
     { cam: [-1.2, 0.9, 3.0], look: [-3.6, 0.9, 0] },
     { anim: 'jerome', name: 'Howl' },
     { say: 'arrows_fourth' },
-    { move: 'jerome', x: B.x - half - 1.3, t: 0.5, anim: 'Gallop', ts: 1.5, ease: 'in' },
-    { cam: [B.x - half - 2.2, 0.4, 2.6], look: [B.x, 1.8, 0] },
-    { slow: 0.22 }, { fx: 'speed', v: 1 },
-    { anim: 'jerome', name: 'Gallop_Jump', loop: false },      // canon: P4 väistää Jeromen neljännen iskun
+    { fn: () => { cast.jerome.root.position.z = 0.9; } },
+    { move: 'jerome', x: B.x - half - 2.0, z: 1.0, t: 0.5, anim: 'Gallop', ts: 1.5, ease: 'in' },
+    { cam: [B.x - half - 2.6, 0.5, 4.4], look: [B.x - half * 0.5, 1.4, 0.4] },
+    { slow: 0.25 }, { fx: 'speed', v: 1 },
     { par: [
-      { move: 'jerome', x: B.x - half * 0.3, y: boss.height * 0.4, t: 0.3, ease: 'out', real: false },
-      { fn: () => tween(B, { x: B.x + 1.8 }, 0.25, { onUpdate: () => { boss.root.position.x = B.x; } }) },
-      { anim: 'kaibutsu', name: 'Gallop_Jump', loop: false },
+      { strike: 'jerome', target: 'kaibutsu', point: 'chest_weak', side: 'near', t: 0.34, arc: 0.5, anim: 'Gallop_Jump', hitAt: 0.5, whiff: true, wait: 'end' },
+      { fn: async () => {
+        await wait(0.08);
+        boss.play('Gallop_Jump', { loop: false, timeScale: 1.3 }); sfx.whoosh();
+        const x0 = B.x, z0 = boss.root.position.z;
+        await tween({ k: 0 }, { k: 1 }, 0.3, { ease: 'out', onUpdate: k => { B.x = x0 + 2.0 * k; boss.root.position.set(B.x, Math.sin(k * Math.PI) * 0.9, z0 - 0.9 * k); } });
+        boss.root.position.y = 0; FX.dust(new THREE.Vector3(B.x, 0.1, boss.root.position.z), true); sfx.bossLand({}, { x: B.x });
+      } },
     ] },
-    { fx: 'dust', at: 'kaibutsu', big: true }, { sfx: 'whoosh' },
     { slow: 1 }, { fx: 'speed', v: 0 },
-    { move: 'jerome', y: 0, t: 0.35, ease: 'in', after: 'Idle_HitReact1', faceMove: false },
     { shake: 0.4 },
     { anim: 'kaibutsu', name: 'Idle', ts: 0.8 },
+    { anim: 'jerome', name: 'Idle_HitReact1', loop: false },
+    { wait: 0.4 },
     { anim: 'jerome', name: 'Gallop_Jump', loop: false },
-    { move: 'jerome', x: B.x - half - 1.8, y: 0, t: 0.5, ease: 'out', faceMove: false, after: 'Idle' },
+    { move: 'jerome', x: B.x - half - 3.4, y: 0, z: 0.6, t: 0.5, ease: 'out', faceMove: false, after: 'Idle' },
+    { fn: () => { boss.root.position.z = 0; } },
     { wait: 0.6 },
     // quiet moment – the spirits of the three rise
     { face: 'jerome', dir: -1 },
@@ -348,47 +400,64 @@ export const arrows = (ctx) => {
 // THE LOCK (canon): Weed, Ken and Kagetora pin P4 down, Jerome bites the artery and digs toward the heart;
 // P4 bites Kagetora and tears Jerome loose. The monster is left staggering -> Battōga.
 export const lock = (ctx) => {
-  const { cast, S, FX, sfx } = ctx;
+  const { cast, S, FX, sfx, E } = ctx;
   const boss = cast.kaibutsu, B = S.B, half = ctx.bossHalf(), H = boss.height;
+  let strain = null;
   return [
-    { fn: () => { B.x = 3.4; } },
+    { fn: () => { B.x = 3.4; for (const id of ['weed', 'ken', 'kagetora', 'jerome']) cast[id].root.position.y = 0; } },
     { place: 'kaibutsu', x: 3.4, z: 0, face: -1, anim: 'Idle_HitReact1', loop: false },
-    { place: 'weed', x: -1.4, z: 0.6, face: 1, anim: 'Gallop', ts: 1.4 },
-    { place: 'ken', x: -2.6, z: -0.8, face: 1, anim: 'Gallop', ts: 1.4 },
-    { place: 'kagetora', x: -2.2, z: 1.2, face: 1, anim: 'Gallop', ts: 1.4 },
-    { place: 'jerome', x: -5.0, z: 0, face: 1, anim: 'Idle' },
+    { place: 'weed', x: -1.8, z: 1.7, face: 1, anim: 'Gallop', ts: 1.4 },
+    { place: 'ken', x: -2.8, z: 2.3, face: 1, anim: 'Gallop', ts: 1.4 },
+    { place: 'kagetora', x: -2.4, z: -0.4, face: 1, anim: 'Gallop', ts: 1.4 },
+    { place: 'jerome', x: -5.0, z: 1.0, face: 1, anim: 'Idle' },
     { music: 'battle' },
-    { cam: [-0.6, 0.7, 5.2], look: [2.4, 1.2, 0] },
+    { cam: [-0.6, 0.9, 6.2], look: [2.4, 1.2, 0.4] },
     { bark: 'lock_call' },
+    // three of them lock the monster down: Kagetora takes the far foreleg from the front, Weed hangs off its flank,
+    // Ken clamps the near hind leg. Each bite is a real contact; P4's legs stop.
     { par: [
-      { move: 'weed', x: B.x - 0.6, y: H * 0.55, z: 0.5, t: 0.5, anim: 'Gallop_Jump', ease: 'out' },
-      { move: 'ken', x: B.x + 0.4, y: H * 0.62, z: -0.4, t: 0.55, anim: 'Gallop_Jump', ease: 'out' },
-      { move: 'kagetora', x: B.x - 0.1, y: H * 0.7, z: 0.2, t: 0.6, anim: 'Gallop_Jump', ease: 'out' },
+      { strike: 'kagetora', target: 'kaibutsu', point: 'foreleg', side: 'far', t: 0.75, arc: 0.15, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], tug: 0.25 },
+      { strike: 'weed', target: 'kaibutsu', point: 'flank', side: 'near', t: 0.85, arc: 0.6, anim: 'Gallop_Jump', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite'], yaw: 0.7, maxPitch: 1.0, tug: 0.2 },
+      { strike: 'ken', target: 'kaibutsu', point: 'hindleg', side: 'near', t: 1.0, arc: 0.2, anim: 'Gallop', hitAt: 0.5, pin: true, react: 'flinch', fx: 'impact', sfx: ['bite', 'hit'], tug: 0.25 },
+      { cam: [0.6, 1.4, 7.4], look: [3.0, 1.2, 0.3], t: 1.0, ease: 'out' },
     ] },
-    { anim: 'weed', name: 'Attack', ts: 0.7 }, { anim: 'ken', name: 'Attack', ts: 0.7 }, { anim: 'kagetora', name: 'Attack', ts: 0.7 },
-    { sfx: 'bite' }, { sfx: 'hit' }, { shake: 0.5 },
-    { anim: 'kaibutsu', name: 'Idle_HitReact2', loop: false },
-    { freeze: 0.5 },
-    // Jerome goes for the artery
-    { cam: [B.x - half - 2.2, 0.5, 2.8], look: [B.x, H * 0.45, 0] },
-    { move: 'jerome', x: B.x - half - 0.9, t: 0.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
-    { anim: 'jerome', name: 'Gallop_Jump', loop: false },
-    { move: 'jerome', x: B.x - half * 0.3, y: H * 0.42, t: 0.25, ease: 'out' },
-    { anim: 'jerome', name: 'Attack', ts: 0.6 },
-    { fn: () => { const hp = boss.weak.getWorldPosition(new THREE.Vector3()); FX.impact(hp, true); FX.burst(hp, { color: 0xffd090, count: 30, speed: 7 }); sfx.bite(); boss.weakReveal = 1; } },
+    { sfx: 'roar' }, { shake: 0.6 },
+    // P4 strains against them: legs locked, body shudders
+    { fn: () => {
+      boss.play('Idle_HitReact2', { loop: false, timeScale: 0.4 });
+      let t = 0;
+      strain = boss.overlay((d, dt) => { t += dt; if (d.cur && d.cur.action) d.cur.action.timeScale = 0.05; const sp = d.bones.spine_02; if (sp) ctx.contact.rotBoneWorld(sp, new THREE.Vector3(1, 0, 0), Math.sin(t * 31) * 0.025); });
+    } },
+    { thrash: 'kaibutsu', t: 1.2, amp: 0.18, freq: 3.2 },
+    { freeze: 0.45 },
+    // Jerome goes for the artery in the bare left chest
+    { cam: [B.x - half - 2.6, 0.7, 4.2], look: [B.x - half * 0.55, H * 0.42, 0.5] },
+    { move: 'jerome', x: B.x - half - 2.1, z: 1.1, t: 0.6, anim: 'Gallop', ts: 1.5, ease: 'in' },
+    { slow: 0.4 },
+    { strike: 'jerome', target: 'kaibutsu', point: 'chest_weak', side: 'near', t: 0.34, arc: 0.4, anim: 'Gallop_Jump', hitAt: 0.5,
+      pin: true, react: 'roar', fx: 'crit', strong: true, sfx: ['bite', 'crit'], hitstop: 0.14, shake: 0.7, tug: 0.3,
+      onHit: () => { boss.weakReveal = 1; } },
+    { slow: 1 },
+    { freeze: 0.35 },
+    { fn: () => { const n = ctx.contact.mouthWorld('jerome'); E.camPos.set(n.x - 1.4, n.y + 0.1, n.z + 1.9); E.camLook.set(n.x, n.y - 0.2, n.z); } },
     { expr: 'jerome', name: 'angry' },
+    { thrash: 'kaibutsu', t: 1.2, amp: 0.12, freq: 3.6 },
     { say: 'lock_artery' },
-    // P4 bites Kagetora and tears Jerome loose
-    { anim: 'kaibutsu', name: 'Attack', loop: false }, { sfx: 'roar' }, { shake: 0.8 },
-    { anim: 'kagetora', name: 'Idle_HitReact2', loop: false }, { sfx: 'hurt' },
+    // P4 bends its head down and bites Kagetora's neck, flings him, then tears Jerome loose
+    { cam: [0.2, 1.3, 6.4], look: [2.4, 1.1, 0.2], t: 0.3, ease: 'out' },
+    { fn: () => { if (strain) strain(); strain = null; } },
+    { reach: 'kaibutsu', target: 'kagetora', point: 'neck', side: 'near', t: 0.35, hold: 0.55, back: 0.4, fx: 'impact', strong: true, sfx: ['bite', 'hitHeavy'], react: 'hurt', shake: 0.6 },
+    { sfx: 'hurt' },
+    { release: 'kagetora', mode: 'throw', to: [B.x - half - 1.6, -1.6], arc: 0.9, t: 0.6, land: 'Idle_HitReact2', after: 'Idle_2_HeadLow' },
     { dolly: 'kagetora', dist: 1.6, side: 0.6, t: 0.3 },
     { say: 'lock_hurt' },
     { cam: [0.5, 1.6, 8.5], look: [2.0, 1.2, 0], t: 0.3 },
+    { sfx: 'roar' }, { shake: 0.8 },
+    { thrash: 'kaibutsu', t: 0.9, amp: 0.5, freq: 2.0 },
     { par: [
-      { move: 'jerome', x: -3.0, y: 0, z: -0.6, t: 0.6, ease: 'out', anim: 'Idle_HitReact2', faceMove: false },
-      { move: 'weed', x: -0.6, y: 0, z: 0.4, t: 0.5, ease: 'out', anim: 'Jump_ToIdle', faceMove: false },
-      { move: 'ken', x: 6.2, y: 0, z: -0.6, t: 0.55, ease: 'out', anim: 'Jump_ToIdle', faceMove: false },
-      { move: 'kagetora', x: 5.6, y: 0, z: 1.0, t: 0.6, ease: 'out', anim: 'Idle_HitReact1', faceMove: false },
+      { release: 'jerome', mode: 'throw', to: [-3.0, 0.6], arc: 1.3, t: 0.75, land: 'Idle_HitReact2', after: 'Idle' },
+      { release: 'weed', mode: 'throw', to: [-0.6, 1.9], arc: 1.0, t: 0.6, land: 'Jump_ToIdle', after: 'Idle' },
+      { release: 'ken', mode: 'throw', to: [6.4, 1.6], arc: 0.8, t: 0.6, land: 'Jump_ToIdle', after: 'Idle' },
     ] },
     { fx: 'dust', at: [2, 0.1, 0], big: true }, { expr: 'jerome', name: null },
     { fn: () => { B.hp = 8; } },

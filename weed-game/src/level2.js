@@ -14,6 +14,7 @@ import { runScene, setSceneCast, freezeFrame } from './scenes.js';
 import * as UI from './ui.js';
 import { onGesture, setInputEnabled } from './input.js';
 import * as SC from './data/scenes_level2.js';
+import * as C from './contact.js';
 
 const ARENA = { min: -5.6, max: 5.6 };
 const PHASE_HP = { 1: 100, 2: 45, 3: 8 };   // 1: taistelu -> Neljä nuolta (45)  2: taistelu -> lukitus (20)  3: Battōga
@@ -679,7 +680,7 @@ function cutEnd() {
   E.camRoll = 0; stopVoice();
 }
 
-const ctx = { cast, S, makeRock, E, FX, sfx, ARENA, bossHalf, restoreLight: () => restoreLight() };
+const ctx = { cast, S, makeRock, E, FX, sfx, ARENA, bossHalf, contact: C, restoreLight: () => restoreLight() };
 
 async function introCutscene() {
   await cutStart();
@@ -759,4 +760,27 @@ export const debug = {
   readyCards: () => S.cards.forEach(c => { if (c.state === 'cooldown') c.cool = 0; }),
   card: id => useCard(id),
   bite, dodge, jump, battoga,
+  // contact-check (tools/contact-check.cjs): aja yksittäinen kohtaus; S.sceneDone = true kun valmis
+  scene: async (name) => {
+    S.sceneDone = false; C.LOG.scene = name;
+    try {
+      if (name === 'smith') {
+        await cutStart(); setupArena(1);
+        const st = SC.smith(ctx); preloadLines(SC.linesOf(st));
+        await runScene(st, ctx); cutEnd();
+        for (const r of ctx.fallingRocks || []) E.scene.remove(r);
+        cast.smith.root.visible = false; setupArena(1); beginPhase(1);
+      } else if (name === 'arrows') { S.phase = 1; S.pending = 'arrows'; await fourArrows(); }
+      else if (name === 'lock') { S.phase = 2; await lockScene(); }
+      else if (name === 'finale') { S.phase = 3; await finale(); }
+      else if (name === 'twinfang' || name === 'jerome') {
+        S.cards.forEach(c => { c.state = 'ready'; c.cool = 0; });
+        useCard(name === 'twinfang' ? 'kenkage' : 'jerome');
+        while (S.special) await wait(0.1, true);
+      } else if (name === 'bite') {
+        S.W.x = S.B.x - 4; await bite(); await wait(0.5, true);
+      }
+    } catch (e) { console.error(e); }
+    S.sceneDone = true;
+  },
 };
