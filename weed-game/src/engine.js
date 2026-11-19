@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { Q, onQuality, refineWithRenderer, monitorFrame } from './gfx/quality.js';
 import { post, initPost, setPostSize, renderPost } from './gfx/post.js';
 import { directMood, mood, setMood } from './gfx/mood.js';
-import { toonShared, upgradeScene } from './gfx/toon.js';
+import { toonShared, upgradeScene, outlineHulls } from './gfx/toon.js';
 import { initUiFx } from './gfx/uifx.js';
 
 const params = new URLSearchParams(location.search);
@@ -108,7 +108,9 @@ export function initEngine(canvas) {
 
   const clock = new THREE.Clock();
   let fpsAcc = 0, fpsN = 0, scanT = 0, focus = 10, lastFov = baseFov, wasPlaying = null, irisT = -1;
-  const look = new THREE.Vector3();
+  const look = new THREE.Vector3(), olPos = new THREE.Vector3();
+  let olWasCulled = false;
+  const portraitMq = matchMedia('(orientation: portrait) and (max-width: 900px)');   // same rule as #rotate in style.css
   E.fps = 60;
   const loop = () => {
     requestAnimationFrame(loop);
@@ -141,7 +143,7 @@ export function initEngine(canvas) {
 
     // uudet objektit: cel-varjostus, ääriviivat, varjot (halpa, 2 x sekunnissa)
     scanT -= dtReal;
-    if (scanT <= 0) { scanT = 0.5; upgradeScene(E.scene, Q.shadowSize > 0); }
+    if (scanT <= 0) { scanT = 0.5; upgradeScene(E.scene, Q.shadowSize > 0, Q.texMax); }
 
     // ---------- kamera ----------
     const cam = E.camera, T = E.realTime;
@@ -187,7 +189,20 @@ export function initEngine(canvas) {
       if (irisT >= 0.9) { irisT = -1; post.iris = 2; }
     }
 
-    if (E.noRender) { /* fullscreen 2D overlay (prologue) covers the view: skip the 3D render */ }
+    // ääriviivakuoret: kaukana kuori on ~1 px mutta tuplaa skinnauksen ja kolmiot -> pois (low: vain lähikuvissa)
+    if (Q.olDist > 0) {
+      const d2 = Q.olDist * Q.olDist;
+      for (const ol of outlineHulls) {
+        if (!ol.parent) { outlineHulls.delete(ol); continue; }
+        ol.getWorldPosition(olPos);
+        const near = olPos.distanceToSquared(cam.position) < d2 * (ol.visible ? 1.1 : 1);   // small hysteresis
+        ol.visible = near;
+      }
+      olWasCulled = true;
+    } else if (olWasCulled) { for (const ol of outlineHulls) ol.visible = true; olWasCulled = false; }
+
+    const portraitBlock = portraitMq.matches && !document.body.classList.contains('ignorerotate');   // "Turn your phone" overlay covers the game
+    if (E.noRender || portraitBlock || document.hidden) { /* fullscreen overlay (prologue / rotate prompt): skip the 3D render */ }
     else if (!renderPost(E.scene, cam, dtReal, E.realTime)) {
       renderer.info.reset();
       renderer.setRenderTarget(null);

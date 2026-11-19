@@ -74,7 +74,8 @@ function patchToon(mat, { rim = 1, rimWidth = 0.38, snow = 0, detail = 0 } = {})
   return mat;
 }
 
-export function makeToonMaterial({ color = 0xffffff, map = null, steps = 3, rim = 1, rimWidth = 0.38, snow = 0, detail = 0, ...rest } = {}) {
+export function makeToonMaterial({ color = 0xffffff, map = null, steps = 3, rim = 1, rimWidth = 0.38, snow = 0, detail = 0, flatShading, ...rest } = {}) {
+  // MeshToonMaterial has no flatShading in three r170 (it was ignored + logged a warning per material)
   const m = new THREE.MeshToonMaterial({ color, map, gradientMap: toonRamp(steps), ...rest });
   return patchToon(m, { rim, rimWidth, snow, detail });
 }
@@ -169,7 +170,7 @@ export function addOutline(mesh, opts = {}) {
   if (mesh.isSkinnedMesh) { ol = new THREE.SkinnedMesh(mesh.geometry, mat); ol.bind(mesh.skeleton, mesh.bindMatrix); }
   else if (mesh.isInstancedMesh) return null;
   else ol = new THREE.Mesh(mesh.geometry, mat);
-  ol.frustumCulled = mesh.frustumCulled; ol.userData.gfxOutline = true; ol.castShadow = false;
+  ol.frustumCulled = mesh.frustumCulled; ol.userData.gfxOutline = true; ol.castShadow = false; outlineHulls.add(ol);
   ol.position.copy(mesh.position); ol.quaternion.copy(mesh.quaternion); ol.scale.copy(mesh.scale);
   (mesh.parent || mesh).add(ol);
   mesh.userData.gfxHasOutline = true;
@@ -181,14 +182,44 @@ export function addOutline(mesh, opts = {}) {
  * - MeshToonMaterial -> rim + castShadow
  * - ääriviivakuoret (BackSide) tunnistetaan: eivät heitä varjoa; niiden vertex-muunnos lainataan varjoon
  */
-export function upgradeScene(scene, shadows) {
+export const outlineHulls = new Set();     // every inverted-hull outline in the scene (engine culls them by distance on low)
+
+/** Texture budget: canvas / bitmap textures larger than maxSize are downscaled once (GPU memory on phones). */
+const texDone = new WeakSet();
+export function budgetTexture(t, maxSize) {
+  if (!t || !t.isTexture || t.isRenderTargetTexture || t.isDataTexture || t.isCompressedTexture || texDone.has(t)) return;
+  const img = t.image;
+  if (!img || !(img.width > 0) || typeof document === 'undefined') return;
+  const isBmp = typeof ImageBitmap !== 'undefined' && img instanceof ImageBitmap;
+  const isCv = typeof HTMLCanvasElement !== 'undefined' && img instanceof HTMLCanvasElement;
+  const isImg = typeof HTMLImageElement !== 'undefined' && img instanceof HTMLImageElement && img.complete;
+  if (!isBmp && !isCv && !isImg) return;
+  texDone.add(t);
+  const k = maxSize / Math.max(img.width, img.height);
+  if (k >= 1) return;
+  const w = Math.max(1, Math.round(img.width * k)), h = Math.max(1, Math.round(img.height * k));
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  const g = cv.getContext('2d'); g.imageSmoothingQuality = 'high';
+  try { g.drawImage(img, 0, 0, w, h); } catch (_) { return; }
+  t.image = cv; t.needsUpdate = true;
+  if (t.source) t.source.needsUpdate = true;
+  if (isBmp && img.close) { try { img.close(); } catch (_) {} }
+}
+function budgetMaterial(m, maxSize) {
+  if (!maxSize || !m) return;
+  for (const k of ['map', 'emissiveMap', 'alphaMap']) if (m[k]) budgetTexture(m[k], maxSize);
+  if (m.uniforms) for (const u of Object.values(m.uniforms)) if (u && u.value && u.value.isTexture) budgetTexture(u.value, maxSize);
+}
+
+export function upgradeScene(scene, shadows, texMax = 0) {
   scene.traverse(o => {
     if (!o.isMesh || o.userData.gfxSeen || o.userData.noGfx) return;
     o.userData.gfxSeen = true;
     const m = o.material;
     if (!m || Array.isArray(m)) return;
+    budgetMaterial(m, texMax);
     if (m.side === THREE.BackSide && (m.isMeshBasicMaterial || m.isShaderMaterial)) {
-      o.castShadow = false; o.userData.gfxOutline = true;
+      o.castShadow = false; o.userData.gfxOutline = true; outlineHulls.add(o);
       // hahmojen omat ääriviivat jätetään ennalleen (fade()/rigi viittaavat niihin)
       return;
     }
