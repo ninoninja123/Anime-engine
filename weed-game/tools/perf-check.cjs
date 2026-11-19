@@ -130,6 +130,29 @@ const SAMPLE = async ms => {
     console.log(JSON.stringify(row));
     await ctx.close();
   }
+  // second visit (service worker + HTTP cache) and offline start: --revisit
+  let revisit = null;
+  if (process.argv.includes('--revisit')) {
+    const ctx = await browser.newContext({ viewport: { width: 844, height: 390 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, userAgent: UA });
+    await ctx.addInitScript(INIT);
+    const page = await ctx.newPage();
+    page.on('pageerror', e => /decode audio/.test(e.message) || errors.push('[revisit] PAGEERROR ' + e.message));
+    let net = 0, fromSW = 0;
+    page.on('response', async r => { try { const b = await r.body().catch(() => null); if (!b) return; if (r.fromServiceWorker()) fromSW += b.length; else net += b.length; } catch (_) {} });
+    const playable = () => page.waitForFunction(SCN.menu.ready, null, { timeout: 400000, polling: 100 }).then(() => page.evaluate(() => Math.round(window.__perf.loadingHidden)));
+    await page.goto(BASE); const first = await playable();
+    const sw = await page.waitForFunction(() => navigator.serviceWorker && navigator.serviceWorker.controller, null, { timeout: 30000 }).then(() => true).catch(() => false);
+    await page.waitForTimeout(1500);
+    net = 0; fromSW = 0;
+    await page.reload(); const second = await playable();
+    const secondNet = net, secondSW = fromSW;
+    await ctx.setOffline(true);
+    let offline = 'failed';
+    try { await page.reload(); offline = (await playable()) + ' ms'; } catch (e) { offline = 'failed: ' + e.message.slice(0, 80); }
+    revisit = { first, second, sw, secondNetKB: Math.round(secondNet / 1024), secondSwKB: Math.round(secondSW / 1024), offline };
+    console.log(JSON.stringify({ revisit }));
+    await ctx.close();
+  }
   await browser.close();
 
   const assetsByScene = {};
@@ -140,6 +163,8 @@ const SAMPLE = async ms => {
   for (const r of results) md += `| ${r.scene} | ${r.rate}x | ${r.tier} ×${r.scale} | ${r.fps} (${r.avgMs} / ${r.p95Ms}) | ${r.calls} / ${r.maxCalls} | ${(r.tris / 1000).toFixed(0)}k / ${(r.maxTris / 1000).toFixed(0)}k | ${r.geometries} / ${r.textures} / ${r.programs} | ${r.texMB} | ${r.rtMB} | ${r.heapMB} | ${r.fcpMs ?? '-'} | ${r.playableMs} |\n`;
   md += '\nTransferred assets (same-origin, per scene, first visit):\n\n';
   for (const [sc, a] of Object.entries(assetsByScene)) md += `- **${sc}**: ` + Object.entries(a).sort((x, y) => y[1] - x[1]).map(([e, v]) => `${e} ${kb(v)}`).join(', ') + ` (total ${kb(Object.values(a).reduce((x, y) => x + y, 0))})\n`;
+  if (revisit) md += `\nSecond visit (menu, CPU 1x): first ${revisit.first} ms -> reload ${revisit.second} ms playable; service worker ${revisit.sw ? 'active' : 'NOT active'}, `
+    + `reload transferred ${revisit.secondNetKB} kB from network / ${revisit.secondSwKB} kB from the service worker cache; offline reload: ${revisit.offline}.\n`;
   md += errors.length ? `\nConsole errors/warnings (${errors.length}):\n\n` + [...new Set(errors)].slice(0, 30).map(e => '- `' + e.replace(/`/g, "'") + '`').join('\n') + '\n' : '\nNo console errors or warnings.\n';
   console.log(md);
   if (OUT) { fs.mkdirSync(path.dirname(OUT), { recursive: true }); fs.appendFileSync(OUT, md); console.log('appended to', OUT); }

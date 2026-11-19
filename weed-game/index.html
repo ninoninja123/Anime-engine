@@ -121,5 +121,15 @@
   <div id="loading" class="screen"><div class="spinner"></div><div id="loadingText">Gathering the pack…</div></div>
 
   <script type="module" src="./src/main.js"></script>
+  <script>
+    // service worker (public/sw.js): hashed assets cache-first, models stale-while-revalidate, offline page. ?nosw removes it.
+    // Not in the Vite dev server (its index loads ./src/main.js) so hot reload is never served stale.
+    (function () {
+      if (!('serviceWorker' in navigator)) return;
+      var dev = !!document.querySelector('script[src*="/src/main.js"]');
+      if (/[?&]nosw\b/.test(location.search) || dev) { navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.unregister(); }); }).catch(function () {}); return; }
+      window.addEventListener('load', function () { setTimeout(function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); }, 3000); });
+    })();
+  </script>
 </body>
 </html>
