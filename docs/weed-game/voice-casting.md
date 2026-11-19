@@ -9,6 +9,7 @@ ElevenLabs flow with every take: "GDW voices" (`3wWrxUuLnB016Km9TduO`).
 | Character | Voice (source) | voice_id | Why |
 |---|---|---|---|
 | Weed (`weed`) | chinyaku – Cute Japanese Voice Actress (library; young female VA doing a boyish shōnen voice, as anime often does) | `eymz1ANTJnON6eFsgi2l` | User feedback: the first pick (Minto, young adult male) sounded too old for a small pup. All Weed lines regenerated with `[young boyish voice]`; no pitch shift needed. (Designing a child voice is not done – the voice-design filter blocks it.) |
+| Mel (`mel`) | Minto – Bright & Expressive Japanese Male (library) | `lfG6BR3yQRoBrnUm4Z8N` | Bright, kind, youthful male voice (freed when Weed was recast). |
 | Smith (`smith`) | **GDW – Smith** (designed, eleven_ttv_v3) | `TmIygVjGNYtmtUCz6yku` | Designed: elderly man (60s), low gravelly husky, warm, fatherly, slow. Library had no old gravelly Japanese voice with warmth. Preview 1 of 3 kept. |
 | Jerome (`jerome`) | Ryu – Samurai Voice (library) | `D3L9PtKnIVJXdgK444Ey` | Deep, serious, controlled baritone with power for the one big shout (arrows_fourth). |
 | Ken (`ken`) | Ishibashi – Strong Japanese Male (library) | `Mv8AjrYZCBkdsmDHNwcB` | Deep, strong, rough young male – brash big dog. |

@@ -6,7 +6,7 @@ Drop recorded / TTS files into `public/audio/voice/` using the exact file names 
 
 Format: mp3 (mono, 44.1 kHz, 64–96 kbps), trimmed tight (the game adds the pre/post silences itself).
 
-Status: **61 / 69** lines have audio.
+Status: **65 / 69** lines have audio.
 
 ## Voice profiles
 
@@ -78,9 +78,9 @@ Status: **61 / 69** lines have audio.
 | 47 | `jerome_arrows_fourth.mp3` | Jerome | 四本目は…俺だあああッ！ | And the fourth… is ME! | grief turned to fury | 5 | 0/0.1 | Starts low and shaking, explodes into a roar. The only time he truly shouts. | ✔ |
 | 48 | `jerome_arrows_thanks.mp3` | Jerome | ……ありがとう、戦友たち。 | …Thank you, my comrades. | broken, quiet | 5 | 0.8/1 | Very quiet, voice catching. Long breath before. Do not cry openly — he holds it in. | ✔ |
 | 49 | `jerome_arrows_now.mp3` | Jerome | まだ終わっていない。ウィード…皆で行くぞ！ | It's not over. Weed… we finish this together! | urgent resolve | 4 | 0/0.2 | Pulls himself together: strong and fast. A breath between sentences. | ✔ |
-| 50 | `weed_lock_call.mp3` | Weed | ケン！カゲトラ！押さえ込め！ | Ken! Kagetora! Pin it down! | desperate command | 5 | 0/0.1 | Shouted mid-leap, voice cracking with effort. Fast. | – |
-| 51 | `jerome_lock_artery.mp3` | Jerome | …届け…！ | …Reach…! | straining, all-in | 5 | 0/0.3 | Through clenched teeth, jaws locked on the wound. A strained growl more than a word. | – |
-| 52 | `kagetora_lock_hurt.mp3` | Kagetora | ぐっ…まだだ…！ | Ngh… not yet…! | pain and defiance | 4 | 0/0.3 | Bitten at the neck: a choked cry, then stubborn words. No screaming. | – |
+| 50 | `weed_lock_call.mp3` | Weed | ケン！カゲトラ！押さえ込め！ | Ken! Kagetora! Pin it down! | desperate command | 5 | 0/0.1 | Shouted mid-leap, voice cracking with effort. Fast. | ✔ |
+| 51 | `jerome_lock_artery.mp3` | Jerome | …届け…！ | …Reach…! | straining, all-in | 5 | 0/0.3 | Through clenched teeth, jaws locked on the wound. A strained growl more than a word. | ✔ |
+| 52 | `kagetora_lock_hurt.mp3` | Kagetora | ぐっ…まだだ…！ | Ngh… not yet…! | pain and defiance | 4 | 0/0.3 | Bitten at the neck: a choked cry, then stubborn words. No screaming. | ✔ |
 | 53 | `weed_finale_cry.mp3` | Weed | これで終わりだ…抜刀牙ーーッ！ | This ends now… BATTŌGA! | ultimate resolve | 5 | 0/0 | First half low and steady, almost calm; then the battle cry tears out at full power. | ✔ |
 | 54 | `ken_fall_hold.mp3` | Ken | ウィード！離すな！ | Weed! Don't let go! | desperate | 5 | 0/0 | Shouted through clenched teeth (biting on), strained. | ✔ |
 | 55 | `kagetora_fall_with.mp3` | Kagetora | 俺たちも行くぞ！ | We're going with you! | reckless loyalty | 5 | 0/0.2 | Shouted, fearless, a wild edge. | ✔ |
@@ -93,7 +93,7 @@ Status: **61 / 69** lines have audio.
 | 62 | `jerome_post_guilt.mp3` | Jerome | 放してくれ、ウィード。…部下のところへ、行かせてくれ。 | Let me go, Weed. …Let me go to my men. | hollow despair | 5 | 0.6/0.8 | Clinging to the rock in the current, exhausted. Flat and quiet, each word costs him. | ✔ |
 | 63 | `weed_post_carry.mp3` | Weed | だめだ！死ぬのはずるい。…生き残った者には、生きる意味があるんだ。 | No! Dying is unfair. …Those who survive have a reason to live. | fierce compassion | 5 | 0.2/0.6 | Through clenched teeth (he is holding Jerome's leg); then softer, certain. | ✔ |
 | 64 | `jerome_post_follow.mp3` | Jerome | ……ウィード。 | …Weed. | silent tears | 5 | 0.8/1 | Barely a whisper; a breath that breaks. He is crying without sound. | ✔ |
-| 65 | `mel_help.mp3` | Mel | ウィード！ジェロム！こっちだ、つかまれ！ | Weed! Jerome! Over here – grab on! | urgent kindness | 4 | 0/0.3 | Shouted over the roar of the river, warm and brave. | – |
+| 65 | `mel_help.mp3` | Mel | ウィード！ジェロム！こっちだ、つかまれ！ | Weed! Jerome! Over here – grab on! | urgent kindness | 4 | 0/0.3 | Shouted over the roar of the river, warm and brave. | ✔ |
 | 66 | `jerome_post_stay.mp3` | Jerome | 俺は戻らない。ここ、奥羽に残る。…もう誰の道具でもない。 | I'm not going back. I'm staying here, in Ōu. …I'm no one's tool anymore. | calm defiance | 4 | 0.3/0.6 | Barked toward the humans at the helicopter: firm, steady, free. | ✔ |
 | 67 | `narrator_memorial.mp3` | Narrator | スミス。ノース。ロバート。ロッカ。ホイラー。その名は、奥羽の風に刻まれた。 | Smith. North. Robert. Rocker. Heuler. Their names are carved into the wind of Ōu. | reverent | 4 | 0.6/1 | Each name slow and separate, with a beat of silence. Final sentence warm. | ✔ |
 | 68 | `weed_post_father.mp3` | Weed | 父さん…どこにいるの。僕、もっと強くなるよ。 | Father… where are you? I'll become stronger. | hopeful longing | 4 | 0.5/0.6 | Looking at the last light of dusk; soft, a little shaky, ending with a small brave smile. | ✔ |
