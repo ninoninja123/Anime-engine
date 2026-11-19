@@ -12,9 +12,9 @@ export let muted = false;
 const NO_FILES = E.params.has('synthaudio');
 
 const AUDIO_BASE = () => new URL('audio/', window.ASSET_BASE || document.baseURI).href;
-export const MUSIC_FILES = { intro: 'mus_intro_user.mp3', battle: 'mus_battle.mp3', sad: 'mus_sad.mp3', dawn: 'mus_dawn.mp3', smith: 'mus_smith_theme.mp3', smith2: 'mus_smith_theme2.mp3' };
-const MUSIC_VOL = { intro: 0.55, battle: 0.5, sad: 0.6, dawn: 0.6, smith: 0.6, smith2: 0.6 };
-const MUSIC_LOOP = { intro: true, battle: true, sad: false, dawn: false, smith: false, smith2: false };
+export const MUSIC_FILES = { intro: 'mus_intro_user.mp3', battle: 'mus_battle.mp3', sad: 'mus_sad.mp3', dawn: 'mus_dawn.mp3', smith: 'mus_smith_theme.mp3', smith2: 'mus_smith_theme2.mp3', story: 'mus_user_a.mp3' };
+const MUSIC_VOL = { intro: 0.55, battle: 0.5, sad: 0.6, dawn: 0.6, smith: 0.6, smith2: 0.6, story: 0.6 };
+const MUSIC_LOOP = { intro: true, battle: true, sad: false, dawn: false, smith: false, smith2: false, story: false };
 export const SFX_FILES = {
   bite: 'sfx_bite.mp3', hit: 'sfx_hit.mp3', roar: 'sfx_roar.mp3', rock: 'sfx_rock.mp3', rumble: 'sfx_rockslide.mp3',
   whoosh: 'sfx_whoosh.mp3', boom: 'sfx_battoga.mp3', spirit: 'sfx_spirit.mp3', bark: 'sfx_bark.mp3', hurt: 'sfx_hurt.mp3',
