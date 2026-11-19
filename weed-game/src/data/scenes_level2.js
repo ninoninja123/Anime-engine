@@ -742,7 +742,7 @@ export const post = (ctx) => {
       boss.root.position.set(12, -4, 0.4); boss.face(-1, true); boss.play('Death', { loop: false, timeScale: 0.3 });
       cast.ken.root.position.set(11.0, -3.2, 1.3); cast.ken.play('Gallop_Jump', { loop: false });
       cast.kagetora.root.position.set(12.8, -3.0, 1.2); cast.kagetora.play('Gallop_Jump', { loop: false });
-      w.root.position.set(11.6, -2.6, 1.6); w.play('Gallop_Jump', { loop: false });
+      w.root.position.set(12.3, -2.4, 2.1); w.play('Gallop_Jump', { loop: false });
       for (const d of [boss, cast.ken, cast.kagetora, w]) d.root.visible = true;
     } },
     { cam: [3.6, -1.2, 4.4], look: [12.0, -3.4, 0.3] },
